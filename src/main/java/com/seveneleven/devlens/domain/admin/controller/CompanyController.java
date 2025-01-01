@@ -1,6 +1,6 @@
 package com.seveneleven.devlens.domain.admin.controller;
 
-import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+import com.seveneleven.devlens.domain.admin.model.CompanyDto;
 import com.seveneleven.devlens.domain.admin.service.CompanyServiceImpl;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import jakarta.validation.Valid;

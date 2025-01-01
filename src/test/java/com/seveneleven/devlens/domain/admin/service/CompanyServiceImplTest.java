@@ -1,8 +1,9 @@
 package com.seveneleven.devlens.domain.admin.service;
 
-import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+import com.seveneleven.devlens.domain.admin.db.CompanyConverter;
+import com.seveneleven.devlens.domain.admin.model.CompanyDto;
 import com.seveneleven.devlens.domain.admin.exception.CompanyDuplicatedException;
-import com.seveneleven.devlens.domain.admin.repository.CompanyRepository;
+import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,8 @@ class CompanyServiceImplTest {
     private CompanyRepository companyRepository;
     @InjectMocks
     private CompanyServiceImpl companyService;
+    @InjectMocks
+    private CompanyConverter companyConverter;
 
     @DisplayName("회사 추가하기 기능")
     @Test
@@ -49,7 +52,7 @@ class CompanyServiceImplTest {
                             return e;
                         }
                 );
-        CompanyDto companyDto = new CompanyDto(companyName, representativeName, representativeEmail, representativeContact, address, businessType, businessRegistrationNumber);
+        CompanyDto companyDto = new CompanyDto(companyName, representativeName, representativeEmail, representativeContact, address, businessType, businessRegistrationNumber, true, true);
 
         var actual = companyService.createCompany(companyDto);
         verify(companyRepository, times(1)).save(any(Company.class));
@@ -75,8 +78,8 @@ class CompanyServiceImplTest {
         var businessType = "businessType";
         // Given
         String duplicatedBusinessNumber = "1234567890";
-        CompanyDto companyDto = new CompanyDto(companyName, representativeName,  representativeContact, representativeEmail, address, businessType, duplicatedBusinessNumber);
-        Company company = companyDto.createCompanyEntity();
+        CompanyDto companyDto = new CompanyDto(companyName, representativeName,  representativeContact, representativeEmail, address, businessType, duplicatedBusinessNumber, true, true);
+        Company company = companyConverter.toEntity(companyDto);
 
         // Mock: 이미 등록된 회사가 있는 경우를 시뮬레이션
         when(companyRepository.findByBusinessRegistrationNumber(duplicatedBusinessNumber))
