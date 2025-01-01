@@ -1,4 +1,4 @@
-package com.seveneleven.devlens.domain.admin.repository;
+package com.seveneleven.devlens.domain.admin.db;
 
 import com.seveneleven.devlens.domain.member.entity.Company;
 import org.springframework.data.jpa.repository.JpaRepository;
