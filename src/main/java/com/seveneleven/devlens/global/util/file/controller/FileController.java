@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -46,8 +48,9 @@ public class FileController {
                     @ApiResponse(responseCode = "400", description = "Invalid file upload request")
             }
     )
-    public APIResponse<FileMetadataDto> uploadFile(@RequestParam("file")  @Schema(type = "string", format = "binary", description = "File to upload") MultipartFile file) throws Exception {
+    public ResponseEntity<FileMetadataDto> uploadFile(@RequestParam("file")  @Schema(type = "string", format = "binary", description = "File to upload") MultipartFile file) throws Exception {
         FileMetadataDto fileMetadataDto = fileService.uploadFile(file, 1L, "POST_ATTACHMENT", 1L);
-        return APIResponse.success(fileMetadataDto);
+//        return APIResponse.success(fileMetadataDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(fileMetadataDto);
     }
 }
