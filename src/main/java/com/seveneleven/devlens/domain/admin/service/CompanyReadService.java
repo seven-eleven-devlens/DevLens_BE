@@ -34,7 +34,7 @@ public class CompanyReadService {
 
     @Transactional(readOnly = true)
     public Page<CompanyDto> getListOfCompanies(int page) {
-        Pageable pageable = PageRequest.of(page, 5);
+        Pageable pageable = PageRequest.of(page, 10);
         Page<Company> companyPage = companyRepository.findAll(pageable);
         return companyPage.map(companyConverter::toDTO);
     }
