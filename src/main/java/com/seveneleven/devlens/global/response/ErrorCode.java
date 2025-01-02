@@ -18,7 +18,7 @@ public enum ErrorCode {
 
 
     // 4000번대 코드 : 파일 s3 버킷 업/다운로드 관련
-
+    S3_UPLOAD_FAIL_ERROR(4000, HttpStatus.INTERNAL_SERVER_ERROR, "S3 파일 업로드에 실패했습니다."),
 
     // 5000번대 코드 : 서버 내부 오류 관련
     INTERNAL_SERVER_ERROR(5001, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."),

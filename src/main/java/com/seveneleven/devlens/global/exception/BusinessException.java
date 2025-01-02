@@ -2,7 +2,6 @@ package com.seveneleven.devlens.global.exception;
 
 import com.seveneleven.devlens.global.response.ErrorCode;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public class BusinessException extends RuntimeException {
