@@ -13,7 +13,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<APIResponse<?>> handleBusinessException(BusinessException e) {
-        e.printStackTrace();
         return ResponseEntity
                 .status(e.getErrorCode().getStatus())
                 .body(APIResponse.fail(e.getErrorCode()));

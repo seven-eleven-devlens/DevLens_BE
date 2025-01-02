@@ -48,9 +48,9 @@ public class FileController {
                     @ApiResponse(responseCode = "400", description = "Invalid file upload request")
             }
     )
-    public ResponseEntity<FileMetadataDto> uploadFile(@RequestParam("file")  @Schema(type = "string", format = "binary", description = "File to upload") MultipartFile file) throws Exception {
-        FileMetadataDto fileMetadataDto = fileService.uploadFile(file, 1L, "POST_ATTACHMENT", 1L);
-//        return APIResponse.success(fileMetadataDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(fileMetadataDto);
+    public ResponseEntity<Object> uploadFile(@RequestParam("file")  @Schema(type = "string", format = "binary", description = "File to upload") MultipartFile file) throws Exception {
+         APIResponse uploadResponse = fileService.uploadFile(file, 1L, "POST_ATTACHMENT", 1L);
+
+        return ResponseEntity.status(uploadResponse.getCode()).body(uploadResponse.getData());
     }
 }

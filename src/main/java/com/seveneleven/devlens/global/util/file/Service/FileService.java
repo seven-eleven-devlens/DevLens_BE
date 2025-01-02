@@ -1,6 +1,7 @@
 package com.seveneleven.devlens.global.util.file.Service;
 
 import com.seveneleven.devlens.global.exception.BusinessException;
+import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.ErrorCode;
 import com.seveneleven.devlens.global.util.file.FileValidator;
 import com.seveneleven.devlens.global.util.file.dto.FileMetadataDto;
@@ -28,7 +29,7 @@ public class FileService {
      * @return FileMetadataDto 업로드한 파일 메타데이터
      */
     @Transactional
-    public FileMetadataDto uploadFile(MultipartFile file, Long uploaderId, String fileCategory, Long referenceId) throws Exception {
+    public APIResponse uploadFile(MultipartFile file, Long uploaderId, String fileCategory, Long referenceId) throws Exception {
         //1. 파일 검증
         FileValidator.validateFile(file, fileCategory);
 
@@ -67,7 +68,7 @@ public class FileService {
             FileMetadata savedMetadata = fileMetadataRepository.save(metadata);
 
             //DTO로 변환 후 반환
-            return FileMetadataDto.toDto(savedMetadata);
+            return APIResponse.create(FileMetadataDto.toDto(savedMetadata));
 
         } catch (Exception e){
             //저장 실패시 S3에서 삭제

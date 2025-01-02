@@ -36,7 +36,13 @@ public class S3ClientService {
      * 키 = S3 저장시 파일 경로
      */
     public String generateS3Key(Long uploaderId, String category, String fileName) {
-        return String.format("%s/%s/%s", uploaderId, category, fileName);
+        return new StringBuilder()
+                .append(uploaderId)
+                .append("/")
+                .append(category)
+                .append("/")
+                .append(fileName)
+                .toString();
     }
 
     /**
