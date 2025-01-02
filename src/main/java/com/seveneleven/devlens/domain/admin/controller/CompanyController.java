@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Validated
@@ -24,6 +21,14 @@ public class CompanyController {
     @PostMapping("/create")
     public ResponseEntity<Company> createCompany(@Valid @RequestBody CompanyDto companyDto) {
         var company = companyService.createCompany(companyDto);
+        return ResponseEntity.ok()
+                .body(company);
+    }
+
+    @GetMapping("/read/{companyId}")
+
+    public ResponseEntity<CompanyDto> readCompany(@PathVariable Long companyId) {
+        var company = companyService.getCompanyDto(companyId);
         return ResponseEntity.ok()
                 .body(company);
     }
