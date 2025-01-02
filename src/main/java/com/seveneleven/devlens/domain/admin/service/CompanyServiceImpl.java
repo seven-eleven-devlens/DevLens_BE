@@ -5,8 +5,8 @@ import com.seveneleven.devlens.domain.admin.model.CompanyDto;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.domain.admin.exception.CompanyDuplicatedException;
 import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,5 +52,17 @@ public class CompanyServiceImpl {
         if (foundCompany != null) {
             throw new CompanyDuplicatedException();
         }
+    }
+
+    /*
+        함수명 : getCompanyDto
+        함수 목적 : 회사 상세조회
+     */
+    public CompanyDto getCompanyDto(Long id) {
+        var company = companyRepository.findById(id)
+                .map(companyConverter::toDTO)
+                .orElseThrow(() -> new EntityNotFoundException("회사 정보를 찾을 수 없습니다."));
+
+        return company.returnCompanyStatus();
     }
 }
