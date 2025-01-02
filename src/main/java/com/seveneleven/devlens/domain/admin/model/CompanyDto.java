@@ -27,6 +27,7 @@ public class CompanyDto {
                 .address(this.address)
                 .businessType(this.businessType)
                 .businessRegistrationNumber(this.businessRegistrationNumber)
+                .representativeImageExists(this.representativeImageExists)
                 .activeStatus(this.activeStatus)
                 .build();
     }
