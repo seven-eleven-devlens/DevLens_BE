@@ -37,7 +37,7 @@ public class APIResponse<T> {
         return new APIResponse<>(code.getStatusCode(), message, null);
     }
 
-    public static <T> APIResponse<T> create(int code, String message, T data) {
-        return new APIResponse<>(code, message, data);
+    public static <T> APIResponse<T> create(T data) {
+        return new APIResponse<>(SuccessCode.CREATED.getStatusCode(), SuccessCode.CREATED.getMessage(), data);
     }
 }
