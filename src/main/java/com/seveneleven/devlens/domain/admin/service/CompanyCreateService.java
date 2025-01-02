@@ -5,22 +5,20 @@ import com.seveneleven.devlens.domain.admin.model.CompanyDto;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.domain.admin.exception.CompanyDuplicatedException;
 import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CompanyServiceImpl {
+public class CompanyCreateService {
     private final CompanyRepository companyRepository;
-
     private final CompanyConverter companyConverter;
 
     /*
         함수명 : createCompany
         함수 목적 : 함수 정보 저장
      */
-    public Company createCompany(CompanyDto companyDto) {
+    public CompanyDto createCompany(CompanyDto companyDto) {
         try {
             //사업자 등록번호 중복 조회
             checkDuplicatedCompany(companyDto.getBusinessRegistrationNumber());
@@ -37,7 +35,7 @@ public class CompanyServiceImpl {
                     .activeStatus(true)
                     .build();
 
-            return companyRepository.save(company);
+            return companyConverter.toDTO(companyRepository.save(company));
         } catch (CompanyDuplicatedException e) {
             throw e;
         }
@@ -52,17 +50,5 @@ public class CompanyServiceImpl {
         if (foundCompany != null) {
             throw new CompanyDuplicatedException();
         }
-    }
-
-    /*
-        함수명 : getCompanyDto
-        함수 목적 : 회사 상세조회
-     */
-    public CompanyDto getCompanyDto(Long id) {
-        var company = companyRepository.findById(id)
-                .map(companyConverter::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException("회사 정보를 찾을 수 없습니다."));
-
-        return company.returnCompanyStatus();
     }
 }

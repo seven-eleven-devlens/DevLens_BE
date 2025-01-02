@@ -8,20 +8,19 @@ import com.seveneleven.devlens.domain.member.entity.Company;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CompanyServiceImplTest {
+class CompanyCreateServiceTest {
     @Mock
     private CompanyRepository companyRepository;
-    @InjectMocks
-    private CompanyServiceImpl companyService;
-    @InjectMocks
+    @Mock
+    private CompanyCreateService companyService;
+    @Mock
     private CompanyConverter companyConverter;
 
     @DisplayName("회사 추가하기 기능")
@@ -78,7 +77,7 @@ class CompanyServiceImplTest {
         var businessType = "businessType";
         // Given
         String duplicatedBusinessNumber = "1234567890";
-        CompanyDto companyDto = new CompanyDto(companyName, representativeName,  representativeContact, representativeEmail, address, businessType, duplicatedBusinessNumber, true, true);
+        CompanyDto companyDto = new CompanyDto(companyName, representativeName, representativeContact, representativeEmail, address, businessType, duplicatedBusinessNumber, true, true);
         Company company = companyConverter.toEntity(companyDto);
 
         // Mock: 이미 등록된 회사가 있는 경우를 시뮬레이션
