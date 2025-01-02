@@ -32,6 +32,10 @@ public class CompanyReadService {
         return company.returnCompanyStatus();
     }
 
+    /*
+    함수명 : getListOfCompanies
+    함수 목적 : 회사 목록조회
+    */
     @Transactional(readOnly = true)
     public Page<CompanyDto> getListOfCompanies(int page) {
         Pageable pageable = PageRequest.of(page, 10);
