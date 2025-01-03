@@ -2,6 +2,7 @@ package com.seveneleven.devlens.domain.admin.controller;
 
 import com.seveneleven.devlens.domain.admin.db.CompanyResponseConverter;
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
 import com.seveneleven.devlens.domain.admin.service.CompanyCreateService;
 import com.seveneleven.devlens.domain.admin.service.CompanyReadService;
 import com.seveneleven.devlens.global.response.APIResponse;
@@ -36,9 +37,17 @@ public class CompanyController {
     }
 
     @GetMapping("")
-    public APIResponse<List<CompanyDto.CompanyResponse>> readAllCompanies(@RequestParam(value = "page", defaultValue = "0") int page) {
+    public APIResponse<PaginatedResponse<CompanyDto.CompanyResponse>> readAllCompanies(@RequestParam(value = "page", defaultValue = "0") int page) {
         Page<CompanyDto.CompanyResponse> paging = companyReadService.getListOfCompanies(page);
-        return APIResponse.success(paging.getContent());
+        PaginatedResponse<CompanyDto.CompanyResponse> response = new PaginatedResponse<>(
+                paging.getContent(),
+                paging.getNumber(),
+                paging.getSize(),
+                paging.getTotalElements(),
+                paging.getTotalPages(),
+                paging.isLast()
+        );
+        return APIResponse.success(response);
     }
 
 }
