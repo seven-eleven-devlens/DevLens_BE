@@ -1,10 +1,7 @@
 package com.seveneleven.devlens.global.util.file;
 
+import com.seveneleven.devlens.global.util.file.constant.FileCategory;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class FileValidator {
 
