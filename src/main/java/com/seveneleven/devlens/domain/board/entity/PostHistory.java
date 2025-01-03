@@ -20,7 +20,7 @@ public class PostHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_history_id")
+    @Column(name = "id")
     private Long id; // 게시물 이력 ID
 
     @Column(name = "post_id", nullable = false)

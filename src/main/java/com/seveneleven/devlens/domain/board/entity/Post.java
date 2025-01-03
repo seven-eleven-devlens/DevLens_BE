@@ -1,17 +1,11 @@
 package com.seveneleven.devlens.domain.board.entity;
 
-import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.domain.project.entity.ProjectStep;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,7 +15,7 @@ public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
+    @Column(name = "id")
     private Long id; // 게시물 ID (문서번호)
 
     @JoinColumn(name = "project_step_id", nullable = false, referencedColumnName = "id")
