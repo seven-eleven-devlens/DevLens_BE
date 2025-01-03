@@ -9,21 +9,17 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@ToString
-@Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "comment")
 public class Comment extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Long commentId; // 댓글 ID
+    private Long id; // 댓글 ID
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id", nullable = false)
+    @JoinColumn(name = "post_id", nullable = false, referencedColumnName = "id")
     private Post postId; // 게시물 ID
 
     @JoinColumn(name = "parent_comment_id")

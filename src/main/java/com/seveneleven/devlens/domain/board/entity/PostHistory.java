@@ -14,18 +14,14 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@ToString
-@Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "post_history")
 public class PostHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_history_id")
-    private Long postHistoryId; // 게시물 이력 ID
+    private Long id; // 게시물 이력 ID
 
     @Column(name = "post_id", nullable = false)
     private Long postId; // 게시물 ID

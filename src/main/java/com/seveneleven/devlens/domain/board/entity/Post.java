@@ -15,24 +15,20 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@ToString
-@Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "post")
 public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
-    private Long postId; // 게시물 ID (문서번호)
+    private Long id; // 게시물 ID (문서번호)
 
-    @JoinColumn(name = "project_step_id", nullable = false)
+    @JoinColumn(name = "project_step_id", nullable = false, referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private ProjectStep projectStepId; // 프로젝트 단계 ID
 
-    @JoinColumn(name = "parent_post_id")
+    @JoinColumn(name = "parent_post_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Post parentPostId; // 부모 게시물 ID
 
