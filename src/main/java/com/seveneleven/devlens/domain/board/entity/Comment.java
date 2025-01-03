@@ -27,7 +27,7 @@ public class Comment extends BaseEntity {
     private Comment parentCommentId; // 부모 댓글 ID
 
     @Column(name = "is_active", nullable = false)
-    private Boolean isActive; // 사용 유무 (true, false)
+    private Boolean isActive; // 사용 유무 (Y, N)
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content; // 내용

@@ -1,5 +1,6 @@
 package com.seveneleven.devlens.domain.board.entity;
 
+import com.seveneleven.devlens.domain.board.dto.PostStatus;
 import com.seveneleven.devlens.domain.project.entity.ProjectStep;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import jakarta.persistence.*;
@@ -33,7 +34,7 @@ public class Post extends BaseEntity {
     private Integer priority; // 우선순위 (1,2,3)
 
     @Column(name = "status", nullable = false, length = 50)
-    private String status; // 상태 (선택(기본값), 진행, 추가, 완료, 보류)
+    private PostStatus status; // 상태 (선택(기본값), 진행, 추가, 완료, 보류)
 
     @Column(name = "title", nullable = false, length = 255)
     private String title; // 제목
