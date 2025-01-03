@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CompanyReadService {
     private final CompanyRepository companyRepository;
-    private final CompanyRequestConverter companyRequestConverter;
     private final CompanyResponseConverter companyResponseConverter;
 
     /*
@@ -32,8 +31,8 @@ public class CompanyReadService {
     }
 
     /*
-    함수명 : getListOfCompanies
-    함수 목적 : 회사 목록조회
+        함수명 : getListOfCompanies
+        함수 목적 : 회사 목록조회
     */
     @Transactional(readOnly = true)
     public Page<CompanyDto.CompanyResponse> getListOfCompanies(int page) {

@@ -8,6 +8,10 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CompanyResponseConverter implements EntityConverter<CompanyDto.CompanyResponse, Company> {
+    /*
+        함수명 : toDTO
+        함수 목적 : response 를 DTO 로 변환
+     */
     @Override
     public CompanyDto.CompanyResponse toDTO(Company company) {
         return new CompanyDto.CompanyResponse(
@@ -22,7 +26,10 @@ public class CompanyResponseConverter implements EntityConverter<CompanyDto.Comp
                 company.getRepresentativeImageExists(),
                 company.getIsActive());
     }
-
+    /*
+        함수명 : toEntity
+        함수 목적 : Dto 를 Entity 로 변환
+     */
     @Override
     public Company toEntity(CompanyDto.CompanyResponse companyResponse) {
         return new Company(
