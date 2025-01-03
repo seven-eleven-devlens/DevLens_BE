@@ -1,7 +1,8 @@
 package com.seveneleven.devlens.domain.admin.service;
 
-import com.seveneleven.devlens.domain.admin.db.CompanyConverter;
-import com.seveneleven.devlens.domain.admin.model.CompanyDto;
+import com.seveneleven.devlens.domain.admin.db.CompanyRequestConverter;
+import com.seveneleven.devlens.domain.admin.db.CompanyResponseConverter;
+import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.domain.admin.exception.CompanyDuplicatedException;
 import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
@@ -12,33 +13,19 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CompanyCreateService {
     private final CompanyRepository companyRepository;
-    private final CompanyConverter companyConverter;
+    private final CompanyRequestConverter companyRequestConverter;
+    private final CompanyResponseConverter companyResponseConverter;
 
     /*
         함수명 : createCompany
         함수 목적 : 함수 정보 저장
      */
-    public CompanyDto createCompany(CompanyDto companyDto) {
-        try {
+    public CompanyDto.CompanyResponse createCompany(CompanyDto.CompanyRequest companyRequest) {
             //사업자 등록번호 중복 조회
-            checkDuplicatedCompany(companyDto.getBusinessRegistrationNumber());
+            checkDuplicatedCompany(companyRequest.getBusinessRegistrationNumber());
             //회사 저장, 대표 이미지 존재 여부는 파일 등록 시 변경
-            var company = Company.builder()
-                    .companyName(companyDto.getCompanyName())
-                    .representativeName(companyDto.getRepresentativeName())
-                    .representativeEmail(companyDto.getRepresentativeEmail())
-                    .representativeContact(companyDto.getRepresentativeContact())
-                    .address(companyDto.getAddress())
-                    .businessType(companyDto.getBusinessType())
-                    .businessRegistrationNumber(companyDto.getBusinessRegistrationNumber())
-                    .representativeImageExists(false)
-                    .activeStatus(true)
-                    .build();
-
-            return companyConverter.toDTO(companyRepository.save(company));
-        } catch (CompanyDuplicatedException e) {
-            throw e;
-        }
+            var company = companyRequestConverter.toEntity(companyRequest);
+            return companyResponseConverter.toDTO(companyRepository.save(company));
     }
 
     /*
@@ -46,9 +33,9 @@ public class CompanyCreateService {
         함수 목적 : 회사 중복 조회
      */
     private void checkDuplicatedCompany(String businessRegistrationNumber) {
-        Company foundCompany = companyRepository.findByBusinessRegistrationNumber(businessRegistrationNumber);
-        if (foundCompany != null) {
-            throw new CompanyDuplicatedException();
-        }
+        companyRepository.findByBusinessRegistrationNumber(businessRegistrationNumber)
+                .ifPresent(company -> {
+                    throw new CompanyDuplicatedException();
+                });
     }
 }
