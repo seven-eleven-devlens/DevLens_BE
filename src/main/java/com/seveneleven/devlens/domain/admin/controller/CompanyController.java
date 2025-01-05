@@ -22,7 +22,7 @@ public class CompanyController {
         함수명 : createCompany
         목적 : 회사 생성하여 db에 저장
      */
-    @PostMapping("")
+    @PostMapping("/new")
     public APIResponse<CompanyDto.CompanyResponse> createCompany(@Valid @RequestBody CompanyDto.CompanyRequest companyRequest) {
         var company = companyCreateService.createCompany(companyRequest);
         return APIResponse.success(company);
@@ -32,7 +32,7 @@ public class CompanyController {
         함수명 : readCompany
         목적 : 회사 상세 정보 조회
      */
-    @GetMapping("/list/{companyId}")
+    @GetMapping("{companyId}")
     public APIResponse<CompanyDto.CompanyResponse> readCompany(@PathVariable Long companyId) {
         var company = companyReadService.getCompanyResponse(companyId);
         return APIResponse.success(company);
@@ -42,17 +42,10 @@ public class CompanyController {
         함수명 : readAllCompanies
         목적 : 회사 페이지 조회
      */
-    @GetMapping("/list")
+    @GetMapping("")
     public APIResponse<PaginatedResponse<CompanyDto.CompanyResponse>> readCompanyPage(@RequestParam(value = "page", defaultValue = "0") int page) {
         Page<CompanyDto.CompanyResponse> paging = companyReadService.getListOfCompanies(page);
-        PaginatedResponse<CompanyDto.CompanyResponse> response = new PaginatedResponse<>(
-                paging.getContent(),
-                paging.getNumber(),
-                paging.getSize(),
-                paging.getTotalElements(),
-                paging.getTotalPages(),
-                paging.isLast()
-        );
+        PaginatedResponse<CompanyDto.CompanyResponse> response = PaginatedResponse.createPaginatedResponse(paging);
         return APIResponse.success(response);
     }
 
