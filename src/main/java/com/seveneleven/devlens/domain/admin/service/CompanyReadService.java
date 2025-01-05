@@ -3,7 +3,9 @@ package com.seveneleven.devlens.domain.admin.service;
 import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
 import com.seveneleven.devlens.domain.admin.db.CompanyResponseConverter;
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;
+import com.seveneleven.devlens.global.response.ErrorCode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,8 +28,14 @@ public class CompanyReadService {
     @Transactional(readOnly = true)
     public CompanyDto.CompanyResponse getCompanyResponse(Long id) {
         return companyRepository.findById(id)
+                .map(company -> {
+                    if (company.getIsActive() == YN.N) {
+                        throw new EntityNotFoundException(ErrorCode.COMPANY_IS_DEACTIVATED.getMessage());
+                    }
+                    return company;
+                })
                 .map(companyResponseConverter::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException("회사 정보를 찾을 수 없습니다."));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMPANY_IS_NOT_FOUND.getMessage()));
     }
 
     /*
@@ -36,8 +44,8 @@ public class CompanyReadService {
     */
     @Transactional(readOnly = true)
     public Page<CompanyDto.CompanyResponse> getListOfCompanies(int page) {
-        Pageable pageable = PageRequest.of(page, 10, Sort.by("id").descending());
-        Page<Company> companyPage = companyRepository.findAll(pageable);
+        Pageable pageable = PageRequest.of(page, 10, Sort.by("companyName").ascending());
+        Page<Company> companyPage = companyRepository.findPage(pageable);
         return companyPage.map(companyResponseConverter::toDTO);
     }
 }
