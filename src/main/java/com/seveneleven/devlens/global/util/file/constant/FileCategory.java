@@ -62,25 +62,6 @@ public enum FileCategory {
     private final Set<String> allowedExtensions;
     private final List<String> allowedMimeTypes;
 
-    //확장자, MIME타입 판별
-    public boolean isValidFile(String fileFormat, String mimeType) {
-        return isValidExtension(fileFormat) && isValidMimeType(mimeType);
-    }
-
-    public boolean isValidExtension(String fileFormat) {
-        if (StringUtils.isBlank(fileFormat)) {
-            return false;
-        }
-        return allowedExtensions.contains(fileFormat.toLowerCase());
-    }
-
-    public boolean isValidMimeType(String mimeType) {
-        if (StringUtils.isBlank(mimeType)) {
-            return false;
-        }
-        return allowedMimeTypes.contains(mimeType.toLowerCase());
-    }
-    
     public Set<String> getAllowedExtensions() {
         return allowedExtensions;
     }
