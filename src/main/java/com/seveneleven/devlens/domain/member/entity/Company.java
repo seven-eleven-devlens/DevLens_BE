@@ -41,11 +41,11 @@ public class Company extends BaseEntity {
 
     @Column(name = "representative_image_exists", nullable = false)
     @Enumerated(EnumType.STRING)
-    private YN representativeImageExists = YN.N; // 대표 이미지 유무
+    private YN representativeImageExists; // 대표 이미지 유무
 
     @Column(name = "is_active", nullable = false)
     @Enumerated(EnumType.STRING)
-    private YN isActive = YN.Y; // 사용 여부
+    private YN isActive; // 사용 여부
 
     public Company(Long id, String companyName, String representativeName, String representativeContact, String representativeEmail, String address, BusinessType businessType, String businessRegistrationNumber, YN representativeImageExists, YN isActive) {
         this.id = id;
