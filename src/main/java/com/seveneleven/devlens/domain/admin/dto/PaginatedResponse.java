@@ -3,6 +3,7 @@ package com.seveneleven.devlens.domain.admin.dto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -23,5 +24,16 @@ public class PaginatedResponse<T> {
         this.totalElements = totalElements;
         this.totalPages = totalPages;
         this.last = last;
+    }
+
+    public static PaginatedResponse<CompanyDto.CompanyResponse> createPaginatedResponse(Page<CompanyDto.CompanyResponse> page) {
+        return new PaginatedResponse<CompanyDto.CompanyResponse> (
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isLast()
+        );
     }
 }
