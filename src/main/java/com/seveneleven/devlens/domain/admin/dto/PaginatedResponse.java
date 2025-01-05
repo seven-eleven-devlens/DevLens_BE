@@ -27,7 +27,7 @@ public class PaginatedResponse<T> {
     }
 
     public static PaginatedResponse<CompanyDto.CompanyResponse> createPaginatedResponse(Page<CompanyDto.CompanyResponse> page) {
-        return new PaginatedResponse<CompanyDto.CompanyResponse> (
+        return new PaginatedResponse<> (
                 page.getContent(),
                 page.getNumber(),
                 page.getSize(),
