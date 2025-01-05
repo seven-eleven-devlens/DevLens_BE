@@ -1,5 +1,6 @@
 package com.seveneleven.devlens.domain.admin.db;
 
+import com.seveneleven.devlens.domain.admin.common.EntityConverter;
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import lombok.RequiredArgsConstructor;
