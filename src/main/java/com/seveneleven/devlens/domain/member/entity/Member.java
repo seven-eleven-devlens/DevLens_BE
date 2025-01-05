@@ -6,6 +6,7 @@ import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,7 +41,7 @@ public class Member extends BaseEntity {
 
     @Column(name = "profile_image_exists", nullable = false)
     @Enumerated(EnumType.STRING)
-    private YN profileImageExists; // 프로필 이미지 유무
+    private YN profileImageExists = YN.N; // 프로필 이미지 유무
 
     @Column(name = "name", nullable = false, length = 100)
     private String name; // 이름
@@ -62,15 +63,15 @@ public class Member extends BaseEntity {
 
 
     // 생성 메서드
-    public static Member createMember(String loginId, String password, Company companyId, Role role, String name, String email,
-                                      LocalDate birthDate, String phoneNumber, Long departmentId, Long positionId) {
+    public static Member createMember(String loginId, String password, Company company, Role role, String name, String email,
+                                      LocalDate birthDate, String phoneNumber, Long departmentId, Long positionId, PasswordEncoder pwdEncoder) {
         Member member = new Member();
         member.name         = name;
         member.role         = role;
         member.email        = email;
         member.loginId      = loginId;
-        member.password     = password;
-        member.company      = companyId;
+        member.password     = pwdEncoder.encode(password);
+        member.company      = company;
         member.birthDate    = birthDate;
         member.phoneNumber  = phoneNumber;
         member.positionId   = positionId;
