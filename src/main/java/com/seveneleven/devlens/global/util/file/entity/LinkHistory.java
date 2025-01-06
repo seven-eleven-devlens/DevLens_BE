@@ -1,5 +1,6 @@
 package com.seveneleven.devlens.global.util.file.entity;
 
+import com.seveneleven.devlens.domain.member.constant.Role;
 import com.seveneleven.devlens.global.util.file.constant.LinkCategory;
 import com.seveneleven.devlens.global.util.file.constant.LinkHistoryType;
 import jakarta.persistence.*;
@@ -19,8 +20,8 @@ public class LinkHistory {
     //Magic Number
     private static final int MAX_REFERENCE_IDENTIFIER_LENGTH = 300;
     private static final int MAX_WRITER_NAME_LENGTH = 200;
-    private static final int MAX_WRITER_AUTHORITY_LENGTH = 200;
-    private static final int MAX_LINK_LENGTH = 200;
+    private static final int MAX_WRITER_AUTHORITY_LENGTH = 50;
+    private static final int MAX_LINK_LENGTH = 1000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +49,8 @@ public class LinkHistory {
     private String writerName; // 등록자 이름
 
     @Column(name = "writer_authority", length = MAX_WRITER_AUTHORITY_LENGTH, nullable = false)
-    private String writerAuthority; // 등록자 권한
+    @Enumerated(EnumType.STRING)
+    private Role writerAuthority; // 등록자 권한
 
     @Column(name = "written_at", nullable = false)
     private LocalDateTime writtenAt; // 링크 등록 일시
@@ -72,7 +74,7 @@ public class LinkHistory {
                                              String referenceIdentifier,
                                              String writerEmail,
                                              String writerName,
-                                             String writerAuthority,
+                                             Role writerAuthority,
                                              LocalDateTime writtenAt,
                                              String link){
 
@@ -96,11 +98,11 @@ public class LinkHistory {
                                                 String referenceIdentifier,
                                                 String writerEmail,
                                                 String writerName,
-                                                String writerAuthority,
+                                                Role writerAuthority,
                                                 LocalDateTime writtenAt,
                                                 String link){
 
-        return createHistory(LinkHistoryType.LINK_HISTORY_REGISTER,
+        return createHistory(LinkHistoryType.REGISTER,
                 linkCategory, referenceId, referenceIdentifier,
                 writerEmail, writerName, writerAuthority, writtenAt, link);
     }
@@ -111,11 +113,11 @@ public class LinkHistory {
                                                 String referenceIdentifier,
                                                 String writerEmail,
                                                 String writerName,
-                                                String writerAuthority,
+                                                Role writerAuthority,
                                                 LocalDateTime writtenAt,
                                                 String link){
 
-        return createHistory(LinkHistoryType.LINK_HISTORY_DELETE,
+        return createHistory(LinkHistoryType.DELETE,
                 linkCategory, referenceId, referenceIdentifier,
                 writerEmail, writerName, writerAuthority, writtenAt, link);
     }
