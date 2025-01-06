@@ -25,8 +25,8 @@ public class MemberService {
         this.repository = repository;
     }
 
-    public Member findOne(String loginId) {
-        return repository.findByloginId(loginId);
+    public Optional<Member> findOne(String loginId) {
+        return repository.findByLoginId(loginId);
     }
 
     public Long join(String userid, String pw) {

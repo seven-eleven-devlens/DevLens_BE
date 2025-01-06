@@ -7,8 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.rmi.NoSuchObjectException;
-
 @Component
 public class MyUserDetailsService implements UserDetailsService {
     private final MemberService memberService;
@@ -19,11 +17,8 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String insertedUserId){
-        Member member = memberService.findOne(insertedUserId);
-
-        if (member == null) {
-            throw new UsernameNotFoundException("User with ID '" + insertedUserId + "' not found.");
-        }
+        Member member = memberService.findOne(insertedUserId)
+                .orElseThrow(() -> new UsernameNotFoundException("User with ID '" + insertedUserId + "' not found."));
 
         return User.builder()
                 .username(member.getLoginId())
