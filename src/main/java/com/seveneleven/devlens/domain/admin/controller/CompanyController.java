@@ -7,7 +7,6 @@ import com.seveneleven.devlens.domain.admin.service.CompanyReadService;
 import com.seveneleven.devlens.global.response.APIResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,8 +43,7 @@ public class CompanyController {
      */
     @GetMapping("/list")
     public APIResponse<PaginatedResponse<CompanyDto.CompanyResponse>> readCompanyPage(@RequestParam(value = "page", defaultValue = "0") int page) {
-        Page<CompanyDto.CompanyResponse> paging = companyReadService.getListOfCompanies(page);
-        PaginatedResponse<CompanyDto.CompanyResponse> response = PaginatedResponse.createPaginatedResponse(paging);
+        PaginatedResponse<CompanyDto.CompanyResponse> response = companyReadService.getListOfCompanies(page);
         return APIResponse.success(response);
     }
 }
