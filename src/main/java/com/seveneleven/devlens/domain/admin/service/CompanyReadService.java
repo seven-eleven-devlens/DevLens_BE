@@ -48,10 +48,4 @@ public class CompanyReadService {
         Page<Company> companyPage = companyRepository.findPage(pageable);
         return companyPage.map(companyResponseConverter::toDTO);
     }
-
-    @Transactional(readOnly = true)
-    public int getTotalPages() {
-        long totalCount = companyRepository.count();
-        return (int) Math.ceil((double) totalCount / pageSize);
-    }
 }
