@@ -6,11 +6,11 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class AuditorAwareImpl implements AuditorAware<String> {
+public class AuditorAwareImpl implements AuditorAware<Long> {
 
     @Override
-    public Optional<String> getCurrentAuditor() {
+    public Optional<Long> getCurrentAuditor() {
         // 기본적으로 "1" 반환
-        return Optional.of("1");
+        return Optional.of(1L);
     }
 }
