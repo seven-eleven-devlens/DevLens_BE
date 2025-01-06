@@ -32,7 +32,7 @@ public class CompanyController {
         함수명 : readCompany
         목적 : 회사 상세 정보 조회
      */
-    @GetMapping("{companyId}")
+    @GetMapping("/list/{companyId}")
     public APIResponse<CompanyDto.CompanyResponse> readCompany(@PathVariable Long companyId) {
         var company = companyReadService.getCompanyResponse(companyId);
         return APIResponse.success(company);
@@ -42,11 +42,19 @@ public class CompanyController {
         함수명 : readAllCompanies
         목적 : 회사 페이지 조회
      */
-    @GetMapping("")
+    @GetMapping("/list")
     public APIResponse<PaginatedResponse<CompanyDto.CompanyResponse>> readCompanyPage(@RequestParam(value = "page", defaultValue = "0") int page) {
         Page<CompanyDto.CompanyResponse> paging = companyReadService.getListOfCompanies(page);
         PaginatedResponse<CompanyDto.CompanyResponse> response = PaginatedResponse.createPaginatedResponse(paging);
         return APIResponse.success(response);
     }
-
+    /*
+        함수명 : readCompanyPageTotalPages
+        목적 : 회사 전체 페이지 수 조회
+     */
+    @GetMapping("/total-pages")
+    public APIResponse<Integer> readCompanyTotalPages() {
+        int pageSize = companyReadService.getTotalPages();
+        return APIResponse.success(pageSize);
+    }
 }
