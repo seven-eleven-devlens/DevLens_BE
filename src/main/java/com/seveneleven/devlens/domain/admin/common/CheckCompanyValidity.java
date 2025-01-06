@@ -6,9 +6,7 @@ import com.seveneleven.devlens.domain.admin.exception.CompanyDuplicatedException
 import com.seveneleven.devlens.domain.admin.exception.CompanyNotFoundException;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;
-import com.seveneleven.devlens.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
