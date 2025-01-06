@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CompanyReadService {
     private final CompanyRepository companyRepository;
     private final CompanyResponseConverter companyResponseConverter;
-
+    private final int pageSize = 20;
     /*
         함수명 : getCompanyDto
         함수 목적 : 회사 상세조회
@@ -47,5 +47,11 @@ public class CompanyReadService {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("companyName").ascending());
         Page<Company> companyPage = companyRepository.findPage(pageable);
         return companyPage.map(companyResponseConverter::toDTO);
+    }
+
+    @Transactional(readOnly = true)
+    public int getTotalPages() {
+        long totalCount = companyRepository.count();
+        return (int) Math.ceil((double) totalCount / pageSize);
     }
 }
