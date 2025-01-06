@@ -1,47 +1,58 @@
 package com.seveneleven.devlens.global.util.file.entity;
 
+import com.seveneleven.devlens.global.util.file.constant.LinkCategory;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
-@ToString
-@Builder(toBuilder = true)
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EntityListeners(AuditingEntityListener.class)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "link")
 public class Link {
+    //Magic Number
+    private static final int MAX_LINK_LENGTH = 1000;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "link_id")
-    private Long id; // 통합 링크 ID
+    @Column(name = "id")
+    private Long id; //통합 링크 ID
 
-    @Column(name = "link_type_code", nullable = false)
-    private String linkTypeCode; // 첨부 유형 코드
+    @Column(name = "category", nullable = false)
+    @Enumerated(EnumType.STRING)
+    //링크 카테고리 - 승인요청, 승인거절사유, 게시물
+    private LinkCategory category;
 
     @Column(name = "reference_id", nullable = false)
-    private Long referenceId; // 참조 ID
+    private Long referenceId; //참조 ID
 
-    @CreatedBy
-    @Column(name = "written_by", nullable = false)
-    private Long writtenBy; // 등록자 ID
+    @Column(name = "link", length = MAX_LINK_LENGTH, nullable = false)
+    private String link; //링크
 
-    @Column(name = "written_at", nullable = false)
-    private LocalDateTime writtenAt; // 등록 일시
-
-    @Column(name = "link", length = 1000)
-    private String link; // 링크
-
+    //시스템 컬럼
     @CreatedBy
     @Column(name = "created_by", nullable = false)
-    private Long createdBy; // 최초 작성자 ID
+    private Long createdBy; //최초 등록자 ID
 
     @CreatedDate
     @Column(name = "created_at", nullable = false)
-    private LocalDateTime createdAt; // 최초 등록 일시
+    private LocalDateTime createdAt; //최초 등록 일시
+
+
+    public static Link registerLink(LinkCategory category,
+                                    Long referenceId,
+                                    String link) {
+
+        Link linkData = new Link();
+        linkData.category = category;
+        linkData.referenceId = referenceId;
+        linkData.link = link;
+
+        return linkData;
+    }
 }
