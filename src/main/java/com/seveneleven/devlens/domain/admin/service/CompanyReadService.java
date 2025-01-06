@@ -7,7 +7,6 @@ import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
 import com.seveneleven.devlens.domain.admin.exception.CompanyNotFoundException;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;
-import com.seveneleven.devlens.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
