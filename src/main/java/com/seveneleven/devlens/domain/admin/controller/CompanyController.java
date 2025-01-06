@@ -48,13 +48,4 @@ public class CompanyController {
         PaginatedResponse<CompanyDto.CompanyResponse> response = PaginatedResponse.createPaginatedResponse(paging);
         return APIResponse.success(response);
     }
-    /*
-        함수명 : readCompanyPageTotalPages
-        목적 : 회사 전체 페이지 수 조회
-     */
-    @GetMapping("/total-pages")
-    public APIResponse<Integer> readCompanyTotalPages() {
-        int pageSize = companyReadService.getTotalPages();
-        return APIResponse.success(pageSize);
-    }
 }
