@@ -1,5 +1,6 @@
 package com.seveneleven.devlens.global.util.file.entity;
 
+import com.seveneleven.devlens.domain.member.constant.Role;
 import com.seveneleven.devlens.global.util.file.constant.FileCategory;
 import com.seveneleven.devlens.global.util.file.constant.FileHistoryType;
 import jakarta.persistence.*;
@@ -61,7 +62,8 @@ public class FileMetadataHistory {
     private String writerName; // 파일 등록자 이름
 
     @Column(name = "writer_authority", length = MAX_WRITER_AUTHORITY_LENGTH, nullable = false)
-    private String writerAuthority; // 파일 등록자 권한
+    @Enumerated(EnumType.STRING)
+    private Role writerAuthority; // 파일 등록자 권한
 
     @Column(name = "written_at", nullable = false)
     private LocalDateTime writtenAt; // 파일 등록 일시
@@ -96,7 +98,7 @@ public class FileMetadataHistory {
                                                      String fileTitle,
                                                      String writerEmail,
                                                      String writerName,
-                                                     String writerAuthority,
+                                                     Role writerAuthority,
                                                      LocalDateTime writtenAt,
                                                      String contentType,
                                                      String fileFormat,
@@ -131,14 +133,14 @@ public class FileMetadataHistory {
                                                             String fileTitle,
                                                             String writerEmail,
                                                             String writerName,
-                                                            String writerAuthority,
+                                                            Role writerAuthority,
                                                             LocalDateTime writtenAt,
                                                             String contentType,
                                                             String fileFormat,
                                                             Double fileSize,
                                                             String filePath) {
 
-        return createHistory(FileHistoryType.FILE_METADATA_HISTORY_REGISTER,
+        return createHistory(FileHistoryType.REGISTER,
                 fileCategory, referenceId, referenceIdentifier,
                 fileDisplayTitle, fileTitle, writerEmail, writerName,
                 writerAuthority, writtenAt, contentType, fileFormat, fileSize, filePath);
@@ -152,14 +154,14 @@ public class FileMetadataHistory {
                                                           String fileTitle,
                                                           String writerEmail,
                                                           String writerName,
-                                                          String writerAuthority,
+                                                          Role writerAuthority,
                                                           LocalDateTime writtenAt,
                                                           String contentType,
                                                           String fileFormat,
                                                           Double fileSize,
                                                           String filePath) {
 
-        return createHistory(FileHistoryType.FILE_METADATA_HISTORY_DELETE,
+        return createHistory(FileHistoryType.DELETE,
                 fileCategory, referenceId, referenceIdentifier,
                 fileDisplayTitle, fileTitle, writerEmail, writerName,
                 writerAuthority, writtenAt, contentType, fileFormat, fileSize, filePath);
