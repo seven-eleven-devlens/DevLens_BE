@@ -1,6 +1,7 @@
 package com.seveneleven.devlens.global.util.file.controller;
 
 import com.seveneleven.devlens.global.response.APIResponse;
+import com.seveneleven.devlens.global.util.file.Service.CompanyFileService;
 import com.seveneleven.devlens.global.util.file.Service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,29 +15,35 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/files")
+@RequestMapping("/api/company/files")
 @RequiredArgsConstructor
-public class FileController {
-    private final FileService fileService;
+public class CompanyFileController {
+    private final CompanyFileService companyFileService;
 
     /**
-     * 1. 파일 업로드
-     * @param file 업로드할 파일
+     * 1. 회사 로고 이미지 업로드
+     * @param file 업로드할 이미지 파일
      * @return 업로드된 파일 메타데이터, 성공 메시지
      */
-    @PostMapping(value = "/upload", consumes = "multipart/form-data")
+    @PostMapping(value = "", consumes = "multipart/form-data")
     @Operation(
             summary = "Upload a file",
-            description = "Upload a file to the server",
+            description = "Upload a image for company logo",
             responses = {
                     @ApiResponse(responseCode = "200", description = "File uploaded successfully"),
                     @ApiResponse(responseCode = "400", description = "Invalid file upload request")
             }
     )
     public ResponseEntity<Object> uploadFile(@RequestParam("file")
-                                                 @Schema(type = "string", format = "binary", description = "File to upload") MultipartFile file) throws Exception {
-        APIResponse uploadResponse = fileService.uploadFile(file, "POST_ATTACHMENT", 1L);
+                                             @Schema(type = "string", format = "binary", description = "File to upload") MultipartFile file,
+                                             @RequestParam("company")
+                                             @Schema(type = "Long", description = "Company to upload") Long companyId) throws Exception {
+        //TODO) 토큰에서 uploader 정보 가져오기
+        Long uploaderId = 1L;
+
+        APIResponse uploadResponse = companyFileService.uploadLogoImage(file, companyId, uploaderId);
 
         return ResponseEntity.status(uploadResponse.getCode()).body(uploadResponse);
     }
+
 }
