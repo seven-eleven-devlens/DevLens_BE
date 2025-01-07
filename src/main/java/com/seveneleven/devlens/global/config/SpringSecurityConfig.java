@@ -55,19 +55,22 @@ public class SpringSecurityConfig {
                 .sessionManagement(sessionManagement -> // 세션 정책 설정 (STATELESS)
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authorizeHttpRequests(request -> request // URL별 접근 권한 설정
-                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers(
-                                "/status",
-                                "/images/**",
-                                "/api/login",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/swagger-resources/**",
-                                "/webjars/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(request -> request // 모든 요청 허용
+                .anyRequest().permitAll()
                 );
+//                .authorizeHttpRequests(request -> request // URL별 접근 권한 설정
+//                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+//                        .requestMatchers(
+//                                "/status",
+//                                "/images/**",
+//                                "/api/login",
+//                                "/swagger-ui/**",
+//                                "/v3/api-docs/**",
+//                                "/swagger-resources/**",
+//                                "/webjars/**"
+//                        ).permitAll()
+//                        .anyRequest().authenticated()
+//                );
 
         // JWT 필터를 추가
         JwtSecurityConfig jwtSecurityConfig = new JwtSecurityConfig(tokenProvider);
