@@ -17,7 +17,14 @@ public class PaginatedResponse<T> {
     private int totalPages;
     private boolean last;
 
-    public PaginatedResponse(List<T> content, int pageNumber, int pageSize, long totalElements, int totalPages, boolean last) {
+    public PaginatedResponse(
+            List<T> content,
+            int pageNumber,
+            int pageSize,
+            long totalElements,
+            int totalPages,
+            boolean last
+    ) {
         this.content = content;
         this.pageNumber = pageNumber;
         this.pageSize = pageSize;
@@ -26,7 +33,9 @@ public class PaginatedResponse<T> {
         this.last = last;
     }
 
-    public static PaginatedResponse<CompanyDto.CompanyResponse> createPaginatedResponse(Page<CompanyDto.CompanyResponse> page) {
+    public static PaginatedResponse<CompanyDto.CompanyResponse> createPaginatedResponse(
+            Page<CompanyDto.CompanyResponse> page
+    ) {
         return new PaginatedResponse<> (
                 page.getContent(),
                 page.getNumber(),

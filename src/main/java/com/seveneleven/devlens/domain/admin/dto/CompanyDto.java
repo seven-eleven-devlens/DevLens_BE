@@ -2,7 +2,9 @@ package com.seveneleven.devlens.domain.admin.dto;
 
 import com.seveneleven.devlens.domain.member.constant.BusinessType;
 import com.seveneleven.devlens.domain.member.constant.YN;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CompanyDto {
     @Getter
@@ -18,7 +20,17 @@ public class CompanyDto {
         private YN representativeImageExists;
         private YN isActive;
 
-        public CompanyRequest(Long id, String companyName, String representativeName, String representativeContact, String representativeEmail, String address, BusinessType businessType, String businessRegistrationNumber, YN representativeImageExists, YN activeStatus) {
+        public CompanyRequest(
+                Long id, String companyName,
+                String representativeName,
+                String representativeContact,
+                String representativeEmail,
+                String address,
+                BusinessType businessType,
+                String businessRegistrationNumber,
+                YN representativeImageExists,
+                YN activeStatus
+        ) {
             this.id = id;
             this.companyName = companyName;
             this.representativeName = representativeName;
@@ -45,7 +57,18 @@ public class CompanyDto {
         private YN representativeImageExists;
         private YN isActive;
 
-        public CompanyResponse(Long id, String companyName, String representativeName, String representativeContact, String representativeEmail, String address, BusinessType businessType, String businessRegistrationNumber, YN representativeImageExists, YN activeStatus) {
+        public CompanyResponse(
+                Long id,
+                String companyName,
+                String representativeName,
+                String representativeContact,
+                String representativeEmail,
+                String address,
+                BusinessType businessType,
+                String businessRegistrationNumber,
+                YN representativeImageExists,
+                YN activeStatus
+        ) {
             this.id = id;
             this.companyName = companyName;
             this.representativeName = representativeName;
