@@ -26,7 +26,9 @@ public class CompanyReadService {
         함수 목적 : 회사 상세조회
      */
     @Transactional(readOnly = true)
-    public CompanyDto.CompanyResponse getCompanyResponse(Long id) {
+    public CompanyDto.CompanyResponse getCompanyResponse(
+            Long id
+    ) {
         return companyRepository.findByIdAndIsActive(id,YN.Y)
                 .map(companyResponseConverter::toDTO)
                 .orElseThrow(CompanyNotFoundException::new);
@@ -37,7 +39,9 @@ public class CompanyReadService {
         함수 목적 : 회사 목록조회
     */
     @Transactional(readOnly = true)
-    public PaginatedResponse<CompanyDto.CompanyResponse> getListOfCompanies(int page) {
+    public PaginatedResponse<CompanyDto.CompanyResponse> getListOfCompanies(
+            Integer page
+    ) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("companyName").descending());
         Page<Company> companyPage = companyRepository.findByIsActive(pageable,YN.Y);
         if(companyPage.getContent().isEmpty()) {
