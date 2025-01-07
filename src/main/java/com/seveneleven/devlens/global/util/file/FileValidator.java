@@ -1,10 +1,11 @@
 package com.seveneleven.devlens.global.util.file;
 
+import com.seveneleven.devlens.global.exception.BusinessException;
+import com.seveneleven.devlens.global.response.ErrorCode;
+import com.seveneleven.devlens.global.util.file.constant.FileCategory;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class FileValidator {
 
@@ -17,19 +18,19 @@ public class FileValidator {
      * @param fileCategoryName 파일 카테고리명
      */
     public static void validateFile(MultipartFile file, String fileCategoryName) {
-        if (file == null || file.isEmpty()) {
-            throw new IllegalArgumentException("File cannot be null or empty.");
+        if (ObjectUtils.isEmpty(file)) {
+            throw new BusinessException(ErrorCode.FILE_NOT_EXIST_ERROR);
         }
 
         String fileName = file.getOriginalFilename();
-        if (fileName == null || fileName.isBlank()) {
-            throw new IllegalArgumentException("Filename cannot be null or empty.");
+        if (StringUtils.isBlank(fileName)) {
+            throw new BusinessException(ErrorCode.INVALID_FILE_NAME_ERROR);
         }
 
         FileCategory fileCategory = validateFileCategory(fileCategoryName); // 파일 카테고리 검증
         validateFileExtension(fileName, fileCategory); // 파일 확장자 검증
         validateMimeType(file.getContentType(), fileCategory); // MIME 타입 검증
-        //validateFileSize(file.getSize()); // 파일 크기 검증
+        validateFileSize(file.getSize()); // 파일 크기 검증
     }
 
     /**
@@ -39,7 +40,7 @@ public class FileValidator {
         try{
             return FileCategory.valueOf(fileCategoryName);
         } catch (IllegalArgumentException e){
-            throw new IllegalArgumentException("Invalid file category: " + fileCategoryName);
+            throw new BusinessException(ErrorCode.INVALID_FILE_CATEGORY_ERROR);
         }
     }
 
@@ -49,7 +50,7 @@ public class FileValidator {
     private static void validateFileExtension(String fileName, FileCategory fileCategory) {
         String fileExtension = fileName.substring(fileName.lastIndexOf(".")).toLowerCase();
         if (!fileCategory.getAllowedExtensions().contains(fileExtension)) {
-            throw new IllegalArgumentException("Invalid file extension for category: " + fileCategory.name());
+            throw new BusinessException(ErrorCode.FORMAT_NOT_PERMITTED_ERROR);
         }
     }
 
@@ -58,7 +59,7 @@ public class FileValidator {
      */
     private static void validateMimeType(String mimeType, FileCategory fileCategory) {
         if (!fileCategory.getAllowedMimeTypes().contains(mimeType)) {
-            throw new IllegalArgumentException("Invalid file type for category: " + fileCategory.name());
+            throw new BusinessException(ErrorCode.MIME_NOT_PERMITTED_ERROR);
         }
     }
 
@@ -67,7 +68,7 @@ public class FileValidator {
      */
     private static void validateFileSize(long fileSize) {
         if (fileSize > MAX_FILE_SIZE) {
-            throw new IllegalArgumentException("File size exceeds limit of 20MB.");
+            throw new BusinessException(ErrorCode.FILE_SIZE_EXCEED_ERROR);
         }
     }
 }

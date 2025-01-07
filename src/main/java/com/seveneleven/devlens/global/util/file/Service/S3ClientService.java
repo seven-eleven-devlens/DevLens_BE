@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import com.seveneleven.devlens.global.exception.BusinessException;
+import com.seveneleven.devlens.global.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -62,7 +64,7 @@ public class S3ClientService {
             return amazonS3.getUrl(bucket, s3Key).toString();
 
         } catch (IOException e) {
-            throw new RuntimeException("FAILED TO UPLOAD FILE TO S3", e);
+            throw new BusinessException(e.getMessage(), ErrorCode.S3_UPLOAD_FAIL_ERROR);
         }
     }
 

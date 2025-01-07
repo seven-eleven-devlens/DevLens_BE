@@ -1,8 +1,14 @@
-package com.seveneleven.devlens.global.util.file;
+package com.seveneleven.devlens.global.util.file.constant;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Set;
 
+@Getter
+@RequiredArgsConstructor
 public enum FileCategory {
     COMPANY_LOGO_IMAGE(
             Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"),
@@ -55,11 +61,6 @@ public enum FileCategory {
 
     private final Set<String> allowedExtensions;
     private final List<String> allowedMimeTypes;
-
-    FileCategory(Set<String> allowedExtensions, List<String> allowedMimeTypes) {
-        this.allowedExtensions = allowedExtensions;
-        this.allowedMimeTypes = allowedMimeTypes;
-    }
 
     public Set<String> getAllowedExtensions() {
         return allowedExtensions;
