@@ -50,7 +50,7 @@ class FileServiceTest {
         when(mockFile.getSize()).thenReturn(1024L);
 
         when(s3ClientService.generateUniqueFileName(originalFilename)).thenReturn(uniqueFileName);
-        when(s3ClientService.generateS3Key(anyLong(), anyString(), eq(uniqueFileName))).thenReturn(s3Key);
+        when(s3ClientService.generateS3Key(anyString(), anyLong(), eq(uniqueFileName))).thenReturn(s3Key);
         when(s3ClientService.uploadFile(mockFile, s3Key)).thenReturn(filePath);
 
         FileMetadata mockFileMetadata = FileMetadata.registerFile(
@@ -88,7 +88,7 @@ class FileServiceTest {
         when(mockFile.getSize()).thenReturn(1024L);
 
         when(s3ClientService.generateUniqueFileName(originalFilename)).thenReturn(uniqueFileName);
-        when(s3ClientService.generateS3Key(anyLong(), anyString(), eq(uniqueFileName))).thenReturn(s3Key);
+        when(s3ClientService.generateS3Key(anyString(), anyLong(), eq(uniqueFileName))).thenReturn(s3Key);
         when(s3ClientService.uploadFile(mockFile, s3Key)).thenThrow(new RuntimeException("S3 upload failed"));
 
         // When & Then
