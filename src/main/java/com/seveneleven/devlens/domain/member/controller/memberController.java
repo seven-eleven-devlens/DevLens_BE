@@ -8,8 +8,7 @@ import com.seveneleven.devlens.global.config.Annotation.AdminAuthorize;
 import com.seveneleven.devlens.global.config.Annotation.UserAuthorize;
 import com.seveneleven.devlens.global.config.JwtFilter;
 import com.seveneleven.devlens.global.config.TokenProvider;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,15 +20,12 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@NoArgsConstructor
+@AllArgsConstructor
 public class memberController {
 
-    @Autowired
-    TokenProvider tokenProvider;
-    @Autowired
-    AuthenticationManagerBuilder authenticationManagerBuilder;
-    @Autowired
-    MemberService memberService;
+    private final TokenProvider tokenProvider;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final MemberService memberService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(MemberJoinDto dto) {
