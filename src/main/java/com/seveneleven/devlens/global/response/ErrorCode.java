@@ -10,6 +10,12 @@ public enum ErrorCode {
 
     // 1000번대 코드 : 회원 관련
     UNAUTHORIZED(1000, HttpStatus.UNAUTHORIZED, "사용자 인증이 필요합니다."),
+    FORBIDDEN(1001, HttpStatus.FORBIDDEN, "사용 권한이 없습니다."),
+    NOT_FOUND_TOKEN(1002, HttpStatus.INTERNAL_SERVER_ERROR, "유효하지 않은 JWT 토큰입니다."),
+    EXPIRED_TOKEN(1003, HttpStatus.INTERNAL_SERVER_ERROR, "만료된 JWT 토큰입니다."),
+    JWT_FILTER_ERROR(1004, HttpStatus.INTERNAL_SERVER_ERROR, "필터 처리 중 예외가 발생했습니다."),
+
+
 
     // 2000번대 코드 : 프로젝트 관련
 

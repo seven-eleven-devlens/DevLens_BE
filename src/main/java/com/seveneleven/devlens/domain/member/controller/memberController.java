@@ -1,37 +1,66 @@
 package com.seveneleven.devlens.domain.member.controller;
 
 import com.seveneleven.devlens.domain.member.dto.MemberJoinDto;
+import com.seveneleven.devlens.domain.member.dto.TokenDto;
+import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.domain.member.service.MemberService;
 import com.seveneleven.devlens.global.config.Annotation.AdminAuthorize;
 import com.seveneleven.devlens.global.config.Annotation.UserAuthorize;
-import lombok.AllArgsConstructor;
+import com.seveneleven.devlens.global.config.JwtFilter;
+import com.seveneleven.devlens.global.config.TokenProvider;
+import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/view")
-@AllArgsConstructor
+@RequestMapping("/api")
+@NoArgsConstructor
 public class memberController {
 
-    private final MemberService memberService;
+    @Autowired
+    TokenProvider tokenProvider;
+    @Autowired
+    AuthenticationManagerBuilder authenticationManagerBuilder;
+    @Autowired
+    MemberService memberService;
 
-    @PostMapping("/login-process")
-    public String login(MemberJoinDto dto) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(MemberJoinDto dto) {
 
-        if (dto.getUserid() !=null && dto.getPw()!=null)
-            return "dashboard";
-        return "login";
-    }
+        Member member = memberService.getUserWithAuthorities(dto.getUserid()).get();
 
-    @GetMapping("/dashboard")
-    public String dashboard() {
-        return "dashboard";
+        if (ObjectUtils.isEmpty(member)) {
+
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(dto.getUserid(), dto.getPw());
+
+            // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
+            Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+
+            // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
+            String jwt = tokenProvider.createToken(authentication);
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            // response header에 jwt token에 넣어줌
+            httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+            // tokenDto를 이용해 response body에도 넣어서 리턴
+            return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/join")
     public ResponseEntity<String> join(@RequestBody MemberJoinDto dto) {
         try {
-            memberService.join(dto.getUserid(), dto.getPw());
+            // memberService.join(dto.getUserid(), dto.getPw());
             return ResponseEntity.ok("join success");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

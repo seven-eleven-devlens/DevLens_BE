@@ -1,5 +1,6 @@
 package com.seveneleven.devlens.domain.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;
 import com.seveneleven.devlens.domain.member.constant.YN;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "member")
 public class Member extends BaseEntity {
 
@@ -22,7 +24,7 @@ public class Member extends BaseEntity {
     @Column(name = "id")
     private Long id; // 회원 ID
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", nullable = false, referencedColumnName = "id")
     private Company company; // 회사 ID (연관관계)
 
