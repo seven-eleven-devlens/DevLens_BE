@@ -23,7 +23,7 @@ public class CheckCompanyValidity {
     }
 
     /*
-        함수명 : checkDuplicatedCompany
+        함수명 : checkCompanyExistsOrDeactivated
         함수 목적 : 회사 존재여부 확인 및 비활성화 여부 확인
      */
     public void checkCompanyExistsOrDeactivated(Long id) {
