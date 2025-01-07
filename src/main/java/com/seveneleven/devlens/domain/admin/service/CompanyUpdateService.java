@@ -5,6 +5,7 @@ import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
 import com.seveneleven.devlens.domain.admin.db.CompanyRequestConverter;
 import com.seveneleven.devlens.domain.admin.db.CompanyResponseConverter;
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+import com.seveneleven.devlens.domain.admin.exception.CompanyDuplicatedException;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,10 +21,18 @@ public class CompanyUpdateService {
 
     @Transactional
     public CompanyDto.CompanyResponse updateCompany(Long id, CompanyDto.CompanyRequest companyRequest) {
-        //중복 및 존재 여부 확인
+        //비활성화 및 존재 여부 확인
         checkCompanyValidity.checkCompanyExistsOrDeactivated(id);
         //회사 isActive N으로 변경
         companyRepository.deactivateCompany(id);
+        try {
+            //중복 회사 등록 번호 확인
+            checkCompanyValidity.checkDuplicatedCompany(companyRequest.getBusinessRegistrationNumber());
+        }catch(CompanyDuplicatedException e){
+            //수정하려는 회사 정보가 중복된 회사이면 다시 활성화
+            companyRepository.activateCompany(id);
+            throw e;
+        }
         //신규 데이터로 회사 생성
         Company company = companyRequestConverter.toEntity(companyRequest);
         return companyResponseConverter.toDTO(companyRepository.save(company));
@@ -31,7 +40,7 @@ public class CompanyUpdateService {
 
     @Transactional
     public void deleteCompany(Long id) {
-        //중복 및 존재 여부 확인
+        //비활성화 및 존재 여부 확인
         checkCompanyValidity.checkCompanyExistsOrDeactivated(id);
         //회사 isActive N으로 변경
         companyRepository.deactivateCompany(id);

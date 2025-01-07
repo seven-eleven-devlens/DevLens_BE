@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CompanyReadService {
     private final CompanyRepository companyRepository;
     private final CompanyResponseConverter companyResponseConverter;
-    private final int  pageSize = 20;
+    private final int pageSize = 20;
     /*
         함수명 : getCompanyDto
         함수 목적 : 회사 상세조회
