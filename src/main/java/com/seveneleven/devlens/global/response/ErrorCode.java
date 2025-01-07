@@ -12,7 +12,10 @@ public enum ErrorCode {
     UNAUTHORIZED(1000, HttpStatus.UNAUTHORIZED, "사용자 인증이 필요합니다."),
 
     // 2000번대 코드 : 프로젝트 관련
-
+    NOT_FOUND_PROJECT_STEP(2501, HttpStatus.NOT_FOUND, "해당 프로젝트 단게를 찾을 수 없습니다."),
+    NOT_FOUND_MEMBER(2502, HttpStatus.NOT_FOUND, "해당 회원을 찾을 수 없습니다."),
+    NOT_FOUND_POST(2503, HttpStatus.NOT_FOUND, "해당 게시물을 찾을 수 없습니다."),
+    NOT_AUTHORIZED_TO_DELETE(2504, HttpStatus.FORBIDDEN, "작성자만 삭제할 수 있습니다."),
 
     // 3000번대 코드 : DB 관련
 
