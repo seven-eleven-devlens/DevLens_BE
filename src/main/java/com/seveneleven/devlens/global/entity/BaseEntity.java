@@ -15,8 +15,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class BaseEntity extends BaseTimeEntity {
 
     @CreatedBy
-    private String createdBy; // 생성자
+    private Long createdBy; // 생성자
 
     @LastModifiedBy
-    private String updatedBy; // 수정자
+    private Long updatedBy; // 수정자
 }
