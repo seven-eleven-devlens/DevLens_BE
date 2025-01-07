@@ -12,11 +12,6 @@ public class CompanyExceptionHandler {
         return APIResponse.fail(e.getErrorCode(), e.getMessage());
     }
 
-    @ExceptionHandler(value = {CompanyAlreadyDeactivatedException.class})
-    public APIResponse<CompanyDto.CompanyResponse> handleCompanyAlreadyDeactivatedException(CompanyAlreadyDeactivatedException e) {
-        return APIResponse.fail(e.getErrorCode(), e.getMessage());
-    }
-
     @ExceptionHandler(value = {CompanyNotFoundException.class})
     public APIResponse<Exception> handleCompanyNotFoundException(CompanyNotFoundException e) {
         return APIResponse.fail(e.getErrorCode(), e.getMessage());

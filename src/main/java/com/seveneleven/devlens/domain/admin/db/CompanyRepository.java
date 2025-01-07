@@ -20,4 +20,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Modifying
     @Query("UPDATE Company c SET c.isActive = 'N' WHERE c.id = :id")
     void deactivateCompany(@Param("id") Long id);
+    @Transactional
+    @Modifying
+    @Query("UPDATE Company c SET c.isActive = 'Y' WHERE c.id = :id")
+    void activateCompany(@Param("id") Long id);
 }
