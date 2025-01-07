@@ -5,10 +5,11 @@ import com.seveneleven.devlens.domain.member.constant.Role;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -59,7 +60,6 @@ public class Member extends BaseEntity {
 
     @Column(name = "position_id")
     private Long positionId; // 직책
-
 
     // 생성 메서드
     public static Member createMember(String loginId, String password, Company companyId, Role role, String name, String email,
