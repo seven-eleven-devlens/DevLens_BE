@@ -14,7 +14,9 @@ public class CompanyRequestConverter implements EntityConverter<CompanyDto.Compa
         함수 목적 : entity 를 request 로 변환
      */
     @Override
-    public CompanyDto.CompanyRequest toDTO(Company company) {
+    public CompanyDto.CompanyRequest toDTO(
+            Company company
+    ) {
         return new CompanyDto.CompanyRequest(
                 company.getId(),
                 company.getCompanyName(),
@@ -32,7 +34,9 @@ public class CompanyRequestConverter implements EntityConverter<CompanyDto.Compa
         함수 목적 : request 를 entity 로 변환
      */
     @Override
-    public Company toEntity(CompanyDto.CompanyRequest companyResponse) {
+    public Company toEntity(
+            CompanyDto.CompanyRequest companyResponse
+    ) {
         return new Company(
                 companyResponse.getId(),
                 companyResponse.getCompanyName(),

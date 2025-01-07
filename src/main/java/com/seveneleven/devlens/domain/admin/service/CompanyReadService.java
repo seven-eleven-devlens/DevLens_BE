@@ -4,10 +4,9 @@ import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
 import com.seveneleven.devlens.domain.admin.db.CompanyResponseConverter;
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
+import com.seveneleven.devlens.domain.admin.exception.CompanyNotFoundException;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;
-import com.seveneleven.devlens.global.response.ErrorCode;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,22 +20,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class CompanyReadService {
     private final CompanyRepository companyRepository;
     private final CompanyResponseConverter companyResponseConverter;
-    private final int  pageSize = 20;
+    private final int pageSize = 20;
     /*
         함수명 : getCompanyDto
         함수 목적 : 회사 상세조회
      */
     @Transactional(readOnly = true)
-    public CompanyDto.CompanyResponse getCompanyResponse(Long id) {
-        return companyRepository.findById(id)
-                .map(company -> {
-                    if (company.getIsActive() == YN.N) {
-                        throw new EntityNotFoundException(ErrorCode.COMPANY_IS_DEACTIVATED.getMessage());
-                    }
-                    return company;
-                })
+    public CompanyDto.CompanyResponse getCompanyResponse(
+            Long id
+    ) {
+        return companyRepository.findByIdAndIsActive(id,YN.Y)
                 .map(companyResponseConverter::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMPANY_IS_NOT_FOUND.getMessage()));
+                .orElseThrow(CompanyNotFoundException::new);
     }
 
     /*
@@ -44,11 +39,13 @@ public class CompanyReadService {
         함수 목적 : 회사 목록조회
     */
     @Transactional(readOnly = true)
-    public PaginatedResponse<CompanyDto.CompanyResponse> getListOfCompanies(int page) {
+    public PaginatedResponse<CompanyDto.CompanyResponse> getListOfCompanies(
+            Integer page
+    ) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("companyName").descending());
         Page<Company> companyPage = companyRepository.findByIsActive(pageable,YN.Y);
         if(companyPage.getContent().isEmpty()) {
-            throw new EntityNotFoundException(ErrorCode.COMPANY_IS_NOT_FOUND.getMessage());
+            throw new CompanyNotFoundException();
         }
         return PaginatedResponse.createPaginatedResponse(companyPage.map(companyResponseConverter::toDTO));
     }

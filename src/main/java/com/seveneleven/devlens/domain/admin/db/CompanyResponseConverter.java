@@ -14,7 +14,9 @@ public class CompanyResponseConverter implements EntityConverter<CompanyDto.Comp
         함수 목적 : response 를 DTO 로 변환
      */
     @Override
-    public CompanyDto.CompanyResponse toDTO(Company company) {
+    public CompanyDto.CompanyResponse toDTO(
+            Company company
+    ) {
         return new CompanyDto.CompanyResponse(
                 company.getId(),
                 company.getCompanyName(),
@@ -32,7 +34,9 @@ public class CompanyResponseConverter implements EntityConverter<CompanyDto.Comp
         함수 목적 : Dto 를 Entity 로 변환
      */
     @Override
-    public Company toEntity(CompanyDto.CompanyResponse companyResponse) {
+    public Company toEntity(
+            CompanyDto.CompanyResponse companyResponse
+    ) {
         return new Company(
                 companyResponse.getId(),
                 companyResponse.getCompanyName(),
