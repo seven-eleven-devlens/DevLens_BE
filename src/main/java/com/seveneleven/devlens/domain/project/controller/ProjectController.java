@@ -4,6 +4,7 @@ import com.seveneleven.devlens.domain.project.dto.GetProjectDetail;
 import com.seveneleven.devlens.domain.project.dto.GetProjectStep;
 import com.seveneleven.devlens.global.entity.YesNo;
 import com.seveneleven.devlens.global.response.APIResponse;
+import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,7 +65,7 @@ public class ProjectController implements ProjectDocs {
                 new PageImpl<>(checklistApplications)      // checklistApplicationList
         );
 
-        return APIResponse.success(response);
+        return APIResponse.success(SuccessCode.OK, response);
     }
 
     /**
@@ -114,6 +115,6 @@ public class ProjectController implements ProjectDocs {
                 )
         );
 
-        return APIResponse.success(new GetProjectStep.Response(projectId,steps));
+        return APIResponse.success(SuccessCode.OK, new GetProjectStep.Response(projectId,steps));
     }
 }
