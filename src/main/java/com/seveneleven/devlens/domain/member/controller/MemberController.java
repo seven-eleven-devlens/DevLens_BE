@@ -18,10 +18,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
+/*
+* security, jwt 테스트 확인을 위해 임시로 만든 controller
+*
+* */
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
-public class memberController {
+public class MemberController {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
