@@ -63,7 +63,7 @@ public class FileService {
             FileMetadata savedMetadata = fileMetadataRepository.save(fileMetadata);
 
             //DTO로 변환 후 반환
-            return APIResponse.create(FileMetadataDto.toDto(savedMetadata));
+            return APIResponse.success(FileMetadataDto.toDto(savedMetadata));
 
         } catch (Exception e){
             //저장 실패시 S3에서 삭제
