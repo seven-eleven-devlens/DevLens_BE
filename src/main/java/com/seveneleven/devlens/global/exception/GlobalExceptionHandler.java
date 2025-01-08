@@ -2,7 +2,6 @@ package com.seveneleven.devlens.global.exception;
 
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.ErrorCode;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

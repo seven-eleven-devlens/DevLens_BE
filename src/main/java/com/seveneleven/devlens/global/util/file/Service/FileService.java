@@ -25,13 +25,12 @@ public class FileService {
     /**
      * 1. 파일 업로드
      * @param file 업로드할 파일
-     * @param uploaderId 업로더 id
      * @param fileCategory 파일 카테고리
      * @param referenceId 파일 참조 ID
      * @return FileMetadataDto 업로드한 파일 메타데이터
      */
     @Transactional
-    public APIResponse uploadFile(MultipartFile file, Long uploaderId, String fileCategory, Long referenceId) throws Exception {
+    public APIResponse uploadFile(MultipartFile file, String fileCategory, Long referenceId) throws Exception {
 
         //1. 파일 검증
         FileValidator.validateFile(file, fileCategory);
@@ -43,7 +42,7 @@ public class FileService {
         //UUID 생성
         String uniqueFileName = s3ClientService.generateUniqueFileName(originalFilename);
         //S3 키 생성
-        String s3Key = s3ClientService.generateS3Key(uploaderId, fileCategory, uniqueFileName);
+        String s3Key = s3ClientService.generateS3Key(fileCategory, referenceId, uniqueFileName);
 
         //3. S3 업로드 및 FileMetadata 데이터 생성
         String filePath = null;
@@ -64,12 +63,11 @@ public class FileService {
             FileMetadata savedMetadata = fileMetadataRepository.save(fileMetadata);
 
             //DTO로 변환 후 반환
-            return APIResponse.create(FileMetadataDto.toDto(savedMetadata));
+            return APIResponse.success(FileMetadataDto.toDto(savedMetadata));
 
         } catch (Exception e){
             //저장 실패시 S3에서 삭제
             s3ClientService.deleteFile(s3Key);
-
             throw new BusinessException(e.getMessage(), ErrorCode.FILE_UPLOAD_FAIL_ERROR);
         }
     }
