@@ -14,14 +14,13 @@ import java.util.Optional;
 public class MemberService {
     @Autowired
     PasswordEncoder passwordEncoder;
-    @Autowired
-    MemberRepository repository;
+
     @Autowired
     MemberRepository memberRepository;
 
 
     public Optional<Member> findOne(String loginId) {
-        return repository.findByLoginId(loginId);
+        return memberRepository.findByLoginId(loginId);
     }
 
 //    public Long join(String userid, String pw) {
