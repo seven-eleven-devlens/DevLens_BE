@@ -21,7 +21,8 @@ public class CompanyDto {
         private YN isActive;
 
         public CompanyRequest(
-                Long id, String companyName,
+                Long id,
+                String companyName,
                 String representativeName,
                 String representativeContact,
                 String representativeEmail,

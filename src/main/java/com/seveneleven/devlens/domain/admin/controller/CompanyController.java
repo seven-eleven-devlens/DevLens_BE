@@ -36,11 +36,11 @@ public class CompanyController {
         함수명 : readCompany
         목적 : 회사 상세 정보 조회
      */
-    @GetMapping("/list/{companyId}")
+    @GetMapping("/list/{id}")
     public APIResponse<CompanyDto.CompanyResponse> readCompany(
-            @PathVariable Long companyId
+            @PathVariable Long id
     ) {
-        var company = companyReadService.getCompanyResponse(companyId);
+        var company = companyReadService.getCompanyResponse(id);
         return APIResponse.success(company);
     }
 

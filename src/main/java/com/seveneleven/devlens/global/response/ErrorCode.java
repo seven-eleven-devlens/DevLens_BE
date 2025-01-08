@@ -14,8 +14,8 @@ public enum ErrorCode {
     COMPANY_IS_DEACTIVATED(1052, HttpStatus.BAD_REQUEST,"비활성화된 회사 정보입니다."),
     COMPANY_IS_NOT_FOUND(1053,HttpStatus.BAD_REQUEST,"회사 정보를 찾을 수 없습니다."),
     // 2000번대 코드 : 프로젝트 관련
-
-
+    PROJECT_NOT_FOUND(2000,HttpStatus.BAD_REQUEST,"프로젝트 정보를 찾을 수 없습니다."),
+    PROJECT_DUPLICATED_NAME(2001,HttpStatus.BAD_REQUEST, "이미 등록된 프로젝트명입니다."),
     // 3000번대 코드 : DB 관련
 
 
