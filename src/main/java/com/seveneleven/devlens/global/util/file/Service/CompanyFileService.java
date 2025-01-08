@@ -5,7 +5,10 @@ import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.global.exception.BusinessException;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.ErrorCode;
+import com.seveneleven.devlens.global.util.file.constant.FileCategory;
 import com.seveneleven.devlens.global.util.file.dto.FileMetadataDto;
+import com.seveneleven.devlens.global.util.file.entity.FileMetadata;
+import com.seveneleven.devlens.global.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CompanyFileService {
     private final FileService fileService;
     private final CompanyRepository companyRepository;
+    private final FileMetadataRepository fileMetadataRepository;
 
     /**
      * 1. 회사 로고 이미지 등록
@@ -43,5 +47,24 @@ public class CompanyFileService {
 
         //5. 반환
         return uploadResponse;
+    }
+
+    /**
+     * 2. 회사 로고 이미지 조회
+     * @auth admin, super(해당 회사 대표회원)
+     * @param companyId 해당 회사 id
+     * @return APIResponse S3에 저장된 파일의 메타데이터 response
+     */
+    @Transactional
+    public APIResponse getLogoImage(Long companyId) throws Exception{
+        FileMetadata compLogoData = fileMetadataRepository.findByCategoryAndReferenceId(FileCategory.COMPANY_LOGO_IMAGE,
+                companyId).orElse(null);
+
+        if(compLogoData != null) {
+            FileMetadataDto dto = FileMetadataDto.toDto(compLogoData);
+            return APIResponse.success(dto);
+        } else{
+            return APIResponse.success();
+        }
     }
 }

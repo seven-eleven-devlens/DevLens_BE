@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +50,7 @@ public class FileService {
 
         //3. S3 업로드 및 FileMetadata 데이터 생성
         String filePath = null;
-        try{
+        try {
             //S3 업로드
             filePath = s3ClientService.uploadFile(file, s3Key);
 
@@ -58,7 +61,7 @@ public class FileService {
             FileMetadata fileMetadata = FileMetadata.registerFile(categoryEnum, referenceId,
                     file.getOriginalFilename(), uniqueFileName, file.getContentType(),
                     file.getOriginalFilename().substring(originalFilename.lastIndexOf('.') + 1),
-                    file.getSize()/KILOBYTE_CONVERSION_CONSTANT, filePath);
+                    file.getSize() / KILOBYTE_CONVERSION_CONSTANT, filePath);
 
             //FileMetaData 저장
             FileMetadata savedMetadata = fileMetadataRepository.save(fileMetadata);
@@ -66,11 +69,34 @@ public class FileService {
             //DTO로 변환 후 반환
             return APIResponse.success(SuccessCode.OK, FileMetadataDto.toDto(savedMetadata));
 
-        } catch (Exception e){
+        } catch (Exception e) {
             //저장 실패시 S3에서 삭제
             s3ClientService.deleteFile(s3Key);
             throw new BusinessException(e.getMessage(), ErrorCode.FILE_UPLOAD_FAIL_ERROR);
         }
     }
+
+    /**
+     * 3. 파일 조회(리스트)
+     * @param fileCategory 파일 카테고리
+     * @param referenceId 파일 참조 ID
+     * @return List<FileMetadataDto> 파일 메타데이터 리스트
+     */
+    public APIResponse getFiles(String fileCategory, Long referenceId) {
+
+        FileCategory categoryEnum = FileCategory.valueOf(fileCategory);
+
+        List<FileMetadata> fileMetadataEntities = fileMetadataRepository.findAllByCategoryAndReferenceId(categoryEnum, referenceId);
+
+        List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
+        for (FileMetadata fileMetadata : fileMetadataEntities) {
+            FileMetadataDto dto = FileMetadataDto.toDto(fileMetadata);
+            fileMetadataDtos.add(dto);
+        }
+
+        return APIResponse.success(fileMetadataDtos);
+    }
+
+
 
 }
