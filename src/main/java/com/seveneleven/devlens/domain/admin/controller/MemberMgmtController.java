@@ -7,11 +7,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
-public class MemberController {
+public class MemberMgmtController {
+
+    // 관리자 권한만 접근 가능하도록 설정
+
 
     // 회원 목록 조회
     @GetMapping("/member")
     public ResponseEntity<?> memberList() {
+
+
+
+
 
         return null;
     }
@@ -52,3 +59,5 @@ public class MemberController {
     }
 
 }
+
+
