@@ -82,9 +82,9 @@ public class Member extends BaseEntity {
     }
 
     // 업데이트 메서드
-    public void updateMember(String password, String phoneNumber, Company company, Long departmentId, Long positionId, YN profileImageExists) {
+    public void updateMember(String password, String phoneNumber, Company company, Long departmentId, Long positionId, YN profileImageExists, PasswordEncoder pwdEncoder) {
         this.company      = company;
-        this.password     = password;
+        this.password     = pwdEncoder.encode(password);
         this.phoneNumber  = phoneNumber;
         this.departmentId = departmentId;
         this.positionId   = positionId;
