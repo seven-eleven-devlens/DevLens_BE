@@ -1,48 +1,40 @@
 package com.seveneleven.devlens.domain.project.controller;
 
 import com.seveneleven.devlens.domain.project.dto.*;
+import com.seveneleven.devlens.domain.project.service.ProjectStepService;
 import com.seveneleven.devlens.global.entity.YesNo;
 import com.seveneleven.devlens.global.response.APIResponse;
+import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/project/checklist")
 public class ProjectChecklistController implements ProjectChecklistDocs {
 
+    private final ProjectStepService projectStepService;
+
     /**
-     * 함수명 : getProjectChecklist
+     * 함수명 : getProjectStepAndChecklist
      * 해당 단계의 체크리스트 목록을 반환하는 함수
      */
+    @GetMapping("/{projectId}")
+    public APIResponse<GetProjectStep.Response> getProjectStepAndChecklist(
+            @PathVariable Long projectId
+    ) {
+        return APIResponse.success(SuccessCode.OK, projectStepService.getProjectStep(projectId));
+    }
+
     @GetMapping("/{stepId}")
     public APIResponse<GetProjectChecklist.Response> getProjectChecklist(
             @PathVariable Long stepId
     ) {
-        List<GetProjectChecklist.projectChecklist> checklists = List.of(
-                new GetProjectChecklist.projectChecklist(
-                        1L,
-                        "Checklist Item A",
-                        YesNo.YES,
-                        LocalDateTime.of(2023, 1, 1, 12, 0)
-                ),
-                new GetProjectChecklist.projectChecklist(
-                        2L,
-                        "Checklist Item B",
-                        YesNo.NO,
-                        LocalDateTime.of(2023, 2, 1, 14, 30)
-                )
-        );
 
-        GetProjectChecklist.Response response = new GetProjectChecklist.Response(
-                stepId,
-                checklists
-        );
 
-        return APIResponse.success(response);
+        return null;
     }
 
     /**
