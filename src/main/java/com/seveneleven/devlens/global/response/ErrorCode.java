@@ -16,6 +16,7 @@ public enum ErrorCode {
     // 2000번대 코드 : 프로젝트 관련
     PROJECT_NOT_FOUND(2000,HttpStatus.BAD_REQUEST,"프로젝트 정보를 찾을 수 없습니다."),
     PROJECT_DUPLICATED_NAME(2001,HttpStatus.BAD_REQUEST, "이미 등록된 프로젝트명입니다."),
+    PROJECT_HISTORY_NOT_FOUND_EXCEPTION(2002,HttpStatus.BAD_REQUEST,"이력을 찾을 수 없습니다."),
     // 3000번대 코드 : DB 관련
 
 
