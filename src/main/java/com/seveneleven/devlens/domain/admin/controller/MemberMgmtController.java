@@ -17,7 +17,7 @@ public class MemberMgmtController {
     @GetMapping("/member")
     public ResponseEntity<?> memberList() {
 
-
+        // 관리자 체크
 
 
 
