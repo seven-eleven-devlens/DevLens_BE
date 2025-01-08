@@ -89,6 +89,6 @@ public class CompanyController {
         companyUpdateService.deleteCompany(id);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode .DELETED));
+                .body(APIResponse.success(SuccessCode.DELETED));
     }
 }
