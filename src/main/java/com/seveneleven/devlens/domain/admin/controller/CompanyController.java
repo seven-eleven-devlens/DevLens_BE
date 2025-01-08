@@ -32,8 +32,8 @@ public class CompanyController {
     ) {
         var company = companyCreateService.createCompany(companyRequest);
         return ResponseEntity
-                .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(company));
+                .status(SuccessCode.CREATED.getStatus())
+                .body(APIResponse.success(SuccessCode.CREATED, company));
     }
 
     /*
@@ -47,7 +47,7 @@ public class CompanyController {
         var company = companyReadService.getCompanyResponse(companyId);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(company));
+                .body(APIResponse.success(SuccessCode.OK, company));
     }
 
     /*
@@ -61,7 +61,7 @@ public class CompanyController {
         PaginatedResponse<CompanyDto.CompanyResponse> response = companyReadService.getListOfCompanies(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(response));
+                .body(APIResponse.success(SuccessCode.OK, response));
     }
 
     /*
@@ -74,8 +74,8 @@ public class CompanyController {
             @RequestBody CompanyDto.CompanyRequest companyRequest
     ) {
         return ResponseEntity
-                .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(companyUpdateService.updateCompany(id, companyRequest)));
+                .status(SuccessCode.UPDATED.getStatus())
+                .body(APIResponse.success(SuccessCode.UPDATED, companyUpdateService.updateCompany(id, companyRequest)));
     }
 
     /*
@@ -88,7 +88,7 @@ public class CompanyController {
     ) {
         companyUpdateService.deleteCompany(id);
         return ResponseEntity
-                .status(SuccessCode.OK.getStatus())
+                .status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
 }
