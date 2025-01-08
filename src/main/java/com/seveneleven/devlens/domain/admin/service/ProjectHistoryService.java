@@ -46,8 +46,16 @@ public class ProjectHistoryService {
         projectHistoryRepository.save(projectHistory);
     }
 
+    public ProjectHistoryDto.ProjectHistoryResponse getProjectHistory(
+            Long id
+    ) {
+        return projectHistoryRepository.findById(id)
+                .map(projectHistoryConverter::toDTO)
+                .orElseThrow(ProjectNotFoundException::new);
+    }
+
     public PaginatedResponse<ProjectHistoryDto.ProjectHistoryResponse> getListOfProjectHistory(
-            Integer page, Integer id
+            Integer page
     ) {
         Pageable pageable = PageRequest.of(page, pageSize);
         Page<ProjectHistory> projectHistories = projectHistoryRepository.findAll(pageable);

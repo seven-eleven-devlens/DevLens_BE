@@ -1,12 +1,15 @@
 package com.seveneleven.devlens.domain.admin.dto;
 
 import com.seveneleven.devlens.global.entity.YesNo;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectHistoryDto {
+    @Getter
     public static class ProjectHistoryResponse {
         private Long id;
         private String projectName;
@@ -22,7 +25,6 @@ public class ProjectHistoryDto {
         private LocalDateTime startDate;
         private LocalDateTime plannedEndDate;
         private LocalDateTime endDate;
-
         public ProjectHistoryResponse(
                 Long id,
                 String projectName,

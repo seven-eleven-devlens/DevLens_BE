@@ -43,8 +43,8 @@ public enum ErrorCode {
 
 
     // 10000 : 알 수 없는 예외
-    UNKNOWN_ERROR(10000, HttpStatus.BAD_REQUEST, "알 수 없는 예외입니다,");
-
+    UNKNOWN_ERROR(10000, HttpStatus.BAD_REQUEST, "알 수 없는 예외입니다,"),
+    ENTITY_NOT_FOUND(10001, HttpStatus.BAD_REQUEST,"정보를 찾을 수 없습니다");
     private final Integer code;
     private final HttpStatus status;
     private final String message;
