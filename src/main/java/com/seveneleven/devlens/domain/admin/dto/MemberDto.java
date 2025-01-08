@@ -6,6 +6,7 @@ import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Member;
 import lombok.Getter;
 import lombok.Setter;
+import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 
@@ -28,13 +29,17 @@ public class MemberDto {
 
 
     // **Member로 변환하는 메서드**
-//    private static final ModelMapper modelMapper = new ModelMapper();
-//
-//    public Member toEntity() {
-//        modelMapper.getConfiguration()
-//                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
-//                .setFieldMatchingEnabled(true);
-//        return modelMapper.map(this, Member.class);
-//    }
+    private static final ModelMapper modelMapper = new ModelMapper();
+
+    public Member toEntity() {
+        modelMapper.getConfiguration()
+                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
+                .setFieldMatchingEnabled(true);
+        return modelMapper.map(this, Member.class);
+    }
+
+    public static MemberDto fromEntity(Member member) {
+        return modelMapper.map(member, MemberDto.class);
+    }
 }
 
