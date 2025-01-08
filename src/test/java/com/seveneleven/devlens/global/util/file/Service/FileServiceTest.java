@@ -3,8 +3,6 @@ package com.seveneleven.devlens.global.util.file.Service;
 import com.seveneleven.devlens.global.exception.BusinessException;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.ErrorCode;
-import com.seveneleven.devlens.global.util.file.Service.FileService;
-import com.seveneleven.devlens.global.util.file.Service.S3ClientService;
 import com.seveneleven.devlens.global.util.file.constant.FileCategory;
 import com.seveneleven.devlens.global.util.file.entity.FileMetadata;
 import com.seveneleven.devlens.global.util.file.repository.FileMetadataRepository;
@@ -15,8 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -54,7 +50,7 @@ class FileServiceTest {
         when(mockFile.getSize()).thenReturn(1024L);
 
         when(s3ClientService.generateUniqueFileName(originalFilename)).thenReturn(uniqueFileName);
-        when(s3ClientService.generateS3Key(anyLong(), anyString(), eq(uniqueFileName))).thenReturn(s3Key);
+        when(s3ClientService.generateS3Key(anyString(), anyLong(), eq(uniqueFileName))).thenReturn(s3Key);
         when(s3ClientService.uploadFile(mockFile, s3Key)).thenReturn(filePath);
 
         FileMetadata mockFileMetadata = FileMetadata.registerFile(
@@ -71,7 +67,7 @@ class FileServiceTest {
         when(fileMetadataRepository.save(any(FileMetadata.class))).thenReturn(mockFileMetadata);
 
         // When
-        APIResponse response = fileService.uploadFile(mockFile, 1L, FileCategory.USER_PROFILE_IMAGE.name(), 1L);
+        APIResponse response = fileService.uploadFile(mockFile, FileCategory.USER_PROFILE_IMAGE.name(), 1L);
 
         // Then
         assertNotNull(response);
@@ -92,12 +88,12 @@ class FileServiceTest {
         when(mockFile.getSize()).thenReturn(1024L);
 
         when(s3ClientService.generateUniqueFileName(originalFilename)).thenReturn(uniqueFileName);
-        when(s3ClientService.generateS3Key(anyLong(), anyString(), eq(uniqueFileName))).thenReturn(s3Key);
+        when(s3ClientService.generateS3Key(anyString(), anyLong(), eq(uniqueFileName))).thenReturn(s3Key);
         when(s3ClientService.uploadFile(mockFile, s3Key)).thenThrow(new RuntimeException("S3 upload failed"));
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class, () -> {
-            fileService.uploadFile(mockFile, 1L, FileCategory.USER_PROFILE_IMAGE.name(), 1L);
+            fileService.uploadFile(mockFile,  FileCategory.USER_PROFILE_IMAGE.name(), 1L);
         });
 
         assertEquals(ErrorCode.FILE_UPLOAD_FAIL_ERROR, exception.getErrorCode());
@@ -112,7 +108,7 @@ class FileServiceTest {
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class, () -> {
-            fileService.uploadFile(mockFile, 1L, "INVALID_CATEGORY", 1L);
+            fileService.uploadFile(mockFile, "INVALID_CATEGORY", 1L);
         });
 
         assertEquals(ErrorCode.INVALID_FILE_CATEGORY_ERROR, exception.getErrorCode());
@@ -129,7 +125,7 @@ class FileServiceTest {
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class, () -> {
-            fileService.uploadFile(mockFile, 1L, FileCategory.USER_PROFILE_IMAGE.name(), 1L);
+            fileService.uploadFile(mockFile,  FileCategory.USER_PROFILE_IMAGE.name(), 1L);
         });
 
         assertEquals(ErrorCode.FORMAT_NOT_PERMITTED_ERROR, exception.getErrorCode());
@@ -146,7 +142,7 @@ class FileServiceTest {
 
         // When & Then
         BusinessException exception = assertThrows(BusinessException.class, () -> {
-            fileService.uploadFile(mockFile, 1L, FileCategory.USER_PROFILE_IMAGE.name(), 1L);
+            fileService.uploadFile(mockFile, FileCategory.USER_PROFILE_IMAGE.name(), 1L);
         });
 
         assertEquals(ErrorCode.FILE_SIZE_EXCEED_ERROR, exception.getErrorCode());
