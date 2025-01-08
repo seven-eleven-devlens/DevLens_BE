@@ -6,6 +6,9 @@ import com.seveneleven.devlens.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,6 +22,9 @@ public class Company extends BaseEntity {
 
     @Column(name = "company_name", nullable = false, length = 255)
     private String companyName; // 회사명
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Department> departments = new ArrayList<>(); // 부서 리스트
 
     @Column(name = "representative_name", nullable = false, length = 100)
     private String representativeName; // 대표자명
@@ -41,13 +47,15 @@ public class Company extends BaseEntity {
 
     @Column(name = "representative_image_exists", nullable = false)
     @Enumerated(EnumType.STRING)
-    private YN representativeImageExists; // 대표 이미지 유무
+    private YN representativeImageExists = YN.N; // 대표 이미지 유무
 
     @Column(name = "is_active", nullable = false)
     @Enumerated(EnumType.STRING)
-    private YN isActive; // 사용 여부
+    private YN isActive = YN.Y; // 사용 여부
 
-    public Company(Long id, String companyName, String representativeName, String representativeContact, String representativeEmail, String address, BusinessType businessType, String businessRegistrationNumber, YN representativeImageExists, YN isActive) {
+    public Company(Long id, String companyName, String representativeName, String representativeContact, String representativeEmail,
+                   String address, BusinessType businessType, String businessRegistrationNumber, YN representativeImageExists, YN isActive
+    ) {
         this.id = id;
         this.companyName = companyName;
         this.representativeName = representativeName;
@@ -58,5 +66,56 @@ public class Company extends BaseEntity {
         this.businessRegistrationNumber = businessRegistrationNumber;
         this.representativeImageExists = representativeImageExists;
         this.isActive = isActive;
+    }
+    // 생성 메서드
+    public static Company createCompany( String companyName, String representativeName, String representativeContact, String representativeEmail,
+                                        String address, BusinessType businessType, String businessRegistrationNumber, YN representativeImageExists)
+    {
+        Company company = new Company();
+        company.address                    = address;
+        company.companyName                = companyName;
+        company.businessType               = businessType;
+        company.representativeName         = representativeName;
+        company.representativeEmail        = representativeEmail;
+        company.representativeContact      = representativeContact;
+        company.businessRegistrationNumber = businessRegistrationNumber;
+        company.representativeImageExists  = representativeImageExists != null ? representativeImageExists : YN.N;
+        return company;
+    }
+
+    // 수정 메서드
+    public void updateCompany(String representativeName, String representativeContact, String representativeEmail,
+                              String address, YN representativeImageExists) {
+        this.address = address;
+        this.representativeName    = representativeName;
+        this.representativeEmail   = representativeEmail;
+        this.representativeContact = representativeContact;
+        this.representativeImageExists = representativeImageExists;
+
+    }
+
+    // 삭제 메서드
+    public void deleteCompany() {
+        this.isActive = YN.N;
+    }
+
+    // 부서 추가 메서드
+    public void addDepartment(Department department) {
+        this.departments.add(department);
+        department.setCompany(this);
+    }
+
+    // 부서 삭제 메서드
+    public void removeDepartment(Department department) {
+        this.departments.remove(department);
+        department.setCompany(null);
+    }
+
+    //회사 대표 이미지 여부 변환 메서드
+    public void addRepresentativeImage(){
+        this.representativeImageExists = YN.Y;
+    }
+    public void removeRepresentativeImage(){
+        this.representativeImageExists = YN.N;
     }
 }
