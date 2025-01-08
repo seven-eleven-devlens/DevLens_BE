@@ -3,6 +3,7 @@ package com.seveneleven.devlens.global.util.file.Service;
 import com.seveneleven.devlens.global.exception.BusinessException;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.ErrorCode;
+import com.seveneleven.devlens.global.response.SuccessCode;
 import com.seveneleven.devlens.global.util.file.FileValidator;
 import com.seveneleven.devlens.global.util.file.constant.FileCategory;
 import com.seveneleven.devlens.global.util.file.dto.FileMetadataDto;
@@ -63,7 +64,7 @@ public class FileService {
             FileMetadata savedMetadata = fileMetadataRepository.save(fileMetadata);
 
             //DTO로 변환 후 반환
-            return APIResponse.success(FileMetadataDto.toDto(savedMetadata));
+            return APIResponse.success(SuccessCode.OK, FileMetadataDto.toDto(savedMetadata));
 
         } catch (Exception e){
             //저장 실패시 S3에서 삭제
