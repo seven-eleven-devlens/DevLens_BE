@@ -24,8 +24,8 @@ public class Post extends BaseEntity {
         status : 상태 (DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD)
         title : 제목
         content : 내용
-        hasFile : 파일 유무
-        hasLink : 링크 유무
+        hasFile : 파일 유무 (Y, N)
+        hasLink : 링크 유무 (Y, N)
         deadline : 마감일자
         registerIp : 등록자 IP
         modifierIp : 수정자 IP
@@ -60,10 +60,10 @@ public class Post extends BaseEntity {
     private String content;
 
     @Column(name = "has_file", nullable = false)
-    private YN hasFile;
+    private YN hasFile = YN.N;
 
     @Column(name = "has_link", nullable = false)
-    private YN hasLink;
+    private YN hasLink = YN.N;
 
     @Column(name = "deadline")
     private LocalDate deadline;
@@ -83,8 +83,6 @@ public class Post extends BaseEntity {
             PostStatus status,
             String title,
             String content,
-            YN hasFile,
-            YN hasLink,
             LocalDate deadline,
             String registerIp,
             String modifierIp
@@ -97,8 +95,6 @@ public class Post extends BaseEntity {
         post.status = status;
         post.title = title;
         post.content = content;
-        post.hasFile = hasFile;
-        post.hasLink = hasLink;
         post.deadline = deadline;
         post.registerIp = registerIp;
         post.modifierIp = modifierIp;
@@ -112,8 +108,6 @@ public class Post extends BaseEntity {
             PostStatus status,
             String title,
             String content,
-            YN hasFile,
-            YN hasLink,
             LocalDate deadline,
             String modifierIp
     ) {
@@ -122,10 +116,18 @@ public class Post extends BaseEntity {
         this.status = status;
         this.title = title;
         this.content = content;
-        this.hasFile = hasFile;
-        this.hasLink = hasLink;
         this.deadline = deadline;
         this.modifierIp = modifierIp;
+    }
+
+    // 파일 존재 여부 변경 메서드
+    public void changeHasFile(YN hasFile) {
+        this.hasFile = YN.Y;
+    }
+
+    // 링크 존재 여부 변경 메서드
+    public void changeHasLink(YN hasLink) {
+        this.hasLink = YN.Y;
     }
 
 }
