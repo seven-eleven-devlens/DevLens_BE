@@ -14,6 +14,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -64,8 +66,14 @@ public class MemberMgmtController {
                 .body(APIResponse.success(SuccessCode.OK, memberDto));
     }
 
-    // 계정 생성
-    @PostMapping("/member")
+    /**
+     *  단일 회원 계정을 생성합니다.
+     *
+     * @param memberDto 생성할 회원의 정보를 담은 요청 객체 (MemberDto.Request)
+     * @return 회원 상세 정보를 포함한 응답 객체(APIResponse<MemberDto.Response>).
+     *         HTTP 상태 코드는 201 CREATED로 반환됩니다.
+     */
+    @PostMapping("/members")
     public ResponseEntity<APIResponse<MemberDto.Response>> createMember(MemberDto.Request memberDto) {
 
         // 회원 생성 로직 호출
@@ -75,11 +83,29 @@ public class MemberMgmtController {
                 .body(APIResponse.success(SuccessCode.CREATED, createdMember));
     }
 
+    /**
+     *  다중 회원 계정을 생성합니다.
+     *
+     * @param memberDtos 생성할 회원의 정보를 담은 요청 객체 리스트 (MemberDto.Request)
+     * @return 회원 상세 정보를 포함한 응답 객체(APIResponse<List<MemberDto.Response>).
+     *         HTTP 상태 코드는 201 CREATED로 반환됩니다.
+     */
+    @PostMapping("/members/batch")
+    public ResponseEntity<APIResponse<List<MemberDto.Response>>> createMembers(@RequestBody List<MemberDto.Request> memberDtos) {
+        List<MemberDto.Response> createdMembers = memberMgmtService.createMembers(memberDtos);
+        return ResponseEntity.status(SuccessCode.CREATED.getStatus())
+                .body(APIResponse.success(SuccessCode.CREATED, createdMembers));
+    }
+
+
     // 계정 수정
     @PutMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<SuccessCode>>updateMember() {
+    public ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@RequestParam String id) {
 
-        return null;
+        MemberDto.Response updatedMember = memberMgmtService.updateMember(id);
+
+        return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
+                .body(APIResponse.success(SuccessCode.UPDATED, updatedMember));
     }
 
     // 계정 삭제

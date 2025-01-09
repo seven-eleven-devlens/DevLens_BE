@@ -18,6 +18,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 
 @Service
 @AllArgsConstructor
@@ -79,6 +81,58 @@ public class MemberMgmtService {
         // 6. DTO로 변환 후 반환
         return MemberDto.fromEntity(savedMember);
     }
+
+    public List<MemberDto.Response> createMembers(List<MemberDto.Request> memberDtos) {
+        // 1. 요청에 포함된 각 DTO 처리
+        List<Member> members = memberDtos.stream().map(memberDto -> {
+            // 1.1. 회사 조회
+            Company company = companyRepository.findById(memberDto.getCompanyId())
+                    .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+
+            // 1.2. 유효성 검증
+            validateMember(memberDto);
+
+            // 1.3. 비밀번호 인코딩
+            String encodedPassword = passwordEncoder.encode(memberDto.getPassword());
+
+            // 1.4. Member 엔티티 생성
+            return Member.createMember(
+                    memberDto.getLoginId(),
+                    encodedPassword,
+                    company,
+                    memberDto.getRole(),
+                    memberDto.getName(),
+                    memberDto.getEmail(),
+                    memberDto.getBirthDate(),
+                    memberDto.getPhoneNumber(),
+                    memberDto.getDepartmentId(),
+                    memberDto.getPositionId()
+            );
+        }).toList();
+
+        // 2. 일괄 저장
+        List<Member> savedMembers = memberRepository.saveAll(members);
+
+        // 3. 저장된 엔티티를 DTO로 변환 후 반환
+        return savedMembers.stream()
+                .map(MemberDto::fromEntity)
+                .toList();
+    }
+
+
+    public MemberDto.Response updateMember(String id) {
+
+        Member member = memberRepository.findByLoginId(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        return null;
+
+    }
+
+
+
+
+
 
     // 계정 생성 검증
     private void validateMember(MemberDto.Request memberDto) {
