@@ -22,7 +22,7 @@ public class CheckResult extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "check_request_id", nullable = false)
-    private CheckRequest checkRequestId; // 체크 요청 ID
+    private CheckRequest checkRequest; // 체크 요청 ID
 
     @Enumerated(EnumType.STRING)
     private approvalStatus approvalStatus; // 승인 여부(결과)
