@@ -22,8 +22,9 @@ public enum ErrorCode {
     COMPANY_IS_NOT_FOUND(1053,HttpStatus.BAD_REQUEST,"회사 정보를 찾을 수 없습니다."),
 
     // 2000번대 코드 : 프로젝트 관련
-
-
+    PROJECT_NOT_FOUND(2000,HttpStatus.BAD_REQUEST,"프로젝트 정보를 찾을 수 없습니다."),
+    PROJECT_DUPLICATED_NAME(2001,HttpStatus.BAD_REQUEST, "이미 등록된 프로젝트명입니다."),
+    PROJECT_HISTORY_NOT_FOUND_EXCEPTION(2002,HttpStatus.BAD_REQUEST,"프로젝트 이력을 찾을 수 없습니다."),
     // 3000번대 코드 : DB 관련
 
 
@@ -42,8 +43,8 @@ public enum ErrorCode {
 
 
     // 10000 : 알 수 없는 예외
-    UNKNOWN_ERROR(10000, HttpStatus.BAD_REQUEST, "알 수 없는 예외입니다,");
-
+    UNKNOWN_ERROR(10000, HttpStatus.BAD_REQUEST, "알 수 없는 예외입니다,"),
+    ENTITY_NOT_FOUND(10001, HttpStatus.BAD_REQUEST,"정보를 찾을 수 없습니다");
     private final Integer code;
     private final HttpStatus status;
     private final String message;
