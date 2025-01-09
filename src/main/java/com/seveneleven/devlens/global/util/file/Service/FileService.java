@@ -77,10 +77,10 @@ public class FileService {
     }
 
     /**
-     * 3. 파일 조회(리스트)
+     * 2. 파일 조회(리스트)
      * @param fileCategory 파일 카테고리
      * @param referenceId 파일 참조 ID
-     * @return List<FileMetadataDto> 파일 메타데이터 리스트
+     * @return APIResponse 파일 메타데이터 목록을 담은 응답 객체
      */
     public APIResponse getFiles(String fileCategory, Long referenceId) {
 
@@ -94,8 +94,10 @@ public class FileService {
             fileMetadataDtos.add(dto);
         }
 
-        return APIResponse.success(fileMetadataDtos);
+        return APIResponse.success(SuccessCode.OK, fileMetadataDtos);
     }
+
+
 
 
 

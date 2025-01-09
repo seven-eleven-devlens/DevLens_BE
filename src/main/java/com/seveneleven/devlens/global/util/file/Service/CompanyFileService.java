@@ -5,6 +5,7 @@ import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.global.exception.BusinessException;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.ErrorCode;
+import com.seveneleven.devlens.global.response.SuccessCode;
 import com.seveneleven.devlens.global.util.file.constant.FileCategory;
 import com.seveneleven.devlens.global.util.file.dto.FileMetadataDto;
 import com.seveneleven.devlens.global.util.file.entity.FileMetadata;
@@ -62,9 +63,11 @@ public class CompanyFileService {
 
         if(compLogoData != null) {
             FileMetadataDto dto = FileMetadataDto.toDto(compLogoData);
-            return APIResponse.success(dto);
+            //데이터가 있으면 데이터 보내고
+            return APIResponse.success(SuccessCode.OK, dto);
         } else{
-            return APIResponse.success();
+            //없으면 성공 코드만 보낸다.
+            return APIResponse.success(SuccessCode.OK);
         }
     }
 }
