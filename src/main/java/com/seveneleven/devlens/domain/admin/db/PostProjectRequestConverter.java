@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class PostProjectRequestConverter implements EntityConverter<PostProject.Request, Project> {
     private final CompanyRepository companyRepository;
     private final AdminMemberRepository adminMemberRepository;
-    private final ProjectTypeRepository projectTypeRepository;
+    private final AdminProjectTypeRepository projectTypeRepository;
 
     @Override
     public PostProject.Request toDTO(Project project) {

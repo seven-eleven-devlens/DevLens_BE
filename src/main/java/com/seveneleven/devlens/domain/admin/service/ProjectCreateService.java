@@ -1,9 +1,9 @@
 package com.seveneleven.devlens.domain.admin.service;
 
 import com.seveneleven.devlens.domain.admin.common.CheckProjectValidity;
+import com.seveneleven.devlens.domain.admin.db.AdminProjectRepository;
 import com.seveneleven.devlens.domain.admin.db.PostProjectRequestConverter;
 import com.seveneleven.devlens.domain.admin.db.PostProjectResponseConverter;
-import com.seveneleven.devlens.domain.admin.db.ProjectRepository;
 import com.seveneleven.devlens.domain.admin.dto.PostProject;
 import com.seveneleven.devlens.domain.project.entity.Project;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class ProjectCreateService {
     private final PostProjectRequestConverter postProjectRequestConverter;
     private final PostProjectResponseConverter postProjectResponseConverter;
-    private final ProjectRepository projectRepository;
+    private final AdminProjectRepository projectRepository;
     private final CheckProjectValidity checkProjectValidity;
     private final ProjectHistoryService projectHistoryService;
 

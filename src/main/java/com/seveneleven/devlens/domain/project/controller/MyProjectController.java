@@ -5,6 +5,8 @@ import com.seveneleven.devlens.domain.project.service.ProjectService;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +23,9 @@ public class MyProjectController implements MyProjectDocs {
      * 현재 진행중인 내 프로젝트와 우리 회사의 프로젝트를 반환하는 함수
      */
     @GetMapping("/list")
-    public APIResponse<GetProjectList.Response> getMyProject() {
-        return APIResponse.success(SuccessCode.OK, projectService.getProjectList());
+    public ResponseEntity<APIResponse<GetProjectList.Response>> getMyProject() {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, projectService.getProjectList()));
     }
 }

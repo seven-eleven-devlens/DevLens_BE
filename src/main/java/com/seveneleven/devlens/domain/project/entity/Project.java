@@ -88,7 +88,7 @@ public class Project extends BaseEntity {
         this.customer = customer;
         this.developer = developer;
         this.projectDescription = projectDescription;
-        this.projectTypeId = projectTypeId;
+        this.projectType = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
         this.hasImage = hasImage;
@@ -119,7 +119,7 @@ public class Project extends BaseEntity {
         this.customer = customer;
         this.developer = developer;
         this.projectDescription = projectDescription;
-        this.projectTypeId = projectTypeId;
+        this.projectType = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
         this.hasImage = hasImage;

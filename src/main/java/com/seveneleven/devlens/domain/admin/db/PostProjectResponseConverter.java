@@ -17,7 +17,7 @@ public class PostProjectResponseConverter implements EntityConverter<PostProject
                 project.getCustomer().getId(),
                 project.getDeveloper().getId(),
                 project.getProjectDescription(),
-                project.getProjectTypeId().getId(),
+                project.getProjectType().getId(),
                 project.getProjectStatusCode(),
                 project.getBnsManager().getId(),
                 project.getHasImage(),

@@ -89,7 +89,7 @@ public class ProjectHistory extends BaseEntity {
                 project.getDeveloper().getCompanyName(),
                 project.getProjectDescription(),
                 project.getProjectStatusCode().name(),
-                project.getProjectTypeId().getProjectTypeName(),
+                project.getProjectType().getProjectTypeName(),
                 project.getBnsManager().getId(),
                 project.getHasImage(),
                 project.getContractNumber(),
