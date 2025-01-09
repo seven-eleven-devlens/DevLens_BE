@@ -7,6 +7,8 @@ import com.seveneleven.devlens.global.entity.YesNo;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +28,11 @@ public class ProjectController implements ProjectDocs {
      * 프로젝트 상세 페이지를 반환하는 함수
      */
     @GetMapping("/{projectId}")
-    public APIResponse<GetProjectDetail.Response> getProjectDetail(
+    public ResponseEntity<APIResponse<GetProjectDetail.Response>> getProjectDetail(
             @PathVariable Long projectId
     ) {
-        return APIResponse.success(SuccessCode.OK, projectService.getProjectDetail(projectId));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, projectService.getProjectDetail(projectId)));
     }
 }

@@ -62,7 +62,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트를 수정하는 함수
      */
     @PutMapping("")
-    public APIResponse<PutProjectChecklist.Response> putProjectChecklist(
+    public ResponseEntity<APIResponse<PutProjectChecklist.Response>> putProjectChecklist(
             @RequestBody PutProjectChecklist.Request request
     ) {
         PutProjectChecklist.Response response = new PutProjectChecklist.Response(
@@ -72,7 +72,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.YES                                // isChecked
         );
 
-        return APIResponse.success(SuccessCode.UPDATED, response);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success(SuccessCode.UPDATED, response));
     }
 
     /**
@@ -80,7 +80,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트를 삭제하는 함수
      */
     @DeleteMapping("/{checklistId}")
-    public APIResponse<DeleteProjectChecklist.Response> deleteProjectChecklist(
+    public ResponseEntity<APIResponse<DeleteProjectChecklist.Response>> deleteProjectChecklist(
             @PathVariable Long checklistId
     ) {
         DeleteProjectChecklist.Response response = new DeleteProjectChecklist.Response(
@@ -88,7 +88,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.YES                                // checklistStatus
         );
 
-        return APIResponse.success(SuccessCode.DELETED, response);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success(SuccessCode.DELETED, response));
     }
 
     /**
@@ -96,7 +96,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트에 체크 승인 요청을 보내는 함수
      */
     @PostMapping("/application")
-    public APIResponse<PostProjectChecklistApplication.Response> postProjectChecklistApplication(
+    public ResponseEntity<APIResponse<PostProjectChecklistApplication.Response>> postProjectChecklistApplication(
             @RequestBody PostProjectChecklistApplication.Request request
     ) {
         PostProjectChecklistApplication.Response response = new PostProjectChecklistApplication.Response(
@@ -111,7 +111,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.NO                            // hasLink
         );
 
-        return APIResponse.success(SuccessCode.CREATED, response);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success(SuccessCode.CREATED, response));
     }
 
     /**
@@ -119,7 +119,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트 승인 요청을 승인 처리하는 함수
      */
     @PostMapping("/accept/{applicationId}")
-    public APIResponse<PostProjectChecklistAccept.Response> postProjectChecklistAccept(
+    public ResponseEntity<APIResponse<PostProjectChecklistAccept.Response>> postProjectChecklistAccept(
             @PathVariable Long applicationId
     ) {
 
@@ -130,7 +130,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 85.5          // checkRate (mocked as 85.5%)
         );
 
-        return APIResponse.success(SuccessCode.CREATED, response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.success(SuccessCode.CREATED, response));
     }
 
     /**
@@ -138,7 +138,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트 승인 요청을 반려 처리하는 함수
      */
     @PostMapping("/reject/{applicationId}")
-    public APIResponse<PostProjectChecklistReject.Response> postProjectChecklistReject(
+    public ResponseEntity<APIResponse<PostProjectChecklistReject.Response>> postProjectChecklistReject(
             @PathVariable Long applicationId
     ) {
         PostProjectChecklistReject.Response response = new PostProjectChecklistReject.Response(
@@ -152,6 +152,6 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.NO                           // hasLink (mocked as NO)
         );
 
-        return APIResponse.success(SuccessCode.CREATED, response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.success(SuccessCode.CREATED, response));
     }
 }

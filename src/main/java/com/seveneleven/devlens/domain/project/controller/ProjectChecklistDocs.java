@@ -102,7 +102,7 @@ public interface ProjectChecklistDocs {
                     )
             }
     )
-    APIResponse<PutProjectChecklist.Response> putProjectChecklist(
+    ResponseEntity<APIResponse<PutProjectChecklist.Response>> putProjectChecklist(
             @RequestBody PutProjectChecklist.Request request
     );
 
@@ -129,7 +129,7 @@ public interface ProjectChecklistDocs {
                     )
             }
     )
-    APIResponse<DeleteProjectChecklist.Response> deleteProjectChecklist(
+    ResponseEntity<APIResponse<DeleteProjectChecklist.Response>> deleteProjectChecklist(
             @PathVariable Long checklistId
     );
 
@@ -148,7 +148,7 @@ public interface ProjectChecklistDocs {
                     )
             }
     )
-    APIResponse<PostProjectChecklistApplication.Response> postProjectChecklistApplication(
+    ResponseEntity<APIResponse<PostProjectChecklistApplication.Response>> postProjectChecklistApplication(
             @RequestBody PostProjectChecklistApplication.Request request
     );
 
@@ -175,7 +175,7 @@ public interface ProjectChecklistDocs {
                     )
             }
     )
-    APIResponse<PostProjectChecklistAccept.Response> postProjectChecklistAccept(
+    ResponseEntity<APIResponse<PostProjectChecklistAccept.Response>> postProjectChecklistAccept(
             @PathVariable Long applicationId
     );
 
@@ -202,7 +202,7 @@ public interface ProjectChecklistDocs {
                     )
             }
     )
-    APIResponse<PostProjectChecklistReject.Response> postProjectChecklistReject(
+    ResponseEntity<APIResponse<PostProjectChecklistReject.Response>> postProjectChecklistReject(
             @PathVariable Long applicationId
     );
 }
