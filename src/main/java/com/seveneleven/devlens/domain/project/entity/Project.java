@@ -1,5 +1,6 @@
 package com.seveneleven.devlens.domain.project.entity;
 
+import com.seveneleven.devlens.domain.admin.dto.PutProject;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.global.entity.BaseEntity;
@@ -37,7 +38,7 @@ public class Project extends BaseEntity {
 
     @JoinColumn(name = "project_type_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private ProjectType projectType; // 프로젝트 유형 ID
+    private ProjectType projectTypeId; // 프로젝트 유형 ID
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -64,7 +65,7 @@ public class Project extends BaseEntity {
     private Long finalApprover; // 최종 결재자
 
     private LocalDateTime finalApprovalDate; // 최종 결재일시
-  
+
     public Project(
             Long id,
             String projectName,
@@ -88,7 +89,7 @@ public class Project extends BaseEntity {
         this.customer = customer;
         this.developer = developer;
         this.projectDescription = projectDescription;
-        this.projectType = projectTypeId;
+        this.projectTypeId = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
         this.hasImage = hasImage;
@@ -119,7 +120,7 @@ public class Project extends BaseEntity {
         this.customer = customer;
         this.developer = developer;
         this.projectDescription = projectDescription;
-        this.projectType = projectTypeId;
+        this.projectTypeId = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
         this.hasImage = hasImage;
@@ -127,7 +128,31 @@ public class Project extends BaseEntity {
         this.plannedStartDate = plannedStartDate;
         this.plannedEndDate = plannedEndDate;
     }
-  
+
+    public void update(
+            PutProject.Request request,
+            Company customer,
+            Company developer,
+            ProjectType ProjectType,
+            Member bnsManager
+    ) {
+        this.projectName = request.getProjectName();
+        this.customer = customer;
+        this.developer = developer;
+        this.projectDescription = request.getProjectDescription();
+        this.projectTypeId = ProjectType;
+        this.projectStatusCode = request.getProjectStatusCode();
+        this.bnsManager = bnsManager;
+        this.hasImage = request.getHasImage();
+        this.contractNumber = request.getContractNumber();
+        this.plannedStartDate = request.getPlannedStartDate();
+        this.plannedEndDate = request.getPlannedEndDate();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
+        this.finalApprover = request.getFinalApprover();
+        this.finalApprovalDate = request.getFinalApprovalDate();
+    }
+
     public enum projectStatusCode {
         PREPARED,
         IN_PROGRESS,

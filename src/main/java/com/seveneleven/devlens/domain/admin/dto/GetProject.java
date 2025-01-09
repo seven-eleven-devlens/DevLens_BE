@@ -2,12 +2,13 @@ package com.seveneleven.devlens.domain.admin.dto;
 
 import com.seveneleven.devlens.domain.project.entity.Project;
 import com.seveneleven.devlens.global.entity.YesNo;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GetProject {
     @Getter
     public static class Request {
