@@ -4,7 +4,6 @@ import com.seveneleven.devlens.domain.admin.dto.MemberDto;
 import com.seveneleven.devlens.domain.admin.service.MemberMgmtService;
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;
-import com.seveneleven.devlens.global.config.Annotation.AdminAuthorize;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +14,9 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin")
+@RequestMapping("/admin")
 //@AdminAuthorize
 public class MemberMgmtController {
 
@@ -38,14 +35,15 @@ public class MemberMgmtController {
      *         ResponseEntity로 래핑하여 HTTP 응답으로 전달합니다.
      */
     @GetMapping("/member")
-    public ResponseEntity<APIResponse<Page<MemberDto>>> getFilteredMembers(
+    public ResponseEntity<APIResponse<Page<MemberDto.Response>>> getFilteredMembers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) MemberStatus status,
             @RequestParam(required = false) Role role,
             @RequestParam(required = false) String loginId,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        Page<MemberDto> members = memberMgmtService.getFilteredMembers(name, status, role, loginId, pageable);
+        Page<MemberDto.Response> members = memberMgmtService.getFilteredMembers(name, status, role, loginId, pageable);
+
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, members));
     }
@@ -58,19 +56,23 @@ public class MemberMgmtController {
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<MemberDto>> memberDetail(@RequestParam String id) {
+    public ResponseEntity<APIResponse<MemberDto.Response>> memberDetail(@RequestParam String id) {
         // 회원 상세 정보 조회
-        MemberDto memberDto = memberMgmtService.getMemberDetail(id);
+        MemberDto.Response memberDto = memberMgmtService.getMemberDetail(id);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, memberDto));
     }
 
     // 계정 생성
-    @PostMapping("/member/")
-    public ResponseEntity<APIResponse<SuccessCode>> createMember() {
+    @PostMapping("/member")
+    public ResponseEntity<APIResponse<MemberDto.Response>> createMember(MemberDto.Request memberDto) {
 
-        return null;
+        // 회원 생성 로직 호출
+        MemberDto.Response createdMember = memberMgmtService.createMember(memberDto);
+
+        return ResponseEntity.status(SuccessCode.CREATED.getStatus())
+                .body(APIResponse.success(SuccessCode.CREATED, createdMember));
     }
 
     // 계정 수정

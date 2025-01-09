@@ -66,13 +66,13 @@ public class Member extends BaseEntity {
 
     // 생성 메서드
     public static Member createMember(String loginId, String password, Company company, Role role, String name, String email,
-                                      LocalDate birthDate, String phoneNumber, Long departmentId, Long positionId, PasswordEncoder pwdEncoder) {
+                                      LocalDate birthDate, String phoneNumber, Long departmentId, Long positionId) {
         Member member = new Member();
         member.name         = name;
         member.role         = role;
         member.email        = email;
         member.loginId      = loginId;
-        member.password     = pwdEncoder.encode(password);
+        member.password     = password;
         member.company      = company;
         member.birthDate    = birthDate;
         member.phoneNumber  = phoneNumber;
