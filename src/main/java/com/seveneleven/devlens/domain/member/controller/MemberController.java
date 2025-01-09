@@ -1,12 +1,9 @@
 package com.seveneleven.devlens.domain.member.controller;
 
-import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+
 import com.seveneleven.devlens.domain.member.dto.MemberJoinDto;
-import com.seveneleven.devlens.domain.member.dto.TokenDto;
 import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.domain.member.service.MemberService;
-import com.seveneleven.devlens.global.config.Annotation.AdminAuthorize;
-import com.seveneleven.devlens.global.config.Annotation.UserAuthorize;
 import com.seveneleven.devlens.global.config.JwtFilter;
 import com.seveneleven.devlens.global.config.TokenProvider;
 import com.seveneleven.devlens.global.exception.BusinessException;

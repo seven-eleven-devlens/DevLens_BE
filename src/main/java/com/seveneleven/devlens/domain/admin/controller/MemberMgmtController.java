@@ -2,9 +2,16 @@ package com.seveneleven.devlens.domain.admin.controller;
 
 import com.seveneleven.devlens.domain.admin.dto.MemberDto;
 import com.seveneleven.devlens.domain.admin.service.MemberMgmtService;
+import com.seveneleven.devlens.domain.member.constant.MemberStatus;
+import com.seveneleven.devlens.domain.member.constant.Role;
+import com.seveneleven.devlens.global.config.Annotation.AdminAuthorize;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,24 +20,38 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
-// @PreAuthorize("hasRole('ADMIN')")  // 관리자 권한만 접근 가능하도록 설정
+//@AdminAuthorize
 public class MemberMgmtController {
 
     private final MemberMgmtService memberMgmtService;
 
-    // 회원 목록 조회
+    /**
+     * 필터 조건에 따라 Member 목록을 조회합니다.
+     *
+     * @param name      필터링할 회원 이름 (옵션).
+     * @param status    필터링할 회원 상태 (옵션).
+     * @param role      필터링할 회원 역할 (옵션).
+     * @param loginId   필터링할 로그인 ID (옵션).
+     * @param pageable  페이지 번호, 크기, 정렬 정보를 포함하는 페이징 정보.
+     *                  기본적으로 크기는 10, 정렬 기준은 "id", 정렬 방향은 오름차순(ASC)입니다.
+     * @return 필터 조건에 해당하는 회원 목록 (MemberDto)을 페이지 형식으로 반환.
+     *         ResponseEntity로 래핑하여 HTTP 응답으로 전달합니다.
+     */
     @GetMapping("/member")
-    public ResponseEntity<APIResponse<Object>> memberList() {
+    public ResponseEntity<APIResponse<Page<MemberDto>>> getFilteredMembers(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) MemberStatus status,
+            @RequestParam(required = false) Role role,
+            @RequestParam(required = false) String loginId,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-        List<MemberDto> memberDtoList = memberMgmtService.getAllMembers();
-        System.out.println(memberDtoList.toString());
-
+        Page<MemberDto> members = memberMgmtService.getFilteredMembers(name, status, role, loginId, pageable);
         return ResponseEntity.status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, "회원 목록을 성공적으로 조회했습니다.", memberDtoList));
+                .body(APIResponse.success(SuccessCode.OK, members));
     }
 
     // 회원 상세 조회
-    @GetMapping("/member/{memberId}")
+    @GetMapping("/member/detail")
     public ResponseEntity<APIResponse<SuccessCode>> memberDetail() {
 
         return null;
