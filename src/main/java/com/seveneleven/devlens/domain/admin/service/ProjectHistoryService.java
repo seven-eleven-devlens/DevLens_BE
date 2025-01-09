@@ -1,7 +1,7 @@
 package com.seveneleven.devlens.domain.admin.service;
 
+import com.seveneleven.devlens.domain.admin.db.AdminProjectHistoryRepository;
 import com.seveneleven.devlens.domain.admin.db.ProjectHistoryConverter;
-import com.seveneleven.devlens.domain.admin.db.ProjectHistoryRepository;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
 import com.seveneleven.devlens.domain.admin.dto.ReadProjectHistory;
 import com.seveneleven.devlens.domain.admin.exception.ProjectHistoryNotFoundException;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 public class ProjectHistoryService {
-    private final ProjectHistoryRepository projectHistoryRepository;
+    private final AdminProjectHistoryRepository projectHistoryRepository;
     private final ProjectHistoryConverter projectHistoryConverter;
     private final int PAGE_SIZE = 10;
 

@@ -1,6 +1,6 @@
 package com.seveneleven.devlens.domain.admin.service;
 
-import com.seveneleven.devlens.domain.admin.db.ProjectRepository;
+import com.seveneleven.devlens.domain.admin.db.AdminProjectRepository;
 import com.seveneleven.devlens.domain.admin.db.ProjectResponseConverter;
 import com.seveneleven.devlens.domain.admin.dto.GetProject;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class ProjectReadService {
-    private final ProjectRepository projectRepository;
+    private final AdminProjectRepository projectRepository;
     private final ProjectResponseConverter projectResponseConverter;
     private final int PAGE_SIZE = 10;
 

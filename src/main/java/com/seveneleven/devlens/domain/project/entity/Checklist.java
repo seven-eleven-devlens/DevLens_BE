@@ -36,9 +36,19 @@ public class Checklist extends BaseEntity {
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter.class)
-    private YesNo isMandatory; // 체크 유무
+    private YesNo isChecked; // 체크 유무
 
     private Long approverId; // 승인자 ID
 
     private LocalDateTime approvalDate; // 승인 일시
+
+    public Checklist(ProjectStep projectStep, String title, String description, YesNo isActive, YesNo isChecked, Long approverId, LocalDateTime approvalDate) {
+        this.projectStep = projectStep;
+        this.title = title;
+        this.description = description;
+        this.isActive = isActive;
+        this.isChecked = isChecked;
+        this.approverId = approverId;
+        this.approvalDate = approvalDate;
+    }
 }

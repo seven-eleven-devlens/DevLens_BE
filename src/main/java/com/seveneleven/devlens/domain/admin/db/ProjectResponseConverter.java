@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class ProjectResponseConverter implements EntityConverter<GetProject.Response, Project> {
     private final CompanyRepository companyRepository;
     private final AdminMemberRepository adminMemberRepository;
-    private final ProjectTypeRepository projectTypeRepository;
+    private final AdminProjectTypeRepository projectTypeRepository;
 
     @Override
     public GetProject.Response toDTO(
@@ -28,7 +28,7 @@ public class ProjectResponseConverter implements EntityConverter<GetProject.Resp
                 project.getCustomer().getId(),
                 project.getDeveloper().getId(),
                 project.getProjectDescription(),
-                project.getProjectTypeId().getId(),
+                project.getProjectType().getId(),
                 project.getProjectStatusCode(),
                 project.getBnsManager().getId(),
                 project.getHasImage(),

@@ -1,6 +1,6 @@
 package com.seveneleven.devlens.domain.admin.common;
 
-import com.seveneleven.devlens.domain.admin.db.ProjectRepository;
+import com.seveneleven.devlens.domain.admin.db.AdminProjectRepository;
 import com.seveneleven.devlens.domain.admin.exception.ProjectNameDuplicatedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class CheckProjectValidity {
-    private final ProjectRepository projectRepository;
+    private final AdminProjectRepository projectRepository;
 
     /*
         함수명 : checkProjectDuplicatedName
