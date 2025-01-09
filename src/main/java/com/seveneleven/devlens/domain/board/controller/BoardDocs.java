@@ -42,7 +42,7 @@ public interface BoardDocs {
                     )
             }
     )
-    @GetMapping("/posts/{postId}")
+    @GetMapping("/{postId}")
     ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) throws Exception;
 
     // 생성
@@ -60,7 +60,7 @@ public interface BoardDocs {
                     )
             }
     )
-    @PostMapping("/posts")
+    @PostMapping()
     ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestPart PostCreateRequest postCreateRequest,
                                                         @RequestPart(required = false) List<MultipartFile> files
     ) throws Exception;
@@ -88,7 +88,7 @@ public interface BoardDocs {
                     )
             }
     )
-    @PutMapping("/posts/{postId}")
+    @PutMapping("/{postId}")
     ResponseEntity<APIResponse<SuccessCode>> updatePost(@PathVariable Long postId,
                                                         @RequestPart PostUpdateRequest postUpdateRequest,
                                                         @RequestPart(required = false) List<MultipartFile> files
@@ -109,7 +109,7 @@ public interface BoardDocs {
                     )
             }
     )
-    @DeleteMapping("/posts/{postId}/{registerId}")
+    @DeleteMapping("/{postId}/{registerId}")
     ResponseEntity<APIResponse<SuccessCode>> deletePost(@PathVariable Long postId,
                                                         @PathVariable Long registerId
     ) throws Exception;
