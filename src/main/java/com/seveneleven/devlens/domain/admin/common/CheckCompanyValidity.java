@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CheckCompanyValidity {
     private final CompanyRepository companyRepository;
+
     /*
         함수명 : checkDuplicatedCompany
         함수 목적 : 중복 회사 조회
@@ -19,7 +20,7 @@ public class CheckCompanyValidity {
     public void checkDuplicatedCompanyBusinessRegistrationNumber(
             String businessRegistrationNumber
     ) {
-        companyRepository.findByBusinessRegistrationNumberAndIsActive(businessRegistrationNumber,YN.Y)
+        companyRepository.findByBusinessRegistrationNumberAndIsActive(businessRegistrationNumber, YN.Y)
                 .ifPresent(company -> {
                     throw new CompanyDuplicatedException();
                 });
@@ -32,7 +33,7 @@ public class CheckCompanyValidity {
     public Company checkCompanyExistsOrDeactivated(
             Long id
     ) {
-        return companyRepository.findByIdAndIsActive(id,YN.Y)
+        return companyRepository.findByIdAndIsActive(id, YN.Y)
                 .orElseThrow(CompanyNotFoundException::new);
     }
 }

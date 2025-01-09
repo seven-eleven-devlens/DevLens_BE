@@ -6,7 +6,7 @@ import com.seveneleven.devlens.global.response.ErrorCode;
 public class ProjectNameDuplicatedException extends BusinessException {
 
     public ProjectNameDuplicatedException(String message) {
-        super(message,ErrorCode.PROJECT_DUPLICATED_NAME);
+        super(message, ErrorCode.PROJECT_DUPLICATED_NAME);
     }
 
     public ProjectNameDuplicatedException() {

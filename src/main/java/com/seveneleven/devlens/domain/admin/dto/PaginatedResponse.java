@@ -38,7 +38,7 @@ public class PaginatedResponse<T> {
     public static <T> PaginatedResponse<T> createPaginatedResponse(
             Page<T> page
     ) {
-        return new PaginatedResponse<> (
+        return new PaginatedResponse<>(
                 page.getContent(),
                 page.getNumber(),
                 page.getSize(),

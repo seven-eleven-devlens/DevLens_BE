@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProjectHistoryDto {
+public class ReadProjectHistory {
     @Getter
-    public static class ProjectHistoryResponse {
+    public static class Response {
         private Long id;
         private String projectName;
         private String customerName;
@@ -18,14 +18,15 @@ public class ProjectHistoryDto {
         private String description;
         private String statusCode;
         private String typeName;
-        private Long bnsMangerId;
+        private Long bnsManagerId;
         private YesNo hasImage;
         private String contractNumber;
         private LocalDateTime plannedStartDate;
         private LocalDateTime startDate;
         private LocalDateTime plannedEndDate;
         private LocalDateTime endDate;
-        public ProjectHistoryResponse(
+
+        public Response(
                 Long id,
                 String projectName,
                 String customerName,
@@ -33,7 +34,7 @@ public class ProjectHistoryDto {
                 String description,
                 String statusCode,
                 String typeName,
-                Long bnsMangerId,
+                Long bnsManagerId,
                 YesNo hasImage,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
@@ -48,7 +49,7 @@ public class ProjectHistoryDto {
             this.description = description;
             this.statusCode = statusCode;
             this.typeName = typeName;
-            this.bnsMangerId = bnsMangerId;
+            this.bnsManagerId = bnsManagerId;
             this.hasImage = hasImage;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;

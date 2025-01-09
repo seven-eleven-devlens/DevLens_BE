@@ -1,7 +1,7 @@
 package com.seveneleven.devlens.domain.admin.db;
 
 import com.seveneleven.devlens.domain.admin.common.EntityConverter;
-import com.seveneleven.devlens.domain.admin.dto.ProjectDto;
+import com.seveneleven.devlens.domain.admin.dto.GetProject;
 import com.seveneleven.devlens.domain.admin.exception.CompanyNotFoundException;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.domain.member.entity.Member;
@@ -13,15 +13,16 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class ProjectResponseConverter implements EntityConverter<ProjectDto.ProjectResponse, Project> {
+public class ProjectResponseConverter implements EntityConverter<GetProject.Response, Project> {
     private final CompanyRepository companyRepository;
     private final AdminMemberRepository adminMemberRepository;
     private final ProjectTypeRepository projectTypeRepository;
+
     @Override
-    public ProjectDto.ProjectResponse toDTO(
+    public GetProject.Response toDTO(
             Project project
     ) {
-        return new ProjectDto.ProjectResponse(
+        return new GetProject.Response(
                 project.getId(),
                 project.getProjectName(),
                 project.getCustomer().getId(),
@@ -38,12 +39,12 @@ public class ProjectResponseConverter implements EntityConverter<ProjectDto.Proj
                 project.getEndDate(),
                 project.getFinalApprover(),
                 project.getFinalApprovalDate()
-                );
+        );
     }
 
     @Override
     public Project toEntity(
-            ProjectDto.ProjectResponse response
+            GetProject.Response response
     ) {
         Company customer = companyRepository.findById(response.getCustomerId()).orElseThrow(CompanyNotFoundException::new);
         Company developer = companyRepository.findById(response.getDeveloperId()).orElseThrow(CompanyNotFoundException::new);

@@ -9,6 +9,6 @@ public class ProjectNotFoundException extends BusinessException {
     }
 
     public ProjectNotFoundException() {
-      this(ErrorCode.PROJECT_NOT_FOUND.getMessage());
+        this(ErrorCode.PROJECT_NOT_FOUND.getMessage());
     }
 }

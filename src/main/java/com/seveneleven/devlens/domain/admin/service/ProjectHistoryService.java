@@ -2,65 +2,49 @@ package com.seveneleven.devlens.domain.admin.service;
 
 import com.seveneleven.devlens.domain.admin.db.ProjectHistoryConverter;
 import com.seveneleven.devlens.domain.admin.db.ProjectHistoryRepository;
-import com.seveneleven.devlens.domain.admin.db.ProjectRepository;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
-import com.seveneleven.devlens.domain.admin.dto.ProjectHistoryDto;
-import com.seveneleven.devlens.domain.admin.exception.ProjectNotFoundException;
+import com.seveneleven.devlens.domain.admin.dto.ReadProjectHistory;
+import com.seveneleven.devlens.domain.admin.exception.ProjectHistoryNotFoundException;
 import com.seveneleven.devlens.domain.project.entity.Project;
 import com.seveneleven.devlens.domain.project.entity.ProjectHistory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
 public class ProjectHistoryService {
-    private final ProjectRepository projectRepository;
     private final ProjectHistoryRepository projectHistoryRepository;
     private final ProjectHistoryConverter projectHistoryConverter;
-    private final int pageSize = 10;
+    private final int PAGE_SIZE = 10;
 
     public void saveProjectHistory(Project project) {
-        // 프로젝트 저장
-        projectRepository.save(project);
-
         // 이력 저장
-        ProjectHistory projectHistory = new ProjectHistory(
-                project.getProjectName(),
-                project.getCustomer().getCompanyName(),
-                project.getDeveloper().getCompanyName(),
-                project.getProjectDescription(),
-                project.getProjectStatusCode().name(),
-                project.getProjectTypeId().getProjectTypeName(),
-                project.getBnsManager().getId(),
-                project.getHasImage(),
-                project.getContractNumber(),
-                project.getPlannedStartDate(),
-                project.getStartDate(),
-                project.getPlannedEndDate(),
-                project.getEndDate()
-        );
-
+        ProjectHistory projectHistory = new ProjectHistory(project);
         projectHistoryRepository.save(projectHistory);
     }
 
-    public ProjectHistoryDto.ProjectHistoryResponse getProjectHistory(
+    @Transactional(readOnly = true)
+    public ReadProjectHistory.Response getProjectHistory(
             Long id
     ) {
         return projectHistoryRepository.findById(id)
                 .map(projectHistoryConverter::toDTO)
-                .orElseThrow(ProjectNotFoundException::new);
+                .orElseThrow(ProjectHistoryNotFoundException::new);
     }
 
-    public PaginatedResponse<ProjectHistoryDto.ProjectHistoryResponse> getListOfProjectHistory(
+    @Transactional(readOnly = true)
+    public PaginatedResponse<ReadProjectHistory.Response> getListOfProjectHistory(
             Integer page
     ) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("id").descending());
         Page<ProjectHistory> projectHistories = projectHistoryRepository.findAll(pageable);
-        if(projectHistories.getContent().isEmpty()) {
-            throw new ProjectNotFoundException();
+        if (projectHistories.getContent().isEmpty()) {
+            throw new ProjectHistoryNotFoundException();
         }
         return PaginatedResponse.createPaginatedResponse(projectHistories.map(projectHistoryConverter::toDTO));
     }

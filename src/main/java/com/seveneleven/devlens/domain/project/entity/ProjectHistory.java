@@ -81,4 +81,22 @@ public class ProjectHistory extends BaseEntity {
         this.plannedEndDate = plannedEndDate;
         this.endDate = endDate;
     }
+
+    public ProjectHistory(Project project) {
+        this(
+                project.getProjectName(),
+                project.getCustomer().getCompanyName(),
+                project.getDeveloper().getCompanyName(),
+                project.getProjectDescription(),
+                project.getProjectStatusCode().name(),
+                project.getProjectTypeId().getProjectTypeName(),
+                project.getBnsManager().getId(),
+                project.getHasImage(),
+                project.getContractNumber(),
+                project.getPlannedStartDate(),
+                project.getStartDate(),
+                project.getPlannedEndDate(),
+                project.getEndDate()
+        );
+    }
 }

@@ -1,8 +1,9 @@
 package com.seveneleven.devlens.domain.admin.controller;
 
+import com.seveneleven.devlens.domain.admin.dto.GetProject;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
-import com.seveneleven.devlens.domain.admin.dto.ProjectDto;
-import com.seveneleven.devlens.domain.admin.dto.ProjectHistoryDto;
+import com.seveneleven.devlens.domain.admin.dto.PostProject;
+import com.seveneleven.devlens.domain.admin.dto.ReadProjectHistory;
 import com.seveneleven.devlens.domain.admin.service.ProjectCreateService;
 import com.seveneleven.devlens.domain.admin.service.ProjectHistoryService;
 import com.seveneleven.devlens.domain.admin.service.ProjectReadService;
@@ -25,10 +26,10 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 생성
      */
     @PostMapping("/new")
-    public ResponseEntity<APIResponse<ProjectDto.ProjectResponse>> newProject(
-            @RequestBody ProjectDto.ProjectRequest projectRequest
+    public ResponseEntity<APIResponse<PostProject.Response>> newProject(
+            @RequestBody PostProject.Request request
     ) {
-        ProjectDto.ProjectResponse project = projectCreateService.createProject(projectRequest);
+        PostProject.Response project = projectCreateService.createProject(request);
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED, project));
@@ -39,13 +40,13 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 조회
      */
     @GetMapping("/list/{id}")
-    public ResponseEntity<APIResponse<ProjectDto.ProjectResponse>> readProject(
+    public ResponseEntity<APIResponse<GetProject.Response>> readProject(
             @PathVariable Long id
     ) {
-        ProjectDto.ProjectResponse response = projectReadService.getProject(id);
+        GetProject.Response response = projectReadService.getProject(id);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK,response));
+                .body(APIResponse.success(SuccessCode.OK, response));
     }
 
     /*
@@ -53,13 +54,13 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 목록 조회
      */
     @GetMapping("/list")
-    public ResponseEntity<APIResponse<PaginatedResponse<ProjectDto.ProjectResponse>>> getListOfProjects(
+    public ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> getListOfProjects(
             @RequestParam(value = "page", required = true) Integer page
     ) {
-        PaginatedResponse<ProjectDto.ProjectResponse> response = projectReadService.getListOfProject(page);
+        PaginatedResponse<GetProject.Response> response = projectReadService.getListOfProject(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK,response));
+                .body(APIResponse.success(SuccessCode.OK, response));
     }
 
     /*
@@ -67,13 +68,13 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 이력 목록 조회
      */
     @GetMapping("/history/list")
-    public ResponseEntity<APIResponse<PaginatedResponse<ProjectHistoryDto.ProjectHistoryResponse>>> getListOfProjectHistory(
+    public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> getListOfProjectHistory(
             @RequestParam(value = "page") Integer page
     ) {
-        PaginatedResponse<ProjectHistoryDto.ProjectHistoryResponse> response = projectHistoryService.getListOfProjectHistory(page);
+        PaginatedResponse<ReadProjectHistory.Response> response = projectHistoryService.getListOfProjectHistory(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK,response));
+                .body(APIResponse.success(SuccessCode.OK, response));
     }
 
     /*
@@ -81,11 +82,11 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 이력 조회
      */
     @GetMapping("/history/list/{id}")
-    public ResponseEntity<APIResponse<ProjectHistoryDto.ProjectHistoryResponse>> getProjectHistory(
+    public ResponseEntity<APIResponse<ReadProjectHistory.Response>> getProjectHistory(
             @PathVariable Long id
     ) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK,projectHistoryService.getProjectHistory(id)));
+                .body(APIResponse.success(SuccessCode.OK, projectHistoryService.getProjectHistory(id)));
     }
 }

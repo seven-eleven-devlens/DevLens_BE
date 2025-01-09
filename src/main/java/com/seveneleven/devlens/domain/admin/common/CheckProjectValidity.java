@@ -9,7 +9,10 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CheckProjectValidity {
     private final ProjectRepository projectRepository;
+
     /*
+        함수명 : checkProjectDuplicatedName
+        함수 목적 : 회사 명 일치 여부 파악
      */
     public void checkProjectDuplicatedName(String projectName) {
         projectRepository.findByProjectName(projectName)
