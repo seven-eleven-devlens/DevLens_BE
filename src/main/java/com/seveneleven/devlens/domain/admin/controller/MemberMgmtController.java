@@ -50,11 +50,20 @@ public class MemberMgmtController {
                 .body(APIResponse.success(SuccessCode.OK, members));
     }
 
-    // 회원 상세 조회
-    @GetMapping("/member/detail")
-    public ResponseEntity<APIResponse<SuccessCode>> memberDetail() {
+    /**
+     * 회원 상세 정보를 조회합니다.
+     *
+     * @param id 회원 ID (필수). 조회할 회원의 고유 식별자.
+     * @return 회원 상세 정보를 포함한 응답 객체(APIResponse<MemberDto>).
+     *         HTTP 상태 코드는 200 OK로 반환됩니다.
+     */
+    @GetMapping("/member/{memberId}")
+    public ResponseEntity<APIResponse<MemberDto>> memberDetail(@RequestParam String id) {
+        // 회원 상세 정보 조회
+        MemberDto memberDto = memberMgmtService.getMemberDetail(id);
 
-        return null;
+        return ResponseEntity.status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, memberDto));
     }
 
     // 계정 생성

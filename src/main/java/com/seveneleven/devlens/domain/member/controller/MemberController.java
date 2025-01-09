@@ -79,6 +79,16 @@ public class MemberController {
         }
     }
 
+//    @GetMapping("/my-page")
+//    public ResponseEntity<MemberDto> getMyDetails(Authentication authentication) {
+//        // JWT에서 회원 ID 추출
+//        Long memberId = Long.valueOf(authentication.getName()); // JWT의 sub 클레임
+//
+//        // 회원 상세 정보 조회
+//        MemberDto memberDto = memberService.getMemberDetail(memberId);
+//        return ResponseEntity.ok(memberDto);
+//    }
+
 
     // 테스트용 입니다. (삭제 예정)
 

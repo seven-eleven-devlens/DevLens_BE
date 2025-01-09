@@ -37,8 +37,8 @@ public class MemberMgmtService {
         return members.map(MemberDto::fromEntity);
     }
 
-    public MemberDto getMemberDetail(Long id) {
-        Member member = memberRepository.findById(id)
+    public MemberDto getMemberDetail(String id) {
+        Member member = memberRepository.findByLoginId(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return MemberDto.fromEntity(member);
     }
