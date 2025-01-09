@@ -79,12 +79,14 @@ public class ProjectController implements ProjectDocs {
                 new GetProjectStep.ProjectChecklist(
                         101L,                      // checklistId
                         "Checklist Item 1",        // checklistName
-                        YesNo.YES                       // checklistStatus
+                        YesNo.YES,                       // checklistStatus
+                        LocalDateTime.now()
                 ),
                 new GetProjectStep.ProjectChecklist(
                         102L,                      // checklistId
                         "Checklist Item 2",        // checklistName
-                        YesNo.NO                       // checklistStatus
+                        YesNo.NO,                       // checklistStatus
+                        LocalDateTime.now()
                 )
         );
 
@@ -92,12 +94,14 @@ public class ProjectController implements ProjectDocs {
                 new GetProjectStep.ProjectChecklist(
                         201L,                      // checklistId
                         "Checklist Item A",        // checklistName
-                        YesNo.YES                       // checklistStatus
+                        YesNo.YES,                       // checklistStatus
+                        LocalDateTime.now()
                 ),
                 new GetProjectStep.ProjectChecklist(
                         202L,                      // checklistId
                         "Checklist Item B",        // checklistName
-                        YesNo.NO                       // checklistStatus
+                        YesNo.NO,                       // checklistStatus
+                        LocalDateTime.now()
                 )
         );
 
