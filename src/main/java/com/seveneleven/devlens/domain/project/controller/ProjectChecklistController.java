@@ -50,18 +50,11 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 프로젝트 단계에 체크리스트를 추가하는 함수
      */
     @PostMapping("")
-    public APIResponse<PostProjectChecklist.Response> postProjectChecklist(
+    public ResponseEntity<APIResponse<PostProjectChecklist.Response>> postProjectChecklist(
             @RequestBody PostProjectChecklist.Request request
     ) {
-        PostProjectChecklist.Response response = new PostProjectChecklist.Response(
-                1L,
-                "Test Checklist Name",
-                "Test Checklist Description",
-                YesNo.YES,
-                YesNo.NO
-        );
-
-        return APIResponse.success(response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(APIResponse.success(SuccessCode.CREATED, projectChecklistFacade.postProjectChecklist(request)));
     }
 
     /**

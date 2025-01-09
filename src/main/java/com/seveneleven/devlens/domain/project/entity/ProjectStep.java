@@ -32,5 +32,5 @@ public class ProjectStep extends BaseEntity {
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter.class)
-    private YesNo useStatus; // 사용 유무
+    private YesNo isActive; // 사용 유무
 }

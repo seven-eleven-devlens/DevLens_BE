@@ -83,7 +83,7 @@ public interface ProjectChecklistDocs {
                     )
             }
     )
-    APIResponse<PostProjectChecklist.Response> postProjectChecklist(
+    ResponseEntity<APIResponse<PostProjectChecklist.Response>> postProjectChecklist(
             @RequestBody PostProjectChecklist.Request request
     );
 

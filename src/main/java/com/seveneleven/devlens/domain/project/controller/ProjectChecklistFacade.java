@@ -2,6 +2,7 @@ package com.seveneleven.devlens.domain.project.controller;
 
 import com.seveneleven.devlens.domain.project.dto.GetProjectStep;
 import com.seveneleven.devlens.domain.project.dto.GetStepChecklist;
+import com.seveneleven.devlens.domain.project.dto.PostProjectChecklist;
 import com.seveneleven.devlens.domain.project.service.ProjectChecklistService;
 import com.seveneleven.devlens.domain.project.service.ProjectStepService;
 import lombok.RequiredArgsConstructor;
@@ -22,5 +23,9 @@ public class ProjectChecklistFacade {
 
     public GetStepChecklist.Response getStepChecklist(Long stepId) {
         return projectChecklistService.getStepChecklist(stepId);
+    }
+
+    public PostProjectChecklist.Response postProjectChecklist(PostProjectChecklist.Request postProjectChecklist) {
+        return projectChecklistService.postProjectChecklist(postProjectChecklist);
     }
 }

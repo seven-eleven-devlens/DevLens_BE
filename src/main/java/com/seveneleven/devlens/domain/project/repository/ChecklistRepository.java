@@ -16,7 +16,7 @@ public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
         SELECT
             new com.seveneleven.devlens.domain.project.dto.GetStepChecklist$projectChecklist(
                     c.id,
-                    c.name,
+                    c.title,
                     c.isChecked,
                     c.approvalDate
                 )
