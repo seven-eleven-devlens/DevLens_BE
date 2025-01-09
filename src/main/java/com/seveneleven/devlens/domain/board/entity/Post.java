@@ -45,13 +45,15 @@ public class Post extends BaseEntity {
     private Post parentPostId;
 
     @Column(name = "is_pinned_post")
+    @Enumerated(EnumType.STRING)
     private YN isPinnedPost;
 
     @Column(name = "priority")
     private Integer priority;
 
     @Column(name = "status", nullable = false, length = 50)
-    private PostStatus status;
+    @Enumerated(EnumType.STRING)
+    private PostStatus status; // 게시물 상태 종류(DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD
 
     @Column(name = "title", nullable = false, length = 255)
     private String title;
@@ -60,9 +62,11 @@ public class Post extends BaseEntity {
     private String content;
 
     @Column(name = "has_file", nullable = false)
+    @Enumerated(EnumType.STRING)
     private YN hasFile = YN.N;
 
     @Column(name = "has_link", nullable = false)
+    @Enumerated(EnumType.STRING)
     private YN hasLink = YN.N;
 
     @Column(name = "deadline")
@@ -121,13 +125,18 @@ public class Post extends BaseEntity {
     }
 
     // 파일 존재 여부 변경 메서드
-    public void changeHasFile(YN hasFile) {
+    public void yesHasFile(YN hasFile) {
         this.hasFile = YN.Y;
+    }
+    public void noHasFile(YN hasFile) {
+        this.hasFile = YN.N;
     }
 
     // 링크 존재 여부 변경 메서드
-    public void changeHasLink(YN hasLink) {
+    public void yesHasLink(YN hasLink) {
         this.hasLink = YN.Y;
     }
-
+    public void noHasLink(YN hasLink) {
+        this.hasLink = YN.N;
+    }
 }

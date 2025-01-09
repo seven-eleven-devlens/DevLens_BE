@@ -39,6 +39,7 @@ public class Member extends BaseEntity {
     private String password; // 비밀번호
 
     @Column(name = "status_code", nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
     private MemberStatus status = MemberStatus.ACTIVE; // 상태 코드
 
     @Column(name = "profile_image_exists", nullable = false)

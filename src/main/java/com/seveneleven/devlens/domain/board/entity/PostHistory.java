@@ -8,6 +8,7 @@ import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.domain.project.entity.ProjectStep;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -55,13 +56,15 @@ public class PostHistory {
     private Long postId;
 
     @Column(name = "is_pinned_post")
+    @Enumerated(EnumType.STRING)
     private YN isPinnedPost;
 
     @Column(name = "priority")
     private Integer priority;
 
     @Column(name = "status", nullable = false, length = 50)
-    private PostStatus status;
+    @Enumerated(EnumType.STRING)
+    private PostStatus status; // 게시물 상태 종류(DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD
 
     @Column(name = "title", nullable = false, length = 255)
     private String title;
@@ -70,15 +73,18 @@ public class PostHistory {
     private String content;
 
     @Column(name = "has_file", nullable = false)
+    @Enumerated(EnumType.STRING)
     private YN hasFile;
 
     @Column(name = "has_link", nullable = false)
+    @Enumerated(EnumType.STRING)
     private YN hasLink;
 
     @Column(name = "deadline")
     private LocalDate deadline;
 
     @Column(name = "action", nullable = false)
+    @Enumerated(EnumType.STRING)
     private PostAction action; // 작업 종류 (CREATE, UPDATE, DELETE)
 
     @Column(name = "registered_ip", length = 50)
@@ -91,7 +97,7 @@ public class PostHistory {
     public static PostHistory createPostHistory(Post post, PostAction action) {
         PostHistory postHistory = new PostHistory();
         postHistory.projectStepId = post.getProjectStepId().getId();
-        postHistory.parentPostId = post.getParentPostId().getId();
+        postHistory.parentPostId = (post.getParentPostId() != null ? post.getParentPostId().getId() : null);
         postHistory.postId = post.getId();
         postHistory.isPinnedPost = post.getIsPinnedPost();
         postHistory.priority = post.getPriority();

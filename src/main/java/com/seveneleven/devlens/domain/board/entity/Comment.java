@@ -38,6 +38,7 @@ public class Comment extends BaseEntity {
     private Comment parentCommentId;
 
     @Column(name = "is_active", nullable = false)
+    @Enumerated(EnumType.STRING)
     private YN isActive;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")

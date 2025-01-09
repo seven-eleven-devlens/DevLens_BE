@@ -13,6 +13,7 @@ import com.seveneleven.devlens.domain.project.entity.ProjectStep;
 import com.seveneleven.devlens.domain.project.repository.ProjectStepRepository;
 import com.seveneleven.devlens.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,17 +40,22 @@ public class PostService {
         String memberName = memberRepository.findNameById((post.getCreatedBy()))
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_WRITER));
 
+        Long parentPostId = null;
+        if(post.getParentPostId() != null) {
+            parentPostId = post.getParentPostId().getId();
+        }
+
         return new PostResponse(
                 post.getId(),
                 post.getProjectStepId().getId(),
-                post.getParentPostId().getId(),
+                parentPostId,           // 부모게시물이 없는 경우 null 반환
                 post.getIsPinnedPost(),
                 post.getPriority(),
                 post.getStatus(),
                 post.getTitle(),
                 post.getContent(),
                 post.getDeadline(),
-                memberName,         // memberId가 아닌 name
+                memberName,             // memberId가 아닌 name
                 post.getCreatedAt(),
                 post.getUpdatedAt()
         );
@@ -60,7 +66,7 @@ public class PostService {
         함수 목적 : 게시글 생성
         postCreateRequest : 프로젝트 단계 ID, 부모 게시물 ID, 제목, 내용, 상태, 상단고정여부, 작성자, 작성일시, 마감일자
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public void createPost(PostCreateRequest postCreateRequest) throws Exception {
         // todo : 작성권한 확인 로직 추가 예정
 
@@ -85,6 +91,7 @@ public class PostService {
             // todo: 파일, 링크 저장 로직 추가 예정
             // param : 파일 리스트, postId, memberID
             // for(file 하나씩)
+            return;
         }
         throw new BusinessException(NOT_FOUND_MEMBER);
     }
@@ -94,7 +101,7 @@ public class PostService {
         함수 목적 : 게시글 수정
         postUpdateRequest : 게시물 ID, 프로젝트 단계 ID, 부모 게시물 ID, 제목, 내용, 상태, 상단고정여부, 등록자 ID, 수정자 ID, 수정자 IP, 수정일시, 마감일자
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public void updatePost(PostUpdateRequest postUpdateRequest) throws Exception {
         // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = checkPostAndWriter(postUpdateRequest.getPostId(), postUpdateRequest.getModifierId());
@@ -121,7 +128,7 @@ public class PostService {
         함수 목적 : 게시글 삭제 메서드
         param : postId, registeredId
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public void deletePost(Long postId, Long registeredId) throws Exception {
         Post post = checkPostAndWriter(postId, registeredId);
 
@@ -130,20 +137,23 @@ public class PostService {
     }
 
 
-    // 부모게시물 존재 여부 확인 메서드
-    private Post getParentPostId(PostCreateRequest postCreateRequest) throws Exception {
-        return postRepository.findById(postCreateRequest.getParentStepId())
-                .orElse(null);
-    }
-
     // 프로젝트 단계 여부 확인 메서드
     private ProjectStep getProjectStepId(PostCreateRequest postCreateRequest) throws Exception {
         return projectStepRepository.findById(postCreateRequest.getProjectStepId())
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_PROJECT_STEP));
     }
 
+    // 부모게시물 존재 여부 확인 메서드
+    private Post getParentPostId(PostCreateRequest postCreateRequest) throws Exception {
+        if(postCreateRequest.getParentPostId() != null) {
+            return postRepository.findById(postCreateRequest.getParentPostId())
+                    .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
+        }
+        return null;
+    }
+
     // 게시물 존재 여부 확인 메서드
-    public Post getPost(Long postId) throws Exception {
+    private Post getPost(Long postId) throws Exception {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
         return post;
