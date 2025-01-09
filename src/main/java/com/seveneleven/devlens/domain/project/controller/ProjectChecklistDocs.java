@@ -2,13 +2,13 @@ package com.seveneleven.devlens.domain.project.controller;
 
 import com.seveneleven.devlens.domain.project.dto.*;
 import com.seveneleven.devlens.global.response.APIResponse;
-import com.seveneleven.devlens.global.response.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "프로젝트 체크리스트 API", description = "프로젝트 체크리스트 관련 API")
@@ -37,7 +37,7 @@ public interface ProjectChecklistDocs {
                     )
             }
     )
-    APIResponse<GetProjectStep.Response> getProjectStepAndChecklist(
+    ResponseEntity<APIResponse<GetProjectStep.Response>> getProjectStepAndChecklist(
             @PathVariable Long projectId
     );
 
@@ -51,7 +51,7 @@ public interface ProjectChecklistDocs {
                             description = "성공적으로 체크리스트를 반환했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = GetProjectChecklist.Response.class)
+                                    schema = @Schema(implementation = GetStepChecklist.Response.class)
                             )
                     )
             },
@@ -64,7 +64,7 @@ public interface ProjectChecklistDocs {
                     )
             }
     )
-    APIResponse<GetProjectChecklist.Response> getProjectChecklist(
+    ResponseEntity<APIResponse<GetStepChecklist.Response>> getProjectChecklist(
             @PathVariable Long stepId
     );
 

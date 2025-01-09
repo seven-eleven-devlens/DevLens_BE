@@ -4,6 +4,7 @@ import com.seveneleven.devlens.global.entity.YesNo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,11 +31,8 @@ public class GetProjectStep {
     public static class ProjectStepInfo {
         private Long stepId;
         private String stepName;
+        @Setter
         private List<ProjectChecklist> projectChecklist;
-
-        public void setProjectChecklist(List<ProjectChecklist> checklists) {
-            this.projectChecklist = checklists;
-        }
     }
 
     @Getter

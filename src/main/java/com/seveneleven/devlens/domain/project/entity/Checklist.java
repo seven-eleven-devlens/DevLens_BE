@@ -25,7 +25,7 @@ public class Checklist extends BaseEntity {
     private ProjectStep projectStep; // 프로젝트 단계 ID
 
     @Column(nullable = false)
-    private String title; // 체크리스트 제목
+    private String name; // 체크리스트 제목
 
     @Column(columnDefinition = "TEXT")
     private String description; // 체크리스트 설명
@@ -36,7 +36,7 @@ public class Checklist extends BaseEntity {
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter.class)
-    private YesNo isMandatory; // 체크 유무
+    private YesNo isChecked; // 체크 유무
 
     private Long approverId; // 승인자 ID
 

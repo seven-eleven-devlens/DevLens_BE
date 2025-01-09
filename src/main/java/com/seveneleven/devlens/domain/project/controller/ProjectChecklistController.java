@@ -6,6 +6,8 @@ import com.seveneleven.devlens.global.entity.YesNo;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -15,26 +17,32 @@ import java.time.LocalDateTime;
 @RequestMapping("/project/checklist")
 public class ProjectChecklistController implements ProjectChecklistDocs {
 
-    private final ProjectStepService projectStepService;
+    private final ProjectChecklistFacade projectChecklistFacade;
 
     /**
      * 함수명 : getProjectStepAndChecklist
-     * 해당 단계의 체크리스트 목록을 반환하는 함수
+     * 해당 프로젝트의 모든 단계와 체크리스트 목록을 반환하는 함수
      */
     @GetMapping("/{projectId}")
-    public APIResponse<GetProjectStep.Response> getProjectStepAndChecklist(
+    public ResponseEntity<APIResponse<GetProjectStep.Response>> getProjectStepAndChecklist(
             @PathVariable Long projectId
     ) {
-        return APIResponse.success(SuccessCode.OK, projectStepService.getProjectStep(projectId));
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.getProjectStepAndChecklist(projectId)));
     }
 
+    /**
+     * 함수명 : getStepChecklist
+     * 해당 단계의 체크리스트 목록을 반환하는 함수
+     */
     @GetMapping("/{stepId}")
-    public APIResponse<GetProjectChecklist.Response> getProjectChecklist(
+    public ResponseEntity<APIResponse<GetStepChecklist.Response>> getProjectChecklist(
             @PathVariable Long stepId
     ) {
-
-
-        return null;
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.getStepChecklist(stepId)));
     }
 
     /**
