@@ -81,6 +81,7 @@ public class FileService {
      * @param referenceId 파일 참조 ID
      * @return FileMetadataDto 파일 메타데이터를 담은 응답 객체
      */
+    @Transactional(readOnly = true)
     public FileMetadataDto getFile(String fileCategory, Long referenceId) {
         //파일 카테고리명으로 파일 카테고리 enum 가져오기
         FileCategory categoryEnum = FileCategory.valueOf(fileCategory);
@@ -100,6 +101,7 @@ public class FileService {
      * @param referenceId 파일 참조 ID
      * @return List<FileMetadataDto> 파일 메타데이터 목록을 담은 응답 객체
      */
+    @Transactional(readOnly = true)
     public List<FileMetadataDto> getFiles(String fileCategory, Long referenceId) {
         //파일 카테고리명으로 파일 카테고리 enum 가져오기
         FileCategory categoryEnum = FileCategory.valueOf(fileCategory);

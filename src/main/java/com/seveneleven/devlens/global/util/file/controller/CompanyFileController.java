@@ -48,7 +48,7 @@ public class CompanyFileController {
      * @return 해당 회사의 로고 이미지 메타데이터
      */
     @GetMapping("")
-    public ResponseEntity<APIResponse> getCompanyLogo(@RequestParam("companyId") Long companyId) throws Exception {
+    public ResponseEntity<APIResponse> getCompanyLogo(@RequestParam() Long companyId) throws Exception {
         APIResponse filesResponse = companyFileService.getLogoImage(companyId);
 
         return ResponseEntity.status(filesResponse.getCode()).body(filesResponse);

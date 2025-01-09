@@ -65,7 +65,7 @@ public class CompanyFileService {
      * @param companyId 해당 회사 id
      * @return APIResponse S3에 저장된 파일의 메타데이터 response
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public APIResponse getLogoImage(Long companyId) throws Exception{
         //회사 유효성 검사
         if(!companyRepository.existsById(companyId)){
