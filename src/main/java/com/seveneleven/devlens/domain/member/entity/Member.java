@@ -1,19 +1,21 @@
 package com.seveneleven.devlens.domain.member.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "member")
 public class Member extends BaseEntity {
 
@@ -22,7 +24,7 @@ public class Member extends BaseEntity {
     @Column(name = "id")
     private Long id; // 회원 ID
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id", nullable = false, referencedColumnName = "id")
     private Company company; // 회사 ID (연관관계)
 
@@ -41,7 +43,7 @@ public class Member extends BaseEntity {
 
     @Column(name = "profile_image_exists", nullable = false)
     @Enumerated(EnumType.STRING)
-    private YN profileImageExists; // 프로필 이미지 유무
+    private YN profileImageExists = YN.N; // 프로필 이미지 유무
 
     @Column(name = "name", nullable = false, length = 100)
     private String name; // 이름
@@ -61,16 +63,17 @@ public class Member extends BaseEntity {
     @Column(name = "position_id")
     private Long positionId; // 직책
 
+
     // 생성 메서드
-    public static Member createMember(String loginId, String password, Company companyId, Role role, String name, String email,
-                                      LocalDate birthDate, String phoneNumber, Long departmentId, Long positionId) {
+    public static Member createMember(String loginId, String password, Company company, Role role, String name, String email,
+                                      LocalDate birthDate, String phoneNumber, Long departmentId, Long positionId, PasswordEncoder pwdEncoder) {
         Member member = new Member();
         member.name         = name;
         member.role         = role;
         member.email        = email;
         member.loginId      = loginId;
-        member.password     = password;
-        member.company      = companyId;
+        member.password     = pwdEncoder.encode(password);
+        member.company      = company;
         member.birthDate    = birthDate;
         member.phoneNumber  = phoneNumber;
         member.positionId   = positionId;
@@ -79,9 +82,9 @@ public class Member extends BaseEntity {
     }
 
     // 업데이트 메서드
-    public void updateMember(String password, String phoneNumber, Company company, Long departmentId, Long positionId, YN profileImageExists) {
+    public void updateMember(String password, String phoneNumber, Company company, Long departmentId, Long positionId, YN profileImageExists, PasswordEncoder pwdEncoder) {
         this.company      = company;
-        this.password     = password;
+        this.password     = pwdEncoder.encode(password);
         this.phoneNumber  = phoneNumber;
         this.departmentId = departmentId;
         this.positionId   = positionId;

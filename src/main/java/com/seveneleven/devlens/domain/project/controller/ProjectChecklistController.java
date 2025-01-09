@@ -3,6 +3,7 @@ package com.seveneleven.devlens.domain.project.controller;
 import com.seveneleven.devlens.domain.project.dto.*;
 import com.seveneleven.devlens.global.entity.YesNo;
 import com.seveneleven.devlens.global.response.APIResponse;
+import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,7 +43,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 checklists
         );
 
-        return APIResponse.success(response);
+        return APIResponse.success(SuccessCode.OK, response);
     }
 
     /**
@@ -61,7 +62,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.NO
         );
 
-        return APIResponse.success(response);
+        return APIResponse.success(SuccessCode.CREATED, response);
     }
 
     /**
@@ -79,7 +80,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.YES                                // isChecked
         );
 
-        return APIResponse.success(response);
+        return APIResponse.success(SuccessCode.UPDATED, response);
     }
 
     /**
@@ -95,7 +96,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.YES                                // checklistStatus
         );
 
-        return APIResponse.success(response);
+        return APIResponse.success(SuccessCode.DELETED, response);
     }
 
     /**
@@ -118,7 +119,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.NO                            // hasLink
         );
 
-        return APIResponse.success(response);
+        return APIResponse.success(SuccessCode.CREATED, response);
     }
 
     /**
@@ -137,7 +138,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 85.5          // checkRate (mocked as 85.5%)
         );
 
-        return APIResponse.success(response);
+        return APIResponse.success(SuccessCode.CREATED, response);
     }
 
     /**
@@ -159,6 +160,6 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.NO                           // hasLink (mocked as NO)
         );
 
-        return APIResponse.success(response);
+        return APIResponse.success(SuccessCode.CREATED, response);
     }
 }

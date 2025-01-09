@@ -2,10 +2,12 @@ package com.seveneleven.devlens.domain.member.repository;
 
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.entity.Member;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 import java.util.List;
 
 @Repository
@@ -17,4 +19,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
             "JOIN Company c ON m.company.id = c.id " +
             "WHERE m.id = :memberId AND m.status = :statusCode")
     List<Long> findByMemberIdAndStatusCode(Long memberId, MemberStatus statusCode);
+
+    Optional<Member> findByLoginId(String loginId);
+
+    @EntityGraph(attributePaths = {"role"})
+    Optional<Member> findOneWithAuthoritiesByLoginId(String loginId);
 }

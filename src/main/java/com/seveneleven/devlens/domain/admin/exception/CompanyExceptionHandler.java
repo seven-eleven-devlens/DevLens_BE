@@ -11,4 +11,9 @@ public class CompanyExceptionHandler {
     public APIResponse<CompanyDto.CompanyResponse> handleCompanyDuplicatedException(CompanyDuplicatedException e) {
         return APIResponse.fail(e.getErrorCode(), e.getMessage());
     }
+
+    @ExceptionHandler(value = {CompanyNotFoundException.class})
+    public APIResponse<Exception> handleCompanyNotFoundException(CompanyNotFoundException e) {
+        return APIResponse.fail(e.getErrorCode(), e.getMessage());
+    }
 }
