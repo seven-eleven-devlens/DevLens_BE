@@ -13,12 +13,14 @@ public interface CheckRequestRepository extends JpaRepository<CheckRequest, Long
 
     @Query("""
     SELECT
+        new com.seveneleven.devlens.domain.project.dto.GetProjectDetail$ChecklistApplicationList(
         c_r.id,
         p_s.stepName,
         c.title,
         c_r.title,
         c_r.requester.name,
         c_r.requestDate
+        )
     FROM CheckRequest c_r
     JOIN c_r.checklist c
     JOIN c.projectStep p_s

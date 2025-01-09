@@ -1,9 +1,6 @@
 package com.seveneleven.devlens.domain.project.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,48 +10,40 @@ public class GetProjectDetail {
      * AllArgsContructor는 개발 시 삭제 예정
      */
     @Getter
-    @NoArgsConstructor
-    @ToString
     public static class Response {
         private Long projectId;
-        private String projectType;
+        private String projectTypeName;
         private String projectName;
         private String projectDescription;
         private String projectContact;
         private String projectContactPhone;
         private String projectImageURL;
+        @Setter
         private List<ProjectStepInfo> projectStep;
+        @Setter
         private List<ChecklistApplicationList> checklistApplicationList;
 
         public Response(
                 Long projectId,
-                String projectType,
+                String projectTypeName,
                 String projectName,
                 String projectDescription,
-                String projectContact,
-                String projectContactPhone
+                String name,
+                String phoneNumber
         ) {
             this.projectId = projectId;
-            this.projectType = projectType;
+            this.projectTypeName = projectTypeName;
             this.projectName = projectName;
             this.projectDescription = projectDescription;
-            this.projectContact = projectContact;
-            this.projectContactPhone = projectContactPhone;
-        }
-
-        public void setProjectStep(List<ProjectStepInfo> projectStep) {
-            this.projectStep = projectStep;
-        }
-
-        public void setChecklistApplicationList(List<ChecklistApplicationList> checklistApplicationList) {
-            this.checklistApplicationList = checklistApplicationList;
+            this.projectContact = name;
+            this.projectContactPhone = phoneNumber;
         }
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    @ToString
     public static class ProjectStepInfo {
         private Long stepId;
         private String stepName;
@@ -62,6 +51,7 @@ public class GetProjectDetail {
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString

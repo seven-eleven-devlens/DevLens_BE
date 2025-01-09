@@ -3,6 +3,7 @@ package com.seveneleven.devlens.domain.project.controller;
 import com.seveneleven.devlens.domain.project.dto.GetProjectList;
 import com.seveneleven.devlens.domain.project.service.ProjectService;
 import com.seveneleven.devlens.global.response.APIResponse;
+import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,6 @@ public class MyProjectController implements MyProjectDocs {
      */
     @GetMapping("/list")
     public APIResponse<GetProjectList.Response> getMyProject() {
-        return APIResponse.success(projectService.getProjectList());
+        return APIResponse.success(SuccessCode.OK, projectService.getProjectList());
     }
 }

@@ -36,16 +36,15 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     """)
     List<Project> findAllCompanyProgressingProjects(Long companyId);
 
-    // TODO - 승인 요청 권한이 있는 단계의 숭인 요청 글만 보여야 함.
     @Query(value = """
         SELECT
-        new com.seveneleven.devlens.domain.project.dto.GetProjectDetail.Response(
-            p.id,
-            p_t.projectTypeName,
-            p.projectName,
-            p.projectDescription,
-            m.name,
-            m.phoneNumber
+        new com.seveneleven.devlens.domain.project.dto.GetProjectDetail$Response(
+                p.id,
+                p_t.projectTypeName,
+                p.projectName,
+                p.projectDescription,
+                m.name,
+                m.phoneNumber
         )
         FROM
             Project p
@@ -57,6 +56,4 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
              p.id = :projectId
         """)
     GetProjectDetail.Response getProjectDetail(@Param("projectId") Long projectId);
-
-
 }
