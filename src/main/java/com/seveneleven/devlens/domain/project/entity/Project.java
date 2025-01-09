@@ -37,7 +37,7 @@ public class Project extends BaseEntity {
 
     @JoinColumn(name = "project_type_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private ProjectType projectTypeId; // 프로젝트 유형 ID
+    private ProjectType projectType; // 프로젝트 유형 ID
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -64,8 +64,71 @@ public class Project extends BaseEntity {
     private Long finalApprover; // 최종 결재자
 
     private LocalDateTime finalApprovalDate; // 최종 결재일시
+  
+    public Project(
+            Long id,
+            String projectName,
+            Company customer,
+            Company developer,
+            String projectDescription,
+            ProjectType projectTypeId,
+            Project.projectStatusCode projectStatusCode,
+            Member bnsManager,
+            YesNo hasImage,
+            String contractNumber,
+            LocalDateTime plannedStartDate,
+            LocalDateTime plannedEndDate,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long finalApprover,
+            LocalDateTime finalApprovalDate
+    ) {
+        this.id = id;
+        this.projectName = projectName;
+        this.customer = customer;
+        this.developer = developer;
+        this.projectDescription = projectDescription;
+        this.projectType = projectTypeId;
+        this.projectStatusCode = projectStatusCode;
+        this.bnsManager = bnsManager;
+        this.hasImage = hasImage;
+        this.contractNumber = contractNumber;
+        this.plannedStartDate = plannedStartDate;
+        this.plannedEndDate = plannedEndDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.finalApprover = finalApprover;
+        this.finalApprovalDate = finalApprovalDate;
+    }
 
-    enum projectStatusCode {
+    // Dto를 받는 생성자
+    public Project(
+            String projectName,
+            Company customer,
+            Company developer,
+            String projectDescription,
+            ProjectType projectTypeId,
+            projectStatusCode projectStatusCode,
+            Member bnsManager,
+            YesNo hasImage,
+            String contractNumber,
+            LocalDateTime plannedStartDate,
+            LocalDateTime plannedEndDate
+    ) {
+        this.projectName = projectName;
+        this.customer = customer;
+        this.developer = developer;
+        this.projectDescription = projectDescription;
+        this.projectType = projectTypeId;
+        this.projectStatusCode = projectStatusCode;
+        this.bnsManager = bnsManager;
+        this.hasImage = hasImage;
+        this.contractNumber = contractNumber;
+        this.plannedStartDate = plannedStartDate;
+        this.plannedEndDate = plannedEndDate;
+    }
+  
+    public enum projectStatusCode {
         PREPARED,
         IN_PROGRESS,
         COMPLETED,

@@ -25,7 +25,7 @@ public class CheckResult extends BaseEntity {
     private CheckRequest checkRequest; // 체크 요청 ID
 
     @Enumerated(EnumType.STRING)
-    private approvalStatus approvalStatus; // 승인 여부(결과)
+    private ApprovalStatus approvalStatus; // 승인 여부(결과)
 
     private Long processorMemberId; // 처리자
 
@@ -43,10 +43,4 @@ public class CheckResult extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private YesNo hasLink; // 링크 유무
-
-    enum approvalStatus {
-        WAITING,
-        APPROVED,
-        REJECTED;
-    }
 }

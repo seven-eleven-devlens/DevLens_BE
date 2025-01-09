@@ -1,6 +1,7 @@
 package com.seveneleven.devlens.domain.admin.exception;
 
 import com.seveneleven.devlens.global.exception.BusinessException;
+
 import static com.seveneleven.devlens.global.response.ErrorCode.COMPANY_IS_NOT_FOUND;
 
 public class CompanyNotFoundException extends BusinessException {

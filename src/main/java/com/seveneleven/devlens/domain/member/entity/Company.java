@@ -110,4 +110,12 @@ public class Company extends BaseEntity {
         this.departments.remove(department);
         department.setCompany(null);
     }
+
+    //회사 대표 이미지 여부 변환 메서드
+    public void addRepresentativeImage(){
+        this.representativeImageExists = YN.Y;
+    }
+    public void removeRepresentativeImage(){
+        this.representativeImageExists = YN.N;
+    }
 }

@@ -1,5 +1,6 @@
 package com.seveneleven.devlens.domain.project.dto;
 
+import com.seveneleven.devlens.domain.project.entity.Project;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +22,6 @@ public class GetProjectList {
 
     @Getter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class GetMyProjectResponseInfo {
         private Long projectId;
         private String name;
@@ -29,6 +29,19 @@ public class GetProjectList {
         private LocalDate endDate;
         private Long customerCompanyId;
         private String customerCompanyName;
+
+        private GetMyProjectResponseInfo(Project project) {
+            this.projectId = project.getId();
+            this.name = project.getProjectName();
+            this.startDate = project.getStartDate().toLocalDate();
+            this.endDate = project.getEndDate().toLocalDate();
+            this.customerCompanyId = project.getCustomer().getId();
+            this.customerCompanyName = project.getCustomer().getCompanyName();
+        }
+
+        public static GetMyProjectResponseInfo toDto(Project project) {
+            return new GetMyProjectResponseInfo(project);
+        }
     }
 
     @Getter
@@ -41,5 +54,18 @@ public class GetProjectList {
         private LocalDate endDate;
         private Long customerCompanyId;
         private String customerCompanyName;
+
+        private GetCompanyProjectResponseInfo(Project project) {
+            this.projectId = project.getId();
+            this.name = project.getProjectName();
+            this.startDate = project.getStartDate().toLocalDate();
+            this.endDate = project.getEndDate().toLocalDate();
+            this.customerCompanyId = project.getCustomer().getId();
+            this.customerCompanyName = project.getCustomer().getCompanyName();
+        }
+
+        public static GetCompanyProjectResponseInfo toDto(Project project) {
+            return new GetCompanyProjectResponseInfo(project);
+        }
     }
 }

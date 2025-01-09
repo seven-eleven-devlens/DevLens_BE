@@ -3,11 +3,9 @@ package com.seveneleven.devlens.domain.project.entity;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import com.seveneleven.devlens.global.entity.YesNo;
 import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -53,4 +51,52 @@ public class ProjectHistory extends BaseEntity {
     private LocalDateTime plannedEndDate; // 종료 예정일
 
     private LocalDateTime endDate; // 종료일
+
+    public ProjectHistory(
+            String projectName,
+            String customerName,
+            String developerName,
+            String description,
+            String statusCode,
+            String typeName,
+            Long bnsManagerId,
+            YesNo hasImage,
+            String contractNumber,
+            LocalDateTime plannedStartDate,
+            LocalDateTime startDate,
+            LocalDateTime plannedEndDate,
+            LocalDateTime endDate
+    ) {
+        this.projectName = projectName;
+        this.customerName = customerName;
+        this.developerName = developerName;
+        this.description = description;
+        this.statusCode = statusCode;
+        this.typeName = typeName;
+        this.bnsManagerId = bnsManagerId;
+        this.hasImage = hasImage;
+        this.contractNumber = contractNumber;
+        this.plannedStartDate = plannedStartDate;
+        this.startDate = startDate;
+        this.plannedEndDate = plannedEndDate;
+        this.endDate = endDate;
+    }
+
+    public ProjectHistory(Project project) {
+        this(
+                project.getProjectName(),
+                project.getCustomer().getCompanyName(),
+                project.getDeveloper().getCompanyName(),
+                project.getProjectDescription(),
+                project.getProjectStatusCode().name(),
+                project.getProjectType().getProjectTypeName(),
+                project.getBnsManager().getId(),
+                project.getHasImage(),
+                project.getContractNumber(),
+                project.getPlannedStartDate(),
+                project.getStartDate(),
+                project.getPlannedEndDate(),
+                project.getEndDate()
+        );
+    }
 }

@@ -2,22 +2,24 @@ package com.seveneleven.devlens.domain.project.controller;
 
 import com.seveneleven.devlens.domain.project.dto.GetProjectDetail;
 import com.seveneleven.devlens.domain.project.dto.GetProjectStep;
+import com.seveneleven.devlens.domain.project.service.ProjectService;
 import com.seveneleven.devlens.global.entity.YesNo;
 import com.seveneleven.devlens.global.response.APIResponse;
+import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/project/detail")
 public class ProjectController implements ProjectDocs {
+
+    private final ProjectService projectService;
 
     /**
      * 함수명 : getProjectDetail
@@ -27,44 +29,7 @@ public class ProjectController implements ProjectDocs {
     public APIResponse<GetProjectDetail.Response> getProjectDetail(
             @PathVariable Long projectId
     ) {
-        GetProjectDetail.ProjectStepInfo projectStep = new GetProjectDetail.ProjectStepInfo(
-                10L,               // stepId
-                "Design Phase",    // stepName
-                75.5               // stepProcessRate
-        );
-
-        List<GetProjectDetail.ChecklistApplicationList> checklistApplications = List.of(
-                new GetProjectDetail.ChecklistApplicationList(
-                        1L,                                     // checklistApplicationId
-                        "Step A",                               // StepName
-                        "Checklist A",                          // checklistName
-                        "Application A",                        // applicationTitle
-                        "User A",                               // applicationUserName
-                        LocalDateTime.of(2023, 1, 1, 10, 0)     // ApplicationDateTime
-                ),
-                new GetProjectDetail.ChecklistApplicationList(
-                        2L,                                     // checklistApplicationId
-                        "Step B",                               // StepName
-                        "Checklist B",                          // checklistName
-                        "Application B",                        // applicationTitle
-                        "User B",                               // applicationUserName
-                        LocalDateTime.of(2023, 2, 1, 15, 30)    // ApplicationDateTime
-                )
-        );
-
-        GetProjectDetail.Response response = new GetProjectDetail.Response(
-                projectId,                                 // projectId
-                "Construction",                            // projectType
-                "New Building Project",                   // projectName
-                projectStep,                               // projectStep
-                "This is a sample project description.",   // projectDescription
-                "John Doe",                                // projectContact
-                "+1-234-567-890",                          // projectContactPhone
-                "https://example.com/image.jpg",           // projectImageURL
-                new PageImpl<>(checklistApplications)      // checklistApplicationList
-        );
-
-        return APIResponse.success(response);
+        return APIResponse.success(SuccessCode.OK, projectService.getProjectDetail(projectId));
     }
 
     /**
@@ -118,6 +83,6 @@ public class ProjectController implements ProjectDocs {
                 )
         );
 
-        return APIResponse.success(new GetProjectStep.Response(projectId,steps));
+        return APIResponse.success(SuccessCode.OK, new GetProjectStep.Response(projectId,steps));
     }
 }

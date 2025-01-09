@@ -20,7 +20,7 @@ public class ProjectStep extends BaseEntity {
 
     @JoinColumn(name = "project_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private Project projectId; // 프로젝트 ID
+    private Project project; // 프로젝트 ID
 
     @Column(nullable = false)
     private String stepName; // 프로젝트 단계명
@@ -33,4 +33,12 @@ public class ProjectStep extends BaseEntity {
     @Column(nullable = false)
     @Convert(converter = YesNoConverter.class)
     private YesNo isActive; // 사용 유무
+
+    public ProjectStep(Project project, String stepName, String stepDescription, Integer stepOrder) {
+        this.project = project;
+        this.stepName = stepName;
+        this.stepDescription = stepDescription;
+        this.stepOrder = stepOrder;
+        isActive = YesNo.YES;
+    }
 }
