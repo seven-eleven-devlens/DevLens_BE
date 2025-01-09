@@ -35,7 +35,6 @@ public class FileService {
      */
     @Transactional
     public APIResponse uploadFile(MultipartFile file, String fileCategory, Long referenceId) throws Exception {
-
         //1. 파일 검증
         FileValidator.validateFile(file, fileCategory);
 
@@ -77,28 +76,45 @@ public class FileService {
     }
 
     /**
-     * 2. 파일 조회(리스트)
+     * 2-1. 파일 조회(단일)
      * @param fileCategory 파일 카테고리
      * @param referenceId 파일 참조 ID
-     * @return APIResponse 파일 메타데이터 목록을 담은 응답 객체
+     * @return FileMetadataDto 파일 메타데이터를 담은 응답 객체
      */
-    public APIResponse getFiles(String fileCategory, Long referenceId) {
-
+    public FileMetadataDto getFile(String fileCategory, Long referenceId) {
+        //파일 카테고리명으로 파일 카테고리 enum 가져오기
         FileCategory categoryEnum = FileCategory.valueOf(fileCategory);
 
+        //해당 파일 카테고리와 참조 id로 entity를 가져온다.
+        //파일이 존재하지 않아도 예외를 던지면 안됨.
+        FileMetadata fileMetadataEntity = fileMetadataRepository.findTopByCategoryAndReferenceIdOrderByCreatedAtDesc(categoryEnum, referenceId)
+                .orElse(null);
+
+        //dto 변환 후 반환
+        return FileMetadataDto.toDto(fileMetadataEntity);
+    }
+
+    /**
+     * 2-2. 파일 조회(리스트)
+     * @param fileCategory 파일 카테고리
+     * @param referenceId 파일 참조 ID
+     * @return List<FileMetadataDto> 파일 메타데이터 목록을 담은 응답 객체
+     */
+    public List<FileMetadataDto> getFiles(String fileCategory, Long referenceId) {
+        //파일 카테고리명으로 파일 카테고리 enum 가져오기
+        FileCategory categoryEnum = FileCategory.valueOf(fileCategory);
+
+        //해당 파일 카테고리와 참조 id로 entity를 가져온다.
         List<FileMetadata> fileMetadataEntities = fileMetadataRepository.findAllByCategoryAndReferenceId(categoryEnum, referenceId);
 
+        //entity를 dto에 담는다.
         List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
         for (FileMetadata fileMetadata : fileMetadataEntities) {
             FileMetadataDto dto = FileMetadataDto.toDto(fileMetadata);
             fileMetadataDtos.add(dto);
         }
 
-        return APIResponse.success(SuccessCode.OK, fileMetadataDtos);
+        //반환
+        return fileMetadataDtos;
     }
-
-
-
-
-
 }

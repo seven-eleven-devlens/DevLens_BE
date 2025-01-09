@@ -2,16 +2,12 @@ package com.seveneleven.devlens.global.util.file.controller;
 
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.util.file.Service.CompanyFileService;
-import com.seveneleven.devlens.global.util.file.Service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -44,6 +40,18 @@ public class CompanyFileController {
         APIResponse uploadResponse = companyFileService.uploadLogoImage(file, companyId, uploaderId);
 
         return ResponseEntity.status(uploadResponse.getCode()).body(uploadResponse);
+    }
+
+    /**
+     * 2. 회사 로고 조회
+     * @param companyId 해당 회사 id
+     * @return 해당 회사의 로고 이미지 메타데이터
+     */
+    @GetMapping("")
+    public ResponseEntity<APIResponse> getCompanyLogo(@RequestParam("companyId") Long companyId) throws Exception {
+        APIResponse filesResponse = companyFileService.getLogoImage(companyId);
+
+        return ResponseEntity.status(filesResponse.getCode()).body(filesResponse);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.seveneleven.devlens.global.util.file.Service;
 
 import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
+import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.global.exception.BusinessException;
 import com.seveneleven.devlens.global.response.APIResponse;
@@ -11,9 +12,12 @@ import com.seveneleven.devlens.global.util.file.dto.FileMetadataDto;
 import com.seveneleven.devlens.global.util.file.entity.FileMetadata;
 import com.seveneleven.devlens.global.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +41,11 @@ public class CompanyFileService {
         Company companyEntity = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
+        //2. 프로필 등록 상태인지 판별
+        if(YN.Y.equals(companyEntity.getRepresentativeImageExists())){
+            throw new BusinessException(ErrorCode.LOGO_ALREADY_EXIST_ERROR);
+        }
+
         //TODO) 2. 수행자 권한 판별 validation - admin판별, super의 회사 판별
 
         //3. S3파일 업로드, 메타데이터 테이블 저장
@@ -58,16 +67,15 @@ public class CompanyFileService {
      */
     @Transactional
     public APIResponse getLogoImage(Long companyId) throws Exception{
-        FileMetadata compLogoData = fileMetadataRepository.findByCategoryAndReferenceId(FileCategory.COMPANY_LOGO_IMAGE,
-                companyId).orElse(null);
-
-        if(compLogoData != null) {
-            FileMetadataDto dto = FileMetadataDto.toDto(compLogoData);
-            //데이터가 있으면 데이터 보내고
-            return APIResponse.success(SuccessCode.OK, dto);
-        } else{
-            //없으면 성공 코드만 보낸다.
-            return APIResponse.success(SuccessCode.OK);
+        //회사 유효성 검사
+        if(!companyRepository.existsById(companyId)){
+            throw new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND);
         }
+
+        //카테고리와 참조 id 로 FileMetadata 탐색
+        FileMetadataDto fileDto = fileService.getFile("COMPANY_LOGO_IMAGE", companyId);
+
+        return APIResponse.success(SuccessCode.OK, fileDto);
     }
 }
+
