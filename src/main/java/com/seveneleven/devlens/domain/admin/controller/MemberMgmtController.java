@@ -98,11 +98,19 @@ public class MemberMgmtController {
     }
 
 
-    // 계정 수정
-    @PutMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@RequestParam String id) {
+    /**
+     * 회원 정보를 수정합니다.
+     *
+     * @param id       수정할 회원의 고유 식별자 (필수).
+     * @param memberDto 수정할 회원 정보를 담은 요청 객체 (MemberDto.PutRequest).
+     * @return 수정된 회원 정보를 포함한 응답 객체 (APIResponse<MemberDto.Response>).
+     *         HTTP 상태 코드는 200 OK로 반환됩니다.
+     */
+    @PatchMapping("/member/{memberId}")
+    public ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@RequestParam String id,
+                                                                        @RequestBody MemberDto.PatchRequest memberDto) {
 
-        MemberDto.Response updatedMember = memberMgmtService.updateMember(id);
+        MemberDto.Response updatedMember = memberMgmtService.updateMember(id, memberDto);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED, updatedMember));

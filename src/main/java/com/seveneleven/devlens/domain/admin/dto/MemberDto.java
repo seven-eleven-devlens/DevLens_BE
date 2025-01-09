@@ -58,5 +58,18 @@ public class MemberDto {
         private Long departmentId;
         private Long positionId;
     }
+
+    @Getter
+    @Setter
+    public static class PatchRequest{
+        private String name;
+        private Long companyId;
+        private Role role;
+        private String phoneNumber;
+        private Long departmentId;
+        private Long positionId;
+        private YN profileImageExists;
+    }
+
 }
 

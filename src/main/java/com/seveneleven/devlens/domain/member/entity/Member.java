@@ -5,12 +5,14 @@ import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.global.entity.BaseEntity;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -82,13 +84,21 @@ public class Member extends BaseEntity {
     }
 
     // 업데이트 메서드
-    public void updateMember(String password, String phoneNumber, Company company, Long departmentId, Long positionId, YN profileImageExists, PasswordEncoder pwdEncoder) {
-        this.company      = company;
-        this.password     = pwdEncoder.encode(password);
-        this.phoneNumber  = phoneNumber;
-        this.departmentId = departmentId;
-        this.positionId   = positionId;
-        this.profileImageExists = profileImageExists;
+    public void updateMember(String name, String phoneNumber, Role role, Company company,
+                             Long departmentId, Long positionId, YN profileImageExists) {
+        this.name               = StringUtils.isNotBlank(name) ? name : this.name;
+        this.role               = Objects.nonNull(role) ? role : this.role;
+        this.company            = Objects.nonNull(company) ? company : this.company;
+        this.phoneNumber        = StringUtils.isNotBlank(phoneNumber) ? phoneNumber : this.phoneNumber;
+        this.departmentId       = Objects.nonNull(departmentId) ? departmentId : this.departmentId;
+        this.positionId         = Objects.nonNull(positionId) ? positionId : this.positionId;
+        this.profileImageExists = Objects.nonNull(profileImageExists) ? profileImageExists : this.profileImageExists;
+    }
+
+
+    // 비밀번호 재설정
+    public void updatePassword(String password){
+        this.password     = password;
     }
 
     // 삭제 메서드

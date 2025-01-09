@@ -120,13 +120,20 @@ public class MemberMgmtService {
     }
 
 
-    public MemberDto.Response updateMember(String id) {
+    public MemberDto.Response updateMember(String id, MemberDto.PatchRequest memberDto) {
 
         Member member = memberRepository.findByLoginId(id)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        return null;
+        Company company = companyRepository.findById(memberDto.getCompanyId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
+        member.updateMember(memberDto.getName(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
+                memberDto.getDepartmentId(), memberDto.getPositionId(), memberDto.getProfileImageExists());
+
+        Member updatedMember = memberRepository.save(member);
+
+        return MemberDto.fromEntity(updatedMember);
     }
 
 
