@@ -37,7 +37,7 @@ public class Project extends BaseEntity {
 
     @JoinColumn(name = "project_type_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private ProjectType projectTypeId; // 프로젝트 유형 ID
+    private ProjectType projectType; // 프로젝트 유형 ID
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -65,11 +65,29 @@ public class Project extends BaseEntity {
 
     private LocalDateTime finalApprovalDate; // 최종 결재일시
 
-    enum projectStatusCode {
+    public enum projectStatusCode {
         PREPARED,
         IN_PROGRESS,
         COMPLETED,
         CLOSED,
         CANCELLED
+    }
+
+    public Project(String projectName, Company customer, Company developer, String projectDescription, ProjectType projectType, Project.projectStatusCode projectStatusCode, Member bnsManager, String contractNumber, LocalDateTime plannedStartDate, LocalDateTime plannedEndDate) {
+        this.projectName = projectName;
+        this.customer = customer;
+        this.developer = developer;
+        this.projectDescription = projectDescription;
+        this.projectType = projectType;
+        this.projectStatusCode = projectStatusCode;
+        this.bnsManager = bnsManager;
+        this.contractNumber = contractNumber;
+        this.plannedStartDate = plannedStartDate;
+        this.plannedEndDate = plannedEndDate;
+        this.startDate = plannedStartDate;
+        this.endDate = null;
+        this.finalApprover = null;
+        this.finalApprovalDate = null;
+        this.hasImage = YesNo.NO;
     }
 }

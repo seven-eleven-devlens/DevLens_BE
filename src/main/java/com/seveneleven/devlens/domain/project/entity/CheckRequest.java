@@ -26,13 +26,16 @@ public class CheckRequest extends BaseEntity {
     @Column(nullable = false)
     private LocalDateTime requestDate; // 체크 요청 일시
 
-    private String approvalStatus; // 승인 여부(결과)
+    @Enumerated(EnumType.STRING)
+    private ApprovalStatus approvalStatus; // 승인 여부(결과)
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, referencedColumnName = "id")
-    private Member requesterId; // 요청자 ID
+    private Member requester; // 요청자 ID
 
     private String requestIp; // 요청자 IP
+
+    private String title;
 
     @Column(columnDefinition = "TEXT")
     private String description; // 요청 내용
@@ -44,4 +47,16 @@ public class CheckRequest extends BaseEntity {
     @Column(nullable = false)
     @Convert(converter = YesNoConverter.class)
     private YesNo hasLink; // 링크 유무
+
+    public CheckRequest(Checklist checklist, LocalDateTime requestDate, ApprovalStatus approvalStatus, Member requester, String requestIp, String title, String description) {
+        this.checklist = checklist;
+        this.requestDate = requestDate;
+        this.approvalStatus = approvalStatus;
+        this.requester = requester;
+        this.requestIp = requestIp;
+        this.title = title;
+        this.description = description;
+        this.hasFile = YesNo.NO;
+        this.hasLink = YesNo.NO;
+    }
 }

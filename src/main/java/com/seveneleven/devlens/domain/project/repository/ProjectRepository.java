@@ -1,11 +1,15 @@
 package com.seveneleven.devlens.domain.project.repository;
 
+import com.seveneleven.devlens.domain.project.dto.GetProjectDetail;
 import com.seveneleven.devlens.domain.project.entity.Project;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     @Query("""
         SELECT p
@@ -31,6 +35,28 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
             )
     """)
     List<Project> findAllCompanyProgressingProjects(Long companyId);
+
+    // TODO - 승인 요청 권한이 있는 단계의 숭인 요청 글만 보여야 함.
+    @Query(value = """
+        SELECT
+        new com.seveneleven.devlens.domain.project.dto.GetProjectDetail.Response(
+            p.id,
+            p_t.projectTypeName,
+            p.projectName,
+            p.projectDescription,
+            m.name,
+            m.phoneNumber
+        )
+        FROM
+            Project p
+        JOIN
+            ProjectType p_t ON p_t.id = p.projectType.id
+        JOIN
+            Member m ON m.id = p.bnsManager.id
+        WHERE
+             p.id = :projectId
+        """)
+    GetProjectDetail.Response getProjectDetail(@Param("projectId") Long projectId);
 
 
 }

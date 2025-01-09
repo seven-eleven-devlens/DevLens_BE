@@ -2,8 +2,8 @@ package com.seveneleven.devlens.domain.project.service;
 
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.repository.MemberRepository;
+import com.seveneleven.devlens.domain.project.dto.GetProjectDetail;
 import com.seveneleven.devlens.domain.project.dto.GetProjectList;
-import com.seveneleven.devlens.domain.project.service.dashboard.ProjectReader;
 import com.seveneleven.devlens.global.util.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,5 +30,10 @@ public class ProjectServiceImpl implements ProjectService {
                 );
 
         return projectReader.getProjectList(memberIdAndCompanyId.get(0), memberIdAndCompanyId.get(1));
+    }
+
+    @Override
+    public GetProjectDetail.Response getProjectDetail(Long projectId) {
+        return projectReader.getProjectDetail(projectId);
     }
 }

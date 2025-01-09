@@ -25,4 +25,10 @@ public class ProjectType extends BaseEntity {
 
     @Convert(converter = YesNoConverter.class)
     private YesNo useStatus; // 사용 유무
+
+    public ProjectType(String projectTypeName, String projectTypeDescription) {
+        this.projectTypeName = projectTypeName;
+        this.projectTypeDescription = projectTypeDescription;
+        this.useStatus = YesNo.YES;
+    }
 }
