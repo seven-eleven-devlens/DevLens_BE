@@ -1,32 +1,47 @@
 package com.seveneleven.devlens.domain.project.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.domain.Page;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class GetProjectDetail {
     /**
      * AllArgsContructor는 개발 시 삭제 예정
      */
     @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
     public static class Response {
         private Long projectId;
-        private String projectType;
+        private String projectTypeName;
         private String projectName;
-        private ProjectStepInfo projectStep;
         private String projectDescription;
         private String projectContact;
         private String projectContactPhone;
         private String projectImageURL;
-        private Page<ChecklistApplicationList> checklistApplicationList;
+        @Setter
+        private List<ProjectStepInfo> projectStep;
+        @Setter
+        private List<ChecklistApplicationList> checklistApplicationList;
+
+        public Response(
+                Long projectId,
+                String projectTypeName,
+                String projectName,
+                String projectDescription,
+                String name,
+                String phoneNumber
+        ) {
+            this.projectId = projectId;
+            this.projectTypeName = projectTypeName;
+            this.projectName = projectName;
+            this.projectDescription = projectDescription;
+            this.projectContact = name;
+            this.projectContactPhone = phoneNumber;
+        }
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProjectStepInfo {
@@ -36,8 +51,10 @@ public class GetProjectDetail {
     }
 
     @Getter
+    @Setter
     @NoArgsConstructor
     @AllArgsConstructor
+    @ToString
     public static class ChecklistApplicationList {
         private Long checklistApplicationId;
         private String StepName;
