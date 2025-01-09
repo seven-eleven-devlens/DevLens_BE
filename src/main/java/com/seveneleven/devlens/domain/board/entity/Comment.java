@@ -1,12 +1,11 @@
 package com.seveneleven.devlens.domain.board.entity;
 
-import com.seveneleven.devlens.domain.member.constant.YN;
-import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.global.entity.BaseEntity;
+import com.seveneleven.devlens.global.entity.YesNo;
+import com.seveneleven.devlens.global.entity.converter.YesNoConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -38,8 +37,9 @@ public class Comment extends BaseEntity {
     private Comment parentCommentId;
 
     @Column(name = "is_active", nullable = false)
+    @Convert(converter = YesNoConverter.class)
     @Enumerated(EnumType.STRING)
-    private YN isActive;
+    private YesNo isActive;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;

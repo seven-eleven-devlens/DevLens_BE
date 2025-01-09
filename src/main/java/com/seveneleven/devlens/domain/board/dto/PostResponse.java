@@ -1,13 +1,11 @@
 package com.seveneleven.devlens.domain.board.dto;
 
-import com.seveneleven.devlens.domain.member.constant.YN;
+import com.seveneleven.devlens.global.entity.YesNo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -16,7 +14,7 @@ public class PostResponse {
     private Long postId;
     private Long projectStepId;
     private Long parentPostId;
-    private YN isPinnedPost;
+    private YesNo isPinnedPost;
     private Integer priority;
     private PostStatus status;
     private String title;
@@ -33,7 +31,7 @@ public class PostResponse {
             Long postId,
             Long projectStepId,
             Long parentPostId,
-            YN isPinnedPost,
+            YesNo isPinnedPost,
             Integer priority,
             PostStatus status,
             String title,

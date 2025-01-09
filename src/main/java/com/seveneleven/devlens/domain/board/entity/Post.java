@@ -1,9 +1,10 @@
 package com.seveneleven.devlens.domain.board.entity;
 
 import com.seveneleven.devlens.domain.board.dto.PostStatus;
-import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.project.entity.ProjectStep;
 import com.seveneleven.devlens.global.entity.BaseEntity;
+import com.seveneleven.devlens.global.entity.YesNo;
+import com.seveneleven.devlens.global.entity.converter.YesNoConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,8 +46,9 @@ public class Post extends BaseEntity {
     private Post parentPostId;
 
     @Column(name = "is_pinned_post")
+    @Convert(converter = YesNoConverter.class)
     @Enumerated(EnumType.STRING)
-    private YN isPinnedPost;
+    private YesNo isPinnedPost;
 
     @Column(name = "priority")
     private Integer priority;
@@ -62,12 +64,14 @@ public class Post extends BaseEntity {
     private String content;
 
     @Column(name = "has_file", nullable = false)
+    @Convert(converter = YesNoConverter.class)
     @Enumerated(EnumType.STRING)
-    private YN hasFile = YN.N;
+    private YesNo hasFile = YesNo.NO;
 
     @Column(name = "has_link", nullable = false)
+    @Convert(converter = YesNoConverter.class)
     @Enumerated(EnumType.STRING)
-    private YN hasLink = YN.N;
+    private YesNo hasLink = YesNo.NO;
 
     @Column(name = "deadline")
     private LocalDate deadline;
@@ -82,7 +86,7 @@ public class Post extends BaseEntity {
     public static Post createPost(
             ProjectStep projectStepId,
             Post parentPostId,
-            YN isPinnedPost,
+            YesNo isPinnedPost,
             Integer priority,
             PostStatus status,
             String title,
@@ -107,7 +111,7 @@ public class Post extends BaseEntity {
 
     // 게시글 수정
     public void updatePost(
-            YN isPinnedPost,
+            YesNo isPinnedPost,
             Integer priority,
             PostStatus status,
             String title,
@@ -125,18 +129,18 @@ public class Post extends BaseEntity {
     }
 
     // 파일 존재 여부 변경 메서드
-    public void yesHasFile(YN hasFile) {
-        this.hasFile = YN.Y;
+    public void yesHasFile(YesNo hasFile) {
+        this.hasFile = YesNo.YES;
     }
-    public void noHasFile(YN hasFile) {
-        this.hasFile = YN.N;
+    public void noHasFile(YesNo hasFile) {
+        this.hasFile = YesNo.NO;
     }
 
     // 링크 존재 여부 변경 메서드
-    public void yesHasLink(YN hasLink) {
-        this.hasLink = YN.Y;
+    public void yesHasLink(YesNo hasLink) {
+        this.hasLink = YesNo.YES;
     }
-    public void noHasLink(YN hasLink) {
-        this.hasLink = YN.N;
+    public void noHasLink(YesNo hasLink) {
+        this.hasLink = YesNo.NO;
     }
 }

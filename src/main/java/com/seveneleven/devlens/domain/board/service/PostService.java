@@ -13,7 +13,6 @@ import com.seveneleven.devlens.domain.project.entity.ProjectStep;
 import com.seveneleven.devlens.domain.project.repository.ProjectStepRepository;
 import com.seveneleven.devlens.global.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

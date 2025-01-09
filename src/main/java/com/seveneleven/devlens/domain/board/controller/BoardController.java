@@ -25,8 +25,6 @@ public class BoardController implements BoardDocs {
     @GetMapping("/posts/{postId}")
     @Override
     public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) throws Exception {
-//        postService.selectPost(postId);
-//        PostResponse postResponse = new PostResponse();
         PostResponse postResponse = postService.selectPost(postId);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())

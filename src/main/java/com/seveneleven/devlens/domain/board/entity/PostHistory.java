@@ -2,20 +2,12 @@ package com.seveneleven.devlens.domain.board.entity;
 
 import com.seveneleven.devlens.domain.board.dto.PostAction;
 import com.seveneleven.devlens.domain.board.dto.PostStatus;
-import com.seveneleven.devlens.domain.board.dto.PostUpdateRequest;
-import com.seveneleven.devlens.domain.member.constant.YN;
-import com.seveneleven.devlens.domain.member.entity.Member;
-import com.seveneleven.devlens.domain.project.entity.ProjectStep;
+
+import com.seveneleven.devlens.global.entity.YesNo;
+import com.seveneleven.devlens.global.entity.converter.YesNoConverter;
 import jakarta.persistence.*;
 import lombok.*;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -56,8 +48,9 @@ public class PostHistory {
     private Long postId;
 
     @Column(name = "is_pinned_post")
+    @Convert(converter = YesNoConverter.class)
     @Enumerated(EnumType.STRING)
-    private YN isPinnedPost;
+    private YesNo isPinnedPost;
 
     @Column(name = "priority")
     private Integer priority;
@@ -73,12 +66,14 @@ public class PostHistory {
     private String content;
 
     @Column(name = "has_file", nullable = false)
+    @Convert(converter = YesNoConverter.class)
     @Enumerated(EnumType.STRING)
-    private YN hasFile;
+    private YesNo hasFile;
 
     @Column(name = "has_link", nullable = false)
+    @Convert(converter = YesNoConverter.class)
     @Enumerated(EnumType.STRING)
-    private YN hasLink;
+    private YesNo hasLink;
 
     @Column(name = "deadline")
     private LocalDate deadline;
