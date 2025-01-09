@@ -15,7 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/*
+* 관리자 회원 관리 API Controller
+*
+* 핵심 기능 : 회원 목록 조회, 회원 상세 조회, 회원 계정 생성(단일, 다중), 계정 수정, 계정 삭제, 비밀번호 초기화
+* */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin")
@@ -116,11 +120,20 @@ public class MemberMgmtController {
                 .body(APIResponse.success(SuccessCode.UPDATED, updatedMember));
     }
 
-    // 계정 삭제
+    /**
+     * 회원 계정 삭제합니다.
+     *
+     * @param id       수정할 회원의 고유 식별자 (필수).
+     * @return 삭제된 회원에 대한 응답 객체 (APIResponse<SuccessCode>).
+     *         HTTP 상태 코드는 200 DELETED로 반환됩니다.
+     */
     @DeleteMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<SuccessCode>> deleteMember() {
+    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@RequestParam String id) {
 
-        return null;
+        memberMgmtService.deleteMember(id);
+
+        return ResponseEntity.status(SuccessCode.DELETED.getStatus())
+                .body(APIResponse.success(SuccessCode.DELETED));
     }
 
     // 회원 비밀번호 초기화

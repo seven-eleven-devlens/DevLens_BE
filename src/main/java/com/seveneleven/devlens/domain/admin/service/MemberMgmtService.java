@@ -137,7 +137,17 @@ public class MemberMgmtService {
     }
 
 
+    public void deleteMember(String id) {
+        // 회원 조회
+        Member member = memberRepository.findByLoginId(id)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
+        // 삭제 상태 변경
+        member.deleteMember();
+
+        // 저장
+        memberRepository.save(member);
+    }
 
 
 
