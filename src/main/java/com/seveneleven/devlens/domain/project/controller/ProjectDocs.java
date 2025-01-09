@@ -41,31 +41,4 @@ public interface ProjectDocs {
     APIResponse<GetProjectDetail.Response> getProjectDetail(
             @PathVariable Long projectId
     );
-
-    @GetMapping("/step/{projectId}")
-    @Operation(
-            summary = "프로젝트 단계 조회",
-            description = "특정 프로젝트의 단계를 반환합니다.",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "성공적으로 프로젝트 단계를 반환했습니다.",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = GetProjectStep.Response.class)
-                            )
-                    )
-            },
-            parameters = {
-                    @Parameter(
-                            name = "projectId",
-                            description = "단계를 조회할 프로젝트의 ID",
-                            required = true,
-                            example = "1"
-                    )
-            }
-    )
-    APIResponse<GetProjectStep.Response> getProjectStep(
-            @PathVariable Long projectId
-    );
 }
