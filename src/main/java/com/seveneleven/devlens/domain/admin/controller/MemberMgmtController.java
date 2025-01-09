@@ -136,11 +136,22 @@ public class MemberMgmtController {
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
 
-    // 회원 비밀번호 초기화
-    @PutMapping("/member/{memberId}/reset-password")
-    public ResponseEntity<APIResponse<SuccessCode>> resetPwd() {
+    /**
+     * 회원 비밀번호를 초기화합니다.
+     *
+     * @param id 초기화할 회원의 고유 식별자 (PathVariable).
+     * @return 초기화된 임시 비밀번호를 포함한 응답 객체 (APIResponse<String>).
+     *         HTTP 상태 코드는 200 OK로 반환됩니다.
+     */
+    @PatchMapping("/member/{memberId}/reset-password")
+    public ResponseEntity<APIResponse<String>> resetPwd(@RequestParam String id) {
 
-        return null;
+        // 비밀번호 초기화
+        String temporaryPassword = memberMgmtService.resetPassword(id);
+
+        // 응답으로 임시 비밀번호 반환
+        return ResponseEntity.status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, temporaryPassword));
     }
 
 }

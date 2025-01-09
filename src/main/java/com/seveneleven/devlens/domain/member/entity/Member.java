@@ -8,10 +8,8 @@ import com.seveneleven.devlens.global.entity.BaseEntity;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -97,7 +95,7 @@ public class Member extends BaseEntity {
 
 
     // 비밀번호 재설정
-    public void updatePassword(String password){
+    public void resetPassword(String password){
         this.password     = password;
     }
 
