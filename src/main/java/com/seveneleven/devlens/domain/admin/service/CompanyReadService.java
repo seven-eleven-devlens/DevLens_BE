@@ -21,6 +21,7 @@ public class CompanyReadService {
     private final CompanyRepository companyRepository;
     private final CompanyResponseConverter companyResponseConverter;
     private final int pageSize = 20;
+
     /*
         함수명 : getCompanyDto
         함수 목적 : 회사 상세조회
@@ -29,7 +30,7 @@ public class CompanyReadService {
     public CompanyDto.CompanyResponse getCompanyResponse(
             Long id
     ) {
-        return companyRepository.findByIdAndIsActive(id,YN.Y)
+        return companyRepository.findByIdAndIsActive(id, YN.Y)
                 .map(companyResponseConverter::toDTO)
                 .orElseThrow(CompanyNotFoundException::new);
     }
@@ -43,8 +44,8 @@ public class CompanyReadService {
             Integer page
     ) {
         Pageable pageable = PageRequest.of(page, pageSize, Sort.by("companyName").descending());
-        Page<Company> companyPage = companyRepository.findByIsActive(pageable,YN.Y);
-        if(companyPage.getContent().isEmpty()) {
+        Page<Company> companyPage = companyRepository.findByIsActive(pageable, YN.Y);
+        if (companyPage.getContent().isEmpty()) {
             throw new CompanyNotFoundException();
         }
         return PaginatedResponse.createPaginatedResponse(companyPage.map(companyResponseConverter::toDTO));

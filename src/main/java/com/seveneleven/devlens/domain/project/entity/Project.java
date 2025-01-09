@@ -64,30 +64,75 @@ public class Project extends BaseEntity {
     private Long finalApprover; // 최종 결재자
 
     private LocalDateTime finalApprovalDate; // 최종 결재일시
+  
+    public Project(
+            Long id,
+            String projectName,
+            Company customer,
+            Company developer,
+            String projectDescription,
+            ProjectType projectTypeId,
+            Project.projectStatusCode projectStatusCode,
+            Member bnsManager,
+            YesNo hasImage,
+            String contractNumber,
+            LocalDateTime plannedStartDate,
+            LocalDateTime plannedEndDate,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            Long finalApprover,
+            LocalDateTime finalApprovalDate
+    ) {
+        this.id = id;
+        this.projectName = projectName;
+        this.customer = customer;
+        this.developer = developer;
+        this.projectDescription = projectDescription;
+        this.projectTypeId = projectTypeId;
+        this.projectStatusCode = projectStatusCode;
+        this.bnsManager = bnsManager;
+        this.hasImage = hasImage;
+        this.contractNumber = contractNumber;
+        this.plannedStartDate = plannedStartDate;
+        this.plannedEndDate = plannedEndDate;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.finalApprover = finalApprover;
+        this.finalApprovalDate = finalApprovalDate;
+    }
 
+    // Dto를 받는 생성자
+    public Project(
+            String projectName,
+            Company customer,
+            Company developer,
+            String projectDescription,
+            ProjectType projectTypeId,
+            projectStatusCode projectStatusCode,
+            Member bnsManager,
+            YesNo hasImage,
+            String contractNumber,
+            LocalDateTime plannedStartDate,
+            LocalDateTime plannedEndDate
+    ) {
+        this.projectName = projectName;
+        this.customer = customer;
+        this.developer = developer;
+        this.projectDescription = projectDescription;
+        this.projectTypeId = projectTypeId;
+        this.projectStatusCode = projectStatusCode;
+        this.bnsManager = bnsManager;
+        this.hasImage = hasImage;
+        this.contractNumber = contractNumber;
+        this.plannedStartDate = plannedStartDate;
+        this.plannedEndDate = plannedEndDate;
+    }
+  
     public enum projectStatusCode {
         PREPARED,
         IN_PROGRESS,
         COMPLETED,
         CLOSED,
         CANCELLED
-    }
-
-    public Project(String projectName, Company customer, Company developer, String projectDescription, ProjectType projectType, Project.projectStatusCode projectStatusCode, Member bnsManager, String contractNumber, LocalDateTime plannedStartDate, LocalDateTime plannedEndDate) {
-        this.projectName = projectName;
-        this.customer = customer;
-        this.developer = developer;
-        this.projectDescription = projectDescription;
-        this.projectType = projectType;
-        this.projectStatusCode = projectStatusCode;
-        this.bnsManager = bnsManager;
-        this.contractNumber = contractNumber;
-        this.plannedStartDate = plannedStartDate;
-        this.plannedEndDate = plannedEndDate;
-        this.startDate = plannedStartDate;
-        this.endDate = null;
-        this.finalApprover = null;
-        this.finalApprovalDate = null;
-        this.hasImage = YesNo.NO;
     }
 }

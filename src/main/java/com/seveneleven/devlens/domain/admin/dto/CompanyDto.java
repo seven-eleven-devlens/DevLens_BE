@@ -5,6 +5,7 @@ import com.seveneleven.devlens.domain.member.constant.YN;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CompanyDto {
     @Getter
@@ -21,7 +22,8 @@ public class CompanyDto {
         private YN isActive;
 
         public CompanyRequest(
-                Long id, String companyName,
+                Long id,
+                String companyName,
                 String representativeName,
                 String representativeContact,
                 String representativeEmail,

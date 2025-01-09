@@ -29,6 +29,7 @@ public class CompanyResponseConverter implements EntityConverter<CompanyDto.Comp
                 company.getRepresentativeImageExists(),
                 company.getIsActive());
     }
+
     /*
         함수명 : toEntity
         함수 목적 : Dto 를 Entity 로 변환

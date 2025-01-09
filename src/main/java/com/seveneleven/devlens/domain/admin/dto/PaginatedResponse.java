@@ -4,10 +4,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Getter
+@Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaginatedResponse<T> {
     private List<T> content;
@@ -33,10 +35,10 @@ public class PaginatedResponse<T> {
         this.last = last;
     }
 
-    public static PaginatedResponse<CompanyDto.CompanyResponse> createPaginatedResponse(
-            Page<CompanyDto.CompanyResponse> page
+    public static <T> PaginatedResponse<T> createPaginatedResponse(
+            Page<T> page
     ) {
-        return new PaginatedResponse<> (
+        return new PaginatedResponse<>(
                 page.getContent(),
                 page.getNumber(),
                 page.getSize(),
