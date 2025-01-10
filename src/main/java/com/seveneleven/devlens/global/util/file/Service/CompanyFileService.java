@@ -1,23 +1,18 @@
 package com.seveneleven.devlens.global.util.file.Service;
 
-import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
+import com.seveneleven.devlens.domain.admin.repository.CompanyRepository;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.global.exception.BusinessException;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.ErrorCode;
 import com.seveneleven.devlens.global.response.SuccessCode;
-import com.seveneleven.devlens.global.util.file.constant.FileCategory;
 import com.seveneleven.devlens.global.util.file.dto.FileMetadataDto;
-import com.seveneleven.devlens.global.util.file.entity.FileMetadata;
 import com.seveneleven.devlens.global.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
