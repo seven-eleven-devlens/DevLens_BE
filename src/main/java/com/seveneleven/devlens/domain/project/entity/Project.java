@@ -38,7 +38,7 @@ public class Project extends BaseEntity {
 
     @JoinColumn(name = "project_type_id", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private ProjectType projectTypeId; // 프로젝트 유형 ID
+    private ProjectType projectType; // 프로젝트 유형 ID
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -73,7 +73,7 @@ public class Project extends BaseEntity {
             Company developer,
             String projectDescription,
             ProjectType projectTypeId,
-            Project.projectStatusCode projectStatusCode,
+            projectStatusCode projectStatusCode,
             Member bnsManager,
             YesNo hasImage,
             String contractNumber,
@@ -89,7 +89,7 @@ public class Project extends BaseEntity {
         this.customer = customer;
         this.developer = developer;
         this.projectDescription = projectDescription;
-        this.projectTypeId = projectTypeId;
+        this.projectType = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
         this.hasImage = hasImage;
@@ -120,7 +120,7 @@ public class Project extends BaseEntity {
         this.customer = customer;
         this.developer = developer;
         this.projectDescription = projectDescription;
-        this.projectTypeId = projectTypeId;
+        this.projectType = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
         this.hasImage = hasImage;
@@ -129,7 +129,7 @@ public class Project extends BaseEntity {
         this.plannedEndDate = plannedEndDate;
     }
 
-    public void update(
+    public Project update(
             PutProject.Request request,
             Company customer,
             Company developer,
@@ -140,7 +140,7 @@ public class Project extends BaseEntity {
         this.customer = customer;
         this.developer = developer;
         this.projectDescription = request.getProjectDescription();
-        this.projectTypeId = ProjectType;
+        this.projectType = ProjectType;
         this.projectStatusCode = request.getProjectStatusCode();
         this.bnsManager = bnsManager;
         this.hasImage = request.getHasImage();
@@ -151,6 +151,7 @@ public class Project extends BaseEntity {
         this.endDate = request.getEndDate();
         this.finalApprover = request.getFinalApprover();
         this.finalApprovalDate = request.getFinalApprovalDate();
+        return this;
     }
 
     public enum projectStatusCode {

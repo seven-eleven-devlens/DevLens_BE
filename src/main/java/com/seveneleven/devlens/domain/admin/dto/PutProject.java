@@ -53,6 +53,7 @@ public class PutProject {
             this.developerId = developerId;
             this.projectDescription = projectDescription;
             this.projectTypeId = projectTypeId;
+            this.projectStatusCode = projectStatusCode;
             this.bnsManagerId = bnsManagerId;
             this.hasImage = hasImage;
             this.contractNumber = contractNumber;
