@@ -29,6 +29,7 @@ public class CompanyRequestConverter implements EntityConverter<CompanyDto.Compa
                 company.getRepresentativeImageExists(),
                 company.getIsActive());
     }
+
     /*
         함수명 : toEntity
         함수 목적 : request 를 entity 로 변환
