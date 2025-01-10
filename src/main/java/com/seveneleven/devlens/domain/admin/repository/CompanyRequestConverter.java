@@ -26,7 +26,6 @@ public class CompanyRequestConverter implements EntityConverter<CompanyDto.Compa
                 company.getAddress(),
                 company.getBusinessType(),
                 company.getBusinessRegistrationNumber(),
-                company.getRepresentativeImageExists(),
                 company.getIsActive());
     }
 
@@ -47,7 +46,6 @@ public class CompanyRequestConverter implements EntityConverter<CompanyDto.Compa
                 companyResponse.getAddress(),
                 companyResponse.getBusinessType(),
                 companyResponse.getBusinessRegistrationNumber(),
-                companyResponse.getRepresentativeImageExists(),
                 companyResponse.getIsActive());
     }
 

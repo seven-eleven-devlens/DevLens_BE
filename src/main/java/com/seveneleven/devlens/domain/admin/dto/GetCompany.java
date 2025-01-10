@@ -69,7 +69,6 @@ public class GetCompany {
                 String address,
                 BusinessType businessType,
                 String businessRegistrationNumber,
-                YN representativeImageExists,
                 YN activeStatus,
                 PaginatedResponse<GetProject.Response> projects
         ) {
@@ -99,7 +98,6 @@ public class GetCompany {
                     response.getAddress(),
                     response.getBusinessType(),
                     response.getBusinessRegistrationNumber(),
-                    response.getRepresentativeImageExists(),
                     response.getIsActive(),
                     projects
             );

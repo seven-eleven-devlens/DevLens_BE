@@ -20,7 +20,6 @@ public class GetCompanyResponseConverter implements EntityConverter<GetCompany.R
                 company.getAddress(),
                 company.getBusinessType(),
                 company.getBusinessRegistrationNumber(),
-                company.getRepresentativeImageExists(),
                 company.getIsActive(),
                 null
         );

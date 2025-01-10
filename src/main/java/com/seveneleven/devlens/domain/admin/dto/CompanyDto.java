@@ -30,7 +30,6 @@ public class CompanyDto {
                 String address,
                 BusinessType businessType,
                 String businessRegistrationNumber,
-                YN representativeImageExists,
                 YN activeStatus
         ) {
             this.id = id;
@@ -41,7 +40,6 @@ public class CompanyDto {
             this.address = address;
             this.businessType = businessType;
             this.businessRegistrationNumber = businessRegistrationNumber;
-            this.representativeImageExists = representativeImageExists;
             this.isActive = activeStatus;
         }
     }
@@ -56,7 +54,6 @@ public class CompanyDto {
         private String address;
         private BusinessType businessType;
         private String businessRegistrationNumber;
-        private YN representativeImageExists;
         private YN isActive;
 
         public CompanyResponse(
@@ -68,7 +65,6 @@ public class CompanyDto {
                 String address,
                 BusinessType businessType,
                 String businessRegistrationNumber,
-                YN representativeImageExists,
                 YN activeStatus
         ) {
             this.id = id;
@@ -79,7 +75,6 @@ public class CompanyDto {
             this.address = address;
             this.businessType = businessType;
             this.businessRegistrationNumber = businessRegistrationNumber;
-            this.representativeImageExists = representativeImageExists;
             this.isActive = activeStatus;
         }
     }
