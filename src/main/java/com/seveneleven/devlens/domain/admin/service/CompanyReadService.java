@@ -35,7 +35,7 @@ public class CompanyReadService {
             Long id, Integer page
     ) {
         Company company = companyRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("projectName").ascending().and(Sort.by("id")).descending());
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("projectName").ascending());
         Page<Project> projectPage = adminProjectRepository.findByCustomerOrDeveloper(pageable, company, company);
         GetCompany.Response response = companyRepository
                 .findByIdAndIsActive(id, YN.Y)

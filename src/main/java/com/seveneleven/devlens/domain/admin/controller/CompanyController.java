@@ -27,7 +27,7 @@ public class CompanyController {
         함수명 : createCompany
         목적 : 회사 생성하여 db에 저장
      */
-    @PostMapping("/new")
+    @PostMapping("")
     public ResponseEntity<APIResponse<CompanyDto.CompanyResponse>> createCompany(
             @Valid @RequestBody CompanyDto.CompanyRequest companyRequest
     ) {
@@ -41,12 +41,12 @@ public class CompanyController {
         함수명 : readCompany
         목적 : 회사 상세 정보 조회
      */
-    @GetMapping("/list/{companyId}")
+    @GetMapping("/{id}")
     public ResponseEntity<APIResponse<GetCompany.Response>> readCompany(
-            @PathVariable Long companyId,
+            @PathVariable Long id,
             @RequestParam(value = "page", required = true) Integer page
     ) {
-        var company = companyReadService.getCompanyResponse(companyId, page);
+        var company = companyReadService.getCompanyResponse(id, page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, company));
@@ -56,7 +56,7 @@ public class CompanyController {
         함수명 : readCompanyList
         목적 : 회사 목록 조회
      */
-    @GetMapping("/list")
+    @GetMapping("")
     public ResponseEntity<APIResponse<PaginatedResponse<CompanyDto.CompanyResponse>>> readCompanyList(
             @RequestParam(value = "page", required = true) Integer page
     ) {
@@ -70,7 +70,7 @@ public class CompanyController {
         함수명 : updateCompany
         목적 : 회사 상세 정보 수정
      */
-    @PutMapping("/list/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<APIResponse<CompanyDto.CompanyResponse>> updateCompany(
             @PathVariable Long id,
             @RequestBody CompanyDto.CompanyRequest companyRequest
