@@ -1,4 +1,4 @@
-package com.seveneleven.devlens.domain.project.service;
+package com.seveneleven.devlens.domain.project.service.dashboard;
 
 import com.seveneleven.devlens.domain.project.dto.GetProjectDetail;
 import com.seveneleven.devlens.domain.project.dto.GetProjectList;

@@ -1,12 +1,9 @@
 package com.seveneleven.devlens.domain.member.controller;
 
-import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+
 import com.seveneleven.devlens.domain.member.dto.MemberJoinDto;
-import com.seveneleven.devlens.domain.member.dto.TokenDto;
 import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.domain.member.service.MemberService;
-import com.seveneleven.devlens.global.config.Annotation.AdminAuthorize;
-import com.seveneleven.devlens.global.config.Annotation.UserAuthorize;
 import com.seveneleven.devlens.global.config.JwtFilter;
 import com.seveneleven.devlens.global.config.TokenProvider;
 import com.seveneleven.devlens.global.exception.BusinessException;
@@ -81,6 +78,16 @@ public class MemberController {
             throw new BusinessException(ErrorCode.DUPLICATE_USER_ID);
         }
     }
+
+//    @GetMapping("/my-page")
+//    public ResponseEntity<MemberDto> getMyDetails(Authentication authentication) {
+//        // JWT에서 회원 ID 추출
+//        Long memberId = Long.valueOf(authentication.getName()); // JWT의 sub 클레임
+//
+//        // 회원 상세 정보 조회
+//        MemberDto memberDto = memberService.getMemberDetail(memberId);
+//        return ResponseEntity.ok(memberDto);
+//    }
 
 
     // 테스트용 입니다. (삭제 예정)

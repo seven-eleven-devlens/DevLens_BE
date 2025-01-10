@@ -55,7 +55,6 @@ public class PostProject {
         private Long projectTypeId; // 프로젝트 유형 ID
         private Project.projectStatusCode projectStatusCode; // 프로젝트 상태 코드
         private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
-        private YesNo hasImage; // 이미지 여부
         private String contractNumber; // 계약서 번호
         private LocalDateTime plannedStartDate; // 시작 예정일
         private LocalDateTime plannedEndDate; // 종료 예정일
@@ -68,8 +67,7 @@ public class PostProject {
                 String projectDescription,
                 Long projectTypeId,
                 Project.projectStatusCode projectStatusCode,
-                Long bnsManagerId,
-                YesNo hasImage,
+                Long bnsManager,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
                 LocalDateTime plannedEndDate
@@ -81,8 +79,7 @@ public class PostProject {
             this.projectDescription = projectDescription;
             this.projectTypeId = projectTypeId;
             this.projectStatusCode = projectStatusCode;
-            this.bnsManagerId = bnsManagerId;
-            this.hasImage = hasImage;
+            this.bnsManagerId = bnsManager;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.plannedEndDate = plannedEndDate;

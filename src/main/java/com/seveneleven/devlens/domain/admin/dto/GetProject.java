@@ -20,7 +20,6 @@ public class GetProject {
         private Long projectTypeId; // 프로젝트 유형 ID
         private Project.projectStatusCode projectStatusCode; // 프로젝트 상태 코드
         private Long bnsManager; // BNS 담당자 ID (Member 엔티티의 ID)
-        private YesNo hasImage; // 이미지 여부
         private String contractNumber; // 계약서 번호
         private LocalDateTime plannedStartDate; // 시작 예정일
         private LocalDateTime plannedEndDate; // 종료 예정일
@@ -38,7 +37,6 @@ public class GetProject {
                 Long projectTypeId,
                 Project.projectStatusCode projectStatusCode,
                 Long bnsManager,
-                YesNo hasImage,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
                 LocalDateTime plannedEndDate,
@@ -55,7 +53,6 @@ public class GetProject {
             this.projectTypeId = projectTypeId;
             this.projectStatusCode = projectStatusCode;
             this.bnsManager = bnsManager;
-            this.hasImage = hasImage;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.plannedEndDate = plannedEndDate;
@@ -76,7 +73,6 @@ public class GetProject {
         private Long projectTypeId; // 프로젝트 유형 ID
         private Project.projectStatusCode projectStatusCode; // 프로젝트 상태 코드
         private Long bnsManager; // BNS 담당자 ID (Member 엔티티의 ID)
-        private YesNo hasImage; // 이미지 여부
         private String contractNumber; // 계약서 번호
         private LocalDateTime plannedStartDate; // 시작 예정일
         private LocalDateTime plannedEndDate; // 종료 예정일
@@ -94,7 +90,6 @@ public class GetProject {
                 Long projectTypeId,
                 Project.projectStatusCode projectStatusCode,
                 Long bnsManager,
-                YesNo hasImage,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
                 LocalDateTime plannedEndDate,
@@ -111,7 +106,6 @@ public class GetProject {
             this.projectTypeId = projectTypeId;
             this.projectStatusCode = projectStatusCode;
             this.bnsManager = bnsManager;
-            this.hasImage = hasImage;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.plannedEndDate = plannedEndDate;

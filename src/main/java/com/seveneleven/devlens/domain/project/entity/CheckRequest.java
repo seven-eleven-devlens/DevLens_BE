@@ -40,14 +40,6 @@ public class CheckRequest extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description; // 요청 내용
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private YesNo hasFile; // 파일 유무
-
-    @Column(nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    private YesNo hasLink; // 링크 유무
-
     public CheckRequest(Checklist checklist, LocalDateTime requestDate, ApprovalStatus approvalStatus, Member requester, String requestIp, String title, String description) {
         this.checklist = checklist;
         this.requestDate = requestDate;
@@ -56,7 +48,5 @@ public class CheckRequest extends BaseEntity {
         this.requestIp = requestIp;
         this.title = title;
         this.description = description;
-        this.hasFile = YesNo.NO;
-        this.hasLink = YesNo.NO;
     }
 }
