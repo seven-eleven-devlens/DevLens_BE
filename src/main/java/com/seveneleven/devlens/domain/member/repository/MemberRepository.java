@@ -6,13 +6,13 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 import java.util.List;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecificationExecutor<Member> {
 
     // TODO - JOIN VS getCompany().getId() 검토 필요
     @Query("SELECT m.id, c.id " +
@@ -25,6 +25,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @EntityGraph(attributePaths = {"role"})
     Optional<Member> findOneWithAuthoritiesByLoginId(String loginId);
+
+    Boolean existsByLoginId(String loginId);
+
+    Boolean existsByEmail(String email);
 
     @Query("SELECT m.name FROM Member m WHERE m.id = :id")
     Optional<String> findNameById(Long id);

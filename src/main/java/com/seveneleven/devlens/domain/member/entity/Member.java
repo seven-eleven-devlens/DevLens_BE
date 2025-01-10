@@ -3,14 +3,13 @@ package com.seveneleven.devlens.domain.member.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;
-import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.global.entity.BaseEntity;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -42,10 +41,6 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberStatus status = MemberStatus.ACTIVE; // 상태 코드
 
-    @Column(name = "profile_image_exists", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private YN profileImageExists = YN.N; // 프로필 이미지 유무
-
     @Column(name = "name", nullable = false, length = 100)
     private String name; // 이름
 
@@ -67,13 +62,13 @@ public class Member extends BaseEntity {
 
     // 생성 메서드
     public static Member createMember(String loginId, String password, Company company, Role role, String name, String email,
-                                      LocalDate birthDate, String phoneNumber, Long departmentId, Long positionId, PasswordEncoder pwdEncoder) {
+                                      LocalDate birthDate, String phoneNumber, Long departmentId, Long positionId) {
         Member member = new Member();
         member.name         = name;
         member.role         = role;
         member.email        = email;
         member.loginId      = loginId;
-        member.password     = pwdEncoder.encode(password);
+        member.password     = password;
         member.company      = company;
         member.birthDate    = birthDate;
         member.phoneNumber  = phoneNumber;
@@ -83,13 +78,20 @@ public class Member extends BaseEntity {
     }
 
     // 업데이트 메서드
-    public void updateMember(String password, String phoneNumber, Company company, Long departmentId, Long positionId, YN profileImageExists, PasswordEncoder pwdEncoder) {
-        this.company      = company;
-        this.password     = pwdEncoder.encode(password);
-        this.phoneNumber  = phoneNumber;
-        this.departmentId = departmentId;
-        this.positionId   = positionId;
-        this.profileImageExists = profileImageExists;
+    public void updateMember(String name, String phoneNumber, Role role, Company company,
+                             Long departmentId, Long positionId) {
+        this.name               = StringUtils.isNotBlank(name) ? name : this.name;
+        this.role               = Objects.nonNull(role) ? role : this.role;
+        this.company            = Objects.nonNull(company) ? company : this.company;
+        this.phoneNumber        = StringUtils.isNotBlank(phoneNumber) ? phoneNumber : this.phoneNumber;
+        this.departmentId       = Objects.nonNull(departmentId) ? departmentId : this.departmentId;
+        this.positionId         = Objects.nonNull(positionId) ? positionId : this.positionId;
+    }
+
+
+    // 비밀번호 재설정
+    public void resetPassword(String password){
+        this.password     = password;
     }
 
     // 삭제 메서드
