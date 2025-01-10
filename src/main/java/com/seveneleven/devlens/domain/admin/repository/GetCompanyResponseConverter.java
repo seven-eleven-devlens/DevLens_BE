@@ -9,8 +9,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class GetCompanyResponseConverter implements EntityConverter<GetCompany.Response, Company> {
-    private final AdminProjectRepository adminProjectRepository;
-
     @Override
     public GetCompany.Response toDTO(Company company) {
         return new GetCompany.Response(
