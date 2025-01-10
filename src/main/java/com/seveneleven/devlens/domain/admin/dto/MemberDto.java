@@ -3,7 +3,6 @@ package com.seveneleven.devlens.domain.admin.dto;
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;
 import com.seveneleven.devlens.domain.member.entity.Member;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
@@ -11,8 +10,7 @@ import org.modelmapper.config.Configuration;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+
 public class MemberDto {
 
     // **Member로 변환하는 메서드**
