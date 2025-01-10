@@ -22,7 +22,7 @@ public class PutProjectRequestConverter implements EntityConverter<PutProject.Re
                 project.getPlannedEndDate(),
                 project.getStartDate(),
                 project.getEndDate(),
-                project.getFinalApprover(),
+                project.getFinalApproverId(),
                 project.getFinalApprovalDate()
         );
     }

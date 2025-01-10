@@ -36,7 +36,7 @@ public class PostProjectRequestConverter implements EntityConverter<PostProject.
                 developer,
                 request.getProjectDescription(),
                 projectTypeId,
-                Project.projectStatusCode.PREPARED,
+                Project.ProjectStatusCode.PREPARED,
                 bnsManager,
                 request.getContractNumber(),
                 request.getPlannedStartDate(),

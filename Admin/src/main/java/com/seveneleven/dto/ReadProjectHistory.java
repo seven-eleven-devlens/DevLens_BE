@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReadProjectHistory {
@@ -19,10 +19,10 @@ public class ReadProjectHistory {
         private String typeName;
         private Long bnsManagerId;
         private String contractNumber;
-        private LocalDateTime plannedStartDate;
-        private LocalDateTime startDate;
-        private LocalDateTime plannedEndDate;
-        private LocalDateTime endDate;
+        private LocalDate plannedStartDate;
+        private LocalDate startDate;
+        private LocalDate plannedEndDate;
+        private LocalDate endDate;
 
         public Response(
                 Long id,
@@ -34,10 +34,10 @@ public class ReadProjectHistory {
                 String typeName,
                 Long bnsManagerId,
                 String contractNumber,
-                LocalDateTime plannedStartDate,
-                LocalDateTime startDate,
-                LocalDateTime plannedEndDate,
-                LocalDateTime endDate
+                LocalDate plannedStartDate,
+                LocalDate startDate,
+                LocalDate plannedEndDate,
+                LocalDate endDate
         ) {
             this.id = id;
             this.projectName = projectName;

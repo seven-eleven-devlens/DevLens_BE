@@ -25,7 +25,7 @@ public class PutProjectResponseConverter implements EntityConverter<PutProject.R
                 project.getPlannedEndDate(),
                 project.getStartDate(),
                 project.getEndDate(),
-                project.getFinalApprover(),
+                project.getFinalApproverId(),
                 project.getFinalApprovalDate()
         );
     }

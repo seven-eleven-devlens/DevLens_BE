@@ -36,7 +36,7 @@ public class ProjectRequestConverter implements EntityConverter<GetProject.Reque
                 project.getPlannedEndDate(),
                 project.getStartDate(),
                 project.getEndDate(),
-                project.getFinalApprover(),
+                project.getFinalApproverId(),
                 project.getFinalApprovalDate()
         );
     }

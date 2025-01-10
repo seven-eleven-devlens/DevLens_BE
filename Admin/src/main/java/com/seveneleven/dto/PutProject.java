@@ -96,10 +96,10 @@ public class PutProject {
         private Project.ProjectStatusCode projectStatusCode; //
         private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
-        private LocalDateTime plannedStartDate; // 시작 예정일
-        private LocalDateTime plannedEndDate; // 종료 예정일
-        private LocalDateTime startDate; // 시작일
-        private LocalDateTime endDate; // 종료일
+        private LocalDate plannedStartDate; // 시작 예정일
+        private LocalDate plannedEndDate; // 종료 예정일
+        private LocalDate startDate; // 시작일
+        private LocalDate endDate; // 종료일
         private Long finalApprover; // 최종 결재자
         private LocalDateTime finalApprovalDate; // 최종 결재일시
 
@@ -113,10 +113,10 @@ public class PutProject {
                 Project.ProjectStatusCode projectStatusCode,
                 Long bnsManagerId,
                 String contractNumber,
-                LocalDateTime plannedStartDate,
-                LocalDateTime plannedEndDate,
-                LocalDateTime startDate, // 시작일
-                LocalDateTime endDate, // 종료일
+                LocalDate plannedStartDate,
+                LocalDate plannedEndDate,
+                LocalDate startDate, // 시작일
+                LocalDate endDate, // 종료일
                 Long finalApprover, // 최종 결재자
                 LocalDateTime finalApprovalDate // 최종 결재일시
         ) {
