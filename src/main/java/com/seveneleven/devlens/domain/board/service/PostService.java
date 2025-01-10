@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.Optional;
+
 import static com.seveneleven.devlens.global.response.ErrorCode.*;
 
 @Service
@@ -150,6 +152,17 @@ public class PostService {
         }
         return null;
     }
+
+//    // 부모게시글과 자식게시글의 프로젝트 단계 일치 여부 확인 메서드 (부모게시글이 존재하는 경우에만 해당 메서드 실행 가능)
+//    private void checkProjectStepParentPostAndChildPost(PostCreateRequest postCreateRequest) throws Exception {
+//        Long parentPostId = postCreateRequest.getParentPostId();
+//        Optional<Post> parentPost = postRepository.findById(parentPostId);
+//
+//        ProjectStep parentPostProjectId = parentPost.get().getProjectStepId();
+//        Long childPostProjectId = postCreateRequest.getProjectStepId();
+//        projectStepId
+//    }
+
 
     // 게시물 존재 여부 확인 메서드
     private Post getPost(Long postId) throws Exception {

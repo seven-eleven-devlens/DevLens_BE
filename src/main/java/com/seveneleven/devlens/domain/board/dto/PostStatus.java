@@ -1,8 +1,10 @@
 package com.seveneleven.devlens.domain.board.dto;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum PostStatus {
 
     DEFAULT("선택"),
@@ -12,10 +14,6 @@ public enum PostStatus {
     ON_HOLD("보류");
 
     private final String description;
-
-    PostStatus(String description) {
-        this.description = description;
-    }
 
     // 사용할지 고민
     // FEEDBACK("피드백"),

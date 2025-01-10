@@ -1,8 +1,10 @@
 package com.seveneleven.devlens.domain.board.dto;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum PostAction {
 
     CREATE("생성"),
@@ -10,8 +12,4 @@ public enum PostAction {
     DELETE("삭제");
 
     private final String description;
-
-    PostAction(String description) {
-        this.description = description;
-    }
 }
