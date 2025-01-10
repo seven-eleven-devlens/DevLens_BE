@@ -20,7 +20,6 @@ public class PutProjectResponseConverter implements EntityConverter<PutProject.R
                 project.getProjectType().getId(),
                 project.getProjectStatusCode(),
                 project.getBnsManager().getId(),
-                project.getHasImage(),
                 project.getContractNumber(),
                 project.getPlannedStartDate(),
                 project.getPlannedEndDate(),

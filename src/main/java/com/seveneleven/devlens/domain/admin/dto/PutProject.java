@@ -1,7 +1,6 @@
 package com.seveneleven.devlens.domain.admin.dto;
 
 import com.seveneleven.devlens.domain.project.entity.Project;
-import com.seveneleven.devlens.global.entity.YesNo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +19,6 @@ public class PutProject {
         private Long projectTypeId; // 프로젝트 유형 ID
         private Project.projectStatusCode projectStatusCode; //
         private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
-        private YesNo hasImage;
         private String contractNumber; // 계약서 번호
         private LocalDateTime plannedStartDate; // 시작 예정일
         private LocalDateTime plannedEndDate; // 종료 예정일
@@ -38,7 +36,6 @@ public class PutProject {
                 Long projectTypeId,
                 Project.projectStatusCode projectStatusCode,
                 Long bnsManagerId,
-                YesNo hasImage,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
                 LocalDateTime plannedEndDate,
@@ -55,7 +52,6 @@ public class PutProject {
             this.projectTypeId = projectTypeId;
             this.projectStatusCode = projectStatusCode;
             this.bnsManagerId = bnsManagerId;
-            this.hasImage = hasImage;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.plannedEndDate = plannedEndDate;
@@ -76,7 +72,6 @@ public class PutProject {
         private Long projectTypeId; // 프로젝트 유형 ID
         private Project.projectStatusCode projectStatusCode; //
         private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
-        private YesNo hasImage;
         private String contractNumber; // 계약서 번호
         private LocalDateTime plannedStartDate; // 시작 예정일
         private LocalDateTime plannedEndDate; // 종료 예정일
@@ -94,7 +89,6 @@ public class PutProject {
                 Long projectTypeId,
                 Project.projectStatusCode projectStatusCode,
                 Long bnsManagerId,
-                YesNo hasImage,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
                 LocalDateTime plannedEndDate,
@@ -110,7 +104,6 @@ public class PutProject {
             this.projectDescription = projectDescription;
             this.projectTypeId = projectTypeId;
             this.bnsManagerId = bnsManagerId;
-            this.hasImage = hasImage;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.plannedEndDate = plannedEndDate;

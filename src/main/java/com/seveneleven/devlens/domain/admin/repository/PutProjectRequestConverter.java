@@ -16,7 +16,6 @@ public class PutProjectRequestConverter implements EntityConverter<PutProject.Re
                 project.getProjectType().getId(),
                 project.getProjectStatusCode(),
                 project.getBnsManager().getId(),
-                project.getHasImage(),
                 project.getContractNumber(),
                 project.getPlannedStartDate(),
                 project.getPlannedEndDate(),

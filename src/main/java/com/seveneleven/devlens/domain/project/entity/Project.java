@@ -4,8 +4,6 @@ import com.seveneleven.devlens.domain.admin.dto.PutProject;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.global.entity.BaseEntity;
-import com.seveneleven.devlens.global.entity.YesNo;
-import com.seveneleven.devlens.global.entity.converter.YesNoConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -135,7 +133,6 @@ public class Project extends BaseEntity {
         this.projectType = ProjectType;
         this.projectStatusCode = request.getProjectStatusCode();
         this.bnsManager = bnsManager;
-        this.hasImage = request.getHasImage();
         this.contractNumber = request.getContractNumber();
         this.plannedStartDate = request.getPlannedStartDate();
         this.plannedEndDate = request.getPlannedEndDate();
