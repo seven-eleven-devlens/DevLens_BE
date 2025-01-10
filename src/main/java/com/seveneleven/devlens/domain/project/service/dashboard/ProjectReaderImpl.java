@@ -1,4 +1,4 @@
-package com.seveneleven.devlens.domain.project.service;
+package com.seveneleven.devlens.domain.project.service.dashboard;
 
 import com.seveneleven.devlens.domain.project.dto.GetProjectDetail;
 import com.seveneleven.devlens.domain.project.dto.GetProjectList;
@@ -26,6 +26,7 @@ public class ProjectReaderImpl implements ProjectReader {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GetProjectDetail.Response getProjectDetail(Long projectId) {
         return new GetProjectDetail.Response(
                 projectRepository.getProjectDetail(projectId),
