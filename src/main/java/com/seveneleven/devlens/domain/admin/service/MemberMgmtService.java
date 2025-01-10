@@ -1,9 +1,9 @@
 package com.seveneleven.devlens.domain.admin.service;
 
 
-import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
 import com.seveneleven.devlens.domain.admin.dto.MemberDto;
 import com.seveneleven.devlens.domain.admin.dto.MemberUpdate;
+import com.seveneleven.devlens.domain.admin.repository.CompanyRepository;
 import com.seveneleven.devlens.domain.member.MemberValidator;
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;

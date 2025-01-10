@@ -4,7 +4,9 @@ import com.seveneleven.devlens.domain.member.constant.BusinessType;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,16 +47,12 @@ public class Company extends BaseEntity {
     @Column(name = "business_registration_number", nullable = false, length = 50)
     private String businessRegistrationNumber; // 사업자번호
 
-    @Column(name = "representative_image_exists", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private YN representativeImageExists = YN.N; // 대표 이미지 유무
-
     @Column(name = "is_active", nullable = false)
     @Enumerated(EnumType.STRING)
     private YN isActive = YN.Y; // 사용 여부
 
     public Company(Long id, String companyName, String representativeName, String representativeContact, String representativeEmail,
-                   String address, BusinessType businessType, String businessRegistrationNumber, YN representativeImageExists, YN isActive
+                   String address, BusinessType businessType, String businessRegistrationNumber, YN isActive
     ) {
         this.id = id;
         this.companyName = companyName;
@@ -64,7 +62,6 @@ public class Company extends BaseEntity {
         this.address = address;
         this.businessType = businessType;
         this.businessRegistrationNumber = businessRegistrationNumber;
-        this.representativeImageExists = representativeImageExists;
         this.isActive = isActive;
     }
     // 생성 메서드
@@ -79,7 +76,6 @@ public class Company extends BaseEntity {
         company.representativeEmail        = representativeEmail;
         company.representativeContact      = representativeContact;
         company.businessRegistrationNumber = businessRegistrationNumber;
-        company.representativeImageExists  = representativeImageExists != null ? representativeImageExists : YN.N;
         return company;
     }
 
@@ -90,7 +86,6 @@ public class Company extends BaseEntity {
         this.representativeName    = representativeName;
         this.representativeEmail   = representativeEmail;
         this.representativeContact = representativeContact;
-        this.representativeImageExists = representativeImageExists;
 
     }
 
@@ -111,11 +106,5 @@ public class Company extends BaseEntity {
         department.setCompany(null);
     }
 
-    //회사 대표 이미지 여부 변환 메서드
-    public void addRepresentativeImage(){
-        this.representativeImageExists = YN.Y;
-    }
-    public void removeRepresentativeImage(){
-        this.representativeImageExists = YN.N;
-    }
+    public void createCompanyProjects(){}
 }

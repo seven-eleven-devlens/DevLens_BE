@@ -1,7 +1,7 @@
 package com.seveneleven.devlens.domain.admin.common;
 
-import com.seveneleven.devlens.domain.admin.db.AdminProjectRepository;
 import com.seveneleven.devlens.domain.admin.exception.ProjectNameDuplicatedException;
+import com.seveneleven.devlens.domain.admin.repository.AdminProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

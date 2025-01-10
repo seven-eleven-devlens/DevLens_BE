@@ -1,4 +1,4 @@
-package com.seveneleven.devlens.domain.admin.db;
+package com.seveneleven.devlens.domain.admin.repository;
 
 import com.seveneleven.devlens.domain.admin.common.EntityConverter;
 import com.seveneleven.devlens.domain.admin.dto.GetProject;
@@ -13,16 +13,16 @@ import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
 @Component
-public class ProjectResponseConverter implements EntityConverter<GetProject.Response, Project> {
+public class ProjectRequestConverter implements EntityConverter<GetProject.Request, Project> {
     private final CompanyRepository companyRepository;
     private final AdminMemberRepository adminMemberRepository;
     private final AdminProjectTypeRepository projectTypeRepository;
 
     @Override
-    public GetProject.Response toDTO(
+    public GetProject.Request toDTO(
             Project project
     ) {
-        return new GetProject.Response(
+        return new GetProject.Request(
                 project.getId(),
                 project.getProjectName(),
                 project.getCustomer().getId(),
@@ -43,28 +43,28 @@ public class ProjectResponseConverter implements EntityConverter<GetProject.Resp
 
     @Override
     public Project toEntity(
-            GetProject.Response response
+            GetProject.Request request
     ) {
-        Company customer = companyRepository.findById(response.getCustomerId()).orElseThrow(CompanyNotFoundException::new);
-        Company developer = companyRepository.findById(response.getDeveloperId()).orElseThrow(CompanyNotFoundException::new);
-        Member bnsManager = adminMemberRepository.findById(response.getBnsManager()).orElseThrow(EntityNotFoundException::new);
-        ProjectType projectType = projectTypeRepository.findById(response.getProjectTypeId()).orElseThrow(EntityNotFoundException::new);
+        Company customer = companyRepository.findById(request.getCustomerId()).orElseThrow(CompanyNotFoundException::new);
+        Company developer = companyRepository.findById(request.getDeveloperId()).orElseThrow(CompanyNotFoundException::new);
+        Member bnsManager = adminMemberRepository.findById(request.getBnsManager()).orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다."));
+        ProjectType projectTypeId = projectTypeRepository.findById(request.getProjectTypeId()).orElseThrow(() -> new EntityNotFoundException("프로젝트 타입을 찾을 수 없습니다."));
         return new Project(
-                response.getId(),
-                response.getProjectName(),
+                request.getId(),
+                request.getProjectName(),
                 customer,
                 developer,
-                response.getProjectDescription(),
-                projectType,
-                response.getProjectStatusCode(),
+                request.getProjectDescription(),
+                projectTypeId,
+                request.getProjectStatusCode(),
                 bnsManager,
-                response.getContractNumber(),
-                response.getPlannedStartDate(),
-                response.getPlannedEndDate(),
-                response.getStartDate(),
-                response.getEndDate(),
-                response.getFinalApprover(),
-                response.getFinalApprovalDate()
+                request.getContractNumber(),
+                request.getPlannedStartDate(),
+                request.getPlannedEndDate(),
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getFinalApprover(),
+                request.getFinalApprovalDate()
         );
     }
 }

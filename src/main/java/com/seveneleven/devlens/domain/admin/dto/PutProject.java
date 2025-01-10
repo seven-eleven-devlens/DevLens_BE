@@ -1,7 +1,6 @@
 package com.seveneleven.devlens.domain.admin.dto;
 
 import com.seveneleven.devlens.domain.project.entity.Project;
-import com.seveneleven.devlens.global.entity.YesNo;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,17 +8,17 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GetProject {
+public class PutProject {
     @Getter
     public static class Request {
-        private Long id; // 프로젝트 ID
+        private Long id;
         private String projectName; // 프로젝트명
         private Long customerId; // 고객사 ID (Company 엔티티의 ID)
         private Long developerId; // 개발사 ID (Company 엔티티의 ID)
         private String projectDescription; // 프로젝트 설명
         private Long projectTypeId; // 프로젝트 유형 ID
-        private Project.projectStatusCode projectStatusCode; // 프로젝트 상태 코드
-        private Long bnsManager; // BNS 담당자 ID (Member 엔티티의 ID)
+        private Project.projectStatusCode projectStatusCode; //
+        private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
         private LocalDateTime plannedStartDate; // 시작 예정일
         private LocalDateTime plannedEndDate; // 종료 예정일
@@ -36,14 +35,14 @@ public class GetProject {
                 String projectDescription,
                 Long projectTypeId,
                 Project.projectStatusCode projectStatusCode,
-                Long bnsManager,
+                Long bnsManagerId,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
                 LocalDateTime plannedEndDate,
-                LocalDateTime startDate,
-                LocalDateTime endDate,
-                Long finalApprover,
-                LocalDateTime finalApprovalDate
+                LocalDateTime startDate, // 시작일
+                LocalDateTime endDate, // 종료일
+                Long finalApprover, // 최종 결재자
+                LocalDateTime finalApprovalDate // 최종 결재일시
         ) {
             this.id = id;
             this.projectName = projectName;
@@ -52,27 +51,27 @@ public class GetProject {
             this.projectDescription = projectDescription;
             this.projectTypeId = projectTypeId;
             this.projectStatusCode = projectStatusCode;
-            this.bnsManager = bnsManager;
+            this.bnsManagerId = bnsManagerId;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.plannedEndDate = plannedEndDate;
-            this.startDate = startDate;
-            this.endDate = endDate;
-            this.finalApprover = finalApprover;
-            this.finalApprovalDate = finalApprovalDate;
+            this.startDate = startDate; // 시작일
+            this.endDate = endDate; //종료일
+            this.finalApprover = finalApprover; // 최종 결재자
+            this.finalApprovalDate = finalApprovalDate; // 최종 결재일시
         }
     }
 
     @Getter
     public static class Response {
-        private Long id; // 프로젝트 ID
+        private Long id;
         private String projectName; // 프로젝트명
         private Long customerId; // 고객사 ID (Company 엔티티의 ID)
         private Long developerId; // 개발사 ID (Company 엔티티의 ID)
         private String projectDescription; // 프로젝트 설명
         private Long projectTypeId; // 프로젝트 유형 ID
-        private Project.projectStatusCode projectStatusCode; // 프로젝트 상태 코드
-        private Long bnsManager; // BNS 담당자 ID (Member 엔티티의 ID)
+        private Project.projectStatusCode projectStatusCode; //
+        private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
         private LocalDateTime plannedStartDate; // 시작 예정일
         private LocalDateTime plannedEndDate; // 종료 예정일
@@ -89,14 +88,14 @@ public class GetProject {
                 String projectDescription,
                 Long projectTypeId,
                 Project.projectStatusCode projectStatusCode,
-                Long bnsManager,
+                Long bnsManagerId,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
                 LocalDateTime plannedEndDate,
-                LocalDateTime startDate,
-                LocalDateTime endDate,
-                Long finalApprover,
-                LocalDateTime finalApprovalDate
+                LocalDateTime startDate, // 시작일
+                LocalDateTime endDate, // 종료일
+                Long finalApprover, // 최종 결재자
+                LocalDateTime finalApprovalDate // 최종 결재일시
         ) {
             this.id = id;
             this.projectName = projectName;
@@ -104,15 +103,14 @@ public class GetProject {
             this.developerId = developerId;
             this.projectDescription = projectDescription;
             this.projectTypeId = projectTypeId;
-            this.projectStatusCode = projectStatusCode;
-            this.bnsManager = bnsManager;
+            this.bnsManagerId = bnsManagerId;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.plannedEndDate = plannedEndDate;
-            this.startDate = startDate;
-            this.endDate = endDate;
-            this.finalApprover = finalApprover;
-            this.finalApprovalDate = finalApprovalDate;
+            this.startDate = startDate; // 시작일
+            this.endDate = endDate; //종료일
+            this.finalApprover = finalApprover; // 최종 결재자
+            this.finalApprovalDate = finalApprovalDate; // 최종 결재일시
         }
     }
 }

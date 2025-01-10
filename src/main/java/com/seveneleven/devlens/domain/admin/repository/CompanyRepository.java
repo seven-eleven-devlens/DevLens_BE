@@ -1,4 +1,4 @@
-package com.seveneleven.devlens.domain.admin.db;
+package com.seveneleven.devlens.domain.admin.repository;
 
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;

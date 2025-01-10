@@ -1,10 +1,10 @@
 package com.seveneleven.devlens.domain.admin.service;
 
-import com.seveneleven.devlens.domain.admin.db.AdminProjectRepository;
-import com.seveneleven.devlens.domain.admin.db.ProjectResponseConverter;
 import com.seveneleven.devlens.domain.admin.dto.GetProject;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
 import com.seveneleven.devlens.domain.admin.exception.ProjectNotFoundException;
+import com.seveneleven.devlens.domain.admin.repository.AdminProjectRepository;
+import com.seveneleven.devlens.domain.admin.repository.ProjectResponseConverter;
 import com.seveneleven.devlens.domain.project.entity.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package com.seveneleven.devlens.domain.admin.db;
+package com.seveneleven.devlens.domain.admin.repository;
 
 import com.seveneleven.devlens.domain.admin.common.EntityConverter;
 import com.seveneleven.devlens.domain.admin.dto.PostProject;

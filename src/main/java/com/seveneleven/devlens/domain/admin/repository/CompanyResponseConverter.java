@@ -1,4 +1,4 @@
-package com.seveneleven.devlens.domain.admin.db;
+package com.seveneleven.devlens.domain.admin.repository;
 
 import com.seveneleven.devlens.domain.admin.common.EntityConverter;
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
@@ -26,7 +26,6 @@ public class CompanyResponseConverter implements EntityConverter<CompanyDto.Comp
                 company.getAddress(),
                 company.getBusinessType(),
                 company.getBusinessRegistrationNumber(),
-                company.getRepresentativeImageExists(),
                 company.getIsActive());
     }
 
@@ -47,7 +46,6 @@ public class CompanyResponseConverter implements EntityConverter<CompanyDto.Comp
                 companyResponse.getAddress(),
                 companyResponse.getBusinessType(),
                 companyResponse.getBusinessRegistrationNumber(),
-                companyResponse.getRepresentativeImageExists(),
                 companyResponse.getIsActive());
     }
 

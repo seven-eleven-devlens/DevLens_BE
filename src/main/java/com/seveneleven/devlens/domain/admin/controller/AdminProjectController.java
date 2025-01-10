@@ -1,12 +1,10 @@
 package com.seveneleven.devlens.domain.admin.controller;
 
-import com.seveneleven.devlens.domain.admin.dto.GetProject;
-import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
-import com.seveneleven.devlens.domain.admin.dto.PostProject;
-import com.seveneleven.devlens.domain.admin.dto.ReadProjectHistory;
+import com.seveneleven.devlens.domain.admin.dto.*;
 import com.seveneleven.devlens.domain.admin.service.ProjectCreateService;
 import com.seveneleven.devlens.domain.admin.service.ProjectHistoryService;
 import com.seveneleven.devlens.domain.admin.service.ProjectReadService;
+import com.seveneleven.devlens.domain.admin.service.ProjectUpdateService;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -20,12 +18,13 @@ public class AdminProjectController {
     private final ProjectCreateService projectCreateService;
     private final ProjectReadService projectReadService;
     private final ProjectHistoryService projectHistoryService;
+    private final ProjectUpdateService projectUpdateService;
 
     /*
         함수명 : newProject
         함수 목적 : 프로젝트 생성
      */
-    @PostMapping("/new")
+    @PostMapping("")
     public ResponseEntity<APIResponse<PostProject.Response>> newProject(
             @RequestBody PostProject.Request request
     ) {
@@ -39,7 +38,7 @@ public class AdminProjectController {
         함수명 : readProject
         함수 목적 : 프로젝트 조회
      */
-    @GetMapping("/list/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<APIResponse<GetProject.Response>> readProject(
             @PathVariable Long id
     ) {
@@ -53,7 +52,7 @@ public class AdminProjectController {
         함수명 : getListOfProjects
         함수 목적 : 프로젝트 목록 조회
      */
-    @GetMapping("/list")
+    @GetMapping("")
     public ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> getListOfProjects(
             @RequestParam(value = "page", required = true) Integer page
     ) {
@@ -67,7 +66,7 @@ public class AdminProjectController {
         함수명 : getListOfProjectHistory
         함수 목적 : 프로젝트 이력 목록 조회
      */
-    @GetMapping("/history/list")
+    @GetMapping("/histories")
     public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> getListOfProjectHistory(
             @RequestParam(value = "page") Integer page
     ) {
@@ -81,12 +80,39 @@ public class AdminProjectController {
         함수명 : getProjectHistory
         함수 목적 : 프로젝트 이력 조회
      */
-    @GetMapping("/history/list/{id}")
+    @GetMapping("/histories/{id}")
     public ResponseEntity<APIResponse<ReadProjectHistory.Response>> getProjectHistory(
             @PathVariable Long id
     ) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, projectHistoryService.getProjectHistory(id)));
+    }
+    /*
+        함수명 : updateProject
+        함수 목적 : 프로젝트 이력 조회
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<APIResponse<PutProject.Response>> updateProject(
+            @PathVariable Long id,
+            @RequestBody PutProject.Request request
+    ){
+        return ResponseEntity
+                .status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK,projectUpdateService.updateProject(id, request)));
+    }
+
+    /*
+        함수명 : deleteProject
+        함수 목적 : 프로젝트 삭제
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<APIResponse<Void>> deleteProject(
+            @PathVariable Long id
+    ){
+        projectUpdateService.deleteProject(id);
+        return ResponseEntity
+                .status(SuccessCode.DELETED.getStatus())
+                .body(APIResponse.success(SuccessCode.DELETED));
     }
 }

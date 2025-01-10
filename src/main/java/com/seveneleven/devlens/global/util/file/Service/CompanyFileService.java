@@ -1,23 +1,17 @@
 package com.seveneleven.devlens.global.util.file.Service;
 
-import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
-import com.seveneleven.devlens.domain.member.constant.YN;
+import com.seveneleven.devlens.domain.admin.repository.CompanyRepository;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.global.exception.BusinessException;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.ErrorCode;
 import com.seveneleven.devlens.global.response.SuccessCode;
-import com.seveneleven.devlens.global.util.file.constant.FileCategory;
 import com.seveneleven.devlens.global.util.file.dto.FileMetadataDto;
-import com.seveneleven.devlens.global.util.file.entity.FileMetadata;
 import com.seveneleven.devlens.global.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,18 +35,12 @@ public class CompanyFileService {
         Company companyEntity = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
-        //2. 프로필 등록 상태인지 판별
-        if(YN.Y.equals(companyEntity.getRepresentativeImageExists())){
-            throw new BusinessException(ErrorCode.LOGO_ALREADY_EXIST_ERROR);
-        }
-
         //TODO) 2. 수행자 권한 판별 validation - admin판별, super의 회사 판별
 
         //3. S3파일 업로드, 메타데이터 테이블 저장
         APIResponse uploadResponse = fileService.uploadFile(file, "COMPANY_LOGO_IMAGE", companyId);
 
         //4. 회사 대표 이미지 유무 칸을 Y로 변경한다.
-        companyEntity.addRepresentativeImage();
         companyRepository.save(companyEntity);
 
         //5. 반환

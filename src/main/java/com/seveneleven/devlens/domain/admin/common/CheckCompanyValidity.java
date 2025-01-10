@@ -1,8 +1,8 @@
 package com.seveneleven.devlens.domain.admin.common;
 
-import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
 import com.seveneleven.devlens.domain.admin.exception.CompanyDuplicatedException;
 import com.seveneleven.devlens.domain.admin.exception.CompanyNotFoundException;
+import com.seveneleven.devlens.domain.admin.repository.CompanyRepository;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import lombok.RequiredArgsConstructor;

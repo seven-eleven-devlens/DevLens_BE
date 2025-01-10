@@ -1,10 +1,9 @@
 package com.seveneleven.devlens.domain.project.entity;
 
+import com.seveneleven.devlens.domain.admin.dto.PutProject;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.global.entity.BaseEntity;
-import com.seveneleven.devlens.global.entity.YesNo;
-import com.seveneleven.devlens.global.entity.converter.YesNoConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -60,7 +59,7 @@ public class Project extends BaseEntity {
     private Long finalApprover; // 최종 결재자
 
     private LocalDateTime finalApprovalDate; // 최종 결재일시
-  
+
     public Project(
             Long id,
             String projectName,
@@ -68,7 +67,7 @@ public class Project extends BaseEntity {
             Company developer,
             String projectDescription,
             ProjectType projectTypeId,
-            Project.projectStatusCode projectStatusCode,
+            projectStatusCode projectStatusCode,
             Member bnsManager,
             String contractNumber,
             LocalDateTime plannedStartDate,
@@ -119,7 +118,31 @@ public class Project extends BaseEntity {
         this.plannedStartDate = plannedStartDate;
         this.plannedEndDate = plannedEndDate;
     }
-  
+
+    public Project update(
+            PutProject.Request request,
+            Company customer,
+            Company developer,
+            ProjectType ProjectType,
+            Member bnsManager
+    ) {
+        this.projectName = request.getProjectName();
+        this.customer = customer;
+        this.developer = developer;
+        this.projectDescription = request.getProjectDescription();
+        this.projectType = ProjectType;
+        this.projectStatusCode = request.getProjectStatusCode();
+        this.bnsManager = bnsManager;
+        this.contractNumber = request.getContractNumber();
+        this.plannedStartDate = request.getPlannedStartDate();
+        this.plannedEndDate = request.getPlannedEndDate();
+        this.startDate = request.getStartDate();
+        this.endDate = request.getEndDate();
+        this.finalApprover = request.getFinalApprover();
+        this.finalApprovalDate = request.getFinalApprovalDate();
+        return this;
+    }
+
     public enum projectStatusCode {
         PREPARED,
         IN_PROGRESS,
