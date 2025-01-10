@@ -1,6 +1,5 @@
 package com.seveneleven.devlens.domain.admin.dto;
 
-import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;
 import com.seveneleven.devlens.domain.member.entity.Member;
 import lombok.AllArgsConstructor;
@@ -9,11 +8,9 @@ import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 
-import java.time.LocalDate;
-
 @Getter
 @Setter
-public class MemberDto {
+public class MemberUpdate {
 
     // **Member로 변환하는 메서드**
     private static final ModelMapper modelMapper = new ModelMapper();
@@ -25,41 +22,26 @@ public class MemberDto {
         return modelMapper.map(this, Member.class);
     }
 
-    public static MemberDto.Response fromEntity(Member member) {
-        return modelMapper.map(member, MemberDto.Response.class);
+    public static MemberUpdate.PatchResponse fromEntity(Member member) {
+        return modelMapper.map(member, MemberUpdate.PatchResponse.class);
     }
 
     @Getter
     @Setter
-    public static class Response{
-        private Long id;
-        private String loginId;
+    public static class PatchRequest{
         private String name;
-        private String email;
+        private Long companyId;
         private Role role;
-        private MemberStatus status;
         private String phoneNumber;
-        private LocalDate birthDate;
         private Long departmentId;
         private Long positionId;
-
     }
 
     @Getter
     @Setter
-    public static class Request{
-        private Long companyId;
+    @AllArgsConstructor
+    public static class PatchResponse{
         private String loginId;
         private String password;
-        private String name;
-        private String email;
-        private Role role;
-        private String phoneNumber;
-        private LocalDate birthDate;
-        private Long departmentId;
-        private Long positionId;
     }
-
-
 }
-

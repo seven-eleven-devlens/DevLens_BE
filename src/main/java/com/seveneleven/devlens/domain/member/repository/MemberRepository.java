@@ -26,7 +26,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecif
     @EntityGraph(attributePaths = {"role"})
     Optional<Member> findOneWithAuthoritiesByLoginId(String loginId);
 
-    Boolean existsByLoginId(String LoginId);
+    Boolean existsByLoginId(String loginId);
 
     Boolean existsByEmail(String email);
 }

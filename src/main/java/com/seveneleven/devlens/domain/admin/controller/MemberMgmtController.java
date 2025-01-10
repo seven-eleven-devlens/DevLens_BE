@@ -1,12 +1,14 @@
 package com.seveneleven.devlens.domain.admin.controller;
 
 import com.seveneleven.devlens.domain.admin.dto.MemberDto;
+import com.seveneleven.devlens.domain.admin.dto.MemberUpdate;
 import com.seveneleven.devlens.domain.admin.service.MemberMgmtService;
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.Fetch;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,6 +31,7 @@ public class MemberMgmtController {
     private final MemberMgmtService memberMgmtService;
 
     /**
+     * 함수명 : getFilteredMembers
      * 필터 조건에 따라 Member 목록을 조회합니다.
      *
      * @param name      필터링할 회원 이름 (옵션).
@@ -40,7 +43,7 @@ public class MemberMgmtController {
      * @return 필터 조건에 해당하는 회원 목록 (MemberDto)을 페이지 형식으로 반환.
      *         ResponseEntity로 래핑하여 HTTP 응답으로 전달합니다.
      */
-    @GetMapping("/member")
+    @GetMapping("/members")
     public ResponseEntity<APIResponse<Page<MemberDto.Response>>> getFilteredMembers(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) MemberStatus status,
@@ -55,23 +58,25 @@ public class MemberMgmtController {
     }
 
     /**
+     * 함수명 : memberDetail
      * 회원 상세 정보를 조회합니다.
      *
-     * @param memberId 회원 ID (필수). 조회할 회원의 고유 식별자.
+     * @param loginId 회원 ID (필수). 조회할 회원의 고유 식별자.
      * @return 회원 상세 정보를 포함한 응답 객체(APIResponse<MemberDto>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
-    @GetMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<MemberDto.Response>> memberDetail(@PathVariable String memberId) {
+    @GetMapping("/members/{loginId}")
+    public ResponseEntity<APIResponse<MemberDto.Response>> memberDetail(@PathVariable String loginId) {
         // 회원 상세 정보 조회
-        MemberDto.Response memberDto = memberMgmtService.getMemberDetail(memberId);
+        MemberDto.Response memberDto = memberMgmtService.getMemberDetail(loginId);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, memberDto));
     }
 
     /**
-     *  단일 회원 계정을 생성합니다.
+     * 함수명 : createMember
+     * 단일 회원 계정을 생성합니다.
      *
      * @param memberDto 생성할 회원의 정보를 담은 요청 객체 (MemberDto.Request)
      * @return 회원 상세 정보를 포함한 응답 객체(APIResponse<MemberDto.Response>).
@@ -88,6 +93,7 @@ public class MemberMgmtController {
     }
 
     /**
+     *  함수명 : createMembers
      *  다중 회원 계정을 생성합니다.
      *
      * @param memberDtos 생성할 회원의 정보를 담은 요청 객체 리스트 (MemberDto.Request)
@@ -103,55 +109,58 @@ public class MemberMgmtController {
 
 
     /**
+     * 함수명 : updateMember
      * 회원 정보를 수정합니다.
      *
-     * @param memberId  수정할 회원의 고유 식별자 (필수).
+     * @param loginId  수정할 회원의 고유 식별자 (필수).
      * @param memberDto 수정할 회원 정보를 담은 요청 객체 (MemberDto.PutRequest).
      * @return 수정된 회원 정보를 포함한 응답 객체 (APIResponse<MemberDto.Response>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
-    @PatchMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@PathVariable String memberId,
-                                                                        @RequestBody MemberDto.PatchRequest memberDto) {
+    @PatchMapping("/members/{loginId}")
+    public ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@PathVariable String loginId,
+                                                                        @RequestBody MemberUpdate.PatchRequest memberDto) {
 
-        MemberDto.Response updatedMember = memberMgmtService.updateMember(memberId, memberDto);
+        MemberDto.Response updatedMember = memberMgmtService.updateMember(loginId, memberDto);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED, updatedMember));
     }
 
     /**
+     * 함수명 : deleteMember
      * 회원 계정 삭제합니다.
      *
-     * @param memberId 수정할 회원의 고유 식별자 (필수).
+     * @param loginId 수정할 회원의 고유 식별자 (필수).
      * @return 삭제된 회원에 대한 응답 객체 (APIResponse<SuccessCode>).
      *         HTTP 상태 코드는 200 DELETED로 반환됩니다.
      */
-    @DeleteMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String memberId) {
+    @DeleteMapping("/members/{loginId}")
+    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String loginId) {
 
-        memberMgmtService.deleteMember(memberId);
+        memberMgmtService.deleteMember(loginId);
 
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
 
     /**
+     * 함수명 : resetPwd
      * 회원 비밀번호를 초기화합니다.
      *
-     * @param memberId 초기화할 회원의 고유 식별자 (PathVariable).
+     * @param loginId 초기화할 회원의 고유 식별자 (PathVariable).
      * @return 초기화된 임시 비밀번호를 포함한 응답 객체 (APIResponse<String>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
-    @PatchMapping("/member/{memberId}/reset-password")
-    public ResponseEntity<APIResponse<String>> resetPwd(@PathVariable String memberId) {
+    @PatchMapping("/members/{loginId}/reset-password")
+    public ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(@PathVariable String loginId) {
 
         // 비밀번호 초기화
-        String temporaryPassword = memberMgmtService.resetPassword(memberId);
+        MemberUpdate.PatchResponse response = memberMgmtService.resetPassword(loginId);
 
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, temporaryPassword));
+                .body(APIResponse.success(SuccessCode.OK, response));
     }
 
 }

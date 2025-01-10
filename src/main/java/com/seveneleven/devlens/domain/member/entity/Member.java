@@ -41,10 +41,6 @@ public class Member extends BaseEntity {
     @Column(name = "status_code", nullable = false, length = 50)
     private MemberStatus status = MemberStatus.ACTIVE; // 상태 코드
 
-    @Column(name = "profile_image_exists", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private YN profileImageExists = YN.N; // 프로필 이미지 유무
-
     @Column(name = "name", nullable = false, length = 100)
     private String name; // 이름
 
@@ -83,14 +79,13 @@ public class Member extends BaseEntity {
 
     // 업데이트 메서드
     public void updateMember(String name, String phoneNumber, Role role, Company company,
-                             Long departmentId, Long positionId, YN profileImageExists) {
+                             Long departmentId, Long positionId) {
         this.name               = StringUtils.isNotBlank(name) ? name : this.name;
         this.role               = Objects.nonNull(role) ? role : this.role;
         this.company            = Objects.nonNull(company) ? company : this.company;
         this.phoneNumber        = StringUtils.isNotBlank(phoneNumber) ? phoneNumber : this.phoneNumber;
         this.departmentId       = Objects.nonNull(departmentId) ? departmentId : this.departmentId;
         this.positionId         = Objects.nonNull(positionId) ? positionId : this.positionId;
-        this.profileImageExists = Objects.nonNull(profileImageExists) ? profileImageExists : this.profileImageExists;
     }
 
 

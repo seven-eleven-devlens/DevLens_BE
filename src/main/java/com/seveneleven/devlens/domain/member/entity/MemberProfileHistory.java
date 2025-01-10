@@ -44,10 +44,6 @@ public class MemberProfileHistory extends BaseEntity {
     @Column(name = "phone_number", length = 20)
     private String phoneNumber; // 전화번호
 
-    @Column(name = "profile_image_exists", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private YN profileImageExists; // 프로필 이미지 유무
-
     @Column(name = "department", length = 100)
     private String department; // 부서명
 
@@ -68,7 +64,6 @@ public class MemberProfileHistory extends BaseEntity {
         history.phoneNumber = member.getPhoneNumber();
         history.department  = department;
         history.position    = position;
-        history.profileImageExists = member.getProfileImageExists();
         return history;
     }
 
