@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+
 import java.util.Optional;
 import java.util.List;
 
@@ -24,4 +25,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @EntityGraph(attributePaths = {"role"})
     Optional<Member> findOneWithAuthoritiesByLoginId(String loginId);
+
+    @Query("SELECT m.name FROM Member m WHERE m.id = :id")
+    Optional<String> findNameById(Long id);
 }
