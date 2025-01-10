@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,10 +23,13 @@ public class MyProjectController implements MyProjectDocs {
      * 함수명 : getMyProject()
      * 현재 진행중인 내 프로젝트와 우리 회사의 프로젝트를 반환하는 함수
      */
-    @GetMapping("/list")
-    public ResponseEntity<APIResponse<GetProjectList.Response>> getMyProject() {
+    @GetMapping("/list/{memberId}")
+    public ResponseEntity<APIResponse<GetProjectList.Response>> getMyProject(
+            // TODO - 멤버 Id를 Authentication 객체로 받아올 수 있는지 고민 / @AuthenticationPrincipal 어노테이션 적용 고민
+            @PathVariable Long memberId
+    ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(APIResponse.success(SuccessCode.OK, projectService.getProjectList()));
+                .body(APIResponse.success(SuccessCode.OK, projectService.getProjectList(memberId)));
     }
 }

@@ -38,7 +38,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     @Query(value = """
         SELECT
-        new com.seveneleven.devlens.domain.project.dto.GetProjectDetail$Response(
+        new com.seveneleven.devlens.domain.project.dto.GetProjectDetail$ProjectDetail(
                 p.id,
                 p_t.projectTypeName,
                 p.projectName,
@@ -55,5 +55,5 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         WHERE
              p.id = :projectId
         """)
-    GetProjectDetail.Response getProjectDetail(@Param("projectId") Long projectId);
+    GetProjectDetail.ProjectDetail getProjectDetail(@Param("projectId") Long projectId);
 }
