@@ -56,7 +56,6 @@ public class GetCompany {
         private String address;
         private BusinessType businessType;
         private String businessRegistrationNumber;
-        private YN representativeImageExists;
         private YN isActive;
         private PaginatedResponse<GetProject.Response> projects;
 
@@ -80,7 +79,6 @@ public class GetCompany {
             this.address = address;
             this.businessType = businessType;
             this.businessRegistrationNumber = businessRegistrationNumber;
-            this.representativeImageExists = representativeImageExists;
             this.isActive = activeStatus;
             this.projects = projects;
         }

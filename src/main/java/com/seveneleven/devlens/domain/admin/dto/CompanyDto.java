@@ -18,7 +18,6 @@ public class CompanyDto {
         private String address;
         private BusinessType businessType;
         private String businessRegistrationNumber;
-        private YN representativeImageExists;
         private YN isActive;
 
         public CompanyRequest(
