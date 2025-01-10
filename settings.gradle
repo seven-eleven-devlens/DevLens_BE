@@ -6,3 +6,7 @@
  */
 
 rootProject.name = 'KDEV3_DevLens_BE'
+include 'Admin'
+include 'Main'
+include 'Common'
+
