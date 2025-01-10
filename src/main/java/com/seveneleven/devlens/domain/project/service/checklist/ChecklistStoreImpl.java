@@ -1,6 +1,7 @@
 package com.seveneleven.devlens.domain.project.service.checklist;
 
 import com.seveneleven.devlens.domain.project.dto.PostProjectChecklist;
+import com.seveneleven.devlens.domain.project.dto.PutProjectChecklist;
 import com.seveneleven.devlens.domain.project.entity.Checklist;
 import com.seveneleven.devlens.domain.project.repository.ChecklistRepository;
 import com.seveneleven.devlens.domain.project.repository.ProjectStepRepository;
@@ -20,10 +21,10 @@ public class ChecklistStoreImpl implements ChecklistStore {
 
     @Override
     public Checklist storeChecklist(PostProjectChecklist.Request request) {
-        return request.toEntity(
+        return checklistRepository.save(request.toEntity(
                 projectStepRepository.findByIdAndIsActive(
                         request.getProjectStepId(),
                         YesNo.YES
-                ).orElseThrow(EntityNotFoundException::new));
+                ).orElseThrow(EntityNotFoundException::new)));
     }
 }
