@@ -36,7 +36,7 @@ public class ProjectUpdateService {
         if (!project.getProjectName().equals(request.getProjectName())) {
             checkProjectValidity.checkProjectDuplicatedName(request.getProjectName());
         }
-        Project updatedProject = PutProject.Request.updateProject(project, customer, developer, projectType, bnsManager);
+        Project updatedProject = request.updateProject(project, customer, developer, projectType, bnsManager);
         projectHistoryService.saveProjectHistory(updatedProject);
         return responseConverter.toDTO(updatedProject);
     }

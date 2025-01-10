@@ -52,7 +52,7 @@ public class PostProject {
         private Long developerId; // 개발사 ID (Company 엔티티의 ID)
         private String projectDescription; // 프로젝트 설명
         private Long projectTypeId; // 프로젝트 유형 ID
-        private Project.projectStatusCode projectStatusCode; // 프로젝트 상태 코드
+        private Project.ProjectStatusCode projectStatusCode; // 프로젝트 상태 코드
         private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
         private LocalDateTime plannedStartDate; // 시작 예정일
@@ -65,7 +65,7 @@ public class PostProject {
                 Long developerId,
                 String projectDescription,
                 Long projectTypeId,
-                Project.projectStatusCode projectStatusCode,
+                Project.ProjectStatusCode projectStatusCode,
                 Long bnsManager,
                 String contractNumber,
                 LocalDateTime plannedStartDate,

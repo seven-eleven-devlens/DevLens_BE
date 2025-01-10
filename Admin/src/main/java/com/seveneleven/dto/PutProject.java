@@ -31,7 +31,7 @@ public class PutProject {
         private Long finalApprover; // 최종 결재자
         private LocalDateTime finalApprovalDate; // 최종 결재일시
 
-        public static Project updateProject(Project project, Company customer, Company developer, ProjectType projectType, Member bnsManager) {
+        public Project updateProject(Project project, Company customer, Company developer, ProjectType projectType, Member bnsManager) {
             return project.update(
                     projectName,
                     projectDescription,
