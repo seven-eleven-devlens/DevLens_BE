@@ -47,10 +47,6 @@ public class Project extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member bnsManager; // BNS 담당자 ID
 
-    @Column(nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    private YesNo hasImage; // 이미지 여부
-
     private String contractNumber; // 계약서 번호
 
     private LocalDateTime plannedStartDate; // 시작 예정일
@@ -74,7 +70,6 @@ public class Project extends BaseEntity {
             ProjectType projectTypeId,
             Project.projectStatusCode projectStatusCode,
             Member bnsManager,
-            YesNo hasImage,
             String contractNumber,
             LocalDateTime plannedStartDate,
             LocalDateTime plannedEndDate,
@@ -91,7 +86,6 @@ public class Project extends BaseEntity {
         this.projectType = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
-        this.hasImage = hasImage;
         this.contractNumber = contractNumber;
         this.plannedStartDate = plannedStartDate;
         this.plannedEndDate = plannedEndDate;
@@ -110,7 +104,6 @@ public class Project extends BaseEntity {
             ProjectType projectTypeId,
             projectStatusCode projectStatusCode,
             Member bnsManager,
-            YesNo hasImage,
             String contractNumber,
             LocalDateTime plannedStartDate,
             LocalDateTime plannedEndDate
@@ -122,7 +115,6 @@ public class Project extends BaseEntity {
         this.projectType = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
-        this.hasImage = hasImage;
         this.contractNumber = contractNumber;
         this.plannedStartDate = plannedStartDate;
         this.plannedEndDate = plannedEndDate;

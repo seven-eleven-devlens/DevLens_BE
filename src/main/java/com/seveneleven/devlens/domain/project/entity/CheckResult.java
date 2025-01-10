@@ -35,12 +35,4 @@ public class CheckResult extends BaseEntity {
 
     @Column(columnDefinition = "TEXT")
     private String rejectionReason; // 거부 사유
-
-    @Column(nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    private YesNo hasFile; // 파일 유무
-
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private YesNo hasLink; // 링크 유무
 }

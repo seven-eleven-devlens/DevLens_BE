@@ -39,9 +39,6 @@ public class ProjectHistory extends BaseEntity {
 
     private Long bnsManagerId; // BNS 담당자 ID
 
-    @Column(nullable = false)
-    private YesNo hasImage; // 이미지 파일 유무
-
     private String contractNumber; // 계약서 번호
 
     private LocalDateTime plannedStartDate; // 시작 예정일
@@ -60,7 +57,6 @@ public class ProjectHistory extends BaseEntity {
             String statusCode,
             String typeName,
             Long bnsManagerId,
-            YesNo hasImage,
             String contractNumber,
             LocalDateTime plannedStartDate,
             LocalDateTime startDate,
@@ -74,7 +70,6 @@ public class ProjectHistory extends BaseEntity {
         this.statusCode = statusCode;
         this.typeName = typeName;
         this.bnsManagerId = bnsManagerId;
-        this.hasImage = hasImage;
         this.contractNumber = contractNumber;
         this.plannedStartDate = plannedStartDate;
         this.startDate = startDate;
@@ -91,7 +86,6 @@ public class ProjectHistory extends BaseEntity {
                 project.getProjectStatusCode().name(),
                 project.getProjectType().getProjectTypeName(),
                 project.getBnsManager().getId(),
-                project.getHasImage(),
                 project.getContractNumber(),
                 project.getPlannedStartDate(),
                 project.getStartDate(),
