@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/project/detail")
+@RequestMapping("/api/projects")
 public class ProjectController implements ProjectDocs {
 
     private final ProjectService projectService;
@@ -27,7 +27,7 @@ public class ProjectController implements ProjectDocs {
      * 함수명 : getProjectDetail
      * 프로젝트 상세 페이지를 반환하는 함수
      */
-    @GetMapping("/{projectId}")
+    @GetMapping("/detail/{projectId}")
     public ResponseEntity<APIResponse<GetProjectDetail.Response>> getProjectDetail(
             @PathVariable Long projectId
     ) {

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "프로젝트 체크리스트 API", description = "프로젝트 체크리스트 관련 API")
+@RequestMapping("/api/projects/checklists")
 public interface ProjectChecklistDocs {
 
     @GetMapping("/{projectId}")

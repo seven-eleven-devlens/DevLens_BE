@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/project/checklist")
+@RequestMapping("/api/projects/checklists")
 public class ProjectChecklistController implements ProjectChecklistDocs {
 
     private final ProjectChecklistFacade projectChecklistFacade;
