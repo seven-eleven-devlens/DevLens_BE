@@ -1,7 +1,6 @@
 package com.seveneleven.entity.project;
 
 import com.seveneleven.entity.global.BaseEntity;
-import com.seveneleven.entity.global.YesNo;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -39,9 +38,6 @@ public class ProjectHistory extends BaseEntity {
 
     private Long bnsManagerId; // BNS 담당자 ID
 
-    @Column(nullable = false)
-    private YesNo hasImage; // 이미지 파일 유무
-
     private String contractNumber; // 계약서 번호
 
     private LocalDate plannedStartDate; // 시작 예정일
@@ -60,7 +56,6 @@ public class ProjectHistory extends BaseEntity {
             String statusCode,
             String typeName,
             Long bnsManagerId,
-            YesNo hasImage,
             String contractNumber,
             LocalDate plannedStartDate,
             LocalDate startDate,
@@ -74,7 +69,6 @@ public class ProjectHistory extends BaseEntity {
         this.statusCode = statusCode;
         this.typeName = typeName;
         this.bnsManagerId = bnsManagerId;
-        this.hasImage = hasImage;
         this.contractNumber = contractNumber;
         this.plannedStartDate = plannedStartDate;
         this.startDate = startDate;
@@ -91,7 +85,6 @@ public class ProjectHistory extends BaseEntity {
                 project.getProjectStatusCode().name(),
                 project.getProjectType().getProjectTypeName(),
                 project.getBnsManager().getId(),
-                project.getHasImage(),
                 project.getContractNumber(),
                 project.getPlannedStartDate(),
                 project.getStartDate(),

@@ -36,7 +36,7 @@ public class ProjectResponseConverter implements EntityConverter<GetProject.Resp
                 project.getPlannedEndDate(),
                 project.getStartDate(),
                 project.getEndDate(),
-                project.getFinalApprover(),
+                project.getFinalApproverId(),
                 project.getFinalApprovalDate()
         );
     }

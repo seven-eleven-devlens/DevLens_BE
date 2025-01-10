@@ -5,7 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PostProject {
@@ -18,8 +18,8 @@ public class PostProject {
         private Long projectTypeId; // 프로젝트 유형 ID
         private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
-        private LocalDateTime plannedStartDate; // 시작 예정일
-        private LocalDateTime plannedEndDate; // 종료 예정일
+        private LocalDate plannedStartDate; // 시작 예정일
+        private LocalDate plannedEndDate; // 종료 예정일
 
         public Request(
                 String projectName,
@@ -29,8 +29,8 @@ public class PostProject {
                 Long projectTypeId,
                 Long bnsManagerId,
                 String contractNumber,
-                LocalDateTime plannedStartDate,
-                LocalDateTime plannedEndDate
+                LocalDate plannedStartDate,
+                LocalDate plannedEndDate
         ) {
             this.projectName = projectName;
             this.customerId = customerId;
@@ -55,8 +55,8 @@ public class PostProject {
         private Project.ProjectStatusCode projectStatusCode; // 프로젝트 상태 코드
         private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
-        private LocalDateTime plannedStartDate; // 시작 예정일
-        private LocalDateTime plannedEndDate; // 종료 예정일
+        private LocalDate plannedStartDate; // 시작 예정일
+        private LocalDate plannedEndDate; // 종료 예정일
 
         public Response(
                 Long id,
@@ -68,8 +68,8 @@ public class PostProject {
                 Project.ProjectStatusCode projectStatusCode,
                 Long bnsManager,
                 String contractNumber,
-                LocalDateTime plannedStartDate,
-                LocalDateTime plannedEndDate
+                LocalDate plannedStartDate,
+                LocalDate plannedEndDate
         ) {
             this.id = id;
             this.projectName = projectName;

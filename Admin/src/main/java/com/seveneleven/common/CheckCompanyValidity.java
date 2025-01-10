@@ -3,6 +3,7 @@ package com.seveneleven.common;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.CompanyDuplicatedException;
+import com.seveneleven.exception.CompanyNotFoundException;
 import com.seveneleven.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

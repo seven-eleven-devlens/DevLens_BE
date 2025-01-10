@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,10 +21,10 @@ public class GetProject {
         private Project.ProjectStatusCode projectStatusCode; // 프로젝트 상태 코드
         private Long bnsManager; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
-        private LocalDateTime plannedStartDate; // 시작 예정일
-        private LocalDateTime plannedEndDate; // 종료 예정일
-        private LocalDateTime startDate; // 시작일
-        private LocalDateTime endDate; // 종료일
+        private LocalDate plannedStartDate; // 시작 예정일
+        private LocalDate plannedEndDate; // 종료 예정일
+        private LocalDate startDate; // 시작일
+        private LocalDate endDate; // 종료일
         private Long finalApprover; // 최종 결재자
         private LocalDateTime finalApprovalDate; // 최종 결재일시
 
@@ -37,10 +38,10 @@ public class GetProject {
                 Project.ProjectStatusCode projectStatusCode,
                 Long bnsManager,
                 String contractNumber,
-                LocalDateTime plannedStartDate,
-                LocalDateTime plannedEndDate,
-                LocalDateTime startDate,
-                LocalDateTime endDate,
+                LocalDate plannedStartDate,
+                LocalDate plannedEndDate,
+                LocalDate startDate,
+                LocalDate endDate,
                 Long finalApprover,
                 LocalDateTime finalApprovalDate
         ) {
@@ -73,10 +74,10 @@ public class GetProject {
         private Project.ProjectStatusCode projectStatusCode; // 프로젝트 상태 코드
         private Long bnsManager; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
-        private LocalDateTime plannedStartDate; // 시작 예정일
-        private LocalDateTime plannedEndDate; // 종료 예정일
-        private LocalDateTime startDate; // 시작일
-        private LocalDateTime endDate; // 종료일
+        private LocalDate plannedStartDate; // 시작 예정일
+        private LocalDate plannedEndDate; // 종료 예정일
+        private LocalDate startDate; // 시작일
+        private LocalDate endDate; // 종료일
         private Long finalApprover; // 최종 결재자
         private LocalDateTime finalApprovalDate; // 최종 결재일시
 
@@ -90,10 +91,10 @@ public class GetProject {
                 Project.ProjectStatusCode projectStatusCode,
                 Long bnsManager,
                 String contractNumber,
-                LocalDateTime plannedStartDate,
-                LocalDateTime plannedEndDate,
-                LocalDateTime startDate,
-                LocalDateTime endDate,
+                LocalDate plannedStartDate,
+                LocalDate plannedEndDate,
+                LocalDate startDate,
+                LocalDate endDate,
                 Long finalApprover,
                 LocalDateTime finalApprovalDate
         ) {

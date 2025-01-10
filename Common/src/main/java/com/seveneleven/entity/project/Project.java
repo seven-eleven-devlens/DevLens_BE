@@ -1,8 +1,6 @@
 package com.seveneleven.entity.project;
 
 import com.seveneleven.entity.global.BaseEntity;
-import com.seveneleven.entity.global.YesNo;
-import com.seveneleven.entity.global.converter.YesNoConverter;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import jakarta.persistence.*;
@@ -48,10 +46,6 @@ public class Project extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member bnsManager; // BNS 담당자 ID
 
-    @Column(nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    private YesNo hasImage; // 이미지 여부
-
     private String contractNumber; // 계약서 번호
 
     private LocalDate plannedStartDate; // 시작 예정일
@@ -75,7 +69,6 @@ public class Project extends BaseEntity {
             ProjectType projectTypeId,
             ProjectStatusCode projectStatusCode,
             Member bnsManager,
-            YesNo hasImage,
             String contractNumber,
             LocalDate plannedStartDate,
             LocalDate plannedEndDate,
@@ -92,7 +85,6 @@ public class Project extends BaseEntity {
         this.projectType = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
-        this.hasImage = hasImage;
         this.contractNumber = contractNumber;
         this.plannedStartDate = plannedStartDate;
         this.plannedEndDate = plannedEndDate;
@@ -111,7 +103,6 @@ public class Project extends BaseEntity {
             ProjectType projectTypeId,
             ProjectStatusCode projectStatusCode,
             Member bnsManager,
-            YesNo hasImage,
             String contractNumber,
             LocalDate plannedStartDate,
             LocalDate plannedEndDate
@@ -123,7 +114,6 @@ public class Project extends BaseEntity {
         this.projectType = projectTypeId;
         this.projectStatusCode = projectStatusCode;
         this.bnsManager = bnsManager;
-        this.hasImage = hasImage;
         this.contractNumber = contractNumber;
         this.plannedStartDate = plannedStartDate;
         this.plannedEndDate = plannedEndDate;
