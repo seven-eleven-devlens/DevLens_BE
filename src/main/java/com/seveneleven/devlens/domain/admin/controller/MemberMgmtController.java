@@ -57,14 +57,14 @@ public class MemberMgmtController {
     /**
      * 회원 상세 정보를 조회합니다.
      *
-     * @param id 회원 ID (필수). 조회할 회원의 고유 식별자.
+     * @param memberId 회원 ID (필수). 조회할 회원의 고유 식별자.
      * @return 회원 상세 정보를 포함한 응답 객체(APIResponse<MemberDto>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
     @GetMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<MemberDto.Response>> memberDetail(@RequestParam String id) {
+    public ResponseEntity<APIResponse<MemberDto.Response>> memberDetail(@PathVariable String memberId) {
         // 회원 상세 정보 조회
-        MemberDto.Response memberDto = memberMgmtService.getMemberDetail(id);
+        MemberDto.Response memberDto = memberMgmtService.getMemberDetail(memberId);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, memberDto));
@@ -105,16 +105,16 @@ public class MemberMgmtController {
     /**
      * 회원 정보를 수정합니다.
      *
-     * @param id       수정할 회원의 고유 식별자 (필수).
+     * @param memberId  수정할 회원의 고유 식별자 (필수).
      * @param memberDto 수정할 회원 정보를 담은 요청 객체 (MemberDto.PutRequest).
      * @return 수정된 회원 정보를 포함한 응답 객체 (APIResponse<MemberDto.Response>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
     @PatchMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@RequestParam String id,
+    public ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@PathVariable String memberId,
                                                                         @RequestBody MemberDto.PatchRequest memberDto) {
 
-        MemberDto.Response updatedMember = memberMgmtService.updateMember(id, memberDto);
+        MemberDto.Response updatedMember = memberMgmtService.updateMember(memberId, memberDto);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED, updatedMember));
@@ -123,14 +123,14 @@ public class MemberMgmtController {
     /**
      * 회원 계정 삭제합니다.
      *
-     * @param id       수정할 회원의 고유 식별자 (필수).
+     * @param memberId 수정할 회원의 고유 식별자 (필수).
      * @return 삭제된 회원에 대한 응답 객체 (APIResponse<SuccessCode>).
      *         HTTP 상태 코드는 200 DELETED로 반환됩니다.
      */
     @DeleteMapping("/member/{memberId}")
-    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@RequestParam String id) {
+    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String memberId) {
 
-        memberMgmtService.deleteMember(id);
+        memberMgmtService.deleteMember(memberId);
 
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
@@ -139,15 +139,15 @@ public class MemberMgmtController {
     /**
      * 회원 비밀번호를 초기화합니다.
      *
-     * @param id 초기화할 회원의 고유 식별자 (PathVariable).
+     * @param memberId 초기화할 회원의 고유 식별자 (PathVariable).
      * @return 초기화된 임시 비밀번호를 포함한 응답 객체 (APIResponse<String>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
     @PatchMapping("/member/{memberId}/reset-password")
-    public ResponseEntity<APIResponse<String>> resetPwd(@RequestParam String id) {
+    public ResponseEntity<APIResponse<String>> resetPwd(@PathVariable String memberId) {
 
         // 비밀번호 초기화
-        String temporaryPassword = memberMgmtService.resetPassword(id);
+        String temporaryPassword = memberMgmtService.resetPassword(memberId);
 
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
