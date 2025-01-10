@@ -29,4 +29,7 @@ public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecif
     Boolean existsByLoginId(String loginId);
 
     Boolean existsByEmail(String email);
+
+    @Query("SELECT m.name FROM Member m WHERE m.id = :id")
+    Optional<String> findNameById(Long id);
 }

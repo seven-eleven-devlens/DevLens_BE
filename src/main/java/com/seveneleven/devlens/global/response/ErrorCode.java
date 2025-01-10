@@ -30,6 +30,13 @@ public enum ErrorCode {
     PROJECT_NOT_FOUND(2000,HttpStatus.BAD_REQUEST,"프로젝트 정보를 찾을 수 없습니다."),
     PROJECT_DUPLICATED_NAME(2001,HttpStatus.BAD_REQUEST, "이미 등록된 프로젝트명입니다."),
     PROJECT_HISTORY_NOT_FOUND_EXCEPTION(2002,HttpStatus.BAD_REQUEST,"프로젝트 이력을 찾을 수 없습니다."),
+  
+    NOT_FOUND_PROJECT_STEP(2501, HttpStatus.NOT_FOUND, "해당 프로젝트 단게를 찾을 수 없습니다."),
+    NOT_FOUND_MEMBER(2502, HttpStatus.NOT_FOUND, "해당 회원을 찾을 수 없습니다."),
+    NOT_FOUND_POST(2503, HttpStatus.NOT_FOUND, "해당 게시물을 찾을 수 없습니다."),
+    NOT_AUTHORIZED_TO_DELETE(2504, HttpStatus.FORBIDDEN, "게시글은 작성자만 삭제할 수 있습니다."),
+    NOT_FOUND_WRITER(2505, HttpStatus.NOT_FOUND, "작성자 정보를 찾을 수 없습니다."),
+
     // 3000번대 코드 : DB 관련
 
 

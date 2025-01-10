@@ -3,7 +3,6 @@ package com.seveneleven.devlens.domain.member.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.constant.Role;
-import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.*;
@@ -39,6 +38,7 @@ public class Member extends BaseEntity {
     private String password; // 비밀번호
 
     @Column(name = "status_code", nullable = false, length = 50)
+    @Enumerated(EnumType.STRING)
     private MemberStatus status = MemberStatus.ACTIVE; // 상태 코드
 
     @Column(name = "name", nullable = false, length = 100)
