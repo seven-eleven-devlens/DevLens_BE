@@ -1,6 +1,7 @@
 package com.seveneleven.devlens.domain.admin.controller;
 
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+import com.seveneleven.devlens.domain.admin.dto.GetCompany;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
 import com.seveneleven.devlens.domain.admin.service.CompanyCreateService;
 import com.seveneleven.devlens.domain.admin.service.CompanyReadService;
@@ -41,10 +42,11 @@ public class CompanyController {
         목적 : 회사 상세 정보 조회
      */
     @GetMapping("/list/{companyId}")
-    public ResponseEntity<APIResponse<CompanyDto.CompanyResponse>> readCompany(
-            @PathVariable Long companyId
+    public ResponseEntity<APIResponse<GetCompany.Response>> readCompany(
+            @PathVariable Long companyId,
+            @RequestParam(value = "page", required = true) Integer page
     ) {
-        var company = companyReadService.getCompanyResponse(companyId);
+        var company = companyReadService.getCompanyResponse(companyId, page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, company));

@@ -98,4 +98,14 @@ public class AdminProjectController {
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK,projectUpdateService.updateProject(id, request)));
     }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<APIResponse<Void>> deleteProject(
+            @PathVariable Long id
+    ){
+        projectUpdateService.deleteProject(id);
+        return ResponseEntity
+                .status(SuccessCode.DELETED.getStatus())
+                .body(APIResponse.success(SuccessCode.DELETED));
+    }
 }

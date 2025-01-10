@@ -1,12 +1,13 @@
 package com.seveneleven.devlens.domain.admin.service;
 
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+import com.seveneleven.devlens.domain.admin.dto.GetCompany;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
 import com.seveneleven.devlens.domain.admin.exception.CompanyNotFoundException;
-import com.seveneleven.devlens.domain.admin.repository.CompanyRepository;
-import com.seveneleven.devlens.domain.admin.repository.CompanyResponseConverter;
+import com.seveneleven.devlens.domain.admin.repository.*;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;
+import com.seveneleven.devlens.domain.project.entity.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,18 +22,27 @@ public class CompanyReadService {
     private final CompanyRepository companyRepository;
     private final CompanyResponseConverter companyResponseConverter;
     private final int pageSize = 20;
+    private final AdminProjectRepository adminProjectRepository;
+    private final ProjectResponseConverter projectResponseConverter;
+    private final GetCompanyResponseConverter getCompanyResponseConverter;
 
     /*
         함수명 : getCompanyDto
         함수 목적 : 회사 상세조회
      */
     @Transactional(readOnly = true)
-    public CompanyDto.CompanyResponse getCompanyResponse(
-            Long id
+    public GetCompany.Response getCompanyResponse(
+            Long id, Integer page
     ) {
-        return companyRepository.findByIdAndIsActive(id, YN.Y)
-                .map(companyResponseConverter::toDTO)
+        Company company = companyRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("projectName").ascending().and(Sort.by("id")).descending());
+        Page<Project> projectPage = adminProjectRepository.findByCustomerOrDeveloper(pageable, company, company);
+        GetCompany.Response response = companyRepository
+                .findByIdAndIsActive(id, YN.Y)
+                .map(getCompanyResponseConverter::toDTO)
                 .orElseThrow(CompanyNotFoundException::new);
+
+        return response.addProjectList(response, PaginatedResponse.createPaginatedResponse(projectPage.map(projectResponseConverter::toDTO)));
     }
 
     /*

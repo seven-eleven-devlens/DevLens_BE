@@ -4,7 +4,9 @@ import com.seveneleven.devlens.domain.member.constant.BusinessType;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,4 +120,6 @@ public class Company extends BaseEntity {
     public void removeRepresentativeImage(){
         this.representativeImageExists = YN.N;
     }
+
+    public void createCompanyProjects(){}
 }

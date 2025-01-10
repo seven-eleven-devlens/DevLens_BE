@@ -40,4 +40,10 @@ public class ProjectUpdateService {
         projectHistoryService.saveProjectHistory(updatedProject);
         return responseConverter.toDTO(updatedProject);
     }
+
+    @Transactional
+    public void deleteProject(Long id) {
+        projectHistoryService.saveProjectHistory(projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new));
+        projectRepository.deleteById(id);
+    }
 }
