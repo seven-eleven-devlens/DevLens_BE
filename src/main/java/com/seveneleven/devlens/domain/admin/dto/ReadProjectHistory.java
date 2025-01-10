@@ -19,7 +19,6 @@ public class ReadProjectHistory {
         private String statusCode;
         private String typeName;
         private Long bnsManagerId;
-        private YesNo hasImage;
         private String contractNumber;
         private LocalDateTime plannedStartDate;
         private LocalDateTime startDate;
@@ -35,7 +34,6 @@ public class ReadProjectHistory {
                 String statusCode,
                 String typeName,
                 Long bnsManagerId,
-                YesNo hasImage,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
                 LocalDateTime startDate,
@@ -50,7 +48,6 @@ public class ReadProjectHistory {
             this.statusCode = statusCode;
             this.typeName = typeName;
             this.bnsManagerId = bnsManagerId;
-            this.hasImage = hasImage;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.startDate = startDate;
