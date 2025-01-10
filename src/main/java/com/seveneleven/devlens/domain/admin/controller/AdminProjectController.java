@@ -1,12 +1,10 @@
 package com.seveneleven.devlens.domain.admin.controller;
 
-import com.seveneleven.devlens.domain.admin.dto.GetProject;
-import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
-import com.seveneleven.devlens.domain.admin.dto.PostProject;
-import com.seveneleven.devlens.domain.admin.dto.ReadProjectHistory;
+import com.seveneleven.devlens.domain.admin.dto.*;
 import com.seveneleven.devlens.domain.admin.service.ProjectCreateService;
 import com.seveneleven.devlens.domain.admin.service.ProjectHistoryService;
 import com.seveneleven.devlens.domain.admin.service.ProjectReadService;
+import com.seveneleven.devlens.domain.admin.service.ProjectUpdateService;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +18,7 @@ public class AdminProjectController {
     private final ProjectCreateService projectCreateService;
     private final ProjectReadService projectReadService;
     private final ProjectHistoryService projectHistoryService;
+    private final ProjectUpdateService projectUpdateService;
 
     /*
         함수명 : newProject
@@ -88,5 +87,15 @@ public class AdminProjectController {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, projectHistoryService.getProjectHistory(id)));
+    }
+
+    @PutMapping("/list/{id}")
+    public ResponseEntity<APIResponse<PutProject.Response>> updateProject(
+            @PathVariable Long id,
+            @RequestBody PutProject.Request request
+    ){
+        return ResponseEntity
+                .status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK,projectUpdateService.updateProject(id, request)));
     }
 }

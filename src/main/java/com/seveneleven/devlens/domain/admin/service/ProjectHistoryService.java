@@ -1,10 +1,10 @@
 package com.seveneleven.devlens.domain.admin.service;
 
-import com.seveneleven.devlens.domain.admin.db.AdminProjectHistoryRepository;
-import com.seveneleven.devlens.domain.admin.db.ProjectHistoryConverter;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
 import com.seveneleven.devlens.domain.admin.dto.ReadProjectHistory;
 import com.seveneleven.devlens.domain.admin.exception.ProjectHistoryNotFoundException;
+import com.seveneleven.devlens.domain.admin.repository.AdminProjectHistoryRepository;
+import com.seveneleven.devlens.domain.admin.repository.ProjectHistoryConverter;
 import com.seveneleven.devlens.domain.project.entity.Project;
 import com.seveneleven.devlens.domain.project.entity.ProjectHistory;
 import lombok.RequiredArgsConstructor;

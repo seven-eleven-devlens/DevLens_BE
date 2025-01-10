@@ -1,10 +1,10 @@
 package com.seveneleven.devlens.domain.admin.service;
 
 import com.seveneleven.devlens.domain.admin.common.CheckProjectValidity;
-import com.seveneleven.devlens.domain.admin.db.AdminProjectRepository;
-import com.seveneleven.devlens.domain.admin.db.PostProjectRequestConverter;
-import com.seveneleven.devlens.domain.admin.db.PostProjectResponseConverter;
 import com.seveneleven.devlens.domain.admin.dto.PostProject;
+import com.seveneleven.devlens.domain.admin.repository.AdminProjectRepository;
+import com.seveneleven.devlens.domain.admin.repository.PostProjectRequestConverter;
+import com.seveneleven.devlens.domain.admin.repository.PostProjectResponseConverter;
 import com.seveneleven.devlens.domain.project.entity.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

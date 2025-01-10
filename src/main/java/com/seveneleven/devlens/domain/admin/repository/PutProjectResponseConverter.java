@@ -1,17 +1,17 @@
-package com.seveneleven.devlens.domain.admin.db;
+package com.seveneleven.devlens.domain.admin.repository;
 
 import com.seveneleven.devlens.domain.admin.common.EntityConverter;
-import com.seveneleven.devlens.domain.admin.dto.PostProject;
+import com.seveneleven.devlens.domain.admin.dto.PutProject;
 import com.seveneleven.devlens.domain.project.entity.Project;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PostProjectResponseConverter implements EntityConverter<PostProject.Response, Project> {
+public class PutProjectResponseConverter implements EntityConverter<PutProject.Response, Project> {
     @Override
-    public PostProject.Response toDTO(Project project) {
-        return new PostProject.Response(
+    public PutProject.Response toDTO(Project project) {
+        return new PutProject.Response(
                 project.getId(),
                 project.getProjectName(),
                 project.getCustomer().getId(),
@@ -23,13 +23,17 @@ public class PostProjectResponseConverter implements EntityConverter<PostProject
                 project.getHasImage(),
                 project.getContractNumber(),
                 project.getPlannedStartDate(),
-                project.getPlannedEndDate()
+                project.getPlannedEndDate(),
+                project.getStartDate(),
+                project.getEndDate(),
+                project.getFinalApprover(),
+                project.getFinalApprovalDate()
         );
     }
 
     @Override
-    public Project toEntity(PostProject.Response response) {
-        //사용하지 않는 메서드
+    public Project toEntity(PutProject.Response response) {
+        //미사용 메서드
         return null;
     }
 }

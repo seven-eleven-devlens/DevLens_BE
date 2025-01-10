@@ -1,10 +1,10 @@
 package com.seveneleven.devlens.domain.admin.service;
 
 import com.seveneleven.devlens.domain.admin.common.CheckCompanyValidity;
-import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
-import com.seveneleven.devlens.domain.admin.db.CompanyRequestConverter;
-import com.seveneleven.devlens.domain.admin.db.CompanyResponseConverter;
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
+import com.seveneleven.devlens.domain.admin.repository.CompanyRepository;
+import com.seveneleven.devlens.domain.admin.repository.CompanyRequestConverter;
+import com.seveneleven.devlens.domain.admin.repository.CompanyResponseConverter;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

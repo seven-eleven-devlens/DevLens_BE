@@ -1,4 +1,4 @@
-package com.seveneleven.devlens.domain.admin.db;
+package com.seveneleven.devlens.domain.admin.repository;
 
 import com.seveneleven.devlens.domain.admin.common.EntityConverter;
 import com.seveneleven.devlens.domain.admin.dto.PutProject;
@@ -13,7 +13,7 @@ public class PutProjectRequestConverter implements EntityConverter<PutProject.Re
                 project.getCustomer().getId(),
                 project.getDeveloper().getId(),
                 project.getProjectDescription(),
-                project.getProjectTypeId().getId(),
+                project.getProjectType().getId(),
                 project.getProjectStatusCode(),
                 project.getBnsManager().getId(),
                 project.getHasImage(),

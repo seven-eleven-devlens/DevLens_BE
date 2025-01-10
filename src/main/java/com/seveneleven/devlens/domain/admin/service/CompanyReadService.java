@@ -1,10 +1,10 @@
 package com.seveneleven.devlens.domain.admin.service;
 
-import com.seveneleven.devlens.domain.admin.db.CompanyRepository;
-import com.seveneleven.devlens.domain.admin.db.CompanyResponseConverter;
 import com.seveneleven.devlens.domain.admin.dto.CompanyDto;
 import com.seveneleven.devlens.domain.admin.dto.PaginatedResponse;
 import com.seveneleven.devlens.domain.admin.exception.CompanyNotFoundException;
+import com.seveneleven.devlens.domain.admin.repository.CompanyRepository;
+import com.seveneleven.devlens.domain.admin.repository.CompanyResponseConverter;
 import com.seveneleven.devlens.domain.member.constant.YN;
 import com.seveneleven.devlens.domain.member.entity.Company;
 import lombok.RequiredArgsConstructor;
