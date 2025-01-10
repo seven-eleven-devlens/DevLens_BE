@@ -15,11 +15,7 @@ import java.util.List;
 public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecificationExecutor<Member> {
 
     // TODO - JOIN VS getCompany().getId() 검토 필요
-    @Query("SELECT m.id, c.id " +
-            "FROM Member m " +
-            "JOIN Company c ON m.company.id = c.id " +
-            "WHERE m.id = :memberId AND m.status = :statusCode")
-    List<Long> findByMemberIdAndStatusCode(Long memberId, MemberStatus statusCode);
+    Optional<Long> findCompanyIdByIdAndStatus(Long memberId, MemberStatus statusCode);
 
     Optional<Member> findByLoginId(String loginId);
 

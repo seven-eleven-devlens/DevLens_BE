@@ -11,11 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/project")
+@RequestMapping("/api/project")
 @Tag(name = "프로젝트 대시보드 API", description = "프로젝트 대시보드 관련 API")
 public interface MyProjectDocs {
 
-    @GetMapping("/list")
+    @GetMapping("/{memberId}")
     @Operation(
             summary = "프로젝트 목록 조회",
             description = "사용자의 프로젝트 목록과 현재 회사의 프로젝트 목록을 반환합니다.",
@@ -30,5 +30,5 @@ public interface MyProjectDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<GetProjectList.Response>> getMyProject();
+    ResponseEntity<APIResponse<GetProjectList.Response>> getMyProject(Long memberId);
 }

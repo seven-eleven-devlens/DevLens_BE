@@ -68,7 +68,6 @@ public class PostProject {
                 Long projectTypeId,
                 Project.projectStatusCode projectStatusCode,
                 Long bnsManager,
-                YesNo hasImage,
                 String contractNumber,
                 LocalDateTime plannedStartDate,
                 LocalDateTime plannedEndDate
@@ -81,7 +80,6 @@ public class PostProject {
             this.projectTypeId = projectTypeId;
             this.projectStatusCode = projectStatusCode;
             this.bnsManager = bnsManager;
-            this.hasImage = hasImage;
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.plannedEndDate = plannedEndDate;

@@ -10,7 +10,17 @@ public class GetProjectDetail {
      * AllArgsContructor는 개발 시 삭제 예정
      */
     @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class Response {
+        private ProjectDetail projectDetail;
+        private List<ProjectStepInfo> projectStep;
+        private List<ChecklistApplicationList> checklistApplicationList;
+    }
+
+    @Getter
+    public static class ProjectDetail {
         private Long projectId;
         private String projectTypeName;
         private String projectName;
@@ -18,12 +28,8 @@ public class GetProjectDetail {
         private String projectContact;
         private String projectContactPhone;
         private String projectImageURL;
-        @Setter
-        private List<ProjectStepInfo> projectStep;
-        @Setter
-        private List<ChecklistApplicationList> checklistApplicationList;
 
-        public Response(
+        public ProjectDetail(
                 Long projectId,
                 String projectTypeName,
                 String projectName,

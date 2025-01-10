@@ -32,13 +32,13 @@ public class ProjectStep extends BaseEntity {
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter.class)
-    private YesNo useStatus; // 사용 유무
+    private YesNo isActive; // 사용 유무
 
     public ProjectStep(Project project, String stepName, String stepDescription, Integer stepOrder) {
         this.project = project;
         this.stepName = stepName;
         this.stepDescription = stepDescription;
         this.stepOrder = stepOrder;
-        useStatus = YesNo.YES;
+        isActive = YesNo.YES;
     }
 }

@@ -35,13 +35,5 @@ public class CheckResultHistory extends BaseEntity {
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter.class)
-    private YesNo hasFile; // 파일 유무
-
-    @Column(nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    private YesNo hasLink; // 링크 유무
-
-    @Column(nullable = false)
-    @Convert(converter = YesNoConverter.class)
     private YesNo isActive; // 사용 유무
 }

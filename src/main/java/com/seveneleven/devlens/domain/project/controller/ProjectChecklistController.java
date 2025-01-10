@@ -1,49 +1,48 @@
 package com.seveneleven.devlens.domain.project.controller;
 
 import com.seveneleven.devlens.domain.project.dto.*;
+import com.seveneleven.devlens.domain.project.service.ProjectStepService;
 import com.seveneleven.devlens.global.entity.YesNo;
 import com.seveneleven.devlens.global.response.APIResponse;
 import com.seveneleven.devlens.global.response.SuccessCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/project/checklist")
+@RequestMapping("/api/projects/checklists")
 public class ProjectChecklistController implements ProjectChecklistDocs {
 
+    private final ProjectChecklistFacade projectChecklistFacade;
+
     /**
-     * 함수명 : getProjectChecklist
+     * 함수명 : getProjectStepAndChecklist
+     * 해당 프로젝트의 모든 단계와 체크리스트 목록을 반환하는 함수
+     */
+    @GetMapping("/{projectId}")
+    public ResponseEntity<APIResponse<GetProjectStep.Response>> getProjectStepAndChecklist(
+            @PathVariable Long projectId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.getProjectStepAndChecklist(projectId)));
+    }
+
+    /**
+     * 함수명 : getStepChecklist
      * 해당 단계의 체크리스트 목록을 반환하는 함수
      */
     @GetMapping("/{stepId}")
-    public APIResponse<GetProjectChecklist.Response> getProjectChecklist(
+    public ResponseEntity<APIResponse<GetStepChecklist.Response>> getProjectChecklist(
             @PathVariable Long stepId
     ) {
-        List<GetProjectChecklist.projectChecklist> checklists = List.of(
-                new GetProjectChecklist.projectChecklist(
-                        1L,
-                        "Checklist Item A",
-                        YesNo.YES,
-                        LocalDateTime.of(2023, 1, 1, 12, 0)
-                ),
-                new GetProjectChecklist.projectChecklist(
-                        2L,
-                        "Checklist Item B",
-                        YesNo.NO,
-                        LocalDateTime.of(2023, 2, 1, 14, 30)
-                )
-        );
-
-        GetProjectChecklist.Response response = new GetProjectChecklist.Response(
-                stepId,
-                checklists
-        );
-
-        return APIResponse.success(SuccessCode.OK, response);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.getStepChecklist(stepId)));
     }
 
     /**
@@ -51,18 +50,11 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 프로젝트 단계에 체크리스트를 추가하는 함수
      */
     @PostMapping("")
-    public APIResponse<PostProjectChecklist.Response> postProjectChecklist(
+    public ResponseEntity<APIResponse<PostProjectChecklist.Response>> postProjectChecklist(
             @RequestBody PostProjectChecklist.Request request
     ) {
-        PostProjectChecklist.Response response = new PostProjectChecklist.Response(
-                1L,
-                "Test Checklist Name",
-                "Test Checklist Description",
-                YesNo.YES,
-                YesNo.NO
-        );
-
-        return APIResponse.success(SuccessCode.CREATED, response);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(APIResponse.success(SuccessCode.CREATED, projectChecklistFacade.postProjectChecklist(request)));
     }
 
     /**
@@ -70,7 +62,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트를 수정하는 함수
      */
     @PutMapping("")
-    public APIResponse<PutProjectChecklist.Response> putProjectChecklist(
+    public ResponseEntity<APIResponse<PutProjectChecklist.Response>> putProjectChecklist(
             @RequestBody PutProjectChecklist.Request request
     ) {
         PutProjectChecklist.Response response = new PutProjectChecklist.Response(
@@ -80,7 +72,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.YES                                // isChecked
         );
 
-        return APIResponse.success(SuccessCode.UPDATED, response);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success(SuccessCode.UPDATED, response));
     }
 
     /**
@@ -88,7 +80,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트를 삭제하는 함수
      */
     @DeleteMapping("/{checklistId}")
-    public APIResponse<DeleteProjectChecklist.Response> deleteProjectChecklist(
+    public ResponseEntity<APIResponse<DeleteProjectChecklist.Response>> deleteProjectChecklist(
             @PathVariable Long checklistId
     ) {
         DeleteProjectChecklist.Response response = new DeleteProjectChecklist.Response(
@@ -96,7 +88,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.YES                                // checklistStatus
         );
 
-        return APIResponse.success(SuccessCode.DELETED, response);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success(SuccessCode.DELETED, response));
     }
 
     /**
@@ -104,7 +96,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트에 체크 승인 요청을 보내는 함수
      */
     @PostMapping("/application")
-    public APIResponse<PostProjectChecklistApplication.Response> postProjectChecklistApplication(
+    public ResponseEntity<APIResponse<PostProjectChecklistApplication.Response>> postProjectChecklistApplication(
             @RequestBody PostProjectChecklistApplication.Request request
     ) {
         PostProjectChecklistApplication.Response response = new PostProjectChecklistApplication.Response(
@@ -119,7 +111,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.NO                            // hasLink
         );
 
-        return APIResponse.success(SuccessCode.CREATED, response);
+        return ResponseEntity.status(HttpStatus.OK).body(APIResponse.success(SuccessCode.CREATED, response));
     }
 
     /**
@@ -127,7 +119,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트 승인 요청을 승인 처리하는 함수
      */
     @PostMapping("/accept/{applicationId}")
-    public APIResponse<PostProjectChecklistAccept.Response> postProjectChecklistAccept(
+    public ResponseEntity<APIResponse<PostProjectChecklistAccept.Response>> postProjectChecklistAccept(
             @PathVariable Long applicationId
     ) {
 
@@ -138,7 +130,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 85.5          // checkRate (mocked as 85.5%)
         );
 
-        return APIResponse.success(SuccessCode.CREATED, response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.success(SuccessCode.CREATED, response));
     }
 
     /**
@@ -146,7 +138,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 해당 체크리스트 승인 요청을 반려 처리하는 함수
      */
     @PostMapping("/reject/{applicationId}")
-    public APIResponse<PostProjectChecklistReject.Response> postProjectChecklistReject(
+    public ResponseEntity<APIResponse<PostProjectChecklistReject.Response>> postProjectChecklistReject(
             @PathVariable Long applicationId
     ) {
         PostProjectChecklistReject.Response response = new PostProjectChecklistReject.Response(
@@ -160,6 +152,6 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 YesNo.NO                           // hasLink (mocked as NO)
         );
 
-        return APIResponse.success(SuccessCode.CREATED, response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(APIResponse.success(SuccessCode.CREATED, response));
     }
 }

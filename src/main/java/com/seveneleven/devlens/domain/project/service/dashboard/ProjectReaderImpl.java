@@ -1,4 +1,4 @@
-package com.seveneleven.devlens.domain.project.service;
+package com.seveneleven.devlens.domain.project.service.dashboard;
 
 import com.seveneleven.devlens.domain.project.dto.GetProjectDetail;
 import com.seveneleven.devlens.domain.project.dto.GetProjectList;
@@ -20,23 +20,18 @@ public class ProjectReaderImpl implements ProjectReader {
     @Transactional(readOnly = true)
     public GetProjectList.Response getProjectList(Long memberId, Long companyId) {
         return new GetProjectList.Response(
-                projectRepository.findAllProgressingProjects(memberId)
-                        .stream()
-                        .map(GetProjectList.GetMyProjectResponseInfo::toDto)
-                        .toList(),
-                projectRepository.findAllCompanyProgressingProjects(companyId)
-                        .stream()
-                        .map(GetProjectList.GetCompanyProjectResponseInfo::toDto)
-                        .toList()
+                GetProjectList.GetMyProjectResponseInfo.toDto(projectRepository.findAllProgressingProjects(memberId)),
+                GetProjectList.GetCompanyProjectResponseInfo.toDto(projectRepository.findAllCompanyProgressingProjects(companyId))
         );
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GetProjectDetail.Response getProjectDetail(Long projectId) {
-        GetProjectDetail.Response response = projectRepository.getProjectDetail(projectId);
-        response.setProjectStep(projectStepRepository.findStepProcessRate(projectId));
-        response.setChecklistApplicationList(checkRequestRepository.findAllApplicationLists(projectId));
-
-        return response;
+        return new GetProjectDetail.Response(
+                projectRepository.getProjectDetail(projectId),
+                projectStepRepository.findStepProcessRate(projectId),
+                checkRequestRepository.findAllApplicationLists(projectId)
+        );
     }
 }

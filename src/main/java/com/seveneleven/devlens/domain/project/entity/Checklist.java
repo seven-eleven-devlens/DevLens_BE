@@ -1,5 +1,6 @@
 package com.seveneleven.devlens.domain.project.entity;
 
+import com.seveneleven.devlens.domain.project.dto.PostProjectChecklist;
 import com.seveneleven.devlens.global.entity.BaseEntity;
 import com.seveneleven.devlens.global.entity.YesNo;
 import com.seveneleven.devlens.global.entity.converter.YesNoConverter;
@@ -42,13 +43,13 @@ public class Checklist extends BaseEntity {
 
     private LocalDateTime approvalDate; // 승인 일시
 
-    public Checklist(ProjectStep projectStep, String title, String description, YesNo isActive, YesNo isChecked, Long approverId, LocalDateTime approvalDate) {
+    public Checklist(PostProjectChecklist.Request request, ProjectStep projectStep) {
         this.projectStep = projectStep;
-        this.title = title;
-        this.description = description;
-        this.isActive = isActive;
-        this.isChecked = isChecked;
-        this.approverId = approverId;
-        this.approvalDate = approvalDate;
+        this.title = request.getChecklistTitle();
+        this.description = request.getChecklistDescription();
+        this.isActive = YesNo.YES;
+        this.isChecked = YesNo.NO;
+        this.approverId = null;
+        this.approvalDate = null;
     }
 }

@@ -39,8 +39,10 @@ public class GetProjectList {
             this.customerCompanyName = project.getCustomer().getCompanyName();
         }
 
-        public static GetMyProjectResponseInfo toDto(Project project) {
-            return new GetMyProjectResponseInfo(project);
+        public static List<GetMyProjectResponseInfo> toDto(List<Project> project) {
+            return project.stream()
+                    .map(GetMyProjectResponseInfo::new)
+                    .toList();
         }
     }
 
@@ -64,8 +66,10 @@ public class GetProjectList {
             this.customerCompanyName = project.getCustomer().getCompanyName();
         }
 
-        public static GetCompanyProjectResponseInfo toDto(Project project) {
-            return new GetCompanyProjectResponseInfo(project);
+        public static List<GetCompanyProjectResponseInfo> toDto(List<Project> project) {
+            return project.stream()
+                    .map(GetCompanyProjectResponseInfo::new)
+                    .toList();
         }
     }
 }

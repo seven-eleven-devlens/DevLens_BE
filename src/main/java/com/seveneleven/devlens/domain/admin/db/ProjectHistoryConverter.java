@@ -20,7 +20,6 @@ public class ProjectHistoryConverter implements EntityConverter<ReadProjectHisto
                 projectHistory.getStatusCode(),
                 projectHistory.getTypeName(),
                 projectHistory.getBnsManagerId(),
-                projectHistory.getHasImage(),
                 projectHistory.getContractNumber(),
                 projectHistory.getPlannedStartDate(),
                 projectHistory.getPlannedStartDate(),

@@ -1,8 +1,10 @@
 package com.seveneleven.devlens.domain.member.service;
 
+import com.seveneleven.devlens.domain.member.constant.MemberStatus;
 import com.seveneleven.devlens.domain.member.entity.Member;
 import com.seveneleven.devlens.domain.member.repository.MemberRepository;
 import com.seveneleven.devlens.global.util.security.SecurityUtil;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,5 +49,10 @@ public class MemberService {
     public Optional<Member> getMyUserWithAuthorities() {
         return SecurityUtil.getCurrentUsername()
                 .flatMap(memberRepository::findOneWithAuthoritiesByLoginId);
+    }
+
+    public Long getCompanyIdById(Long memberId) {
+        return memberRepository.findCompanyIdByIdAndStatus(memberId, MemberStatus.ACTIVE)
+                .orElseThrow(EntityNotFoundException::new);
     }
 }
