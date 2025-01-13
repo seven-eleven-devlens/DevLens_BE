@@ -58,7 +58,7 @@ public class MyPageController {
 
     /**
      * 함수명 : deleteMember
-     * 회원 탈퇴(삭제) 메서드로 상태를 변경합니다.
+     * 회원 탈퇴 메서드로 상태를 변경합니다.
      *
      * @param loginId 수정할 회원의 로그인 ID (PathVariable).
      * @return HTTP 상태 코드 200 OK와 성공 응답 객체(APIResponse<SuccessCode>).
