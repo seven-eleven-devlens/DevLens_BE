@@ -10,6 +10,7 @@ import com.seveneleven.service.CompanyReadService;
 import com.seveneleven.service.CompanyUpdateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +45,7 @@ public class CompanyController {
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse<GetCompany.Response>> readCompany(
             @PathVariable Long id,
-            @RequestParam(value = "page", required = true) Integer page
+            @RequestParam(value = "page") Integer page
     ) {
         var company = companyReadService.getCompanyResponse(id, page);
         return ResponseEntity
@@ -58,12 +59,27 @@ public class CompanyController {
      */
     @GetMapping("")
     public ResponseEntity<APIResponse<PaginatedResponse<CompanyDto.CompanyResponse>>> readCompanyList(
-            @RequestParam(value = "page", required = true) Integer page
+            @RequestParam(value = "page") Integer page
     ) {
         PaginatedResponse<CompanyDto.CompanyResponse> response = companyReadService.getListOfCompanies(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
+    }
+    /*
+            함수명 : searchCompaniesByName
+            함수 목적 : 회사 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<APIResponse<PaginatedResponse<GetCompany.Response>>> searchCompaniesByName(
+            @RequestParam(value = "name")
+            String name,
+            @RequestParam(value = "page")
+            Integer page
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, companyReadService.searchCompaniesByName(name,page)));
     }
 
     /*

@@ -54,7 +54,7 @@ public class AdminProjectController {
      */
     @GetMapping("")
     public ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> getListOfProjects(
-            @RequestParam(value = "page", required = true) Integer page
+            @RequestParam(value = "page") Integer page
     ) {
         PaginatedResponse<GetProject.Response> response = projectReadService.getListOfProject(page);
         return ResponseEntity
@@ -101,7 +101,15 @@ public class AdminProjectController {
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK,projectUpdateService.updateProject(id, request)));
     }
-
+    @GetMapping("/histories/search")
+    public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> searchHistories(
+            @RequestParam String searchTerm,
+            @RequestParam Integer page
+    ){
+        return ResponseEntity
+                .status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK,projectHistoryService.searchHistoryByProjectName(searchTerm, page)));
+    }
     /*
         함수명 : deleteProject
         함수 목적 : 프로젝트 삭제
