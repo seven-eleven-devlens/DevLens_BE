@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
-public class MyPageController {
+public class MyPageController implements MyPageDocs{
 
     private final MyPageService myPageService;
 
