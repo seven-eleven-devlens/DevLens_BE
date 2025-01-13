@@ -25,7 +25,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
 //@AdminAuthorize
-public class MemberMgmtController {
+public class MemberMgmtController implements AdminMemberDocs {
 
     private final MemberMgmtServiceImpl memberMgmtService;
 

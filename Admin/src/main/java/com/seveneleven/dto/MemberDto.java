@@ -30,6 +30,7 @@ public class MemberDto {
     @Setter
     public static class Response{
         private Long id;
+        private String company;
         private String loginId;
         private String name;
         private String email;
@@ -37,9 +38,8 @@ public class MemberDto {
         private MemberStatus status;
         private String phoneNumber;
         private LocalDate birthDate;
-        private Long departmentId;
-        private Long positionId;
-
+        private String department;
+        private String position;
     }
 
     @Getter
