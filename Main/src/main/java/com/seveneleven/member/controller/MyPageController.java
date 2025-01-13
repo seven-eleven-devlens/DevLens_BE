@@ -1,6 +1,7 @@
 package com.seveneleven.member.controller;
 
 import com.seveneleven.member.dto.MyPageGetMember;
+import com.seveneleven.member.dto.PatchMember;
 import com.seveneleven.member.service.MyPageService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
@@ -37,8 +38,9 @@ public class MyPageController {
     }
 
     // 계정 정보 수정
-    @PostMapping("/{loginId}")
-    public ResponseEntity<APIResponse<SuccessCode>> updateMember(@PathVariable String loginId) {
+    @PatchMapping("/{loginId}")
+    public ResponseEntity<APIResponse<PatchMember.Response>> updateMember(@PathVariable String loginId,
+                                                                     @RequestBody PatchMember.Request requestDto) {
 
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
