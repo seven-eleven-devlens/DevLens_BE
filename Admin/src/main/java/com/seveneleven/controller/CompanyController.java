@@ -3,9 +3,7 @@ package com.seveneleven.controller;
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.service.CompanyCreateService;
-import com.seveneleven.service.CompanyReadService;
-import com.seveneleven.service.CompanyUpdateService;
+import com.seveneleven.service.CompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/companies")
 public class CompanyController {
-    private final CompanyCreateService companyCreateService;
-    private final CompanyReadService companyReadService;
-    private final CompanyUpdateService companyUpdateService;
+    private final CompanyService companyService;
 
     /*
         함수명 : createCompany
@@ -33,7 +29,7 @@ public class CompanyController {
     ) {
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED, companyCreateService.createCompany(companyRequest)));
+                .body(APIResponse.success(SuccessCode.CREATED, companyService.createCompany(companyRequest)));
     }
 
     /*
@@ -47,7 +43,7 @@ public class CompanyController {
             @RequestParam(value = "page")
             Integer page
     ) {
-        var company = companyReadService.getCompanyResponse(id, page);
+        var company = companyService.getCompanyResponse(id, page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, company));
@@ -64,11 +60,12 @@ public class CompanyController {
     ) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, companyReadService.getListOfCompanies(page)));
+                .body(APIResponse.success(SuccessCode.OK, companyService.getListOfCompanies(page)));
     }
+
     /*
-            함수명 : searchCompaniesByName
-            함수 목적 : 회사 검색
+        함수명 : searchCompaniesByName
+        함수 목적 : 회사 검색
      */
     @GetMapping("/search")
     public ResponseEntity<APIResponse<PaginatedResponse<GetCompanyDetail.Response>>> searchCompaniesByName(
@@ -79,7 +76,7 @@ public class CompanyController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(APIResponse.success(SuccessCode.OK, companyReadService.searchCompaniesByName(name,page)));
+                .body(APIResponse.success(SuccessCode.OK, companyService.searchCompaniesByName(name,page)));
     }
 
     /*
@@ -95,7 +92,7 @@ public class CompanyController {
     ) {
         return ResponseEntity
                 .status(SuccessCode.UPDATED.getStatus())
-                .body(APIResponse.success(SuccessCode.UPDATED, companyUpdateService.updateCompany(id, request)));
+                .body(APIResponse.success(SuccessCode.UPDATED, companyService.updateCompany(id, request)));
     }
 
     /*
@@ -107,7 +104,7 @@ public class CompanyController {
             @PathVariable
             Long id
     ) {
-        companyUpdateService.deleteCompany(id);
+        companyService.deleteCompany(id);
         return ResponseEntity
                 .status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
