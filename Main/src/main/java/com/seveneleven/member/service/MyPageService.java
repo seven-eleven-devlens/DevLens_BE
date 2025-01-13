@@ -8,4 +8,6 @@ public interface MyPageService {
     MyPageGetMember getMember(String loginId);
 
     PatchMember.Response updateMember(String loginId, PatchMember.Request requestDto);
+
+    void deleteMember(String loginId);
 }

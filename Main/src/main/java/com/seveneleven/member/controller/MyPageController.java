@@ -56,10 +56,17 @@ public class MyPageController {
     }
 
 
-    // 회원 탈퇴
+    /**
+     * 함수명 : deleteMember
+     * 회원 탈퇴(삭제) 메서드로 상태를 변경합니다.
+     *
+     * @param loginId 수정할 회원의 로그인 ID (PathVariable).
+     * @return HTTP 상태 코드 200 OK와 성공 응답 객체(APIResponse<SuccessCode>).
+     */
     @DeleteMapping("/{loginId}")
     public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String loginId) {
 
+        myPageService.deleteMember(loginId);
 
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
