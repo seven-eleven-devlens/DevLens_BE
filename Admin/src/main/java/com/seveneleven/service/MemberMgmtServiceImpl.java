@@ -52,20 +52,21 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
      * @param pageable 페이징 정보.
      * @return 필터 조건에 맞는 회원 목록.
      */
-    @Transactional(readOnly = true)
+    @Transactional
     public Page<MemberDto.Response> getFilteredMembers(
             String name, MemberStatus status, Role role, String loginId, Pageable pageable) {
 
-        Specification<Member> spec = Specification
-                .where(MemberSpecification.hasName(name))
-                .and(MemberSpecification.hasStatus(status))
-                .and(MemberSpecification.hasRole(role))
-                .and(MemberSpecification.hasLoginId(loginId));
+        try{
+            Specification<Member> spec = Specification
+                    .where(MemberSpecification.hasName(name))
+                    .and(MemberSpecification.hasStatus(status))
+                    .and(MemberSpecification.hasRole(role))
+                    .and(MemberSpecification.hasLoginId(loginId));
 
-        Page<Member> members = memberRepository.findAll(spec, pageable);
+            Page<Member> members = memberRepository.findAll(spec, pageable);
 
-        // 엔티티 -> DTO 변환
-        return members.map(member -> {
+            // 엔티티 -> DTO 변환
+            return members.map(member -> {
                 MemberDto.Response response = new MemberDto.Response();
                 response.setId(member.getId());
                 response.setCompany(member.getCompany().getCompanyName());
@@ -82,7 +83,11 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
                 response.setPosition(getPositionNameById(member.getPositionId()));
 
                 return response;
-        });
+            });
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

@@ -1,10 +1,7 @@
 package com.seveneleven.member.controller;
 
 
-import com.seveneleven.dto.MemberDto;
-import com.seveneleven.dto.MemberUpdate;
-import com.seveneleven.entity.member.constant.MemberStatus;
-import com.seveneleven.entity.member.constant.Role;
+
 import com.seveneleven.member.dto.MyPageGetMember;
 import com.seveneleven.member.dto.PatchMember;
 import com.seveneleven.response.APIResponse;
@@ -15,14 +12,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequestMapping("/api/members")
 @Tag(name = "마이페이지 API", description = "마이페이지 관련 API")
