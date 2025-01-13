@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
+
 @Service
 @RequiredArgsConstructor
 public class MyPageServiceImpl implements MyPageService{
@@ -68,6 +69,14 @@ public class MyPageServiceImpl implements MyPageService{
     }
 
 
+    /**
+     * 함수명 : updateMember
+     * 회원 정보를 수정합니다.
+     *
+     * @param loginId 수정할 회원의 로그인 ID.
+     * @param memberDto 수정할 회원 정보를 담은 DTO.
+     * @return 회원 수정 정보를 포함한 PatchMember.Response 객체.
+     */
     @Transactional
     public PatchMember.Response updateMember(String loginId, PatchMember.Request memberDto) {
         String department = "";

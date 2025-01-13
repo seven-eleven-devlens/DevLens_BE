@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class MemberMgmtService {
+public class MemberMgmtServiceImpl implements MeberMgmtService{
 
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
