@@ -1,4 +1,4 @@
-package com.seveneleven.config.Annotation;
+package com.seveneleven.config.annotation;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
