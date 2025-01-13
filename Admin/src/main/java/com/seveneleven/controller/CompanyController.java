@@ -10,6 +10,7 @@ import com.seveneleven.service.CompanyReadService;
 import com.seveneleven.service.CompanyUpdateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +65,21 @@ public class CompanyController {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
+    }
+    /*
+            함수명 : searchCompaniesByName
+            함수 목적 : 회사 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<APIResponse<PaginatedResponse<GetCompany.Response>>> searchCompaniesByName(
+            @RequestParam(value = "name")
+            String name,
+            @RequestParam(value = "page")
+            Integer page
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, companyReadService.searchCompaniesByName(name,page)));
     }
 
     /*

@@ -12,11 +12,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
 @RequiredArgsConstructor
+@Service
 public class ProjectHistoryService {
     private final AdminProjectHistoryRepository projectHistoryRepository;
     private final ProjectHistoryConverter projectHistoryConverter;
@@ -47,5 +47,15 @@ public class ProjectHistoryService {
             throw new ProjectHistoryNotFoundException();
         }
         return PaginatedResponse.createPaginatedResponse(projectHistories.map(projectHistoryConverter::toDTO));
+    }
+
+    @Transactional(readOnly = true)
+    public PaginatedResponse<ReadProjectHistory.Response> searchHistoryByProjectName(
+            String searchTerm,
+            Integer page
+    ) {
+        Pageable pageable = PageRequest.of(page, 5, Sort.by("projectName").ascending());
+        Page<ProjectHistory> historyPage = projectHistoryRepository.findByProjectNameContainingIgnoreCase(searchTerm ,pageable);
+        return PaginatedResponse.createPaginatedResponse(historyPage.map(projectHistoryConverter::toDTO));
     }
 }
