@@ -9,7 +9,7 @@ import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
-import com.seveneleven.member.MemberValidator;
+import com.seveneleven.MemberValidator;
 import com.seveneleven.repository.AdminMemberRepository;
 import com.seveneleven.repository.CompanyRepository;
 import com.seveneleven.response.ErrorCode;
