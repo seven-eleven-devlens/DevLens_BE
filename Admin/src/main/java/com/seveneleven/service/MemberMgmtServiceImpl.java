@@ -12,6 +12,8 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.MemberValidator;
 import com.seveneleven.repository.AdminMemberRepository;
 import com.seveneleven.repository.CompanyRepository;
+import com.seveneleven.repository.DepartmentRepository;
+import com.seveneleven.repository.PositionRepository;
 import com.seveneleven.response.ErrorCode;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -35,6 +37,8 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
 
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final DepartmentRepository departmentRepository;
+    private final PositionRepository positionRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -61,7 +65,24 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
         Page<Member> members = memberRepository.findAll(spec, pageable);
 
         // 엔티티 -> DTO 변환
-        return members.map(MemberDto::fromEntity);
+        return members.map(member -> {
+                MemberDto.Response response = new MemberDto.Response();
+                response.setId(member.getId());
+                response.setCompany(member.getCompany().getCompanyName());
+                response.setLoginId(member.getLoginId());
+                response.setName(member.getName());
+                response.setEmail(member.getEmail());
+                response.setRole(member.getRole());
+                response.setStatus(member.getStatus());
+                response.setPhoneNumber(member.getPhoneNumber());
+                response.setBirthDate(member.getBirthDate());
+
+                // 부서 이름과 직책 이름은 ID를 기준으로 별도 조회
+                response.setDepartment(getDepartmentNameById(member.getDepartmentId()));
+                response.setPosition(getPositionNameById(member.getPositionId()));
+
+                return response;
+        });
     }
 
     /**
@@ -243,4 +264,19 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
         return RandomStringUtils.randomAlphanumeric(12);
     }
 
+    // 부서 이름 조회 메서드
+    private String getDepartmentNameById(Long departmentId) {
+        if (departmentId == null) {
+            return null;
+        }
+        return departmentRepository.findNameById(departmentId).orElse(null);
+    }
+
+    // 직책 이름 조회 메서드
+    private String getPositionNameById(Long positionId) {
+        if (positionId == null) {
+            return null;
+        }
+        return positionRepository.findNameById(positionId).orElse(null);
+    }
 }
