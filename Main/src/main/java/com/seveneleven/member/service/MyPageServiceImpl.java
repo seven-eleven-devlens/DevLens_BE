@@ -14,6 +14,7 @@ import com.seveneleven.member.repository.PositionRepository;
 import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
 
@@ -34,6 +35,7 @@ public class MyPageServiceImpl implements MyPageService{
      * @return 회원 상세 정보를 포함한 MyPageGetMember 객체.
      * @throws BusinessException 회원이 존재하지 않거나 비활성 상태일 경우 예외를 던집니다.
      */
+    @Transactional(readOnly = true)
     public MyPageGetMember getMember(String loginId) {
         String department = "";
         String position   = "";
@@ -66,6 +68,7 @@ public class MyPageServiceImpl implements MyPageService{
     }
 
 
+    @Transactional
     public PatchMember.Response updateMember(String loginId, PatchMember.Request memberDto) {
         String department = "";
         String position   = "";
@@ -98,5 +101,32 @@ public class MyPageServiceImpl implements MyPageService{
                              response.setDepartment(department);
                              response.setPosition(position);
         return response;
+    }
+
+    /**
+     * 함수명 : deleteMember
+     * 회원을 삭제(상태 변경)합니다.
+     *
+     * @param loginId 삭제할 회원의 ID.
+     */
+    @Transactional
+    public void deleteMember(String loginId) {
+        // 회원 조회
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        // 상태 확인 및 예외 처리
+        switch (member.getStatus()) {
+            case INACTIVE:
+                throw new BusinessException(ErrorCode.MEMBER_INACTIVE);
+            case SUSPENDED:
+                throw new BusinessException(ErrorCode.MEMBER_SUSPENDED);
+            case ACTIVE:
+            default:
+                break;
+        }
+
+        // 삭제 상태 변경
+        member.deleteMember();
     }
 }
