@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CompanyReadService {
     private final CompanyRepository companyRepository;
     private final CompanyResponseConverter companyResponseConverter;
-    private final int PAGE_SIZE = 20;
+    private final int pageSize = 20;
     private final AdminProjectRepository adminProjectRepository;
     private final ProjectResponseConverter projectResponseConverter;
     private final GetCompanyResponseConverter getCompanyResponseConverter;
@@ -35,7 +35,7 @@ public class CompanyReadService {
             Long id, Integer page
     ) {
         Company company = companyRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("projectName").ascending());
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("projectName").ascending());
         Page<Project> projectPage = adminProjectRepository.findByCustomerOrDeveloper(pageable, company, company);
         GetCompany.Response response = companyRepository
                 .findByIdAndIsActive(id, YN.Y)
@@ -53,23 +53,11 @@ public class CompanyReadService {
     public PaginatedResponse<CompanyDto.CompanyResponse> getListOfCompanies(
             Integer page
     ) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("companyName").ascending());
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by("companyName").descending());
         Page<Company> companyPage = companyRepository.findByIsActive(pageable, YN.Y);
         if (companyPage.getContent().isEmpty()) {
             throw new CompanyNotFoundException();
         }
         return PaginatedResponse.createPaginatedResponse(companyPage.map(companyResponseConverter::toDTO));
-    }
-    /*
-            함수명 : searchCompaniesByName
-            함수 목적 : 회사 검색
-     */
-    @Transactional(readOnly = true)
-    public PaginatedResponse<GetCompany.Response> searchCompaniesByName(
-            String name, Integer page
-    ) {
-        Pageable pageable = PageRequest.of(page, 5, Sort.by("companyName").ascending());
-        Page<Company> companyPage = companyRepository.findByIsActiveAndCompanyNameContainingIgnoreCase(YN.Y, pageable, name);
-        return PaginatedResponse.createPaginatedResponse(companyPage.map(getCompanyResponseConverter::toDTO));
     }
 }
