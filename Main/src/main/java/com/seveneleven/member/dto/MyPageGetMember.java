@@ -20,7 +20,9 @@ public class MyPageGetMember {
     private String phoneNumber;
     private LocalDate birthDate;
     private Long departmentId;
+    private String department;
     private Long positionId;
+    private String position;
 
     // **Member로 변환하는 메서드**
     private static final ModelMapper modelMapper = new ModelMapper();

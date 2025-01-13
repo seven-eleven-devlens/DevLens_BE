@@ -1,19 +1,32 @@
 package com.seveneleven.member.service;
 
+import com.seveneleven.entity.member.Company;
+import com.seveneleven.entity.member.Department;
 import com.seveneleven.entity.member.Member;
+import com.seveneleven.entity.member.Position;
 import com.seveneleven.entity.member.constant.MemberStatus;
+import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.MyPageGetMember;
+import com.seveneleven.member.dto.PatchMember;
+import com.seveneleven.member.repository.CompanyRepository;
+import com.seveneleven.member.repository.DepartmentRepository;
 import com.seveneleven.member.repository.MemberRepository;
+import com.seveneleven.member.repository.PositionRepository;
 import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class MyPageServiceImpl implements MyPageService{
 
     private final MemberRepository memberRepository;
+    private final CompanyRepository companyRepository;
+    private final DepartmentRepository departmentRepository;
+    private final PositionRepository positionRepository;
 
     /**
      * 함수명 : getMember
@@ -24,26 +37,54 @@ public class MyPageServiceImpl implements MyPageService{
      * @throws BusinessException 회원이 존재하지 않거나 비활성 상태일 경우 예외를 던집니다.
      */
     public MyPageGetMember getMember(String loginId) {
-        MyPageGetMember response = null;
-        try {
-            // 회원 조회
-            Member member = memberRepository.findByLoginId(loginId)
-                    .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        String department = "";
+        String position   = "";
 
-            // 회원이 비활성 상태인지 확인
-            if (member.getStatus() != MemberStatus.ACTIVE) {
-                throw new BusinessException(ErrorCode.MEMBER_INACTIVE);
-            }
+        // 회원 조회
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-            // 응답 DTO 생성 및 회사 정보 설정
-            response = MyPageGetMember.fromEntity(member);
-            response.setCompanyId(member.getCompany().getId());
-            response.setCompanyStatus(member.getCompany().getIsActive());
-
-
-        }catch(Exception e){
-            e.printStackTrace();
+        // 회원이 비활성 상태인지 확인
+        if (member.getStatus() != MemberStatus.ACTIVE) {
+            throw new BusinessException(ErrorCode.MEMBER_INACTIVE);
         }
+
+        if(Objects.nonNull(member.getDepartmentId())) {
+            department = departmentRepository.findDepartmentNameByIdAndIsActive(member.getDepartmentId());
+        }
+
+        if(Objects.nonNull(member.getPositionId())) {
+            position = positionRepository.findPositionNameByIdAndIsActive(member.getPositionId());
+        }
+
+        // 응답 DTO 생성 및 회사 정보 설정
+        MyPageGetMember response = MyPageGetMember.fromEntity(member);
+                        response.setCompanyId(member.getCompany().getId());
+                        response.setCompanyStatus(member.getCompany().getIsActive());
+                        response.setDepartment(department);
+                        response.setPosition(position);
+
+        return response;
+    }
+
+
+    public PatchMember.Response updateMember(String loginId, PatchMember.Request memberDto) {
+
+        // 회원 조회
+        Member member = memberRepository.findByLoginId(loginId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        Company company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+
+        member.updateMember(memberDto.getName(), memberDto.getPhoneNumber(), member.getRole(), company,
+                memberDto.getDepartmentId(), memberDto.getPositionId());
+
+        Member updatedMember = memberRepository.save(member);
+
+        // 응답 DTO 생성 및 회사 정보 설정
+        PatchMember.Response response = PatchMember.fromEntity(updatedMember);
+                             response.setCompanyId(company.getId());
 
         return response;
     }
