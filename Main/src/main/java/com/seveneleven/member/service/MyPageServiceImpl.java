@@ -105,7 +105,7 @@ public class MyPageServiceImpl implements MyPageService{
 
     /**
      * 함수명 : deleteMember
-     * 회원을 삭제(상태 변경)합니다.
+     * 회원을 탈퇴(상태 변경) 메서드 입니다.
      *
      * @param loginId 삭제할 회원의 ID.
      */
@@ -121,12 +121,14 @@ public class MyPageServiceImpl implements MyPageService{
                 throw new BusinessException(ErrorCode.MEMBER_INACTIVE);
             case SUSPENDED:
                 throw new BusinessException(ErrorCode.MEMBER_SUSPENDED);
+            case WITHDRAW:
+                throw new BusinessException(ErrorCode.MEMBER_WITHDRAW);
             case ACTIVE:
             default:
                 break;
         }
 
-        // 삭제 상태 변경
-        member.deleteMember();
+        // 탈퇴 상태 변경
+        member.withDrawMember();
     }
 }

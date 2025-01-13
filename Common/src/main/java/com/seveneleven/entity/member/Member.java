@@ -102,6 +102,11 @@ public class Member extends BaseEntity {
         this.status = MemberStatus.INACTIVE;
     }
 
+    // 탈퇴 메서드
+    public void withDrawMember() {
+        this.status = MemberStatus.WITHDRAW;
+    }
+
     // 복구 메서드
     public void restoreMember() {
         this.status = MemberStatus.ACTIVE;
