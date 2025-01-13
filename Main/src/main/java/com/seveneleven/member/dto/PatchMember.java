@@ -19,7 +19,6 @@ public class PatchMember {
     @Getter
     @Setter
     public static class Request{
-        private String name;
         private String email;
         private String phoneNumber;
         private Long companyId;
@@ -35,7 +34,10 @@ public class PatchMember {
         private String email;
         private String phoneNumber;
         private Long companyId;
+        private String company;
         private Long departmentId;
+        private String department;
         private Long positionId;
+        private String position;
     }
 }

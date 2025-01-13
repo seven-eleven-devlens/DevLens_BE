@@ -80,10 +80,11 @@ public class Member extends BaseEntity {
     }
 
     // 업데이트 메서드
-    public void updateMember(String name, String phoneNumber, Role role, Company company,
+    public void updateMember(String name, String email, String phoneNumber, Role role, Company company,
                              Long departmentId, Long positionId) {
         this.name               = StringUtils.isNotBlank(name) ? name : this.name;
         this.role               = Objects.nonNull(role) ? role : this.role;
+        this.email              = Objects.nonNull(email) ? email : this.email;
         this.company            = Objects.nonNull(company) ? company : this.company;
         this.phoneNumber        = StringUtils.isNotBlank(phoneNumber) ? phoneNumber : this.phoneNumber;
         this.departmentId       = Objects.nonNull(departmentId) ? departmentId : this.departmentId;
