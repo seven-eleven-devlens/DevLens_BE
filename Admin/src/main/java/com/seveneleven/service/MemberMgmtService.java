@@ -174,7 +174,7 @@ public class MemberMgmtService {
         Company company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
-        member.updateMember(memberDto.getName(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
+        member.updateMember(memberDto.getName(), member.getEmail(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
                 memberDto.getDepartmentId(), memberDto.getPositionId());
 
         Member updatedMember = memberRepository.save(member);

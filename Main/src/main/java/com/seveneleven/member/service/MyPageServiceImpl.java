@@ -1,9 +1,7 @@
 package com.seveneleven.member.service;
 
 import com.seveneleven.entity.member.Company;
-import com.seveneleven.entity.member.Department;
 import com.seveneleven.entity.member.Member;
-import com.seveneleven.entity.member.Position;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
@@ -41,7 +39,7 @@ public class MyPageServiceImpl implements MyPageService{
         String position   = "";
 
         // 회원 조회
-        Member member = memberRepository.findByLoginId(loginId)
+        Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 회원이 비활성 상태인지 확인
@@ -69,23 +67,36 @@ public class MyPageServiceImpl implements MyPageService{
 
 
     public PatchMember.Response updateMember(String loginId, PatchMember.Request memberDto) {
+        String department = "";
+        String position   = "";
 
         // 회원 조회
-        Member member = memberRepository.findByLoginId(loginId)
+        Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Company company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
-        member.updateMember(memberDto.getName(), memberDto.getPhoneNumber(), member.getRole(), company,
+        member.updateMember(member.getName(), memberDto.getEmail(), memberDto.getPhoneNumber(), member.getRole(), company,
                 memberDto.getDepartmentId(), memberDto.getPositionId());
 
         Member updatedMember = memberRepository.save(member);
 
+        // 부서 조회
+        if(Objects.nonNull(member.getDepartmentId())) {
+            department = departmentRepository.findDepartmentNameByIdAndIsActive(member.getDepartmentId());
+        }
+
+        // 직책 조회
+        if(Objects.nonNull(member.getPositionId())) {
+            position = positionRepository.findPositionNameByIdAndIsActive(member.getPositionId());
+        }
+
         // 응답 DTO 생성 및 회사 정보 설정
         PatchMember.Response response = PatchMember.fromEntity(updatedMember);
                              response.setCompanyId(company.getId());
-
+                             response.setDepartment(department);
+                             response.setPosition(position);
         return response;
     }
 }

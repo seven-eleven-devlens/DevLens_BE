@@ -37,19 +37,33 @@ public class MyPageController {
                 .body(APIResponse.success(SuccessCode.OK, response));
     }
 
-    // 계정 정보 수정
+    /**
+     * 함수명 : updateMember
+     * 회원의 정보를 수정합니다.
+     *
+     * @param loginId 수정할 회원의 로그인 ID (PathVariable).
+     * @param requestDto 수정할 정보를 담은 DTO (RequestBody).
+     * @return HTTP 상태 코드 200 OK와 성공 응답 객체(APIResponse<PatchMember.Response>).
+     */
     @PatchMapping("/{loginId}")
     public ResponseEntity<APIResponse<PatchMember.Response>> updateMember(@PathVariable String loginId,
                                                                      @RequestBody PatchMember.Request requestDto) {
 
+        PatchMember.Response response = myPageService.updateMember(loginId, requestDto);
 
-        return ResponseEntity.status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK));
+        return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
+                .body(APIResponse.success(SuccessCode.UPDATED, response));
     }
 
 
     // 회원 탈퇴
+    @DeleteMapping("/{loginId}")
+    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String loginId) {
 
+
+        return ResponseEntity.status(SuccessCode.DELETED.getStatus())
+                .body(APIResponse.success(SuccessCode.DELETED));
+    }
 
 
 }
