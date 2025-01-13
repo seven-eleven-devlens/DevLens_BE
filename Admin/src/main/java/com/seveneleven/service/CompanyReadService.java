@@ -1,7 +1,7 @@
 package com.seveneleven.service;
 
-import com.seveneleven.dto.CompanyDto;
-import com.seveneleven.dto.GetCompany;
+import com.seveneleven.dto.GetCompanies;
+import com.seveneleven.dto.GetCompanyDetail;
 import com.seveneleven.dto.PaginatedResponse;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.YN;
@@ -20,29 +20,33 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CompanyReadService {
     private final CompanyRepository companyRepository;
-    private final CompanyResponseConverter companyResponseConverter;
+    private final PutCompanyResponseConverter putCompanyResponseConverter;
     private final int PAGE_SIZE = 20;
     private final AdminProjectRepository adminProjectRepository;
     private final ProjectResponseConverter projectResponseConverter;
-    private final GetCompanyResponseConverter getCompanyResponseConverter;
+    private final GetCompanyDetailResponseConverter getCompanyDetailResponseConverter;
+    private final GetCompaniesResponseConverter getCompaniesResponseConverter;
 
     /*
         함수명 : getCompanyDto
         함수 목적 : 회사 상세조회
      */
     @Transactional(readOnly = true)
-    public GetCompany.Response getCompanyResponse(
+    public GetCompanyDetail.Response getCompanyResponse(
             Long id, Integer page
     ) {
+        //참여 프로젝트 조회를 위한 회사 조회
         Company company = companyRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
+        //참여 프로젝트 조회 및 페이지 생성
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("projectName").ascending());
         Page<Project> projectPage = adminProjectRepository.findByCustomerOrDeveloper(pageable, company, company);
-        GetCompany.Response response = companyRepository
+        //회사 조회
+        GetCompanyDetail.Response response = companyRepository
                 .findByIdAndIsActive(id, YN.Y)
-                .map(getCompanyResponseConverter::toDTO)
+                .map(getCompanyDetailResponseConverter::toDTO)
                 .orElseThrow(CompanyNotFoundException::new);
 
-        return response.addProjectList(response, PaginatedResponse.createPaginatedResponse(projectPage.map(projectResponseConverter::toDTO)));
+        return GetCompanyDetail.Response.addProjectList(response, PaginatedResponse.createPaginatedResponse(projectPage.map(projectResponseConverter::toDTO)));
     }
 
     /*
@@ -50,7 +54,7 @@ public class CompanyReadService {
         함수 목적 : 회사 목록조회
     */
     @Transactional(readOnly = true)
-    public PaginatedResponse<CompanyDto.CompanyResponse> getListOfCompanies(
+    public PaginatedResponse<GetCompanies.Response> getListOfCompanies(
             Integer page
     ) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("companyName").ascending());
@@ -58,18 +62,18 @@ public class CompanyReadService {
         if (companyPage.getContent().isEmpty()) {
             throw new CompanyNotFoundException();
         }
-        return PaginatedResponse.createPaginatedResponse(companyPage.map(companyResponseConverter::toDTO));
+        return PaginatedResponse.createPaginatedResponse(companyPage.map(getCompaniesResponseConverter::toDTO));
     }
     /*
             함수명 : searchCompaniesByName
             함수 목적 : 회사 검색
      */
     @Transactional(readOnly = true)
-    public PaginatedResponse<GetCompany.Response> searchCompaniesByName(
+    public PaginatedResponse<GetCompanyDetail.Response> searchCompaniesByName(
             String name, Integer page
     ) {
         Pageable pageable = PageRequest.of(page, 5, Sort.by("companyName").ascending());
         Page<Company> companyPage = companyRepository.findByIsActiveAndCompanyNameContainingIgnoreCase(YN.Y, pageable, name);
-        return PaginatedResponse.createPaginatedResponse(companyPage.map(getCompanyResponseConverter::toDTO));
+        return PaginatedResponse.createPaginatedResponse(companyPage.map(getCompanyDetailResponseConverter::toDTO));
     }
 }

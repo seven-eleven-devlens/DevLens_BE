@@ -1,8 +1,6 @@
 package com.seveneleven.controller;
 
-import com.seveneleven.dto.CompanyDto;
-import com.seveneleven.dto.GetCompany;
-import com.seveneleven.dto.PaginatedResponse;
+import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.CompanyCreateService;
@@ -29,13 +27,13 @@ public class CompanyController {
         목적 : 회사 생성하여 db에 저장
      */
     @PostMapping("")
-    public ResponseEntity<APIResponse<CompanyDto.CompanyResponse>> createCompany(
-            @Valid @RequestBody CompanyDto.CompanyRequest companyRequest
+    public ResponseEntity<APIResponse<PostCompany.Response>> createCompany(
+            @Valid @RequestBody
+            PostCompany.Request companyRequest
     ) {
-        var company = companyCreateService.createCompany(companyRequest);
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED, company));
+                .body(APIResponse.success(SuccessCode.CREATED, companyCreateService.createCompany(companyRequest)));
     }
 
     /*
@@ -43,9 +41,11 @@ public class CompanyController {
         목적 : 회사 상세 정보 조회
      */
     @GetMapping("/{id}")
-    public ResponseEntity<APIResponse<GetCompany.Response>> readCompany(
-            @PathVariable Long id,
-            @RequestParam(value = "page") Integer page
+    public ResponseEntity<APIResponse<GetCompanyDetail.Response>> readCompany(
+            @PathVariable
+            Long id,
+            @RequestParam(value = "page")
+            Integer page
     ) {
         var company = companyReadService.getCompanyResponse(id, page);
         return ResponseEntity
@@ -58,20 +58,20 @@ public class CompanyController {
         목적 : 회사 목록 조회
      */
     @GetMapping("")
-    public ResponseEntity<APIResponse<PaginatedResponse<CompanyDto.CompanyResponse>>> readCompanyList(
-            @RequestParam(value = "page") Integer page
+    public ResponseEntity<APIResponse<PaginatedResponse<GetCompanies.Response>>> readCompanyList(
+            @RequestParam(value = "page")
+            Integer page
     ) {
-        PaginatedResponse<CompanyDto.CompanyResponse> response = companyReadService.getListOfCompanies(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, response));
+                .body(APIResponse.success(SuccessCode.OK, companyReadService.getListOfCompanies(page)));
     }
     /*
             함수명 : searchCompaniesByName
             함수 목적 : 회사 검색
      */
     @GetMapping("/search")
-    public ResponseEntity<APIResponse<PaginatedResponse<GetCompany.Response>>> searchCompaniesByName(
+    public ResponseEntity<APIResponse<PaginatedResponse<GetCompanyDetail.Response>>> searchCompaniesByName(
             @RequestParam(value = "name")
             String name,
             @RequestParam(value = "page")
@@ -87,13 +87,15 @@ public class CompanyController {
         목적 : 회사 상세 정보 수정
      */
     @PutMapping("/{id}")
-    public ResponseEntity<APIResponse<CompanyDto.CompanyResponse>> updateCompany(
-            @PathVariable Long id,
-            @RequestBody CompanyDto.CompanyRequest companyRequest
+    public ResponseEntity<APIResponse<PutCompany.Response>> updateCompany(
+            @PathVariable
+            Long id,
+            @RequestBody
+            PutCompany.Request request
     ) {
         return ResponseEntity
                 .status(SuccessCode.UPDATED.getStatus())
-                .body(APIResponse.success(SuccessCode.UPDATED, companyUpdateService.updateCompany(id, companyRequest)));
+                .body(APIResponse.success(SuccessCode.UPDATED, companyUpdateService.updateCompany(id, request)));
     }
 
     /*
@@ -102,7 +104,8 @@ public class CompanyController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<APIResponse<Object>> deleteCompany(
-            @PathVariable Long id
+            @PathVariable
+            Long id
     ) {
         companyUpdateService.deleteCompany(id);
         return ResponseEntity

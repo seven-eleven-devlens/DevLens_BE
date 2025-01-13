@@ -1,16 +1,12 @@
 package com.seveneleven.dto;
 
+import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.BusinessType;
-import com.seveneleven.entity.member.constant.YN;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GetCompany {
+public class PostCompany {
     @Getter
     public static class Request {
-        private Long id;
         private String companyName;
         private String representativeName;
         private String representativeContact;
@@ -18,22 +14,16 @@ public class GetCompany {
         private String address;
         private BusinessType businessType;
         private String businessRegistrationNumber;
-        private YN representativeImageExists;
-        private YN isActive;
 
-        public Request(
-                Long id,
+        private Request(
                 String companyName,
                 String representativeName,
                 String representativeContact,
                 String representativeEmail,
                 String address,
                 BusinessType businessType,
-                String businessRegistrationNumber,
-                YN representativeImageExists,
-                YN activeStatus
+                String businessRegistrationNumber
         ) {
-            this.id = id;
             this.companyName = companyName;
             this.representativeName = representativeName;
             this.representativeContact = representativeContact;
@@ -41,9 +31,8 @@ public class GetCompany {
             this.address = address;
             this.businessType = businessType;
             this.businessRegistrationNumber = businessRegistrationNumber;
-            this.representativeImageExists = representativeImageExists;
-            this.isActive = activeStatus;
         }
+
     }
 
     @Getter
@@ -56,10 +45,8 @@ public class GetCompany {
         private String address;
         private BusinessType businessType;
         private String businessRegistrationNumber;
-        private YN isActive;
-        private PaginatedResponse<GetProject.Response> projects;
 
-        public Response(
+        private Response(
                 Long id,
                 String companyName,
                 String representativeName,
@@ -67,9 +54,7 @@ public class GetCompany {
                 String representativeEmail,
                 String address,
                 BusinessType businessType,
-                String businessRegistrationNumber,
-                YN activeStatus,
-                PaginatedResponse<GetProject.Response> projects
+                String businessRegistrationNumber
         ) {
             this.id = id;
             this.companyName = companyName;
@@ -79,25 +64,18 @@ public class GetCompany {
             this.address = address;
             this.businessType = businessType;
             this.businessRegistrationNumber = businessRegistrationNumber;
-            this.isActive = activeStatus;
-            this.projects = projects;
         }
 
-        public Response addProjectList(
-                Response response,
-                PaginatedResponse<GetProject.Response> projects
-        ) {
+        public static Response of (Company company) {
             return new Response(
-                    response.getId(),
-                    response.getCompanyName(),
-                    response.getRepresentativeName(),
-                    response.getRepresentativeContact(),
-                    response.getRepresentativeEmail(),
-                    response.getAddress(),
-                    response.getBusinessType(),
-                    response.getBusinessRegistrationNumber(),
-                    response.getIsActive(),
-                    projects
+                    company.getId(),
+                    company.getCompanyName(),
+                    company.getRepresentativeName(),
+                    company.getRepresentativeContact(),
+                    company.getRepresentativeEmail(),
+                    company.getAddress(),
+                    company.getBusinessType(),
+                    company.getBusinessRegistrationNumber()
             );
         }
     }

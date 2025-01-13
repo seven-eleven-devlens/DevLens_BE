@@ -7,9 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class CompanyDto {
+public class PutCompany {
     @Getter
-    public static class CompanyRequest {
+    public static class Request {
         private Long id;
         private String companyName;
         private String representativeName;
@@ -18,20 +18,16 @@ public class CompanyDto {
         private String address;
         private BusinessType businessType;
         private String businessRegistrationNumber;
-        private YN isActive;
 
-        public CompanyRequest(
-                Long id,
+        public Request(
                 String companyName,
                 String representativeName,
                 String representativeContact,
                 String representativeEmail,
                 String address,
                 BusinessType businessType,
-                String businessRegistrationNumber,
-                YN activeStatus
+                String businessRegistrationNumber
         ) {
-            this.id = id;
             this.companyName = companyName;
             this.representativeName = representativeName;
             this.representativeContact = representativeContact;
@@ -39,12 +35,11 @@ public class CompanyDto {
             this.address = address;
             this.businessType = businessType;
             this.businessRegistrationNumber = businessRegistrationNumber;
-            this.isActive = activeStatus;
         }
     }
 
     @Getter
-    public static class CompanyResponse {
+    public static class Response {
         private Long id;
         private String companyName;
         private String representativeName;
@@ -55,7 +50,7 @@ public class CompanyDto {
         private String businessRegistrationNumber;
         private YN isActive;
 
-        public CompanyResponse(
+        public Response(
                 Long id,
                 String companyName,
                 String representativeName,
