@@ -16,14 +16,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/projects")
+@RequestMapping("/api/projects/checklists")
 public class ProjectChecklistController implements ProjectChecklistDocs {
 
     private final ProjectChecklistFacade projectChecklistFacade;
 
     /**
      * 함수명 : postProjectChecklist
-     * 해당 프로젝트 단계에 단일 체크리스트를 추가하는 함수
+     * 해당 프로젝트 단계에 체크리스트를 추가하는 함수
      */
     @PostMapping("")
     public ResponseEntity<APIResponse<PostProjectChecklist.Response>> postProjectChecklist(
@@ -117,8 +117,6 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 memberId,
                 request
         );
-
-        // TODO - 파일 등록 필요.
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatusCode())
                 .body(APIResponse.success(SuccessCode.CREATED, response));
