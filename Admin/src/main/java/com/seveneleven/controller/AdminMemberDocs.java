@@ -39,10 +39,10 @@ public interface AdminMemberDocs {
                     )
             },
             parameters = {
-                    @Parameter(name = "name", description = "회원 이름", example = "John"),
-                    @Parameter(name = "status", description = "회원 상태", example = "ACTIVE"),
-                    @Parameter(name = "role", description = "회원 역할", example = "ADMIN"),
-                    @Parameter(name = "loginId", description = "로그인 ID", example = "john123"),
+                    @Parameter(name = "name", description = "회원 이름"),
+                    @Parameter(name = "status", description = "회원 상태"),
+                    @Parameter(name = "role", description = "회원 역할"),
+                    @Parameter(name = "loginId", description = "로그인 ID"),
                     @Parameter(name = "pageable", description = "페이징 정보")
             }
     )
