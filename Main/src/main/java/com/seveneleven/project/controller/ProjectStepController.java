@@ -30,18 +30,7 @@ public class ProjectStepController implements ProjectStepDocs{
                 .body(APIResponse.success(SuccessCode.OK, projectStepFacade.getProjectStepAndChecklist(projectId)));
     }
 
-    /**
-     * 함수명 : getStepChecklist
-     * 해당 단계의 체크리스트 목록을 반환하는 함수
-     */
-    @GetMapping("/{stepId}")
-    public ResponseEntity<APIResponse<GetStepChecklist.Response>> getProjectChecklist(
-            @PathVariable Long stepId
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(APIResponse.success(SuccessCode.OK, projectStepFacade.getStepChecklist(stepId)));
-    }
+
 
     /**
      * 함수명 : postProjectStep

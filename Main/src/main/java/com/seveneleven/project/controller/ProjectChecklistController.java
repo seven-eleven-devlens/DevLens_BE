@@ -22,6 +22,19 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
     private final ProjectChecklistFacade projectChecklistFacade;
 
     /**
+     * 함수명 : getStepChecklist
+     * 해당 단계의 체크리스트 목록을 반환하는 함수
+     */
+    @GetMapping("/{stepId}")
+    public ResponseEntity<APIResponse<GetStepChecklist.Response>> getProjectChecklist(
+            @PathVariable Long stepId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.getStepChecklist(stepId)));
+    }
+
+    /**
      * 함수명 : postProjectChecklist
      * 해당 프로젝트 단계에 체크리스트를 추가하는 함수
      */

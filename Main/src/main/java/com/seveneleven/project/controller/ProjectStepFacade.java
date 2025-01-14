@@ -19,10 +19,6 @@ public class ProjectStepFacade {
         return projectStepService.getProjectStep(projectId);
     }
 
-    public GetStepChecklist.Response getStepChecklist(Long stepId) {
-        return projectStepService.getStepChecklist(stepId);
-    }
-
     public PostProjectStep.Response postProjectStep(PostProjectStep.Request requestDto) {
         return projectStepService.postProjectStep(requestDto);
     }
