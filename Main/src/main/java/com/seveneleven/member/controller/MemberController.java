@@ -11,6 +11,7 @@ import com.seveneleven.response.SuccessCode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /*
@@ -51,16 +52,12 @@ public class MemberController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<APIResponse<SuccessCode>> join(@RequestBody LoginRequest dto) {
-        try {
-            // memberService.join(dto.getUserid(), dto.getPw());
-            return ResponseEntity.status(SuccessCode.OK.getStatus())
-                    .body(APIResponse.success(SuccessCode.OK));
-        } catch (Exception e) {
-            throw new BusinessException(ErrorCode.DUPLICATE_USER_ID);
-        }
+    public ResponseEntity<APIResponse<SuccessCode>> logout(Authentication authentication) {
+        String username = authentication.getName();
+        // memberService.logout(username);
+        return ResponseEntity.status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK));
     }
-
 
     // 이메일 인증
     @PostMapping("/auth/email")

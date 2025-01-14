@@ -1,4 +1,4 @@
-package com.seveneleven.util.file.controller;
+package com.seveneleven.controller;
 
 import com.seveneleven.util.file.Service.CompanyFileService;
 import com.seveneleven.response.APIResponse;
@@ -7,12 +7,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/company/files")
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class CompanyFileController {
     private final CompanyFileService companyFileService;
 

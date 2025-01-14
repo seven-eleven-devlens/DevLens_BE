@@ -11,6 +11,7 @@ import com.seveneleven.service.CompanyUpdateService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/companies")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class CompanyController {
     private final CompanyCreateService companyCreateService;
     private final CompanyReadService companyReadService;

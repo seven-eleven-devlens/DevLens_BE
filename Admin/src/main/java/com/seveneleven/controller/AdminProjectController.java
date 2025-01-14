@@ -9,11 +9,13 @@ import com.seveneleven.service.ProjectReadService;
 import com.seveneleven.service.ProjectUpdateService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin-project")
+@PreAuthorize("hasAnyRole('ADMIN')")
 public class AdminProjectController {
     private final ProjectCreateService projectCreateService;
     private final ProjectReadService projectReadService;
