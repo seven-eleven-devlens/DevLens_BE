@@ -7,6 +7,7 @@ import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.project.dto.PostProjectAuthorization;
+import com.seveneleven.project.repository.ProjectAuthorizationHistoryRepository;
 import com.seveneleven.project.repository.ProjectAuthorizationRepository;
 import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.List;
 public class AuthorizationStoreImpl implements AuthorizationStore {
 
     private final ProjectAuthorizationRepository projectAuthorizationRepository;
+    private final ProjectAuthorizationHistoryRepository projectAuthorizationHistoryRepository;
     private final MemberRepository memberRepository;
 
     @Override
@@ -31,6 +33,7 @@ public class AuthorizationStoreImpl implements AuthorizationStore {
     ) {
         PostProjectAuthorization.Response responseDto = PostProjectAuthorization.Response.create(step.getId());
         forRequestDto(responseDto, requestDto, projectAuthorizations, step);
+        delete(projectAuthorizations);
         return responseDto;
     }
 
@@ -63,6 +66,7 @@ public class AuthorizationStoreImpl implements AuthorizationStore {
         for(ProjectAuthorization projectAuthorization : projectAuthorizationList) {
             if(projectAuthorization.getMember().getId().equals(projectAuthorization.getMember().getId())) {
                 businessLogic(request, projectAuthorization);
+                projectAuthorizationList.remove(projectAuthorization);
                 return;
             }
         }
@@ -79,5 +83,13 @@ public class AuthorizationStoreImpl implements AuthorizationStore {
 
         projectAuthorization.edit(request.getMemberDivision(), request.getProjectAuthorization());
         projectAuthorizationRepository.save(projectAuthorization);
+    }
+
+    private void delete(
+            List<ProjectAuthorization> authorizations
+    ) {
+        authorizations.forEach(authorization -> {
+            projectAuthorizationHistoryRepository.save(authorization.delete());
+        });
     }
 }
