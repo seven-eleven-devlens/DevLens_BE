@@ -15,6 +15,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AdminCompanyService {
@@ -22,13 +25,14 @@ public class AdminCompanyService {
     private final PutCompanyResponseConverter putCompanyResponseConverter;
     private final int PAGE_SIZE = 20;
     private final AdminProjectRepository adminProjectRepository;
-    private final ProjectResponseConverter projectResponseConverter;
+    private final GetCompanyProjectResponseConverter getCompanyProjectResponseConverter;
     private final GetCompanyDetailResponseConverter getCompanyDetailResponseConverter;
     private final GetCompaniesResponseConverter getCompaniesResponseConverter;
     private final PutCompanyRequestConverter putCompanyRequestConverter;
     private final CheckCompanyValidity checkCompanyValidity;
     private final PostCompanyRequestConverter postCompanyRequestConverter;
     private final PostCompanyResponseConverter postCompanyResponseConverter;
+    private final GetAllCompaniesConverter getAllCompaniesConverter;
 
     /*
         함수명 : createCompany
@@ -61,7 +65,12 @@ public class AdminCompanyService {
                 .map(getCompanyDetailResponseConverter::toDTO)
                 .orElseThrow(CompanyNotFoundException::new);
 
-        return GetCompanyDetail.Response.addProjectList(response, PaginatedResponse.createPaginatedResponse(projectPage.map(projectResponseConverter::toDTO)));
+        return GetCompanyDetail.Response.addProjectList(
+                response,
+                PaginatedResponse.createPaginatedResponse(
+                        projectPage.map(getCompanyProjectResponseConverter::toDTO)
+                )
+        );
     }
 
     /*
@@ -116,5 +125,12 @@ public class AdminCompanyService {
         Company company = checkCompanyValidity.checkCompanyExistsOrDeactivated(id);
         //회사 isActive N으로 변경
         company.deleteCompany();
+    }
+
+    public List<GetAllCompanies> getAllCompanies() {
+        return companyRepository.findAllByIsActive(YN.Y)
+                .stream().sorted(Comparator.comparing(Company::getCompanyName))
+                .map(getAllCompaniesConverter::toDTO)
+                .toList();
     }
 }

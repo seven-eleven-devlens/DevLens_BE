@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Validated
 @RestController
 @RequiredArgsConstructor
@@ -108,5 +110,12 @@ public class CompanyController {
         return ResponseEntity
                 .status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<APIResponse<List<GetAllCompanies>>> readAllCompany() {
+        return ResponseEntity
+                .status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyService.getAllCompanies()));
     }
 }
