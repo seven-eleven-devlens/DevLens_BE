@@ -9,8 +9,11 @@ import lombok.Setter;
  * */
 @Getter
 @Setter
-public class MemberJoinDto {
+public class LoginRequest {
 
-    private String userid;
-    private String pw;
+    private String loginId;
+    private String pwd;
+
+
+
 }
