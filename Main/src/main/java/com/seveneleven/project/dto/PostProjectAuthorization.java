@@ -19,9 +19,9 @@ public class PostProjectAuthorization {
 
     @Getter
     public static class MemberAuthorization {
-        Long memberId;
-        String projectAuthorization;
-        MemberType memberDivision;
+        private Long memberId;
+        private String projectAuthorization;
+        private MemberType memberDivision;
 
         public ProjectAuthorization toEntity(ProjectStep projectStep, Member member) {
             return ProjectAuthorization.create(member, projectStep, memberDivision, projectAuthorization);
@@ -30,8 +30,8 @@ public class PostProjectAuthorization {
 
     @Getter
     public static class Response {
-        Long stepId;
-        List<FailList> failList;
+        private Long stepId;
+        private List<FailList> failList;
 
         private Response(Long stepId) {
             this.stepId = stepId;
@@ -45,11 +45,11 @@ public class PostProjectAuthorization {
 
     @Getter
     public static class FailList {
-        Long memberId;
-        MemberType memberDivision;
-        String projectAuthorization;
-        HttpStatus status;
-        String message;
+        private Long memberId;
+        private MemberType memberDivision;
+        private String projectAuthorization;
+        private HttpStatus status;
+        private String message;
 
         private FailList(MemberAuthorization member, HttpStatus status, String message) {
             this.memberId = member.getMemberId();

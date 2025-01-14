@@ -39,4 +39,8 @@ public class ProjectStepFacade {
                                                                       Long stepId) {
         return projectAuthorizationService.createProjectAuthorization(stepId, requestDto);
     }
+
+    public GetProjectAuthorization.Response getProjectAuthorization(Long stepId) {
+        return projectAuthorizationService.getProjectAuthorization(stepId);
+    }
 }

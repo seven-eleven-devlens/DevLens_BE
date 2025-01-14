@@ -86,12 +86,11 @@ public class ProjectStepController implements ProjectStepDocs{
                 .body(APIResponse.success(SuccessCode.MULTISTATUS, responseDto));
     }
 
-    @DeleteMapping("/{stepId}/authorizations")
-    public ResponseEntity<APIResponse<DeleteProjectAuthorization.Response>> deleteProjectAuthorization(
-        @PathVariable Long stepId,
-        @RequestBody DeleteProjectAuthorization.Request requestDto
+    @GetMapping("/{stepId}/authorizations")
+    public ResponseEntity<APIResponse<GetProjectAuthorization.Response>> getProjectAuthorization(
+            @PathVariable Long stepId
     ) {
-
-        return null;
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(SuccessCode.OK, projectStepFacade.getProjectAuthorization(stepId)));
     }
 }
