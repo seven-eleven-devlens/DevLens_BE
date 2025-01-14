@@ -5,6 +5,8 @@ import com.seveneleven.entity.member.constant.BusinessType;
 import com.seveneleven.entity.member.constant.YN;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 public class GetCompanies {
     @Getter
     public static class Response {
@@ -17,6 +19,7 @@ public class GetCompanies {
         private BusinessType businessType;
         private String businessRegistrationNumber;
         private YN isActive;
+        private LocalDateTime createdAt;
 
         private Response(
                 Company company
@@ -30,6 +33,7 @@ public class GetCompanies {
             this.businessType = company.getBusinessType();
             this.businessRegistrationNumber = company.getBusinessRegistrationNumber();
             this.isActive = company.getIsActive();
+            this.createdAt = company.getCreatedAt();
         }
 
         public static Response getCompaniesResponse(

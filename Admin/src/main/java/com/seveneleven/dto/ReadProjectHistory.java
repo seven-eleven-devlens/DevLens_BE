@@ -1,10 +1,12 @@
 package com.seveneleven.dto;
 
+import com.seveneleven.entity.project.ProjectHistory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReadProjectHistory {
@@ -23,8 +25,12 @@ public class ReadProjectHistory {
         private LocalDate startDate;
         private LocalDate plannedEndDate;
         private LocalDate endDate;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private String createdBy;
+        private String updatedBy;
 
-        public Response(
+        private Response(
                 Long id,
                 String projectName,
                 String customerName,
@@ -37,7 +43,11 @@ public class ReadProjectHistory {
                 LocalDate plannedStartDate,
                 LocalDate startDate,
                 LocalDate plannedEndDate,
-                LocalDate endDate
+                LocalDate endDate,
+                LocalDateTime createdAt,
+                LocalDateTime updatedAt,
+                String createdBy,
+                String updatedBy
         ) {
             this.id = id;
             this.projectName = projectName;
@@ -52,6 +62,62 @@ public class ReadProjectHistory {
             this.startDate = startDate;
             this.plannedEndDate = plannedEndDate;
             this.endDate = endDate;
+            this.createdAt = createdAt;
+            this.updatedAt = updatedAt;
+            this.createdBy = createdBy;
+            this.updatedBy = updatedBy;
+        }
+
+        public static Response from(
+                Response response,
+                String createdBy,
+                String updatedBy
+        ){
+            return new Response(
+                    response.getId(),
+                    response.getProjectName(),
+                    response.getCustomerName(),
+                    response.getDeveloperName(),
+                    response.getDescription(),
+                    response.getStatusCode(),
+                    response.getTypeName(),
+                    response.getBnsManagerId(),
+                    response.getContractNumber(),
+                    response.getPlannedStartDate(),
+                    response.getStartDate(),
+                    response.getPlannedEndDate(),
+                    response.getEndDate(),
+                    response.getCreatedAt(),
+                    response.getUpdatedAt(),
+                    createdBy,
+                    updatedBy
+            );
+        }
+
+        public static Response of(
+                ProjectHistory project,
+                String createdBy,
+                String updatedBy
+        ){
+            return new Response(
+                    project.getId(),
+                    project.getProjectName(),
+                    project.getCustomerName(),
+                    project.getDeveloperName(),
+                    project.getDescription(),
+                    project.getStatusCode(),
+                    project.getTypeName(),
+                    project.getBnsManagerId(),
+                    project.getContractNumber(),
+                    project.getPlannedStartDate(),
+                    project.getStartDate(),
+                    project.getPlannedEndDate(),
+                    project.getEndDate(),
+                    project.getCreatedAt(),
+                    project.getUpdatedAt(),
+                    createdBy,
+                    updatedBy
+            );
         }
     }
 }

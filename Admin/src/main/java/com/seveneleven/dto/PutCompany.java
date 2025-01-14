@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 public class PutCompany {
     @Getter
     public static class Request {
-        private Long id;
         private String companyName;
         private String representativeName;
         private String representativeContact;

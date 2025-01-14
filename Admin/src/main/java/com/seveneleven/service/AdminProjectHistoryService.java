@@ -2,9 +2,11 @@ package com.seveneleven.service;
 
 import com.seveneleven.dto.PaginatedResponse;
 import com.seveneleven.dto.ReadProjectHistory;
+import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectHistory;
 import com.seveneleven.exception.ProjectHistoryNotFoundException;
+import com.seveneleven.repository.AdminMemberRepository;
 import com.seveneleven.repository.AdminProjectHistoryRepository;
 import com.seveneleven.repository.ProjectHistoryConverter;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdminProjectHistoryService {
     private final AdminProjectHistoryRepository projectHistoryRepository;
     private final ProjectHistoryConverter projectHistoryConverter;
+    private final AdminMemberRepository adminMemberRepository;
     private final int PAGE_SIZE = 10;
 
     public void saveProjectHistory(Project project) {
@@ -32,9 +35,10 @@ public class AdminProjectHistoryService {
     public ReadProjectHistory.Response getProjectHistory(
             Long id
     ) {
-        return projectHistoryRepository.findById(id)
-                .map(projectHistoryConverter::toDTO)
-                .orElseThrow(ProjectHistoryNotFoundException::new);
+        ProjectHistory projectHistory = projectHistoryRepository.findById(id).orElseThrow(ProjectHistoryNotFoundException::new);
+        String createdBy = adminMemberRepository.findById(projectHistory.getCreatedBy()).map(Member::getName).orElse(null);
+        String updatedBy = adminMemberRepository.findById(projectHistory.getUpdatedBy()).map(Member::getName).orElse(null);
+        return ReadProjectHistory.Response.from(projectHistoryConverter.toDTO(projectHistory), createdBy, updatedBy);
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +50,14 @@ public class AdminProjectHistoryService {
         if (projectHistories.getContent().isEmpty()) {
             throw new ProjectHistoryNotFoundException();
         }
-        return PaginatedResponse.createPaginatedResponse(projectHistories.map(projectHistoryConverter::toDTO));
+        return PaginatedResponse.createPaginatedResponse(
+                projectHistories.map(projectHistory -> {
+                    ReadProjectHistory.Response dto = projectHistoryConverter.toDTO(projectHistory);
+                    String createdBy = adminMemberRepository.findById(projectHistory.getCreatedBy()).map(Member::getName).orElse(null);
+                    String updatedBy = adminMemberRepository.findById(projectHistory.getUpdatedBy()).map(Member::getName).orElse(null);
+                    return ReadProjectHistory.Response.from(dto, createdBy, updatedBy);
+                })
+        );
     }
 
     @Transactional(readOnly = true)
