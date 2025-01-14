@@ -2,6 +2,7 @@ package com.seveneleven.entity.board;
 
 import com.seveneleven.entity.board.constant.PostAction;
 import com.seveneleven.entity.board.constant.PostStatus;
+import com.seveneleven.entity.global.BaseEntity;
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.global.converter.YesNoConverter;
 import jakarta.persistence.*;
@@ -15,7 +16,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "post_history")
-public class PostHistory {
+public class PostHistory extends BaseEntity {
 
         /*
         id : 게시물 이력 ID
@@ -27,8 +28,6 @@ public class PostHistory {
         status : 상태 (DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD)
         title : 제목
         content : 내용
-        hasFile : 파일 유무
-        hasLink : 링크 유무
         deadline : 마감일자
         action : 작업 종류 (CREATE, UPDATE, DELETE)
         registerIp : 등록자 IP
@@ -67,16 +66,6 @@ public class PostHistory {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "has_file", nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    @Enumerated(EnumType.STRING)
-    private YesNo hasFile;
-
-    @Column(name = "has_link", nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    @Enumerated(EnumType.STRING)
-    private YesNo hasLink;
-
     @Column(name = "deadline")
     private LocalDate deadline;
 
@@ -101,12 +90,9 @@ public class PostHistory {
         postHistory.status = post.getStatus();
         postHistory.title = post.getTitle();
         postHistory.content = post.getContent();
-        postHistory.hasFile = post.getHasFile();
-        postHistory.hasLink = post.getHasLink();
         postHistory.deadline = post.getDeadline();
         postHistory.action = action;
-        postHistory.registeredIp = postHistory.getRegisteredIp();
-        postHistory.modifierIp = postHistory.getModifierIp();
+        postHistory.registeredIp = post.getModifierIp();
 
         return postHistory;
     }

@@ -25,6 +25,7 @@ public class PostResponse {
     private LocalDateTime createDate;   // 작성일자
     private LocalDateTime updateDate;   // 최근수정일자
 
+    // todo: 댓글 리스트 추가 예정
     // private List<comment> comments;
 
 

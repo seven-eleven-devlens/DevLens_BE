@@ -9,7 +9,7 @@ import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
-    private OctetStreamReadMsgConverter octetStreamReadMsgConverter;
+    private final OctetStreamReadMsgConverter octetStreamReadMsgConverter;
 
     @Autowired
     public WebConfig(OctetStreamReadMsgConverter octetStreamReadMsgConverter) {

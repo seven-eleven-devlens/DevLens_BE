@@ -2,12 +2,27 @@ package com.seveneleven.board.repository;
 
 import com.seveneleven.entity.board.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
 
-    //
+    // REF의 최대값 구하기
+    @Query("SELECT MAX(p.ref) FROM Post p")
+    Long findFirstRefByOrderByRefDesc();
+
+    // 부모게시글의 REF 구하기
+    Optional<Long> findRefById(Long parentPostId);
+
+    // 그룹 내 refOrder 최대값 구하기
+    @Query("SELECT MAX(p.refOrder) FROM Post p WHERE p.parentPostId.id = :parentPostId")
+    Optional<Integer> findMaxRefOrderByParentPostId(@Param("parentPostId") Long parentPostId);
+
+
     /*
         <게시글 목록 조회>          나중에 다시 시도해보자
         조건
