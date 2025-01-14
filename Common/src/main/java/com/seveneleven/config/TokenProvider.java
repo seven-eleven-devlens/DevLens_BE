@@ -100,6 +100,28 @@ public class TokenProvider implements InitializingBean {
     }
 
     /**
+     * Token에서 User ID 추출
+     * @param token
+     * @return User ID
+     */
+    public String getLoginId(String token) {
+        return parseClaims(token).get("loginId", String.class);
+    }
+
+    /**
+     * JWT Claims 추출
+     * @param accessToken
+     * @return JWT Claims
+     */
+    public Claims parseClaims(String accessToken) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
+    }
+
+    /**
      * JWT 토큰의 유효성을 검증합니다.
      *
      * @param token 검증할 JWT 토큰

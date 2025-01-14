@@ -1,7 +1,6 @@
 package com.seveneleven.member.controller;
 
 import com.seveneleven.config.JwtFilter;
-import com.seveneleven.config.TokenProvider;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.LoginRequest;
 import com.seveneleven.member.dto.MemberPatch;
@@ -12,7 +11,6 @@ import com.seveneleven.response.SuccessCode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.web.bind.annotation.*;
 
 /*
