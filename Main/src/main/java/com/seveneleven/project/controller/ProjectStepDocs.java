@@ -96,7 +96,6 @@ public interface ProjectStepDocs {
             @RequestBody PutProjectStep.Request requestDto
     );
 
-
     @DeleteMapping("/steps")
     @Operation(
             summary = "프로젝트 단계 삭제",
@@ -122,6 +121,62 @@ public interface ProjectStepDocs {
     )
     ResponseEntity<APIResponse<DeleteProjectStep.Response>> deleteProjectStep(
             @RequestBody DeleteProjectStep.Request requestDto
+    );
+
+
+    @PostMapping("/{stepId}/authorizations")
+    @Operation(
+            summary = "프로젝트 권한 생성",
+            description = "특정 단계의 프로젝트 권한을 생성합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "프로젝트 권한이 성공적으로 생성되었습니다.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = PostProjectAuthorization.Response.class)
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "207",
+                            description = "일부 요청이 실패하였습니다.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = PostProjectAuthorization.Response.class)
+                            )
+                    )
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    description = "생성할 프로젝트 권한의 요청 데이터",
+                    required = true,
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = PostProjectAuthorization.Request.class)
+                    )
+            )
+    )
+    ResponseEntity<APIResponse<PostProjectAuthorization.Response>> postProjectAuthorization(
+            @PathVariable Long stepId,
+            @RequestBody PostProjectAuthorization.Request requestDto
+    );
+
+    @GetMapping("/{stepId}/authorizations")
+    @Operation(
+            summary = "프로젝트 권한 조회",
+            description = "특정 단계의 프로젝트 권한을 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "프로젝트 권한이 성공적으로 조회되었습니다.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = GetProjectAuthorization.Response.class)
+                            )
+                    )
+            }
+    )
+    ResponseEntity<APIResponse<GetProjectAuthorization.Response>> getProjectAuthorization(
+            @PathVariable Long stepId
     );
 
 }
