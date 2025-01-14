@@ -21,7 +21,7 @@ public class PostProject {
         private LocalDate plannedStartDate; // 시작 예정일
         private LocalDate plannedEndDate; // 종료 예정일
 
-        public Request(
+        private Request(
                 String projectName,
                 Long customerId,
                 Long developerId,
@@ -58,7 +58,7 @@ public class PostProject {
         private LocalDate plannedStartDate; // 시작 예정일
         private LocalDate plannedEndDate; // 종료 예정일
 
-        public Response(
+        private Response(
                 Long id,
                 String projectName,
                 Long customerId,
@@ -82,6 +82,24 @@ public class PostProject {
             this.contractNumber = contractNumber;
             this.plannedStartDate = plannedStartDate;
             this.plannedEndDate = plannedEndDate;
+        }
+
+        public static Response of(
+                Project project
+        ) {
+            return new Response(
+                    project.getId(),
+                    project.getProjectName(),
+                    project.getCustomer().getId(),
+                    project.getDeveloper().getId(),
+                    project.getProjectDescription(),
+                    project.getProjectType().getId(),
+                    project.getProjectStatusCode(),
+                    project.getBnsManager().getId(),
+                    project.getContractNumber(),
+                    project.getPlannedStartDate(),
+                    project.getPlannedEndDate()
+            );
         }
     }
 }

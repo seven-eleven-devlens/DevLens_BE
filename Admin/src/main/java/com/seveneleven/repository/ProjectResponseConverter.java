@@ -22,23 +22,7 @@ public class ProjectResponseConverter implements EntityConverter<GetProject.Resp
     public GetProject.Response toDTO(
             Project project
     ) {
-        return new GetProject.Response(
-                project.getId(),
-                project.getProjectName(),
-                project.getCustomer().getId(),
-                project.getDeveloper().getId(),
-                project.getProjectDescription(),
-                project.getProjectType().getId(),
-                project.getProjectStatusCode(),
-                project.getBnsManager().getId(),
-                project.getContractNumber(),
-                project.getPlannedStartDate(),
-                project.getPlannedEndDate(),
-                project.getStartDate(),
-                project.getEndDate(),
-                project.getFinalApproverId(),
-                project.getFinalApprovalDate()
-        );
+        return GetProject.Response.of(project);
     }
 
     @Override
@@ -49,7 +33,7 @@ public class ProjectResponseConverter implements EntityConverter<GetProject.Resp
         Company developer = companyRepository.findById(response.getDeveloperId()).orElseThrow(CompanyNotFoundException::new);
         Member bnsManager = adminMemberRepository.findById(response.getBnsManager()).orElseThrow(EntityNotFoundException::new);
         ProjectType projectType = projectTypeRepository.findById(response.getProjectTypeId()).orElseThrow(EntityNotFoundException::new);
-        return new Project(
+        return Project.getProject(
                 response.getId(),
                 response.getProjectName(),
                 customer,

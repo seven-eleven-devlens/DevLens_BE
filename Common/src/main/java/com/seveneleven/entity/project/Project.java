@@ -59,8 +59,8 @@ public class Project extends BaseEntity {
     private Long finalApproverId; // 최종 결재자
 
     private LocalDateTime finalApprovalDate; // 최종 결재일시
-  
-    public Project(
+
+    private Project(
             Long id,
             String projectName,
             Company customer,
@@ -95,7 +95,7 @@ public class Project extends BaseEntity {
     }
 
     // Dto를 받는 생성자
-    public Project(
+    private Project(
             String projectName,
             Company customer,
             Company developer,
@@ -117,6 +117,68 @@ public class Project extends BaseEntity {
         this.contractNumber = contractNumber;
         this.plannedStartDate = plannedStartDate;
         this.plannedEndDate = plannedEndDate;
+    }
+
+    public static Project getProject(
+            Long id,
+            String projectName,
+            Company customer,
+            Company developer,
+            String projectDescription,
+            ProjectType projectTypeId,
+            ProjectStatusCode projectStatusCode,
+            Member bnsManager,
+            String contractNumber,
+            LocalDate plannedStartDate,
+            LocalDate plannedEndDate,
+            LocalDate startDate,
+            LocalDate endDate,
+            Long finalApprover,
+            LocalDateTime finalApprovalDate
+    ) {
+            return new Project(
+                    id,
+                    projectName,
+                    customer,
+                    developer,
+                    projectDescription,
+                    projectTypeId,
+                    projectStatusCode,
+                    bnsManager,
+                    contractNumber,
+                    plannedStartDate,
+                    plannedEndDate,
+                    startDate,
+                    endDate,
+                    finalApprover,
+                    finalApprovalDate
+            );
+    }
+
+    public static Project create(
+            String projectName,
+            Company customer,
+            Company developer,
+            String projectDescription,
+            ProjectType projectTypeId,
+            ProjectStatusCode projectStatusCode,
+            Member bnsManager,
+            String contractNumber,
+            LocalDate plannedStartDate,
+            LocalDate plannedEndDate
+    ) {
+        return new Project(
+                projectName,
+                customer,
+                developer,
+                projectDescription,
+                projectTypeId,
+                projectStatusCode,
+                bnsManager,
+                contractNumber,
+                plannedStartDate,
+                plannedEndDate
+        );
     }
 
     public Project update(
@@ -151,7 +213,7 @@ public class Project extends BaseEntity {
         this.finalApprovalDate = approvalDate;
         return this;
     }
-  
+
     public enum ProjectStatusCode {
         PREPARED,
         IN_PROGRESS,

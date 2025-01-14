@@ -8,7 +8,7 @@ import com.seveneleven.entity.project.Project;
 public class PutProjectRequestConverter implements EntityConverter<PutProject.Request, Project> {
     @Override
     public PutProject.Request toDTO(Project project) {
-        return new PutProject.Request(
+        return PutProject.Request.of(
                 project.getId(),
                 project.getProjectName(),
                 project.getCustomer().getId(),

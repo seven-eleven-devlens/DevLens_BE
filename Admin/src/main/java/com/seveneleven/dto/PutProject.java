@@ -50,7 +50,7 @@ public class PutProject {
             );
         }
 
-        public Request(
+        private Request(
                 Long id,
                 String projectName,
                 Long customerId,
@@ -83,6 +83,42 @@ public class PutProject {
             this.finalApprover = finalApprover; // 최종 결재자
             this.finalApprovalDate = finalApprovalDate; // 최종 결재일시
         }
+
+        public static Request of(
+                Long id,
+                String projectName,
+                Long customerId,
+                Long developerId,
+                String projectDescription,
+                Long projectTypeId,
+                Project.ProjectStatusCode projectStatusCode,
+                Long bnsManagerId,
+                String contractNumber,
+                LocalDate plannedStartDate,
+                LocalDate plannedEndDate,
+                LocalDate startDate, // 시작일
+                LocalDate endDate, // 종료일
+                Long finalApprover, // 최종 결재자
+                LocalDateTime finalApprovalDate
+        ) {
+            return new Request(
+                    id,
+                    projectName,
+                    customerId,
+                    developerId,
+                    projectDescription,
+                    projectTypeId,
+                    projectStatusCode,
+                    bnsManagerId,
+                    contractNumber,
+                    plannedStartDate,
+                    plannedEndDate,
+                    startDate, // 시작일
+                    endDate, // 종료일
+                    finalApprover, // 최종 결재자
+                    finalApprovalDate // 최종 결재일시
+            );
+        }
     }
 
     @Getter
@@ -103,7 +139,7 @@ public class PutProject {
         private Long finalApprover; // 최종 결재자
         private LocalDateTime finalApprovalDate; // 최종 결재일시
 
-        public Response(
+        private Response(
                 Long id,
                 String projectName,
                 Long customerId,
@@ -115,10 +151,10 @@ public class PutProject {
                 String contractNumber,
                 LocalDate plannedStartDate,
                 LocalDate plannedEndDate,
-                LocalDate startDate, // 시작일
-                LocalDate endDate, // 종료일
-                Long finalApprover, // 최종 결재자
-                LocalDateTime finalApprovalDate // 최종 결재일시
+                LocalDate startDate,
+                LocalDate endDate,
+                Long finalApprover,
+                LocalDateTime finalApprovalDate
         ) {
             this.id = id;
             this.projectName = projectName;
@@ -134,6 +170,42 @@ public class PutProject {
             this.endDate = endDate; //종료일
             this.finalApprover = finalApprover; // 최종 결재자
             this.finalApprovalDate = finalApprovalDate; // 최종 결재일시
+        }
+
+        public static Response of(
+                Long id,
+                String projectName,
+                Long customerId,
+                Long developerId,
+                String projectDescription,
+                Long projectTypeId,
+                Project.ProjectStatusCode projectStatusCode,
+                Long bnsManagerId,
+                String contractNumber,
+                LocalDate plannedStartDate,
+                LocalDate plannedEndDate,
+                LocalDate startDate,
+                LocalDate endDate,
+                Long finalApprover,
+                LocalDateTime finalApprovalDate
+        ) {
+            return new Response(
+                    id,
+                    projectName,
+                    customerId,
+                    developerId,
+                    projectDescription,
+                    projectTypeId,
+                    projectStatusCode,
+                    bnsManagerId,
+                    contractNumber,
+                    plannedStartDate,
+                    plannedEndDate,
+                    startDate,
+                    endDate,
+                    finalApprover,
+                    finalApprovalDate
+            );
         }
     }
 }
