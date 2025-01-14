@@ -1,6 +1,7 @@
 package com.seveneleven.config;
 
-import lombok.RequiredArgsConstructor;
+import com.seveneleven.util.security.TokenRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -22,10 +23,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class SpringSecurityConfig {
 
     private final TokenProvider tokenProvider;
+    private final TokenRepository tokenRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
@@ -59,7 +61,7 @@ public class SpringSecurityConfig {
             .headers(headers -> // H2-console 허용
                     headers.frameOptions(frameOptions -> frameOptions.sameOrigin())
             )
-            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenProvider), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers(AUTH_WHITELIST).permitAll()
                             .anyRequest().permitAll() // @PreAuthrization을 사용하기

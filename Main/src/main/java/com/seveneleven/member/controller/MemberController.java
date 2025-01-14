@@ -1,7 +1,7 @@
 package com.seveneleven.member.controller;
 
 import com.seveneleven.config.JwtFilter;
-import com.seveneleven.member.dto.LoginRequest;
+import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.service.MemberService;
 import com.seveneleven.response.APIResponse;
@@ -9,7 +9,6 @@ import com.seveneleven.response.SuccessCode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 /*
@@ -33,22 +32,29 @@ public class MemberController {
      *         Authorization 헤더에 Bearer 토큰 형식으로 JWT 토큰을 추가하여 반환합니다.
      */
     @PostMapping("/login")
-    public ResponseEntity<APIResponse<SuccessCode>> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<APIResponse<LoginPost.Response>> login(@RequestBody LoginPost.Request request) {
 
         // 로그인 처리 및 JWT 토큰 발급
-        String token = memberService.login(request);
+        LoginPost.Response response = memberService.login(request);
 
         // JWT 토큰을 Authorization 헤더에 추가
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + token);
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + response.getToken());
 
         // 성공 응답 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .headers(httpHeaders)
-                .body(APIResponse.success(SuccessCode.OK));
+                .body(APIResponse.success(SuccessCode.OK, response));
     }
 
-    // 로그아웃
+    /**
+     * 함수명 : logout
+     * 사용자 로그아웃 처리 메서드.
+     * 토큰의 상태를 BLACKLISTED로 변경하여 더 이상 사용할 수 없도록 처리
+     *
+     * @param token 클라이언트에서 전달된 JWT 토큰 (Authorization 헤더에 포함)
+     * @return 로그아웃 성공 응답
+     */
     @PostMapping("/logout")
     public ResponseEntity<APIResponse<SuccessCode>> logout(@RequestHeader("Authorization") String token) {
 
@@ -57,6 +63,7 @@ public class MemberController {
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK));
     }
+
 
     // 이메일 인증
     @PostMapping("/auth/email")

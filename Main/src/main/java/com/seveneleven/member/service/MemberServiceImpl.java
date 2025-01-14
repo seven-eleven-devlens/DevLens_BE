@@ -4,11 +4,13 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.Token;
 import com.seveneleven.entity.member.constant.MemberStatus;
+import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
-import com.seveneleven.member.dto.LoginRequest;
+import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
+import com.seveneleven.member.repository.CompanyRepository;
 import com.seveneleven.member.repository.MemberRepository;
-import com.seveneleven.config.TokenRepository;
+import com.seveneleven.util.security.TokenRepository;
 import com.seveneleven.response.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +30,19 @@ public class MemberServiceImpl implements MemberService{
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final CompanyRepository companyRepository;
     private final TokenRepository tokenRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
 
+    /**
+     * 함수명 : login
+     * 사용자 로그인 처리 메서드. 로그인 ID와 비밀번호를 확인하여 인증하고, JWT 토큰을 생성하여 반환합니다.
+     *
+     * @param request 로그인 요청 정보 (로그인 ID와 비밀번호 포함)
+     * @return 생성된 JWT 토큰
+     */
     @Transactional
-    public String login(LoginRequest request) {
+    public LoginPost.Response login(LoginPost.Request request) {
 
         Member member = memberRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -56,9 +66,18 @@ public class MemberServiceImpl implements MemberService{
         Token newToken = Token.create(token, expiresAt);
         tokenRepository.save(newToken);
 
-        return token;
+        Long companyId = member.getCompany().getId();
+        String companyName = companyRepository.findNameByIdAndIsActive(companyId, YN.Y);
+
+         return new LoginPost.Response(token, companyId, companyName, "", "");
     }
 
+    /**
+     * 함수명 : logout
+     * 로그아웃 처리 메서드. 주어진 토큰을 DB에서 찾아 상태를 BLACKLISTED로 변경하여 로그아웃 처리합니다.
+     *
+     * @param token 로그아웃할 사용자 토큰. "Bearer " 접두어가 포함될 수 있습니다.
+     */
     @Transactional
     public void logout(String token) {
 
@@ -76,12 +95,6 @@ public class MemberServiceImpl implements MemberService{
     }
 
 
-
-
-    public Long getCompanyIdById(Long memberId) {
-        return memberRepository.findCompanyIdByIdAndStatus(memberId, MemberStatus.ACTIVE)
-                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
-    }
 
     /**
      * 함수명 : resetPassword
@@ -102,5 +115,11 @@ public class MemberServiceImpl implements MemberService{
 
         // 3. 생성된 비밀번호 반환
         return new MemberPatch.Response(request.getLoginId());
+    }
+
+
+    public Long getCompanyIdById(Long memberId) {
+        return memberRepository.findCompanyIdByIdAndStatus(memberId, MemberStatus.ACTIVE)
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
     }
 }

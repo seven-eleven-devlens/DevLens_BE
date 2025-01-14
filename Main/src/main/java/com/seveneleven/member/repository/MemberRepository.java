@@ -20,11 +20,9 @@ public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecif
 
     Optional<Member> findByLoginIdAndStatus(String loginId,MemberStatus statusCode);
 
-    @EntityGraph(attributePaths = {"role"})
-    Optional<Member> findOneWithAuthoritiesByLoginId(String loginId);
-
     @Query("SELECT m.name FROM Member m WHERE m.id = :id")
     Optional<String> findNameById(Long id);
 
     Optional<Member> findByIdAndStatus(Long memberId, MemberStatus statusCode);
+
 }

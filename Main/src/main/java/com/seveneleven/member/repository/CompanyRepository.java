@@ -14,5 +14,5 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Optional<Company> findByIdAndIsActive(Long id, YN isActive);
 
-    Page<Company> findByIsActive(Pageable pageable, YN isActive);
+    String findNameByIdAndIsActive(Long id, YN isActive);
 }

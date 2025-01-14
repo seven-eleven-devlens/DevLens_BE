@@ -1,4 +1,4 @@
-package com.seveneleven.config;
+package com.seveneleven.util.security;
 
 import com.seveneleven.entity.member.Token;
 import com.seveneleven.entity.member.constant.TokenStatus;
