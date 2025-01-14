@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.List;
 
-@Tag(name = "프로젝트 체크리스트 API", description = "프로젝트 체크리스트 관련 API")
+@Tag(name = "Project Checklist API", description = "프로젝트 체크리스트 관련 API")
 @RequestMapping("/api/projects")
 public interface ProjectChecklistDocs {
 

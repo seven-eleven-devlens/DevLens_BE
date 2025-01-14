@@ -11,7 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "프로젝트 단계 API", description = "프로젝트 단계 관련 API")
+@Tag(name = "Project Step API", description = "프로젝트 단계 관련 API")
 @RequestMapping("/api/projects")
 public interface ProjectStepDocs {
 
