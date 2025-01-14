@@ -3,10 +3,8 @@ package com.seveneleven.controller;
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.service.ProjectCreateService;
-import com.seveneleven.service.ProjectHistoryService;
-import com.seveneleven.service.ProjectReadService;
-import com.seveneleven.service.ProjectUpdateService;
+import com.seveneleven.service.AdminProjectHistoryService;
+import com.seveneleven.service.AdminProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/admin-project")
 public class AdminProjectController {
-    private final ProjectCreateService projectCreateService;
-    private final ProjectReadService projectReadService;
-    private final ProjectHistoryService projectHistoryService;
-    private final ProjectUpdateService projectUpdateService;
+    private final AdminProjectService adminProjectService;
+    private final AdminProjectHistoryService adminProjectHistoryService;
 
     /*
         함수명 : newProject
@@ -28,7 +24,7 @@ public class AdminProjectController {
     public ResponseEntity<APIResponse<PostProject.Response>> newProject(
             @RequestBody PostProject.Request request
     ) {
-        PostProject.Response project = projectCreateService.createProject(request);
+        PostProject.Response project = adminProjectService.createProject(request);
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED, project));
@@ -42,7 +38,7 @@ public class AdminProjectController {
     public ResponseEntity<APIResponse<GetProject.Response>> readProject(
             @PathVariable Long id
     ) {
-        GetProject.Response response = projectReadService.getProject(id);
+        GetProject.Response response = adminProjectService.getProject(id);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
@@ -56,7 +52,7 @@ public class AdminProjectController {
     public ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> getListOfProjects(
             @RequestParam(value = "page") Integer page
     ) {
-        PaginatedResponse<GetProject.Response> response = projectReadService.getListOfProject(page);
+        PaginatedResponse<GetProject.Response> response = adminProjectService.getListOfProject(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
@@ -70,7 +66,7 @@ public class AdminProjectController {
     public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> getListOfProjectHistory(
             @RequestParam(value = "page") Integer page
     ) {
-        PaginatedResponse<ReadProjectHistory.Response> response = projectHistoryService.getListOfProjectHistory(page);
+        PaginatedResponse<ReadProjectHistory.Response> response = adminProjectHistoryService.getListOfProjectHistory(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
@@ -86,7 +82,7 @@ public class AdminProjectController {
     ) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, projectHistoryService.getProjectHistory(id)));
+                .body(APIResponse.success(SuccessCode.OK, adminProjectHistoryService.getProjectHistory(id)));
     }
     /*
         함수명 : updateProject
@@ -99,7 +95,7 @@ public class AdminProjectController {
     ){
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK,projectUpdateService.updateProject(id, request)));
+                .body(APIResponse.success(SuccessCode.OK, adminProjectService.updateProject(id, request)));
     }
     @GetMapping("/histories/search")
     public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> searchHistories(
@@ -108,7 +104,7 @@ public class AdminProjectController {
     ){
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK,projectHistoryService.searchHistoryByProjectName(searchTerm, page)));
+                .body(APIResponse.success(SuccessCode.OK, adminProjectHistoryService.searchHistoryByProjectName(searchTerm, page)));
     }
     /*
         함수명 : deleteProject
@@ -118,7 +114,7 @@ public class AdminProjectController {
     public ResponseEntity<APIResponse<Void>> deleteProject(
             @PathVariable Long id
     ){
-        projectUpdateService.deleteProject(id);
+        adminProjectService.deleteProject(id);
         return ResponseEntity
                 .status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));

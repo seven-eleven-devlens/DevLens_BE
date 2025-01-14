@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
-public class ProjectHistoryService {
+public class AdminProjectHistoryService {
     private final AdminProjectHistoryRepository projectHistoryRepository;
     private final ProjectHistoryConverter projectHistoryConverter;
     private final int PAGE_SIZE = 10;
