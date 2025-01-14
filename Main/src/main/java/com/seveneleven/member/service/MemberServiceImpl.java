@@ -2,11 +2,13 @@ package com.seveneleven.member.service;
 
 import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.member.Member;
+import com.seveneleven.entity.member.Token;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.LoginRequest;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.MemberRepository;
+import com.seveneleven.config.TokenRepository;
 import com.seveneleven.response.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
 
 
 @Service
@@ -26,6 +28,7 @@ public class MemberServiceImpl implements MemberService{
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final TokenRepository tokenRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
 
     @Transactional
@@ -44,29 +47,37 @@ public class MemberServiceImpl implements MemberService{
         Authentication authentication = authenticationMngrBuilder.getObject().authenticate(authenticationToken);
 
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성 후 반환
-        return tokenProvider.createToken(authentication);
+        String token = tokenProvider.createToken(authentication);
+
+        // JWT 만료 시간 계산
+        LocalDateTime expiresAt = tokenProvider.getExpirationFromToken(token);
+
+        // Token 엔티티 생성 및 저장
+        Token newToken = Token.create(token, expiresAt);
+        tokenRepository.save(newToken);
+
+        return token;
+    }
+
+    @Transactional
+    public void logout(String token) {
+
+        if (token.startsWith("Bearer ")) {
+            token = token.substring(7);
+        }
+
+        // 토큰 객체 조회
+        Token existingToken = tokenRepository.findByToken(token)
+                .orElseThrow(() -> new BusinessException(ErrorCode.EXPIRED_TOKEN));
+
+        // 상태를 BLACKLISTED로 변경
+        existingToken.setStatus();
+        tokenRepository.save(existingToken);
     }
 
 
-    public Optional<Member> findOne(String loginId) {
-        return memberRepository.findByLoginId(loginId);
-    }
 
-//
-//
-//    // 유저,권한 정보를 가져오는 메소드
-//    @Transactional
-//    public Optional<Member> getUserWithAuthorities(String memberId) {
-//        return memberRepository.findOneWithAuthoritiesByLoginId(memberId);
-//    }
-//
-//    // 현재 securityContext에 저장된 username의 정보만 가져오는 메소드
-//    @Transactional
-//    public Optional<Member> getMyUserWithAuthorities() {
-//        return SecurityUtil.getCurrentUsername()
-//                .flatMap(memberRepository::findOneWithAuthoritiesByLoginId);
-//    }
-//
+
     public Long getCompanyIdById(Long memberId) {
         return memberRepository.findCompanyIdByIdAndStatus(memberId, MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));

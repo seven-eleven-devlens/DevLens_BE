@@ -1,12 +1,10 @@
 package com.seveneleven.config;
 
-import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,9 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
  * Spring Security 설정을 정의하는 클래스
@@ -27,8 +22,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-@AllArgsConstructor
-public class SpringSecurityConfig{
+@RequiredArgsConstructor
+public class SpringSecurityConfig {
 
     private final TokenProvider tokenProvider;
     private final CustomUserDetailsService customUserDetailsService;
@@ -73,6 +68,15 @@ public class SpringSecurityConfig{
         return http.build();
     }
 
+    /**
+     * 비밀번호 암호화를 위한 PasswordEncoder를 Bean으로 등록합니다.
+     *
+     * @return BCryptPasswordEncoder 인스턴스
+     */
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
 //    /**
 //     * CORS 설정을 정의합니다.

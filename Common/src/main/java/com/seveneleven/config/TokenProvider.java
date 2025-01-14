@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -74,6 +76,23 @@ public class TokenProvider implements InitializingBean {
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+    }
+
+    /*
+    * 함수명 : getExpirationFromToken
+    * JWT 만료 시간 추출
+    *
+    * @param token JWT 토큰    
+    * @return 만료 시간 반환
+    * */
+    public LocalDateTime getExpirationFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
+
+        Date expiration = claims.getExpiration();
+        return expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     /**

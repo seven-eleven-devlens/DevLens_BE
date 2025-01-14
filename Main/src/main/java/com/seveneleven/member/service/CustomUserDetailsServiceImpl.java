@@ -8,8 +8,6 @@ import com.seveneleven.member.dto.MemberDto;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.response.ErrorCode;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;

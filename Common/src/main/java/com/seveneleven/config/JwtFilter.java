@@ -1,5 +1,6 @@
 package com.seveneleven.config;
 
+import com.seveneleven.entity.member.constant.TokenStatus;
 import com.seveneleven.response.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,6 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
     private final CustomUserDetailsService customUserDetailsService;
+    private final TokenRepository tokenRepository;
     private final TokenProvider tokenProvider;
 
 
@@ -46,8 +48,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 String loginId = tokenProvider.getLoginId(token);
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginId);
 
-                if (userDetails != null) {
-                    //UserDetsils, Password, Role -> 접근권한 인증 Token 생성
+                if (userDetails != null && tokenRepository.existsByTokenAndStatus(token,TokenStatus.ACTIVE)) {
+                    // UserDetsils, Password, Role -> 접근권한 인증 Token 생성
                     UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                             new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
@@ -58,23 +60,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response); // 다음 필터로 넘기기
-    }
-
-
-    /**
-     * HTTP 요청 헤더에서 JWT 토큰을 추출합니다.
-     *
-     * @param request 클라이언트 요청 (HttpServletRequest)
-     * @return 추출된 JWT 토큰. 없거나 형식이 올바르지 않은 경우 null 반환.
-     */
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
     }
 }
 

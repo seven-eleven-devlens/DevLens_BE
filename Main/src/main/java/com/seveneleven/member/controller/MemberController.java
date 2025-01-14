@@ -1,12 +1,10 @@
 package com.seveneleven.member.controller;
 
 import com.seveneleven.config.JwtFilter;
-import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.LoginRequest;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.service.MemberService;
 import com.seveneleven.response.APIResponse;
-import com.seveneleven.response.ErrorCode;
 import com.seveneleven.response.SuccessCode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -52,9 +50,10 @@ public class MemberController {
 
     // 로그아웃
     @PostMapping("/logout")
-    public ResponseEntity<APIResponse<SuccessCode>> logout(Authentication authentication) {
-        String username = authentication.getName();
-        // memberService.logout(username);
+    public ResponseEntity<APIResponse<SuccessCode>> logout(@RequestHeader("Authorization") String token) {
+
+         memberService.logout(token);
+
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK));
     }
