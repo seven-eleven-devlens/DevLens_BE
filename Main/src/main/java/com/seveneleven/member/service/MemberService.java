@@ -2,7 +2,10 @@ package com.seveneleven.member.service;
 
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.constant.MemberStatus;
+import com.seveneleven.exception.BusinessException;
+import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.MemberRepository;
+import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.security.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
@@ -25,18 +28,6 @@ public class MemberService {
         return memberRepository.findByLoginId(loginId);
     }
 
-//    public Long join(String userid, String pw) {
-//        Optional<Company> companyOptional = companyRepository.findById(1L);
-//
-//        Company company = companyOptional.orElseThrow(() ->
-//                new IllegalStateException("Company with ID 1L not found")
-//        );
-//
-//        Member member = Member.createMember(userid, pw, company, Role.USER, "박철수", "admin@admin.com", LocalDate.now(),"010-111-1111",1L,1L,passwordEncoder);
-//        repository.save(member);
-//
-//        return member.getId();
-//    }
 
     // 유저,권한 정보를 가져오는 메소드
     @Transactional
@@ -54,5 +45,26 @@ public class MemberService {
     public Long getCompanyIdById(Long memberId) {
         return memberRepository.findCompanyIdByIdAndStatus(memberId, MemberStatus.ACTIVE)
                 .orElseThrow(EntityNotFoundException::new);
+    }
+
+    /**
+     * 함수명 : resetPassword
+     * 회원 비밀번호를 초기화합니다.
+     *
+     * @param request 비밀번호를 재설정할 회원의 정보.
+     * @return 비밀번호 재설정한 회원 LoginId
+     */
+    @Transactional
+    public MemberPatch.Response resetPassword(MemberPatch.Request request) {
+        // 1. 회원 조회
+
+        Member member = memberRepository.findByLoginId(request.getLoginId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        // 2. 비밀번호 암호화 후 저장
+        member.resetPassword(passwordEncoder.encode(request.getPassword()));
+
+        // 3. 생성된 비밀번호 반환
+        return new MemberPatch.Response(request.getLoginId());
     }
 }

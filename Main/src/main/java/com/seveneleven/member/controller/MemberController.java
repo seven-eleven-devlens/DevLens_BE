@@ -5,6 +5,7 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.MemberJoinDto;
+import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.service.MemberService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.ErrorCode;
@@ -16,15 +17,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /*
-* security, jwt 테스트 확인을 위해 임시로 만든 controller
-*
-* */
+ * 로그인 페이지 API Controller
+ *
+ * 핵심 기능 : 로그인, 로그아웃, 이메일 인증, 비밀번호 재설정
+ * */
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
@@ -34,7 +33,7 @@ public class MemberController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final MemberService memberService;
 
-
+    // 로그인
     @PostMapping("/login")
     public ResponseEntity<APIResponse<SuccessCode>> login(MemberJoinDto dto) {
 
@@ -68,7 +67,8 @@ public class MemberController {
         throw new BusinessException(ErrorCode.USER_NOT_FOUND);
     }
 
-    @PostMapping("/join")
+    // 로그아웃
+    @PostMapping("/logout")
     public ResponseEntity<APIResponse<SuccessCode>> join(@RequestBody MemberJoinDto dto) {
         try {
             // memberService.join(dto.getUserid(), dto.getPw());
@@ -79,28 +79,31 @@ public class MemberController {
         }
     }
 
-//    @GetMapping("/my-page")
-//    public ResponseEntity<MemberDto> getMyDetails(Authentication authentication) {
-//        // JWT에서 회원 ID 추출
-//        Long memberId = Long.valueOf(authentication.getName()); // JWT의 sub 클레임
-//
-//        // 회원 상세 정보 조회
-//        MemberDto memberDto = memberService.getMemberDetail(memberId);
-//        return ResponseEntity.ok(memberDto);
-//    }
+
+    // 이메일 인증
+    @PostMapping("/auth/email")
+    public ResponseEntity<APIResponse<SuccessCode>> emailAuth(){
+        return ResponseEntity.status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK));
+    }
 
 
-    // 테스트용 입니다. (삭제 예정)
+    /**
+     * 함수명 : resetPwd
+     * 회원 비밀번호를 재설정합니다.
+     *
+     * @param request 재설정할 회원 정보 Dto(RequestBody).
+     * @return 초기화된 임시 비밀번호를 포함한 응답 객체 (APIResponse<MemberPatch.Response>).
+     *         HTTP 상태 코드는 200 OK로 반환됩니다.
+     */
+    @PatchMapping("/members/{loginId}/reset-password")
+    public ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(@RequestBody MemberPatch.Request request) {
 
-//    @GetMapping("/setting/admin")
-//    @AdminAuthorize
-//    public String adminSettingPage() {
-//        return "admin_setting";
-//    }
-//
-//    @GetMapping("/setting/user")
-//    @UserAuthorize
-//    public String userSettingPage() {
-//        return "user_setting";
-//    }
+        // 비밀번호 초기화
+        MemberPatch.Response response = memberService.resetPassword(request);
+
+        // 응답으로 임시 비밀번호 반환
+        return ResponseEntity.status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, response));
+    }
 }
