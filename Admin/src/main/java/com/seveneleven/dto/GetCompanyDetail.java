@@ -10,44 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GetCompanyDetail {
     @Getter
-    public static class Request {
-        private Long id;
-        private String companyName;
-        private String representativeName;
-        private String representativeContact;
-        private String representativeEmail;
-        private String address;
-        private BusinessType businessType;
-        private String businessRegistrationNumber;
-        private YN representativeImageExists;
-        private YN isActive;
-
-        public Request(
-                Long id,
-                String companyName,
-                String representativeName,
-                String representativeContact,
-                String representativeEmail,
-                String address,
-                BusinessType businessType,
-                String businessRegistrationNumber,
-                YN representativeImageExists,
-                YN activeStatus
-        ) {
-            this.id = id;
-            this.companyName = companyName;
-            this.representativeName = representativeName;
-            this.representativeContact = representativeContact;
-            this.representativeEmail = representativeEmail;
-            this.address = address;
-            this.businessType = businessType;
-            this.businessRegistrationNumber = businessRegistrationNumber;
-            this.representativeImageExists = representativeImageExists;
-            this.isActive = activeStatus;
-        }
-    }
-
-    @Getter
     public static class Response {
         private Long id;
         private String companyName;

@@ -17,16 +17,7 @@ public class PutCompanyResponseConverter implements EntityConverter<PutCompany.R
     public PutCompany.Response toDTO(
             Company company
     ) {
-        return new PutCompany.Response(
-                company.getId(),
-                company.getCompanyName(),
-                company.getRepresentativeName(),
-                company.getRepresentativeContact(),
-                company.getRepresentativeEmail(),
-                company.getAddress(),
-                company.getBusinessType(),
-                company.getBusinessRegistrationNumber(),
-                company.getIsActive());
+        return PutCompany.Response.of(company);
     }
 
     /*

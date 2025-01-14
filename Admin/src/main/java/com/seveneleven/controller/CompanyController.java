@@ -3,7 +3,7 @@ package com.seveneleven.controller;
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.service.CompanyService;
+import com.seveneleven.service.AdminCompanyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/companies")
 public class CompanyController {
-    private final CompanyService companyService;
+    private final AdminCompanyService adminCompanyService;
 
     /*
         함수명 : createCompany
@@ -29,7 +29,7 @@ public class CompanyController {
     ) {
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED, companyService.createCompany(companyRequest)));
+                .body(APIResponse.success(SuccessCode.CREATED, adminCompanyService.createCompany(companyRequest)));
     }
 
     /*
@@ -43,7 +43,7 @@ public class CompanyController {
             @RequestParam(value = "page")
             Integer page
     ) {
-        var company = companyService.getCompanyResponse(id, page);
+        var company = adminCompanyService.getCompanyResponse(id, page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, company));
@@ -60,7 +60,7 @@ public class CompanyController {
     ) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, companyService.getListOfCompanies(page)));
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyService.getListOfCompanies(page)));
     }
 
     /*
@@ -76,7 +76,7 @@ public class CompanyController {
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(APIResponse.success(SuccessCode.OK, companyService.searchCompaniesByName(name,page)));
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyService.searchCompaniesByName(name,page)));
     }
 
     /*
@@ -92,7 +92,7 @@ public class CompanyController {
     ) {
         return ResponseEntity
                 .status(SuccessCode.UPDATED.getStatus())
-                .body(APIResponse.success(SuccessCode.UPDATED, companyService.updateCompany(id, request)));
+                .body(APIResponse.success(SuccessCode.UPDATED, adminCompanyService.updateCompany(id, request)));
     }
 
     /*
@@ -104,7 +104,7 @@ public class CompanyController {
             @PathVariable
             Long id
     ) {
-        companyService.deleteCompany(id);
+        adminCompanyService.deleteCompany(id);
         return ResponseEntity
                 .status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));

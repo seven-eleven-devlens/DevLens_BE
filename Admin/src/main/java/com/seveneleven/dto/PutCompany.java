@@ -1,5 +1,6 @@
 package com.seveneleven.dto;
 
+import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.BusinessType;
 import com.seveneleven.entity.member.constant.YN;
 import lombok.AccessLevel;
@@ -19,7 +20,7 @@ public class PutCompany {
         private BusinessType businessType;
         private String businessRegistrationNumber;
 
-        public Request(
+        private Request(
                 String companyName,
                 String representativeName,
                 String representativeContact,
@@ -50,7 +51,7 @@ public class PutCompany {
         private String businessRegistrationNumber;
         private YN isActive;
 
-        public Response(
+        private Response(
                 Long id,
                 String companyName,
                 String representativeName,
@@ -70,6 +71,20 @@ public class PutCompany {
             this.businessType = businessType;
             this.businessRegistrationNumber = businessRegistrationNumber;
             this.isActive = activeStatus;
+        }
+
+        public static Response of(Company company) {
+            return new Response(
+                    company.getId(),
+                    company.getCompanyName(),
+                    company.getRepresentativeName(),
+                    company.getRepresentativeContact(),
+                    company.getRepresentativeEmail(),
+                    company.getAddress(),
+                    company.getBusinessType(),
+                    company.getBusinessRegistrationNumber(),
+                    company.getIsActive()
+            );
         }
     }
 }
