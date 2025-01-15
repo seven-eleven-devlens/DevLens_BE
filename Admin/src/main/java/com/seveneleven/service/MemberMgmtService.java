@@ -21,7 +21,7 @@ public interface MemberMgmtService {
     List<MemberDto.Response> createMembers(List<MemberDto.Request> memberDtos);
 
 
-    MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto) throws InterruptedException;
+    MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto);
 
     void deleteMember(String loginId);
 

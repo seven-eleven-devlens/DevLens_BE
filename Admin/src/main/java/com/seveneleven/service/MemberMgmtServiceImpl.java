@@ -166,7 +166,7 @@ public class MemberMgmtServiceImpl implements MemberMgmtService {
      * @return 수정된 회원의 응답 DTO.
      */
     @Transactional
-    public MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto) throws InterruptedException {
+    public MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto){
 
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));

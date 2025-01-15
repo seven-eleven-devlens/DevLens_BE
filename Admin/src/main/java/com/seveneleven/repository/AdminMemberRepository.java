@@ -15,5 +15,5 @@ public interface AdminMemberRepository extends JpaRepository<Member, Long>, JpaS
 
     Optional<Member> findByLoginId(String loginId);
 
-    Page<Member> findALl(Pageable pageable);
+    Page<Member> findAll(Pageable pageable);
 }
