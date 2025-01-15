@@ -10,6 +10,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import java.time.LocalDate;
 
@@ -21,8 +23,8 @@ public class Post extends BaseEntity {
 
     /*
         id : 게시물 ID (문서번호)
-        projectStepId : 프로젝트 단계 ID
-        parentPostId : 부모 게시물 ID
+        projectStep : 프로젝트 단계 ID
+        parentPost : 부모 게시물 ID
         ref : 게시글 그룹 구분
         refOrder : 게시글 그룹 순서
         childPostNum : 자식 게시물 개수
@@ -43,11 +45,12 @@ public class Post extends BaseEntity {
 
     @JoinColumn(name = "project_step_id", nullable = false, referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ProjectStep projectStepId;
+    private ProjectStep projectStep;
 
     @JoinColumn(name = "parent_post_id", nullable = true, referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Post parentPostId;
+    @NotFound(action = NotFoundAction.IGNORE)
+    private Post parentPost;
 
     @Column(name = "ref")
     private Long ref;
@@ -85,8 +88,8 @@ public class Post extends BaseEntity {
 
     // 게시글 생성
     public static Post createPost(
-            ProjectStep projectStepId,
-            Post parentPostId,
+            ProjectStep projectStep,
+            Post parentPost,
             Long ref,
             Integer refOrder,
             Integer childPostNum,
@@ -100,8 +103,8 @@ public class Post extends BaseEntity {
             String modifierIp
     ) {
         Post post = new Post();
-        post.projectStepId = projectStepId;
-        post.parentPostId = parentPostId;
+        post.projectStep = projectStep;
+        post.parentPost = parentPost;
         post.ref = ref;
         post.refOrder = refOrder;
         post.childPostNum = childPostNum;

@@ -1,26 +1,34 @@
 package com.seveneleven.board.service;
 
+import com.seveneleven.board.dto.*;
 import com.seveneleven.entity.board.constant.PostAction;
-import com.seveneleven.board.dto.PostCreateRequest;
-import com.seveneleven.board.dto.PostResponse;
-import com.seveneleven.board.dto.PostUpdateRequest;
 import com.seveneleven.board.repository.PostHistoryRepository;
 import com.seveneleven.board.repository.PostRepository;
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.PostHistory;
+import com.seveneleven.entity.board.constant.PostFilter;
+import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.project.repository.ProjectStepRepository;
+import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.seveneleven.response.ErrorCode.*;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostService {
 
@@ -29,10 +37,37 @@ public class PostService {
     private final ProjectStepRepository projectStepRepository;
     private final MemberRepository memberRepository;
 
-    /*
-        함수명 : selectPost
-        함수 목적 : 게시글 조회
-        param : 게시물 ID
+    /**
+     * 함수명 : selectList()
+     * 함수 목적 : 게시글 목록을 조회하는 메서드
+     * param : 프로젝트 단계 ID, 현재 페이지 수, 입력 키워드, 필터
+     */
+    @Transactional(readOnly = true)
+    public PageResponse<PostListResponse> selectList(Long projectStepId, Integer page, String keyword, PostFilter filter) {
+        Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Order.desc("ref"), Sort.Order.asc("refOrder")));
+
+        // todo : 필터 검색 기능 추가 예정
+        Page<Post> repoPostList = postRepository.findAllByProjectStepId(projectStepId, pageable);
+
+        List<PostListResponse> result = repoPostList.getContent().stream().map((post) -> {
+            log.info("in service : postId : {}", post.getId());
+            Member member = memberRepository.findById(post.getCreatedBy()).orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+            return PostListResponse.toDto(post, member.getName()); // PostListResponse
+        }).toList(); // stream() -> list
+
+        return new PageResponse<>(
+                page,
+                10,
+                repoPostList.getTotalElements(),
+                repoPostList.getTotalPages(),
+                result
+        );
+    }
+
+    /**
+     * 함수명 : selectPost()
+     * 함수 목적 : 게시글 상세를 조회하는 메서드
+     * param : 게시물 ID
      */
     @Transactional(readOnly = true)
     public PostResponse selectPost(Long postId) throws Exception {
@@ -42,13 +77,13 @@ public class PostService {
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_WRITER));
 
         Long parentPostId = null;
-        if (post.getParentPostId() != null) {
-            parentPostId = post.getParentPostId().getId();
+        if (post.getParentPost() != null) {
+            parentPostId = post.getParentPost().getId();
         }
 
         return new PostResponse(
                 post.getId(),
-                post.getProjectStepId().getId(),
+                post.getProjectStep().getId(),
                 parentPostId,           // 부모게시물이 없는 경우 null 반환
                 post.getIsPinnedPost(),
                 post.getPriority(),
@@ -62,11 +97,9 @@ public class PostService {
         );
     }
 
-    /*
-        함수명 : createPost
-        함수 목적 : 게시글 생성
-        원글 생성 : REF = REF의 최대값 + 1  / REF_ORDER = 0                      / CHILD_POST_NUM = 0
-        답글 생성 : REF = 원글의 REF와 동일  / REF_ORDER = 그룹의 ORDER 최대값 + 1   / CHILD_POST_NUM = 답글은 0, 원글은 기존값에 + 1
+    /**
+     * 함수명 : createPost()
+     * 함수 목적 : 게시글을 생성하는 메서드
      */
     @Transactional
     public void createPost(PostCreateRequest postCreateRequest) throws Exception {
@@ -95,9 +128,9 @@ public class PostService {
         }
     }
 
-    /*
-        함수명 : updatePost
-        함수 목적 : 게시글 수정
+    /**
+     * 함수명 : updatePost()
+     * 함수 목적 : 게시글을 수정하는 메서드
      */
     @Transactional
     public void updatePost(PostUpdateRequest postUpdateRequest) throws Exception {
@@ -121,12 +154,10 @@ public class PostService {
         // todo: 파일, 링크 저장 로직 추가 예정
     }
 
-    /*
-        함수명 : deletePost
-        함수 목적 : 게시글 삭제 메서드
-        param : postId, registeredId
-        원글 삭제 : 답글이 없는 경우에만 삭제 가능
-        답글 삭제 : 원글의 child_post_num 값을 -1 하고, 테이블에서 데이터 삭제
+    /**
+     * 함수명 : updatePost()
+     * 함수 목적 : 게시글을 삭제하는 메서드
+     * param : 게시글 ID, 등록자 ID
      */
     @Transactional
     public void deletePost(Long postId, Long registeredId) throws Exception {
@@ -150,8 +181,8 @@ public class PostService {
 
     // 부모게시물 여부 확인 메서드 (Post ParentPost)
     private Post getParentPost(Post post) throws Exception {
-        if(post.getParentPostId() != null) {
-            return postRepository.findById(post.getParentPostId().getId())
+        if(post.getParentPost() != null) {
+            return postRepository.findById(post.getParentPost().getId())
                     .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
         }
         return null;
@@ -209,7 +240,7 @@ public class PostService {
 
         // 원글의 parentPost 와 parentProjectStepId
         Post parentPost = postRepository.findById(parentPostId).get();
-        Long parentProjectStepId = parentPost.getProjectStepId().getId();
+        Long parentProjectStepId = parentPost.getProjectStep().getId();
 
         return Objects.equals(childProjectStepId, parentProjectStepId);
     }
@@ -226,6 +257,9 @@ public class PostService {
 
     // (답글) 동일 그룹의 REF_ORDER 최대값 반환 메서드
     private Integer getRefOrder(Long parentPostId) throws Exception {
+        if(postRepository.findById(parentPostId).orElseThrow(() -> new BusinessException(NOT_FOUND_POST)).getChildPostNum().equals(0)) {
+            return 0;
+        }
         return postRepository.findMaxRefOrderByParentPostId(parentPostId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
     }

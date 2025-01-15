@@ -1,8 +1,7 @@
 package com.seveneleven.board.controller;
 
-import com.seveneleven.board.dto.PostCreateRequest;
-import com.seveneleven.board.dto.PostResponse;
-import com.seveneleven.board.dto.PostUpdateRequest;
+import com.seveneleven.board.dto.*;
+import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,8 +16,56 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Tag(name = "게시글 API", description = "게시글 관련 API")
+@Tag(name = "Post API", description = "게시글 관련 API")
 public interface BoardDocs {
+    // 목록 조회
+    @Operation(
+            summary = "게시글 목록 조회",
+            description = "게시글 목록을 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "게시글 목록 조회 성공",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = PostListResponse.class)
+                            )
+                    )
+            },
+            parameters = {
+                    @Parameter(
+                            name = "projectStepId",
+                            description = "프로젝트 단계 ID",
+                            required = true,
+                            example = "1"
+                    ),
+                    @Parameter(
+                            name = "page",
+                            description = "현재 위치한 페이지 (0부터 시작)",
+                            required = true,
+                            example = "0"
+                    ),
+                    @Parameter(
+                            name = "keyword",
+                            description = "검색 키워드",
+                            required = false,
+                            example = "디자인 시안"
+                    ),
+                    @Parameter(
+                            name = "filter",
+                            description = "필터 조건 (TITLE, CONTENT, WRITER)",
+                            required = false,
+                            example = "TITLE"
+                    )
+            }
+    )
+    @GetMapping("/steps/{projectStepId}")
+    public ResponseEntity<APIResponse<PageResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
+                                                                                   @RequestParam(defaultValue = "0") Integer page,
+                                                                                   @RequestParam(required = false) String keyword,
+                                                                                   @RequestParam(required = false) PostFilter filter
+    ) throws Exception;
+
     // 조회
     @Operation(
             summary = "게시글 상세 조회",

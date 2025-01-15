@@ -82,8 +82,8 @@ public class PostHistory extends BaseEntity {
     // 게시글 이력 생성
     public static PostHistory createPostHistory(Post post, PostAction action) {
         PostHistory postHistory = new PostHistory();
-        postHistory.projectStepId = post.getProjectStepId().getId();
-        postHistory.parentPostId = (post.getParentPostId() != null ? post.getParentPostId().getId() : null);
+        postHistory.projectStepId = post.getProjectStep().getId();
+        postHistory.parentPostId = (post.getParentPost() != null ? post.getParentPost().getId() : null);
         postHistory.postId = post.getId();
         postHistory.isPinnedPost = post.getIsPinnedPost();
         postHistory.priority = post.getPriority();
