@@ -12,6 +12,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 /*
  * 로그인 페이지 API Controller
  *
@@ -73,6 +75,25 @@ public class MemberController implements MemberDocs{
                 .body(APIResponse.success(SuccessCode.OK));
     }
 
+    @PostMapping("/sendMail")
+    public String SendMail(String email) throws Exception {
+        UUID uuid = UUID.randomUUID(); // 랜덤한 UUID 생성
+        String key = uuid.toString().substring(0, 7); // UUID 문자열 중 7자리만 사용하여 인증번호 생성
+        String sub ="[DevLens] 이메일 인증키 발급";
+        String con = "인증 번호 : "+key;
+//        mailManager.send(email,sub,con);
+//        key = SHA256Util.getEncrypt(key, email);
+        return key;
+    }
+    @PostMapping("/checkMail")
+    public boolean CheckMail(String key, String insertKey,String email) throws Exception {
+//        insertKey = SHA256Util.getEncrypt(insertKey, email);
+//
+//        if(key.equals(insertKey)) {
+//            return true;
+//        }
+        return false;
+    }
 
     /**
      * 함수명 : resetPwd

@@ -69,7 +69,7 @@ public class MemberServiceImpl implements MemberService{
 
         Long companyId      = member.getCompany().getId();
         String companyName  = companyRepository.findNameByIdAndIsActive(companyId, YN.Y);
-        CompanyResponse company = new CompanyResponse(companyId, companyName, "", "");
+        CompanyResponse company = new CompanyResponse(companyId, companyName, member.getDepartment(), member.getPosition());
 
         return new LoginPost.Response(token, company);
     }
