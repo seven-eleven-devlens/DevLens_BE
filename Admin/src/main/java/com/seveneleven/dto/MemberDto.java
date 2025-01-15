@@ -38,9 +38,7 @@ public class MemberDto {
         private MemberStatus status;
         private String phoneNumber;
         private LocalDate birthDate;
-        private Long departmentId;
         private String department;
-        private Long positionId;
         private String position;
     }
 
@@ -55,8 +53,8 @@ public class MemberDto {
         private Role role;
         private String phoneNumber;
         private LocalDate birthDate;
-        private Long departmentId;
-        private Long positionId;
+        private String department;
+        private String position;
     }
 
 

@@ -22,8 +22,8 @@ public class PatchMember {
         private String email;
         private String phoneNumber;
         private Long companyId;
-        private Long departmentId;
-        private Long positionId;
+        private String department;
+        private String position;
     }
 
     @Getter
@@ -35,9 +35,7 @@ public class PatchMember {
         private String phoneNumber;
         private Long companyId;
         private String company;
-        private Long departmentId;
         private String department;
-        private Long positionId;
         private String position;
     }
 }

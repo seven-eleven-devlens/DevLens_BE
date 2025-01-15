@@ -12,8 +12,6 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.MemberValidator;
 import com.seveneleven.repository.AdminMemberRepository;
 import com.seveneleven.repository.CompanyRepository;
-import com.seveneleven.repository.DepartmentRepository;
-import com.seveneleven.repository.PositionRepository;
 import com.seveneleven.response.ErrorCode;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -37,8 +35,6 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
 
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
-    private final DepartmentRepository departmentRepository;
-    private final PositionRepository positionRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -65,8 +61,8 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
 
         Page<Member> members = memberRepository.findAll(spec, pageable);
 
-        // 엔티티 -> DTO 변환
-        return memberRepository.findAll(spec, pageable).map(this::toResponseDto);
+        // 3. 엔티티 -> DTO 변환
+        return members.map(MemberDto::fromEntity);
 
     }
 
@@ -83,7 +79,7 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        return toResponseDto(member);
+        return MemberDto.fromEntity(memberRepository.save(member));
     }
 
     /**
@@ -112,12 +108,12 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
                 memberDto.getEmail(),
                 memberDto.getBirthDate(),
                 memberDto.getPhoneNumber(),
-                memberDto.getDepartmentId(),
-                memberDto.getPositionId()
+                memberDto.getDepartment(),
+                memberDto.getPosition()
         );
 
         // 4. 저장 후 DTO로 변환
-        return toResponseDto(memberRepository.save(member));
+        return MemberDto.fromEntity(memberRepository.save(member));
     }
 
     /**
@@ -148,15 +144,15 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
                     memberDto.getEmail(),
                     memberDto.getBirthDate(),
                     memberDto.getPhoneNumber(),
-                    memberDto.getDepartmentId(),
-                    memberDto.getPositionId()
+                    memberDto.getDepartment(),
+                    memberDto.getPosition()
             );
         }).toList();
 
+        // 2. 저장된 Member 엔티티를 MemberDto.Response로 변환
         return memberRepository.saveAll(members).stream()
-                .map(this::toResponseDto)
+                .map(MemberDto::fromEntity) // Member -> MemberDto.Response 변환
                 .toList();
-
     }
 
     /**
@@ -177,10 +173,9 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
         member.updateMember(memberDto.getName(), member.getEmail(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
-                memberDto.getDepartmentId(), memberDto.getPositionId());
+                memberDto.getDepartment(), memberDto.getPosition());
 
-
-        return toResponseDto(memberRepository.save(member));
+        return MemberDto.fromEntity(memberRepository.save(member));
     }
 
     /**
@@ -234,23 +229,6 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
     }
 
 
-    /*
-    * 함수명 : toResponseDto
-    * Member -> Response DTO 변환
-    *
-    * */
-    private MemberDto.Response toResponseDto(Member member) {
-
-        MemberDto.Response response = MemberDto.fromEntity(member);
-                           response.setDepartmentId(member.getDepartmentId());
-                           response.setDepartment(getDepartmentNameById(member.getDepartmentId()));
-                           response.setPositionId(member.getPositionId());
-                           response.setPosition(getPositionNameById(member.getPositionId()));
-
-        return response;
-    }
-
-
     /**
      * 함수명 : generateTemporaryPassword
      * 대문자, 소문자, 숫자, 특수문자를 포함한 12자리 임시 비밀번호를 생성합니다.
@@ -261,27 +239,5 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
         return RandomStringUtils.randomAlphanumeric(12);
     }
 
-    /**
-     * 함수명 : getDepartmentNameById
-     * 부서 ID null 체크 후 부서 이름 반환
-     *
-     */
-    private String getDepartmentNameById(Long departmentId) {
-        if (departmentId == null) {
-            return null;
-        }
-        return departmentRepository.findNameById(departmentId).orElse(null);
-    }
 
-    /**
-     * 함수명 : getPositionNameById
-     * 직책 ID null 체크 후 직책 이름 반환
-     *
-     */
-    private String getPositionNameById(Long positionId) {
-        if (positionId == null) {
-            return null;
-        }
-        return positionRepository.findNameById(positionId).orElse(null);
-    }
 }
