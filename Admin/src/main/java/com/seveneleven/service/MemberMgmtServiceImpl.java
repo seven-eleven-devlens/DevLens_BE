@@ -166,7 +166,7 @@ public class MemberMgmtServiceImpl implements MemberMgmtService {
      * @return 수정된 회원의 응답 DTO.
      */
     @Transactional
-    public MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto) {
+    public MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto) throws InterruptedException {
 
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -177,9 +177,7 @@ public class MemberMgmtServiceImpl implements MemberMgmtService {
         member.updateMember(memberDto.getName(), member.getEmail(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
                 memberDto.getDepartment(), memberDto.getPosition());
 
-        Member updatedMember = memberRepository.save(member);
-
-        return MemberDto.fromEntity(updatedMember);
+        return MemberDto.fromEntity(member);
     }
 
     /**
