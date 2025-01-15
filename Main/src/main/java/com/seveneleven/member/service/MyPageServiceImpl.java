@@ -98,7 +98,6 @@ public class MyPageServiceImpl implements MyPageService{
                 throw new BusinessException(ErrorCode.MEMBER_SUSPENDED);
             case WITHDRAW:
                 throw new BusinessException(ErrorCode.MEMBER_WITHDRAW);
-            case ACTIVE:
             default:
                 break;
         }

@@ -28,7 +28,6 @@ public class PatchMember {
 
     @Getter
     @Setter
-    @RequiredArgsConstructor
     public static class Response{
         private String name;
         private String email;
