@@ -23,6 +23,8 @@ public enum ErrorCode {
     INVALID_PASSWORD_LENGTH(1011, HttpStatus.BAD_REQUEST,"비밀번호는 8자 이상, 20자 이하로 입력해야 합니다."),
     INVALID_PASSWORD_FORMAT(1012, HttpStatus.BAD_REQUEST,"비밀번호는 숫자와 특수문자를 포함해야 합니다."),
     INCORRECT_PASSWORD(1013, HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다."),
+    UNABLE_TO_SEND_EMAIL(1014, HttpStatus.BAD_REQUEST, "이메일 전송을 실패했습니다."),
+    EMAIL_AUTH_FAILED(1015, HttpStatus.BAD_REQUEST, "이메일 인증을 실패했습니다."),
 
     COMPANY_DUPLICATED_NUMBER(1051, HttpStatus.BAD_REQUEST,"이미 등록된 회사입니다."),
     COMPANY_IS_DEACTIVATED(1052, HttpStatus.BAD_REQUEST,"비활성화된 회사 정보입니다."),

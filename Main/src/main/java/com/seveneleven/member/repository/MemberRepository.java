@@ -25,4 +25,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecif
 
     Optional<Member> findByIdAndStatus(Long memberId, MemberStatus statusCode);
 
+    Optional<Member> findByEmailAndStatus(String email, MemberStatus statusCode);
+
 }

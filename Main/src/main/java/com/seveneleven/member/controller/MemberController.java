@@ -1,9 +1,11 @@
 package com.seveneleven.member.controller;
 
 import com.seveneleven.config.JwtFilter;
+import com.seveneleven.member.dto.CheckMailPostRequest;
 import com.seveneleven.member.dto.CompanyResponse;
 import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
+import com.seveneleven.member.service.MailService;
 import com.seveneleven.member.service.MemberService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
@@ -12,7 +14,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 
 /*
  * 로그인 페이지 API Controller
@@ -25,6 +26,7 @@ import java.util.UUID;
 public class MemberController implements MemberDocs{
 
     private final MemberService memberService;
+    private final MailService mailService;
 
     /**
      * 함수명 : login
@@ -68,31 +70,37 @@ public class MemberController implements MemberDocs{
     }
 
 
-    // 이메일 인증
-    @PostMapping("/auth/email")
-    public ResponseEntity<APIResponse<SuccessCode>> emailAuth(){
+    /**
+     * 함수명 : SendMail
+     * 이메일 전송 메서드. 주어진 이메일 주소로 인증 메일을 발송하며, 생성된 인증 키를 반환합니다.
+     *
+     * @param email 인증 메일을 보낼 이메일 주소
+     * @return 인증 키를 포함한 성공 응답
+     */
+    @PostMapping("/sendMail")
+    public ResponseEntity<APIResponse<String>> SendMail(@RequestParam String email) throws Exception {
+
+        // 이메일 전송 및 인증 키 생성
+        String key = mailService.sendEmail(email);
+
         return ResponseEntity.status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK));
+                .body(APIResponse.success(SuccessCode.OK, key));
     }
 
-    @PostMapping("/sendMail")
-    public String SendMail(String email) throws Exception {
-        UUID uuid = UUID.randomUUID(); // 랜덤한 UUID 생성
-        String key = uuid.toString().substring(0, 7); // UUID 문자열 중 7자리만 사용하여 인증번호 생성
-        String sub ="[DevLens] 이메일 인증키 발급";
-        String con = "인증 번호 : "+key;
-//        mailManager.send(email,sub,con);
-//        key = SHA256Util.getEncrypt(key, email);
-        return key;
-    }
+    /**
+     * 함수명 : CheckMail
+     * 이메일 인증 확인 메서드. 사용자가 입력한 인증 키를 검증하여 성공 여부를 반환합니다.
+     *
+     * @param request 인증 키 확인 요청 정보를 담은 객체
+     * @return 인증 성공 여부를 포함한 성공 응답
+     */
     @PostMapping("/checkMail")
-    public boolean CheckMail(String key, String insertKey,String email) throws Exception {
-//        insertKey = SHA256Util.getEncrypt(insertKey, email);
-//
-//        if(key.equals(insertKey)) {
-//            return true;
-//        }
-        return false;
+    public ResponseEntity<APIResponse<Boolean>> CheckMail(@RequestBody CheckMailPostRequest request) throws Exception {
+
+        Boolean checkSuccess = mailService.checkMail(request);
+
+        return ResponseEntity.status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, checkSuccess));
     }
 
     /**
