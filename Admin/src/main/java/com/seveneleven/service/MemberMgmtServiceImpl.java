@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class MemberMgmtServiceImpl implements MeberMgmtService{
+public class MemberMgmtServiceImpl implements MemberMgmtService {
 
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
@@ -104,8 +104,8 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
                 memberDto.getEmail(),
                 memberDto.getBirthDate(),
                 memberDto.getPhoneNumber(),
-                memberDto.getDepartmentId(),
-                memberDto.getPositionId()
+                memberDto.getDepartment(),
+                memberDto.getPosition()
         );
 
         // 4. 저장
@@ -143,8 +143,8 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
                     memberDto.getEmail(),
                     memberDto.getBirthDate(),
                     memberDto.getPhoneNumber(),
-                    memberDto.getDepartmentId(),
-                    memberDto.getPositionId()
+                    memberDto.getDepartment(),
+                    memberDto.getPosition()
             );
         }).toList();
 
@@ -175,7 +175,7 @@ public class MemberMgmtServiceImpl implements MeberMgmtService{
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
         member.updateMember(memberDto.getName(), member.getEmail(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
-                memberDto.getDepartmentId(), memberDto.getPositionId());
+                memberDto.getDepartment(), memberDto.getPosition());
 
         Member updatedMember = memberRepository.save(member);
 

@@ -8,16 +8,11 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.MyPageGetMember;
 import com.seveneleven.member.dto.PatchMember;
 import com.seveneleven.member.repository.CompanyRepository;
-import com.seveneleven.member.repository.DepartmentRepository;
 import com.seveneleven.member.repository.MemberRepository;
-import com.seveneleven.member.repository.PositionRepository;
 import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Objects;
-
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +20,6 @@ public class MyPageServiceImpl implements MyPageService{
 
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
-    private final DepartmentRepository departmentRepository;
-    private final PositionRepository positionRepository;
 
     /**
      * 함수명 : getMember
@@ -38,32 +31,17 @@ public class MyPageServiceImpl implements MyPageService{
      */
     @Transactional(readOnly = true)
     public MyPageGetMember getMember(String loginId) {
-        String department = "";
-        String position   = "";
 
         // 회원 조회
         Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        // 회원이 비활성 상태인지 확인
-        if (member.getStatus() != MemberStatus.ACTIVE) {
-            throw new BusinessException(ErrorCode.MEMBER_INACTIVE);
-        }
-
-        if(Objects.nonNull(member.getDepartmentId())) {
-            department = departmentRepository.findDepartmentNameByIdAndIsActive(member.getDepartmentId());
-        }
-
-        if(Objects.nonNull(member.getPositionId())) {
-            position = positionRepository.findPositionNameByIdAndIsActive(member.getPositionId());
-        }
-
         // 응답 DTO 생성 및 회사 정보 설정
         MyPageGetMember response = MyPageGetMember.fromEntity(member);
                         response.setCompanyId(member.getCompany().getId());
                         response.setCompanyStatus(member.getCompany().getIsActive());
-                        response.setDepartment(department);
-                        response.setPosition(position);
+                        response.setDepartment(member.getDepartment());
+                        response.setPosition(member.getPosition());
 
         return response;
     }
@@ -79,8 +57,6 @@ public class MyPageServiceImpl implements MyPageService{
      */
     @Transactional
     public PatchMember.Response updateMember(String loginId, PatchMember.Request memberDto) {
-        String department = "";
-        String position   = "";
 
         // 회원 조회
         Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
@@ -90,25 +66,15 @@ public class MyPageServiceImpl implements MyPageService{
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
         member.updateMember(member.getName(), memberDto.getEmail(), memberDto.getPhoneNumber(), member.getRole(), company,
-                memberDto.getDepartmentId(), memberDto.getPositionId());
+                memberDto.getDepartment(), memberDto.getPosition());
 
         Member updatedMember = memberRepository.save(member);
-
-        // 부서 조회
-        if(Objects.nonNull(member.getDepartmentId())) {
-            department = departmentRepository.findDepartmentNameByIdAndIsActive(member.getDepartmentId());
-        }
-
-        // 직책 조회
-        if(Objects.nonNull(member.getPositionId())) {
-            position = positionRepository.findPositionNameByIdAndIsActive(member.getPositionId());
-        }
 
         // 응답 DTO 생성 및 회사 정보 설정
         PatchMember.Response response = PatchMember.fromEntity(updatedMember);
                              response.setCompanyId(company.getId());
-                             response.setDepartment(department);
-                             response.setPosition(position);
+                             response.setDepartment(memberDto.getDepartment());
+                             response.setPosition(memberDto.getPosition());
         return response;
     }
 
