@@ -6,6 +6,7 @@ import com.seveneleven.entity.member.Token;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
+import com.seveneleven.member.dto.CompanyResponse;
 import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.CompanyRepository;
@@ -47,11 +48,11 @@ public class MemberServiceImpl implements MemberService{
         Member member = memberRepository.findByLoginId(request.getLoginId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        if(!passwordEncoder.matches(request.getPwd(), member.getPassword())) {
+        if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
         }
 
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getLoginId(), request.getPwd());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(request.getLoginId(), request.getPassword());
 
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
         Authentication authentication = authenticationMngrBuilder.getObject().authenticate(authenticationToken);
@@ -66,10 +67,11 @@ public class MemberServiceImpl implements MemberService{
         Token newToken = Token.create(token, expiresAt);
         tokenRepository.save(newToken);
 
-        Long companyId = member.getCompany().getId();
-        String companyName = companyRepository.findNameByIdAndIsActive(companyId, YN.Y);
+        Long companyId      = member.getCompany().getId();
+        String companyName  = companyRepository.findNameByIdAndIsActive(companyId, YN.Y);
+        CompanyResponse company = new CompanyResponse(companyId, companyName, "", "");
 
-         return new LoginPost.Response(token, companyId, companyName, "", "");
+        return new LoginPost.Response(token, company);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.seveneleven.member.controller;
 
 import com.seveneleven.config.JwtFilter;
+import com.seveneleven.member.dto.CompanyResponse;
 import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.service.MemberService;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @AllArgsConstructor
-public class MemberController {
+public class MemberController implements MemberDocs{
 
     private final MemberService memberService;
 
@@ -32,7 +33,7 @@ public class MemberController {
      *         Authorization 헤더에 Bearer 토큰 형식으로 JWT 토큰을 추가하여 반환합니다.
      */
     @PostMapping("/login")
-    public ResponseEntity<APIResponse<LoginPost.Response>> login(@RequestBody LoginPost.Request request) {
+    public ResponseEntity<APIResponse<CompanyResponse>> login(@RequestBody LoginPost.Request request) {
 
         // 로그인 처리 및 JWT 토큰 발급
         LoginPost.Response response = memberService.login(request);
@@ -44,7 +45,7 @@ public class MemberController {
         // 성공 응답 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .headers(httpHeaders)
-                .body(APIResponse.success(SuccessCode.OK, response));
+                .body(APIResponse.success(SuccessCode.OK, response.getCompanyInfo()));
     }
 
     /**
