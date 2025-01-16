@@ -41,7 +41,7 @@ public class Token {
         return newToken;
     }
 
-    public void setStatus() {
+    public void setBlackList() {
         this.status = TokenStatus.BLACKLISTED;
     }
 }

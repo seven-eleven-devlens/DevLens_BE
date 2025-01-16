@@ -94,7 +94,7 @@ public class MemberServiceImpl implements MemberService{
                 .orElseThrow(() -> new BusinessException(ErrorCode.EXPIRED_TOKEN));
 
         // 상태를 BLACKLISTED로 변경
-        existingToken.setStatus();
+        existingToken.setBlackList();
         tokenRepository.save(existingToken);
     }
 
