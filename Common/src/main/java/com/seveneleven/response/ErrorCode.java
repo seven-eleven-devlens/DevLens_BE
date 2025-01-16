@@ -25,6 +25,7 @@ public enum ErrorCode {
     INCORRECT_PASSWORD(1013, HttpStatus.BAD_REQUEST,"비밀번호가 일치하지 않습니다."),
     UNABLE_TO_SEND_EMAIL(1014, HttpStatus.BAD_REQUEST, "이메일 전송을 실패했습니다."),
     EMAIL_AUTH_FAILED(1015, HttpStatus.BAD_REQUEST, "이메일 인증을 실패했습니다."),
+    PROFILE_IMAGE_ALREADY_EXIST(1016, HttpStatus.BAD_REQUEST, "프로필 이미지가 존재합니다."),
 
     COMPANY_DUPLICATED_NUMBER(1051, HttpStatus.BAD_REQUEST,"이미 등록된 회사입니다."),
     COMPANY_IS_DEACTIVATED(1052, HttpStatus.BAD_REQUEST,"비활성화된 회사 정보입니다."),
