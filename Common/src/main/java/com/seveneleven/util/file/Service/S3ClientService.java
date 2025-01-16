@@ -76,20 +76,20 @@ public class S3ClientService {
         amazonS3.deleteObject(bucket, s3Key);
     }
 
-    /**
-     * S3 파일 다운로드 (바이트 배열로 반환)
-     */
-    public byte[] downloadFile(String s3Key) {
-        try (S3Object s3Object = amazonS3.getObject(bucket, s3Key);
-             S3ObjectInputStream inputStream = (s3Object != null ? s3Object.getObjectContent() : null)) {
-
-            if (s3Object == null || inputStream == null) {
-                throw new RuntimeException("S3 OBJECT IS NULL : " + s3Key);
-            }
-
-            return inputStream.readAllBytes();
-        } catch (IOException e) {
-            throw new RuntimeException("FAILED TO DOWNLOAD FILE FROM S3", e);
-        }
-    }
+//    /**
+//     * S3 파일 다운로드 (바이트 배열로 반환)
+//     */
+//    public byte[] downloadFile(String s3Key) {
+//        try (S3Object s3Object = amazonS3.getObject(bucket, s3Key);
+//             S3ObjectInputStream inputStream = (s3Object != null ? s3Object.getObjectContent() : null)) {
+//
+//            if (s3Object == null || inputStream == null) {
+//                throw new RuntimeException("S3 OBJECT IS NULL : " + s3Key);
+//            }
+//
+//            return inputStream.readAllBytes();
+//        } catch (IOException e) {
+//            throw new RuntimeException("FAILED TO DOWNLOAD FILE FROM S3", e);
+//        }
+//    }
 }

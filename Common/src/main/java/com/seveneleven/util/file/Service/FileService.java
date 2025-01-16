@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,18 +34,18 @@ public class FileService {
      * @return FileMetadataDto 업로드한 파일 메타데이터
      */
     @Transactional
-    public APIResponse uploadFile(MultipartFile file, String fileCategory, Long referenceId) throws Exception {
+    public FileMetadata uploadFile(MultipartFile file, FileCategory fileCategory, Long referenceId) throws RuntimeException {
         //1. 파일 검증
         FileValidator.validateFile(file, fileCategory);
 
         //2. 고유 파일 이름(UUID) 및 S3 키 생성
         //파일명이 없거나 비어있으면 Unknown-File로 설정
-        String originalFilename = (file.getOriginalFilename() != null && !file.getOriginalFilename().isBlank())
-                ? file.getOriginalFilename() : "Unknown-File";
+        String originalFilename = StringUtils.isEmpty(file.getOriginalFilename()) ? file.getOriginalFilename() : file.getOriginalFilename();
+
         //UUID 생성
         String uniqueFileName = s3ClientService.generateUniqueFileName(originalFilename);
         //S3 키 생성
-        String s3Key = s3ClientService.generateS3Key(fileCategory, referenceId, uniqueFileName);
+        String s3Key = s3ClientService.generateS3Key(fileCategory.name(), referenceId, uniqueFileName);
 
         //3. S3 업로드 및 FileMetadata 데이터 생성
         String filePath = null;
@@ -52,11 +53,8 @@ public class FileService {
             //S3 업로드
             filePath = s3ClientService.uploadFile(file, s3Key);
 
-            //업로드한 파일의 category Enum 가져오기
-            FileCategory categoryEnum = FileCategory.valueOf(fileCategory);
-
             //entity 생성자 호출
-            FileMetadata fileMetadata = FileMetadata.registerFile(categoryEnum, referenceId,
+            FileMetadata fileMetadata = FileMetadata.registerFile(fileCategory, referenceId,
                     file.getOriginalFilename(), uniqueFileName, file.getContentType(),
                     file.getOriginalFilename().substring(originalFilename.lastIndexOf('.') + 1),
                     file.getSize() / KILOBYTE_CONVERSION_CONSTANT, filePath);
@@ -65,7 +63,7 @@ public class FileService {
             FileMetadata savedMetadata = fileMetadataRepository.save(fileMetadata);
 
             //DTO로 변환 후 반환
-            return APIResponse.success(SuccessCode.OK, FileMetadataDto.toDto(savedMetadata));
+            return savedMetadata;
 
         } catch (Exception e) {
             //저장 실패시 S3에서 삭제
@@ -81,13 +79,10 @@ public class FileService {
      * @return FileMetadataDto 파일 메타데이터를 담은 응답 객체
      */
     @Transactional(readOnly = true)
-    public FileMetadataDto getFile(String fileCategory, Long referenceId) {
-        //파일 카테고리명으로 파일 카테고리 enum 가져오기
-        FileCategory categoryEnum = FileCategory.valueOf(fileCategory);
-
+    public FileMetadataDto getFile(FileCategory fileCategory, Long referenceId) {
         //해당 파일 카테고리와 참조 id로 entity를 가져온다.
         //파일이 존재하지 않아도 예외를 던지면 안됨.
-        FileMetadata fileMetadataEntity = fileMetadataRepository.findTopByCategoryAndReferenceIdOrderByCreatedAtDesc(categoryEnum, referenceId)
+        FileMetadata fileMetadataEntity = fileMetadataRepository.findByCategoryAndReferenceId(fileCategory, referenceId)
                 .orElse(null);
 
         //dto 변환 후 반환
@@ -118,4 +113,19 @@ public class FileService {
         //반환
         return fileMetadataDtos;
     }
+
+    /**
+     * 3. 파일 삭제(카테고리, 참조ID)
+     * @param fileCategory 파일 카테고리
+     * @param referenceId 참조 ID
+     */
+    @Transactional
+    public void deleteFile(FileCategory fileCategory, Long referenceId) {
+        //카테고리와 참조 ID로 검색후 존재 유무 판별
+        FileMetadata toDeleteData = fileMetadataRepository.findByCategoryAndReferenceId(fileCategory, referenceId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.FILE_NOT_FOUND_ERROR));
+
+        fileMetadataRepository.delete(toDeleteData);
+    }
+    
 }
