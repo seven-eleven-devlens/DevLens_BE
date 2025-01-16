@@ -1,5 +1,6 @@
 package com.seveneleven.config;
 
+import com.seveneleven.util.security.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -15,6 +16,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -68,12 +71,33 @@ public class TokenProvider implements InitializingBean {
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
+                .setSubject((String) userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
+                .claim("loginId", userDetails.getLoginId()) // 로그인 ID 추가
+                .claim("email", userDetails.getEmail()) // 이메일 추가
+                .claim(AUTHORITIES_KEY, authorities) // 권한 추가
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();
+    }
+
+    /*
+    * 함수명 : getExpirationFromToken
+    * JWT 만료 시간 추출
+    *
+    * @param token JWT 토큰    
+    * @return 만료 시간 반환
+    * */
+    public LocalDateTime getExpirationFromToken(String token) {
+        Claims claims = Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
+
+        Date expiration = claims.getExpiration();
+        return expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     /**
@@ -97,6 +121,28 @@ public class TokenProvider implements InitializingBean {
         User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+    }
+
+    /**
+     * Token에서 User ID 추출
+     * @param token
+     * @return User ID
+     */
+    public String getLoginId(String token) {
+        return parseClaims(token).get("loginId", String.class);
+    }
+
+    /**
+     * JWT Claims 추출
+     * @param accessToken
+     * @return JWT Claims
+     */
+    public Claims parseClaims(String accessToken) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims();
+        }
     }
 
     /**

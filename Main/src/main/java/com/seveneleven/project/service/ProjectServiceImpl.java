@@ -1,6 +1,6 @@
 package com.seveneleven.project.service;
 
-import com.seveneleven.member.service.MemberService;
+import com.seveneleven.member.service.MemberServiceImpl;
 import com.seveneleven.project.dto.GetProjectDetail;
 import com.seveneleven.project.dto.GetProjectList;
 import com.seveneleven.project.service.dashboard.ProjectReader;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectReader projectReader;
-    private final MemberService memberService;
+    private final MemberServiceImpl memberService;
 
     @Override
     public GetProjectList.Response getProjectList(Long memberId) {
