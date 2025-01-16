@@ -30,7 +30,7 @@ public class PostProjectRequestConverter implements EntityConverter<PostProject.
         Company developer = companyRepository.findById(request.getDeveloperId()).orElseThrow(CompanyNotFoundException::new);
         Member bnsManager = adminMemberRepository.findById(request.getBnsManagerId()).orElseThrow(() -> new EntityNotFoundException("멤버를 찾을 수 없습니다."));
         ProjectType projectTypeId = projectTypeRepository.findById(request.getProjectTypeId()).orElseThrow(() -> new EntityNotFoundException("프로젝트 타입을 찾을 수 없습니다."));
-        return new Project(
+        return Project.create(
                 request.getProjectName(),
                 customer,
                 developer,

@@ -49,15 +49,16 @@ public class Company extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private YN isActive = YN.Y; // 사용 여부
 
-    public Company(Long id,
-                   String companyName,
-                   String representativeName,
-                   String representativeContact,
-                   String representativeEmail,
-                   String address,
-                   BusinessType businessType,
-                   String businessRegistrationNumber,
-                   YN isActive
+    private Company(
+            Long id,
+            String companyName,
+            String representativeName,
+            String representativeContact,
+            String representativeEmail,
+            String address,
+            BusinessType businessType,
+            String businessRegistrationNumber,
+            YN isActive
     ) {
         this.id = id;
         this.companyName = companyName;
@@ -69,18 +70,19 @@ public class Company extends BaseEntity {
         this.businessRegistrationNumber = businessRegistrationNumber;
         this.isActive = isActive;
     }
+
     // 생성 메서드
-    public static Company createCompany( String companyName, String representativeName, String representativeContact, String representativeEmail,
-                                        String address, BusinessType businessType, String businessRegistrationNumber, YN representativeImageExists)
-    {
+    public static Company createCompany(String companyName, String representativeName, String representativeContact, String representativeEmail,
+                                        String address, BusinessType businessType, String businessRegistrationNumber) {
         Company company = new Company();
-        company.address                    = address;
-        company.companyName                = companyName;
-        company.businessType               = businessType;
-        company.representativeName         = representativeName;
-        company.representativeEmail        = representativeEmail;
-        company.representativeContact      = representativeContact;
+        company.address = address;
+        company.companyName = companyName;
+        company.businessType = businessType;
+        company.representativeName = representativeName;
+        company.representativeEmail = representativeEmail;
+        company.representativeContact = representativeContact;
         company.businessRegistrationNumber = businessRegistrationNumber;
+        company.isActive = YN.Y;
         return company;
     }
 
@@ -88,8 +90,8 @@ public class Company extends BaseEntity {
     public void updateCompany(String representativeName, String representativeContact, String representativeEmail,
                               String address, YN representativeImageExists) {
         this.address = address;
-        this.representativeName    = representativeName;
-        this.representativeEmail   = representativeEmail;
+        this.representativeName = representativeName;
+        this.representativeEmail = representativeEmail;
         this.representativeContact = representativeContact;
     }
 
