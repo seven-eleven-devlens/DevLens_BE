@@ -10,6 +10,7 @@ import com.seveneleven.member.service.MemberService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  * */
 @RestController
 @RequestMapping("/api")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MemberController implements MemberDocs{
 
     private final MemberService memberService;
@@ -69,7 +70,6 @@ public class MemberController implements MemberDocs{
                 .body(APIResponse.success(SuccessCode.OK));
     }
 
-
     /**
      * 함수명 : SendMail
      * 이메일 전송 메서드. 주어진 이메일 주소로 인증 메일을 발송하며, 생성된 인증 키를 반환합니다.
@@ -78,7 +78,7 @@ public class MemberController implements MemberDocs{
      * @return 인증 키를 포함한 성공 응답
      */
     @PostMapping("/sendMail")
-    public ResponseEntity<APIResponse<String>> SendMail(@RequestParam String email) throws Exception {
+    public ResponseEntity<APIResponse<String>> sendMail(@RequestParam String email) {
 
         // 이메일 전송 및 인증 키 생성
         String key = mailService.sendEmail(email);
@@ -95,7 +95,7 @@ public class MemberController implements MemberDocs{
      * @return 인증 성공 여부를 포함한 성공 응답
      */
     @PostMapping("/checkMail")
-    public ResponseEntity<APIResponse<Boolean>> CheckMail(@RequestBody CheckMailPostRequest request) throws Exception {
+    public ResponseEntity<APIResponse<Boolean>> checkMail(@RequestBody CheckMailPostRequest request){
 
         Boolean checkSuccess = mailService.checkMail(request);
 
