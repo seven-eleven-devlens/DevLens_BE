@@ -10,6 +10,7 @@ public class MemberPatch {
     @Setter
     public static class Request{
         private String password;
+        private String newPassword;
     }
 
     @Getter

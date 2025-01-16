@@ -11,6 +11,7 @@ import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.CompanyRepository;
 import com.seveneleven.member.repository.MemberRepository;
+import com.seveneleven.util.security.CustomUserDetails;
 import com.seveneleven.util.security.TokenRepository;
 import com.seveneleven.response.ErrorCode;
 import jakarta.transaction.Transactional;
@@ -106,21 +107,28 @@ public class MemberServiceImpl implements MemberService{
      * @return 비밀번호 재설정한 회원 LoginId
      */
     @Transactional
-    public MemberPatch.Response resetPassword(String LoginId, MemberPatch.Request request) {
+    public MemberPatch.Response resetPassword(CustomUserDetails userDetails, MemberPatch.Request request) {
 
-        if(Objects.isNull(LoginId)) {
+        if(Objects.isNull(userDetails)) {
             throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
         }
 
         // 1. 회원 조회
-        Member member = memberRepository.findByLoginId(LoginId)
+        Member member = memberRepository.findByLoginId(userDetails.getLoginId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        // 2. 비밀번호 암호화 후 저장
-        member.resetPassword(passwordEncoder.encode(request.getPassword()));
+        // 2. 현재 비밀번호 확인
+        String newPwd = passwordEncoder.encode(request.getNewPassword());
 
-        // 3. 생성된 비밀번호 반환
-        return new MemberPatch.Response(LoginId);
+        if(member.getPassword() != newPwd) {
+            throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
+        }
+
+        // 3. 비밀번호 암호화 후 저장
+        member.resetPassword(newPwd);
+
+        // 4. 생성된 비밀번호 반환
+        return new MemberPatch.Response(userDetails.getLoginId());
     }
 
 

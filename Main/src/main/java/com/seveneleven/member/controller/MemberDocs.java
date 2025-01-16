@@ -48,7 +48,7 @@ public interface MemberDocs {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "로그아웃 성공",
+                            description = "요청 성공",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = SuccessCode.class)
@@ -73,7 +73,7 @@ public interface MemberDocs {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "인증 메일 전송 성공",
+                            description = "요청 성공",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = String.class)
@@ -90,7 +90,7 @@ public interface MemberDocs {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "이메일 인증 확인 성공",
+                            description = "요청 성공",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = Boolean.class)

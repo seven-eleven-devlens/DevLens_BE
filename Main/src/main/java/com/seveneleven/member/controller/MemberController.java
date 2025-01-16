@@ -114,7 +114,7 @@ public class MemberController implements MemberDocs{
                                                                       @RequestBody MemberPatch.Request request) {
 
         // 비밀번호 초기화
-        MemberPatch.Response response = memberService.resetPassword(userDetails.getLoginId(), request);
+        MemberPatch.Response response = memberService.resetPassword(userDetails, request);
 
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
