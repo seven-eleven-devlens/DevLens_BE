@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/company/files")
 @RequiredArgsConstructor
-@PreAuthorize("hasAnyRole('ADMIN')")
 public class CompanyFileController {
     private final CompanyFileService companyFileService;
 

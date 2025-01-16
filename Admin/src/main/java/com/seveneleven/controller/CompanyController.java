@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/companies")
-@PreAuthorize("hasAnyRole('ADMIN')")
 public class CompanyController {
     private final AdminCompanyService adminCompanyService;
 

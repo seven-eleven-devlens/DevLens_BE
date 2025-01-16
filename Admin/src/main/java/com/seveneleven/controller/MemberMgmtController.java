@@ -25,7 +25,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
-@PreAuthorize("hasAnyRole('ADMIN')")
 public class MemberMgmtController implements AdminMemberDocs {
 
     private final MemberMgmtService memberMgmtService;

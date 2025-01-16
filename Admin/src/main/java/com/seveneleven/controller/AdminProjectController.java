@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/admin-project")
-@PreAuthorize("hasAnyRole('ADMIN')")
 public class AdminProjectController {
     private final AdminProjectService adminProjectService;
     private final AdminProjectHistoryService adminProjectHistoryService;

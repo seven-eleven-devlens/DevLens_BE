@@ -64,7 +64,8 @@ public class SpringSecurityConfig {
             .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers(AUTH_WHITELIST).permitAll()
-                            .anyRequest().permitAll() // @PreAuthrization을 사용하기
+                            .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
+                            .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
             );
 
         return http.build();
