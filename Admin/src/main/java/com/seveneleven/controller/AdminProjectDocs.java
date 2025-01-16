@@ -11,19 +11,19 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Administrator Project Management API", description = "API for administrator to create, read, update and delete projects")
+@Tag(name = "Administrator Project Management API", description = "관리자 프로젝트 관리 API")
 @RequestMapping("/api/admin/project")
 public interface AdminProjectDocs {
 
     @PostMapping("")
     @Operation(
-            summary = "Post new project",
-            description = "Post new project",
+            summary = "프로젝트 생성",
+            description = "프로젝트를 생성하는 api",
             responses =
                     {
                             @ApiResponse(
                                     responseCode = "201",
-                                    description = "Successfully created the new project",
+                                    description = "성공적으로 프로젝트를 생성했습니다",
                                     content = @Content(
                                             mediaType = "application/json",
                                             schema = @Schema(implementation = PostProject.Response.class)
@@ -35,13 +35,13 @@ public interface AdminProjectDocs {
 
     @GetMapping("/{id}")
     @Operation(
-            summary = "Get project detail",
-            description = "Get project detail by project id",
+            summary = "프로젝트 상세 조회",
+            description = "프로젝트 id를 통해 프로젝트 상세 조회함",
             responses =
                     {
                             @ApiResponse(
                                     responseCode = "200",
-                                    description = "Successfully returned the existing project",
+                                    description = "성공적으로 프로젝트 상세를 반환했습니다",
                                     content = @Content(
                                             mediaType = "application/json",
                                             schema = @Schema(implementation = GetProject.Response.class)
@@ -51,7 +51,7 @@ public interface AdminProjectDocs {
             parameters = {
                     @Parameter(
                             name = "id",
-                            description = "Id of existing project",
+                            description = "존재하는 프로젝트의 id",
                             required = true,
                             example = "1"
                     )
@@ -61,12 +61,12 @@ public interface AdminProjectDocs {
 
     @GetMapping("")
     @Operation(
-            summary = "Get list of project page",
-            description = "Get project list by paginated response",
+            summary = "프로젝트 페이지 조회",
+            description = "프로젝트 페이지 리스트를 조회",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully returned list of project",
+                            description = "성공적으로 프로젝트 페이지를 반환했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = GetProject.Response.class)
@@ -76,7 +76,7 @@ public interface AdminProjectDocs {
             parameters = {
                     @Parameter(
                             name = "page",
-                            description = "Page number of project list",
+                            description = "프로젝트 페이지 번호",
                             required = true,
                             example = "1"
                     )
@@ -86,12 +86,12 @@ public interface AdminProjectDocs {
 
     @GetMapping("/histories")
     @Operation(
-            summary = "Get Histories of projects",
-            description = "Get histories of projects' creation and update",
+            summary = "프로젝트 이력 페이지 조회",
+            description = "프로젝트 이력 페이지를 조회",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully returned list of projects' histories",
+                            description = "프로젝트 이력 페이지를 반환했습니다",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = GetProject.Response.class)
@@ -101,7 +101,7 @@ public interface AdminProjectDocs {
             parameters = {
                     @Parameter(
                             name = "page",
-                            description = "Page number of projects' histories list",
+                            description = "프로젝트 이력 페이지",
                             required = true,
                             example = "1"
                     )
@@ -111,12 +111,12 @@ public interface AdminProjectDocs {
 
     @GetMapping("/histories/{id}")
     @Operation(
-            summary = "Get project history",
-            description = "Retrieve the history of a specific project by its ID",
+            summary = "프로젝트 이력 상세 조회",
+            description = "프로젝트 이력을 id로 상세 조회",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully retrieved the project history",
+                            description = "프로젝트 이력을 성공적으로 반환했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = ReadProjectHistory.Response.class)
@@ -126,7 +126,7 @@ public interface AdminProjectDocs {
             parameters = {
                     @Parameter(
                             name = "id",
-                            description = "ID of the project history to retrieve",
+                            description = "프로젝트 이력 id",
                             required = true,
                             example = "1"
                     )
@@ -136,8 +136,8 @@ public interface AdminProjectDocs {
 
     @GetMapping("/histories/search")
     @Operation(
-            summary = "Search project histories",
-            description = "Search project histories by project name",
+            summary = "프로젝트 이력 검색",
+            description = "프로젝트 이력 프로젝트 명으로 검색",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -151,13 +151,13 @@ public interface AdminProjectDocs {
             parameters = {
                     @Parameter(
                             name = "searchTerm",
-                            description = "Search term for project history",
+                            description = "프로젝트 이름",
                             required = true,
                             example = "ai"
                     ),
                     @Parameter(
                             name = "page",
-                            description = "Page number for pagination",
+                            description = "페이지 번호",
                             required = true,
                             example = "1"
                     )
@@ -170,12 +170,12 @@ public interface AdminProjectDocs {
 
     @PutMapping("/{id}")
     @Operation(
-            summary = "Update project",
-            description = "Update project",
+            summary = "프로젝트 업데이트",
+            description = "프로젝트 업데이트",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully updated project",
+                            description = "성공적으로 프로젝트를 업데이트했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = PutProject.Response.class)
@@ -185,7 +185,7 @@ public interface AdminProjectDocs {
             parameters = {
                     @Parameter(
                             name = "id",
-                            description = "Project's number",
+                            description = "프로젝트 id",
                             required = true,
                             example = "1"
                     )
@@ -195,18 +195,18 @@ public interface AdminProjectDocs {
 
     @DeleteMapping("/{id}")
     @Operation(
-            summary = "Delete a project",
-            description = "Delete a project by its ID",
+            summary = "프로젝트 삭제",
+            description = "프로젝트 삭제",
             responses = {
                     @ApiResponse(
-                            responseCode = "204",
-                            description = "Successfully deleted the project"
+                            responseCode = "200",
+                            description = "성공적으로 프로젝트를 삭제했습니다."
                     )
             },
             parameters = {
                     @Parameter(
                             name = "id",
-                            description = "ID of the project to be deleted",
+                            description = "프로젝트의 id",
                             required = true,
                             example = "1"
                     )

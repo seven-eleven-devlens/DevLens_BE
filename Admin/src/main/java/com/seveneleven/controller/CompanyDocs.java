@@ -19,12 +19,12 @@ public interface CompanyDocs {
 
     @PostMapping("")
     @Operation(
-            summary = "Create a new company",
-            description = "Create a new company and store it in the database",
+            summary = "회사 생성",
+            description = "회사 생성",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
-                            description = "Successfully created the company",
+                            description = "성공적으로 회사를 생성했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = PostCompany.Response.class)
@@ -36,12 +36,12 @@ public interface CompanyDocs {
 
     @GetMapping("/{id}")
     @Operation(
-            summary = "Get company details",
-            description = "Retrieve detailed information about a specific company",
+            summary = "회사 상세 정보",
+            description = "회사 상세 정보 조회",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully retrieved company details",
+                            description = "성공적으로 회사 상세 정보를 조회했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = GetCompanyDetail.Response.class)
@@ -51,13 +51,13 @@ public interface CompanyDocs {
             parameters = {
                     @Parameter(
                             name = "id",
-                            description = "ID of the company",
+                            description = "회사 id",
                             required = true,
                             example = "1"
                     ),
                     @Parameter(
                             name = "page",
-                            description = "Page number for projects",
+                            description = "회사 담당(고객사, 개발사) 프로젝트 리스트 페이지",
                             required = true,
                             example = "1"
                     )
@@ -70,12 +70,12 @@ public interface CompanyDocs {
 
     @GetMapping("")
     @Operation(
-            summary = "Get list of companies",
-            description = "Retrieve a paginated list of companies",
+            summary = "회사 목록 조회",
+            description = "회사 목록 페이지 조회",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully retrieved list of companies",
+                            description = "성공적으로 회사 목록 페이지를 반환했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = PaginatedResponse.class)
@@ -85,7 +85,7 @@ public interface CompanyDocs {
             parameters = {
                     @Parameter(
                             name = "page",
-                            description = "Page number",
+                            description = "페이지 번호",
                             required = true,
                             example = "1"
                     )
@@ -95,12 +95,12 @@ public interface CompanyDocs {
 
     @GetMapping("/search")
     @Operation(
-            summary = "Search companies by name",
-            description = "Search for companies by name with pagination",
+            summary = "회사 검색",
+            description = "회사 이름으로 회사 검색",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully searched companies",
+                            description = "성공적으로 회사 이름을 조회했습니다",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = PaginatedResponse.class)
@@ -110,13 +110,13 @@ public interface CompanyDocs {
             parameters = {
                     @Parameter(
                             name = "name",
-                            description = "Name of the company to search for",
+                            description = "회사 이름",
                             required = true,
-                            example = "CompanyName"
+                            example = "카카오"
                     ),
                     @Parameter(
                             name = "page",
-                            description = "Page number for pagination",
+                            description = "목록 페이지",
                             required = true,
                             example = "1"
                     )
@@ -129,12 +129,12 @@ public interface CompanyDocs {
 
     @PutMapping("/{id}")
     @Operation(
-            summary = "Update company details",
-            description = "Update the details of a specific company",
+            summary = "회사 수정",
+            description = "회사 상세 정보 수정",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully updated company details",
+                            description = "회사 정보를 성공적으로 수정했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = PutCompany.Response.class)
@@ -144,7 +144,7 @@ public interface CompanyDocs {
             parameters = {
                     @Parameter(
                             name = "id",
-                            description = "ID of the company to update",
+                            description = "회사 id",
                             required = true,
                             example = "1"
                     )
@@ -157,18 +157,18 @@ public interface CompanyDocs {
 
     @DeleteMapping("/{id}")
     @Operation(
-            summary = "Delete company",
-            description = "Delete a company by its ID",
+            summary = "회사 삭제",
+            description = "회사 삭제",
             responses = {
                     @ApiResponse(
-                            responseCode = "204",
-                            description = "Successfully deleted the company"
+                            responseCode = "200",
+                            description = "성공적으로 회사를 삭제했습니다."
                     )
             },
             parameters = {
                     @Parameter(
                             name = "id",
-                            description = "ID of the company to delete",
+                            description = "회사 id",
                             required = true,
                             example = "1"
                     )
@@ -178,12 +178,12 @@ public interface CompanyDocs {
 
     @GetMapping("/all")
     @Operation(
-            summary = "Get all companies",
-            description = "Retrieve a list of all companies",
+            summary = "전체 회사 조회",
+            description = "전체 회사 리스트 조회",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully retrieved all companies",
+                            description = "성공적으로 전체 회사를 반환했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = List.class)
