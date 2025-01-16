@@ -30,7 +30,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         // 401 Unauthorized 상태 코드 반환
-        response.sendError(ErrorCode.UNAUTHORIZED.getCode());
+         response.sendError(ErrorCode.UNAUTHORIZED.getCode());
     }
 }
 
