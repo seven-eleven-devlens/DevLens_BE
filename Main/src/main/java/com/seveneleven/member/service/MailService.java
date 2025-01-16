@@ -1,10 +1,11 @@
 package com.seveneleven.member.service;
 
 import com.seveneleven.member.dto.CheckMailPostRequest;
+import com.seveneleven.util.security.CustomUserDetails;
 
 public interface MailService {
 
-    String sendEmail(String email);
+    String sendEmail(CustomUserDetails userDetails);
 
-    boolean checkMail(String email, CheckMailPostRequest request);
+    boolean checkMail(CustomUserDetails userDetails, CheckMailPostRequest request);
 }

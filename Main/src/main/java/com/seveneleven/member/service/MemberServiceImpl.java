@@ -22,6 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 
 @Service
@@ -97,7 +98,6 @@ public class MemberServiceImpl implements MemberService{
     }
 
 
-
     /**
      * 함수명 : resetPassword
      * 회원 비밀번호를 초기화합니다.
@@ -107,8 +107,12 @@ public class MemberServiceImpl implements MemberService{
      */
     @Transactional
     public MemberPatch.Response resetPassword(String LoginId, MemberPatch.Request request) {
-        // 1. 회원 조회
 
+        if(Objects.isNull(LoginId)) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
+        }
+
+        // 1. 회원 조회
         Member member = memberRepository.findByLoginId(LoginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 

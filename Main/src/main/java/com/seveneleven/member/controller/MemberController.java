@@ -78,7 +78,7 @@ public class MemberController implements MemberDocs{
     public ResponseEntity<APIResponse<String>> sendMail(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         // 이메일 전송 및 인증 키 생성
-        String key = mailService.sendEmail(userDetails.getEmail());
+        String key = mailService.sendEmail(userDetails);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, key));
@@ -95,7 +95,7 @@ public class MemberController implements MemberDocs{
     public ResponseEntity<APIResponse<Boolean>> checkMail(@AuthenticationPrincipal CustomUserDetails userDetails,
                                                           @RequestBody CheckMailPostRequest request) {
 
-        Boolean checkSuccess = mailService.checkMail(userDetails.getEmail(), request);
+        Boolean checkSuccess = mailService.checkMail(userDetails, request);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, checkSuccess));

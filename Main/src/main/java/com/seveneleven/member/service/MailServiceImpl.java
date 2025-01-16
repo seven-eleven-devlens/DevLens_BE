@@ -6,16 +6,17 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.CheckMailPostRequest;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.response.ErrorCode;
+import com.seveneleven.util.security.CustomUserDetails;
 import com.seveneleven.util.security.SHA256Util;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -30,12 +31,16 @@ public class MailServiceImpl implements MailService{
      * 함수명 : sendEmail
      * 사용자의 이메일로 인증 키를 전송하는 메서드. 인증 키는 생성 후 암호화되어 반환됩니다.
      *
-     * @param email 인증 키를 보낼 사용자의 이메일
+     * @param userDetails 인증 키를 보낼 사용자 객체
      * @return 암호화된 인증 키
      */
-    public String sendEmail(String email){
+    public String sendEmail(CustomUserDetails userDetails){
 
-        Member member = memberRepository.findByEmailAndStatus(email, MemberStatus.ACTIVE)
+        if(Objects.isNull(userDetails)) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
+        }
+
+        Member member = memberRepository.findByEmailAndStatus(userDetails.getEmail(), MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 랜덤한 UUID 생성
@@ -50,7 +55,7 @@ public class MailServiceImpl implements MailService{
             throw new BusinessException(ErrorCode.UNABLE_TO_SEND_EMAIL);
         }
 
-        key = SHA256Util.getEncrypt(key, email);
+        key = SHA256Util.getEncrypt(key, userDetails.getEmail());
 
         return key;
     }
@@ -62,9 +67,13 @@ public class MailServiceImpl implements MailService{
      * @param request 인증 키 검증 요청 객체 (이메일, 입력된 키, 서버 저장 키 포함)
      * @return 입력된 키가 서버 저장 키와 일치하면 true, 그렇지 않으면 false
      */
-    public boolean checkMail(String email, CheckMailPostRequest request) {
+    public boolean checkMail(CustomUserDetails userDetails, CheckMailPostRequest request) {
 
-        Member member = memberRepository.findByEmailAndStatus(email, MemberStatus.ACTIVE)
+        if(Objects.isNull(userDetails)) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
+        }
+
+        Member member = memberRepository.findByEmailAndStatus(userDetails.getEmail(), MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         String insertKey = SHA256Util.getEncrypt(request.getInputKey(), member.getEmail());
