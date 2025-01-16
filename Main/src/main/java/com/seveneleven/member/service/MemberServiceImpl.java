@@ -118,14 +118,12 @@ public class MemberServiceImpl implements MemberService{
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 현재 비밀번호 확인
-        String newPwd = passwordEncoder.encode(request.getNewPassword());
-
-        if(member.getPassword() != newPwd) {
+        if(!passwordEncoder.matches(request.getNewPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
         }
 
         // 3. 비밀번호 암호화 후 저장
-        member.resetPassword(newPwd);
+        member.resetPassword(request.getNewPassword());
 
         // 4. 생성된 비밀번호 반환
         return new MemberPatch.Response(userDetails.getLoginId());
