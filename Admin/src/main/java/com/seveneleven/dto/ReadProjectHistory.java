@@ -1,10 +1,12 @@
 package com.seveneleven.dto;
 
+import com.seveneleven.entity.project.ProjectHistory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReadProjectHistory {
@@ -23,35 +25,70 @@ public class ReadProjectHistory {
         private LocalDate startDate;
         private LocalDate plannedEndDate;
         private LocalDate endDate;
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
+        private String createdBy;
+        private String updatedBy;
+
+        private Response(
+                ProjectHistory projectHistory,
+                String createdBy,
+                String updatedBy
+        ) {
+            this.id = projectHistory.getId();
+            this.projectName = projectHistory.getProjectName();
+            this.customerName = projectHistory.getCustomerName();
+            this.developerName = projectHistory.getDeveloperName();
+            this.description = projectHistory.getDescription();
+            this.statusCode = projectHistory.getStatusCode();
+            this.typeName = projectHistory.getTypeName();
+            this.bnsManagerId = projectHistory.getBnsManagerId();
+            this.contractNumber = projectHistory.getContractNumber();
+            this.plannedStartDate = projectHistory.getPlannedStartDate();
+            this.startDate = projectHistory.getStartDate();
+            this.plannedEndDate = projectHistory.getPlannedEndDate();
+            this.endDate = projectHistory.getEndDate();
+            this.createdAt = projectHistory.getCreatedAt();
+            this.updatedAt = projectHistory.getUpdatedAt();
+            this.createdBy = createdBy;
+            this.updatedBy = updatedBy;
+        }
 
         public Response(
-                Long id,
-                String projectName,
-                String customerName,
-                String developerName,
-                String description,
-                String statusCode,
-                String typeName,
-                Long bnsManagerId,
-                String contractNumber,
-                LocalDate plannedStartDate,
-                LocalDate startDate,
-                LocalDate plannedEndDate,
-                LocalDate endDate
+                ProjectHistory projectHistory
         ) {
-            this.id = id;
-            this.projectName = projectName;
-            this.customerName = customerName;
-            this.developerName = developerName;
-            this.description = description;
-            this.statusCode = statusCode;
-            this.typeName = typeName;
-            this.bnsManagerId = bnsManagerId;
-            this.contractNumber = contractNumber;
-            this.plannedStartDate = plannedStartDate;
-            this.startDate = startDate;
-            this.plannedEndDate = plannedEndDate;
-            this.endDate = endDate;
+            this.id = projectHistory.getId();
+            this.projectName = projectHistory.getProjectName();
+            this.customerName = projectHistory.getCustomerName();
+            this.developerName = projectHistory.getDeveloperName();
+            this.description = projectHistory.getDescription();
+            this.statusCode = projectHistory.getStatusCode();
+            this.typeName = projectHistory.getTypeName();
+            this.bnsManagerId = projectHistory.getBnsManagerId();
+            this.contractNumber = projectHistory.getContractNumber();
+            this.plannedStartDate = projectHistory.getPlannedStartDate();
+            this.startDate = projectHistory.getStartDate();
+            this.plannedEndDate = projectHistory.getPlannedEndDate();
+            this.endDate = projectHistory.getEndDate();
+            this.createdAt = projectHistory.getCreatedAt();
+            this.updatedAt = projectHistory.getUpdatedAt();
+            this.createdBy = null;
+            this.updatedBy = null;
+        }
+
+        public static Response from(ProjectHistory projectHistory) {
+            return new Response(projectHistory);
+        }
+        public static Response of(
+                ProjectHistory project,
+                String createdBy,
+                String updatedBy
+        ){
+            return new Response(
+                    project,
+                    createdBy,
+                    updatedBy
+            );
         }
     }
 }
