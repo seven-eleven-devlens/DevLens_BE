@@ -33,7 +33,7 @@ public class CompanyFileService {
      */
 
     @Transactional
-    public void uploadLogoImage(MultipartFile file, Long companyId, Long uploaderId) throws RuntimeException{
+    public void uploadLogoImage(MultipartFile file, Long companyId, Long uploaderId) {
         //1. 회사 id로 존재여부 판별
         Company companyEntity = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
@@ -56,7 +56,7 @@ public class CompanyFileService {
      * @return fileDto S3에 저장된 파일의 메타데이터 DTO
      */
     @Transactional(readOnly = true)
-    public FileMetadataDto getLogoImage(Long companyId) throws Exception{
+    public FileMetadataDto getLogoImage(Long companyId) {
         //회사 유효성 검사
         if(!companyRepository.existsById(companyId)){
             throw new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND);
@@ -74,7 +74,7 @@ public class CompanyFileService {
      * @param companyId 해당 회사 ID
      */
     @Transactional
-    public void deleteLogoImage(Long companyId, Long uploaderId) throws Exception{
+    public void deleteLogoImage(Long companyId, Long uploaderId) {
         //1.회사 유효성 검사
         Company companyEntity = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));

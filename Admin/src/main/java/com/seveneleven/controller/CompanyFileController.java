@@ -4,9 +4,7 @@ import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.CompanyFileService;
 import com.seveneleven.util.file.dto.FileMetadataDto;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +42,7 @@ public class CompanyFileController {
      * @return 해당 회사의 로고 이미지 메타데이터
      */
     @GetMapping(value = "/{companyId}/logo-image")
-    public ResponseEntity<APIResponse> getCompanyLogo(@PathVariable("companyId") Long companyId) throws Exception {
+    public ResponseEntity<APIResponse> getCompanyLogo(@PathVariable("companyId") Long companyId) {
         FileMetadataDto logoImage = companyFileService.getLogoImage(companyId);
 
         return ResponseEntity
@@ -58,7 +56,7 @@ public class CompanyFileController {
      *
      */
     @DeleteMapping(value = "/{companyId}/logo-image")
-    public ResponseEntity<APIResponse> deleteLogo(@PathVariable("companyId") Long companyId) throws Exception {
+    public ResponseEntity<APIResponse> deleteLogo(@PathVariable("companyId") Long companyId) {
         //TODO) 토큰에서 uploader 정보 가져오기
         Long uploaderId = 1L;
 

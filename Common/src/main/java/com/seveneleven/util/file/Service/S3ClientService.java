@@ -3,8 +3,6 @@ package com.seveneleven.util.file.Service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +49,7 @@ public class S3ClientService {
     /**
      * 파일 업로드
      */
-    public String uploadFile(MultipartFile file, String s3Key) throws Exception {
+    public String uploadFile(MultipartFile file, String s3Key) {
         try {
             //S3 저장할 파일의 메타데이터 설정
             ObjectMetadata metadata = new ObjectMetadata();

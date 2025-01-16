@@ -34,7 +34,7 @@ public class FileService {
      * @return FileMetadataDto 업로드한 파일 메타데이터
      */
     @Transactional
-    public FileMetadata uploadFile(MultipartFile file, FileCategory fileCategory, Long referenceId) throws RuntimeException {
+    public FileMetadata uploadFile(MultipartFile file, FileCategory fileCategory, Long referenceId) {
         //1. 파일 검증
         FileValidator.validateFile(file, fileCategory);
 
@@ -96,12 +96,10 @@ public class FileService {
      * @return List<FileMetadataDto> 파일 메타데이터 목록을 담은 응답 객체
      */
     @Transactional(readOnly = true)
-    public List<FileMetadataDto> getFiles(String fileCategory, Long referenceId) {
-        //파일 카테고리명으로 파일 카테고리 enum 가져오기
-        FileCategory categoryEnum = FileCategory.valueOf(fileCategory);
+    public List<FileMetadataDto> getFiles(FileCategory fileCategory, Long referenceId) {
 
         //해당 파일 카테고리와 참조 id로 entity를 가져온다.
-        List<FileMetadata> fileMetadataEntities = fileMetadataRepository.findAllByCategoryAndReferenceId(categoryEnum, referenceId);
+        List<FileMetadata> fileMetadataEntities = fileMetadataRepository.findAllByCategoryAndReferenceId(fileCategory, referenceId);
 
         //entity를 dto에 담는다.
         List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
