@@ -6,13 +6,14 @@ import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.service.MemberMgmtServiceImpl;
+import com.seveneleven.service.MemberMgmtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,10 +25,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
-//@AdminAuthorize
 public class MemberMgmtController implements AdminMemberDocs {
 
-    private final MemberMgmtServiceImpl memberMgmtService;
+    private final MemberMgmtService memberMgmtService;
 
     /**
      * 함수명 : getFilteredMembers

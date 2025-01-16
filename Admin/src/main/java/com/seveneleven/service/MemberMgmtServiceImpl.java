@@ -14,6 +14,7 @@ import com.seveneleven.repository.AdminMemberRepository;
 import com.seveneleven.repository.CompanyRepository;
 import com.seveneleven.response.ErrorCode;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,8 +31,8 @@ import java.util.List;
  * 회원의 생성, 조회, 수정, 삭제 및 기타 관련 비즈니스 로직을 처리합니다.
  */
 @Service
-@AllArgsConstructor
-public class MemberMgmtServiceImpl implements MemberMgmtService {
+@RequiredArgsConstructor
+public class MemberMgmtServiceImpl implements MemberMgmtService{
 
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
@@ -198,7 +199,8 @@ public class MemberMgmtServiceImpl implements MemberMgmtService {
                 throw new BusinessException(ErrorCode.MEMBER_INACTIVE);
             case SUSPENDED:
                 throw new BusinessException(ErrorCode.MEMBER_SUSPENDED);
-            case ACTIVE:
+            case WITHDRAW:
+                throw new BusinessException(ErrorCode.MEMBER_WITHDRAW);
             default:
                 break;
         }

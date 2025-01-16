@@ -33,6 +33,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 //    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
     // https://mvnrepository.com/artifact/io.github.cdimascio/dotenv-java
     implementation group: 'io.github.cdimascio', name: 'dotenv-java', version: '3.0.0'
