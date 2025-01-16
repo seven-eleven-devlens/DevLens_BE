@@ -15,8 +15,8 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/companies")
-public class CompanyController {
+@RequestMapping("/api/admin/companies")
+public class CompanyController implements CompanyDocs{
     private final AdminCompanyService adminCompanyService;
 
     /*
