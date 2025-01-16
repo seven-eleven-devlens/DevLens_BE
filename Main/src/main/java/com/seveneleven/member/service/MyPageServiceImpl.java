@@ -14,9 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
-
 @Service
 @RequiredArgsConstructor
 public class MyPageServiceImpl implements MyPageService{
@@ -39,11 +36,6 @@ public class MyPageServiceImpl implements MyPageService{
         Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        // 회원이 비활성 상태인지 확인
-        if (member.getStatus() != MemberStatus.ACTIVE) {
-            throw new BusinessException(ErrorCode.MEMBER_INACTIVE);
-        }
-
         // 응답 DTO 생성 및 회사 정보 설정
         MyPageGetMember response = MyPageGetMember.fromEntity(member);
                         response.setCompanyId(member.getCompany().getId());
@@ -65,8 +57,6 @@ public class MyPageServiceImpl implements MyPageService{
      */
     @Transactional
     public PatchMember.Response updateMember(String loginId, PatchMember.Request memberDto) {
-        String department = "";
-        String position   = "";
 
         // 회원 조회
         Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
@@ -80,12 +70,11 @@ public class MyPageServiceImpl implements MyPageService{
 
         Member updatedMember = memberRepository.save(member);
 
-
         // 응답 DTO 생성 및 회사 정보 설정
         PatchMember.Response response = PatchMember.fromEntity(updatedMember);
                              response.setCompanyId(company.getId());
-                             response.setDepartment(department);
-                             response.setPosition(position);
+                             response.setDepartment(memberDto.getDepartment());
+                             response.setPosition(memberDto.getPosition());
         return response;
     }
 
@@ -109,7 +98,6 @@ public class MyPageServiceImpl implements MyPageService{
                 throw new BusinessException(ErrorCode.MEMBER_SUSPENDED);
             case WITHDRAW:
                 throw new BusinessException(ErrorCode.MEMBER_WITHDRAW);
-            case ACTIVE:
             default:
                 break;
         }

@@ -31,7 +31,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class MemberMgmtServiceImpl implements MeMberMgmtService {
+public class MemberMgmtServiceImpl {
 
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
@@ -48,10 +48,9 @@ public class MemberMgmtServiceImpl implements MeMberMgmtService {
      * @param pageable 페이징 정보.
      * @return 필터 조건에 맞는 회원 목록.
      */
-    @Transactional
+    @Transactional(readOnly = true)
     public Page<MemberDto.Response> getFilteredMembers(
             String name, MemberStatus status, Role role, String loginId, Pageable pageable) {
-
 
         Specification<Member> spec = Specification
                 .where(MemberSpecification.hasName(name))
@@ -61,9 +60,8 @@ public class MemberMgmtServiceImpl implements MeMberMgmtService {
 
         Page<Member> members = memberRepository.findAll(spec, pageable);
 
-        // 3. 엔티티 -> DTO 변환
+        // 엔티티 -> DTO 변환
         return members.map(MemberDto::fromEntity);
-
     }
 
     /**
@@ -75,11 +73,9 @@ public class MemberMgmtServiceImpl implements MeMberMgmtService {
      */
     @Transactional(readOnly = true)
     public MemberDto.Response getMemberDetail(String loginId) {
-
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
-        return MemberDto.fromEntity(memberRepository.save(member));
+        return MemberDto.fromEntity(member);
     }
 
     /**
@@ -112,8 +108,11 @@ public class MemberMgmtServiceImpl implements MeMberMgmtService {
                 memberDto.getPosition()
         );
 
-        // 4. 저장 후 DTO로 변환
-        return MemberDto.fromEntity(memberRepository.save(member));
+        // 4. 저장
+        Member savedMember = memberRepository.save(member);
+
+        // 5. DTO로 변환 후 반환
+        return MemberDto.fromEntity(savedMember);
     }
 
     /**
@@ -149,9 +148,12 @@ public class MemberMgmtServiceImpl implements MeMberMgmtService {
             );
         }).toList();
 
-        // 2. 저장된 Member 엔티티를 MemberDto.Response로 변환
-        return memberRepository.saveAll(members).stream()
-                .map(MemberDto::fromEntity) // Member -> MemberDto.Response 변환
+        // 2. 일괄 저장
+        List<Member> savedMembers = memberRepository.saveAll(members);
+
+        // 3. 저장된 엔티티를 DTO로 변환 후 반환
+        return savedMembers.stream()
+                .map(MemberDto::fromEntity)
                 .toList();
     }
 
@@ -164,7 +166,7 @@ public class MemberMgmtServiceImpl implements MeMberMgmtService {
      * @return 수정된 회원의 응답 DTO.
      */
     @Transactional
-    public MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto) {
+    public MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto){
 
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -175,7 +177,7 @@ public class MemberMgmtServiceImpl implements MeMberMgmtService {
         member.updateMember(memberDto.getName(), member.getEmail(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
                 memberDto.getDepartment(), memberDto.getPosition());
 
-        return MemberDto.fromEntity(memberRepository.save(member));
+        return MemberDto.fromEntity(member);
     }
 
     /**
@@ -196,7 +198,8 @@ public class MemberMgmtServiceImpl implements MeMberMgmtService {
                 throw new BusinessException(ErrorCode.MEMBER_INACTIVE);
             case SUSPENDED:
                 throw new BusinessException(ErrorCode.MEMBER_SUSPENDED);
-            case ACTIVE:
+            case WITHDRAW:
+                throw new BusinessException(ErrorCode.MEMBER_WITHDRAW);
             default:
                 break;
         }
@@ -238,6 +241,5 @@ public class MemberMgmtServiceImpl implements MeMberMgmtService {
     private String generateTemporaryPassword() {
         return RandomStringUtils.randomAlphanumeric(12);
     }
-
 
 }

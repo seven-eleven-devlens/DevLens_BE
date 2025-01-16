@@ -6,7 +6,7 @@ import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.service.MeMberMgmtService;
+import com.seveneleven.service.MemberMgmtServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +28,7 @@ import java.util.List;
 @PreAuthorize("hasAnyRole('ADMIN')")
 public class MemberMgmtController implements AdminMemberDocs {
 
-    private final MeMberMgmtService memberMgmtService;
+    private final MemberMgmtServiceImpl memberMgmtService;
 
     /**
      * 함수명 : getFilteredMembers
