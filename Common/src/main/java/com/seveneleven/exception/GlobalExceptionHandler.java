@@ -20,7 +20,6 @@ public class GlobalExceptionHandler {
     // 기타 예외에 대한 처리 예시
     @ExceptionHandler(Exception.class)
     public ResponseEntity<APIResponse<?>> handleException(Exception e, WebRequest request) {
-        e.printStackTrace();
         // ErrorCode를 사용하여 에러 응답 생성
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR; // 공통 에러 코드 정의 필요
         String detailedMessage = e.getMessage() != null ? e.getMessage() : "An unexpected error occurred";

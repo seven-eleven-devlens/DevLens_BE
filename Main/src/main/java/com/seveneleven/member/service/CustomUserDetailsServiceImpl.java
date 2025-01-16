@@ -24,7 +24,6 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService, CustomU
 
     @Override
     public UserDetails loadUserByUsername(String loginId){
-        System.out.println("[CustomUserDetailsServiceImpl]====================== loginId = " + loginId);
 
         Member member = memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
