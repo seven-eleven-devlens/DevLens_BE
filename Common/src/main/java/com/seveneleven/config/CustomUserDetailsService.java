@@ -1,7 +1,9 @@
 package com.seveneleven.config;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface CustomUserDetailsService {
     /**
      * 함수명 : loadUserByUsername
