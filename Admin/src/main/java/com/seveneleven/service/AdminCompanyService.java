@@ -87,12 +87,15 @@ public class AdminCompanyService {
             함수 목적 : 회사 검색
      */
     @Transactional(readOnly = true)
-    public PaginatedResponse<GetCompanyDetail.Response> searchCompaniesByName(
+    public PaginatedResponse<GetCompanies.Response> searchCompaniesByName(
             String name, Integer page
     ) {
         Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("companyName").ascending());
         Page<Company> companyPage = companyRepository.findByIsActiveAndCompanyNameContainingIgnoreCase(YN.Y, name, pageable);
-        return PaginatedResponse.createPaginatedResponse(companyPage.map(getCompanyDetailResponseConverter::toDTO));
+        if (companyPage.getContent().isEmpty()) {
+            throw new CompanyNotFoundException();
+        }
+        return PaginatedResponse.createPaginatedResponse(companyPage.map(getCompaniesResponseConverter::toDTO));
     }
 
     @Transactional

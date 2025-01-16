@@ -19,7 +19,7 @@ public class GetCompanyDetailResponseConverter implements EntityConverter<GetCom
 
     @Override
     public GetCompanyDetail.Response toDTO(Company company) {
-        return null;
+        return GetCompanyDetail.Response.of(company, null);
     }
 
     @Override

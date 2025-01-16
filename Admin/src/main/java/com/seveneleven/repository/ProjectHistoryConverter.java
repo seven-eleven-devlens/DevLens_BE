@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class ProjectHistoryConverter implements EntityConverter<ReadProjectHistory.Response, ProjectHistory> {
     @Override
     public ReadProjectHistory.Response toDTO(ProjectHistory projectHistory) {
-        return null;
+        return ReadProjectHistory.Response.from(projectHistory);
     }
 
     public ReadProjectHistory.Response toDTO(ProjectHistory projectHistory, String createdBy, String updatedBy) {

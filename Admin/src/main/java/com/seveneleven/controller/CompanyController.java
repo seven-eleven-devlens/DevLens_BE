@@ -61,7 +61,7 @@ public class CompanyController {
         함수 목적 : 회사 검색
      */
     @GetMapping("/search")
-    public ResponseEntity<APIResponse<PaginatedResponse<GetCompanyDetail.Response>>> searchCompaniesByName(
+    public ResponseEntity<APIResponse<PaginatedResponse<GetCompanies.Response>>> searchCompaniesByName(
             @RequestParam(value = "name") String name,
             @RequestParam(value = "page") Integer page
     ) {
