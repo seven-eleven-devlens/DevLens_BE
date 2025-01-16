@@ -1,4 +1,5 @@
-package com.seveneleven.member.dto;
+package com.seveneleven.util.security;
+
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class CustomUserDetails implements UserDetails {
 
     private final MemberDto member;
 
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 
@@ -28,8 +30,8 @@ public class CustomUserDetails implements UserDetails {
                 .collect(Collectors.toList());
     }
 
-    public Long getId() {
-        return member.getId();
+    public String getId() {
+        return member.getId().toString();
     }
 
      public String getLoginId() {

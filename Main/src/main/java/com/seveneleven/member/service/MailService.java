@@ -6,5 +6,5 @@ public interface MailService {
 
     String sendEmail(String email);
 
-    boolean checkMail(CheckMailPostRequest request);
+    boolean checkMail(String email, CheckMailPostRequest request);
 }

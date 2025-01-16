@@ -9,7 +9,6 @@ public class MemberPatch {
     @Getter
     @Setter
     public static class Request{
-        private String loginId;
         private String password;
     }
 

@@ -1,5 +1,6 @@
 package com.seveneleven.config;
 
+import com.seveneleven.util.security.CustomUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -70,9 +71,13 @@ public class TokenProvider implements InitializingBean {
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
         return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
+                .setSubject((String) userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
+                .claim("loginId", userDetails.getLoginId()) // 로그인 ID 추가
+                .claim("email", userDetails.getEmail()) // 이메일 추가
+                .claim(AUTHORITIES_KEY, authorities) // 권한 추가
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();

@@ -1,13 +1,10 @@
-package com.seveneleven.member.dto;
+package com.seveneleven.util.security;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.constant.Role;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.config.Configuration;
+import org.springframework.stereotype.Component;
 
 /*
  * security, jwt 테스트 확인을 위해 임시로 만든 dto

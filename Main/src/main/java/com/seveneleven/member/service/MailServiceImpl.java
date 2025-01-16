@@ -62,9 +62,9 @@ public class MailServiceImpl implements MailService{
      * @param request 인증 키 검증 요청 객체 (이메일, 입력된 키, 서버 저장 키 포함)
      * @return 입력된 키가 서버 저장 키와 일치하면 true, 그렇지 않으면 false
      */
-    public boolean checkMail(CheckMailPostRequest request) {
+    public boolean checkMail(String email, CheckMailPostRequest request) {
 
-        Member member = memberRepository.findByEmailAndStatus(request.getEmail(), MemberStatus.ACTIVE)
+        Member member = memberRepository.findByEmailAndStatus(email, MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         String insertKey = SHA256Util.getEncrypt(request.getInputKey(), member.getEmail());

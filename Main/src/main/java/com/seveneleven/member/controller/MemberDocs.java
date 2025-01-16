@@ -1,11 +1,9 @@
 package com.seveneleven.member.controller;
 
-import com.seveneleven.member.dto.CheckMailPostRequest;
-import com.seveneleven.member.dto.CompanyResponse;
-import com.seveneleven.member.dto.LoginPost;
-import com.seveneleven.member.dto.MemberPatch;
+import com.seveneleven.member.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
+import com.seveneleven.util.security.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api")
@@ -80,18 +79,10 @@ public interface MemberDocs {
                                     schema = @Schema(implementation = String.class)
                             )
                     )
-            },
-            parameters = {
-                    @Parameter(
-                            name = "email",
-                            description = "인증 메일을 보낼 이메일 주소",
-                            required = true,
-                            example = "example@example.com"
-                    )
             }
     )
-    @PostMapping("/sendMail")
-    ResponseEntity<APIResponse<String>> sendMail(@RequestParam String email);
+    @PostMapping("/send-mail")
+    ResponseEntity<APIResponse<String>> sendMail(@AuthenticationPrincipal CustomUserDetails userDetails);
 
     @Operation(
             summary = "이메일 인증 확인",
@@ -115,8 +106,8 @@ public interface MemberDocs {
                     )
             )
     )
-    @PostMapping("/checkMail")
-    ResponseEntity<APIResponse<Boolean>> checkMail(@RequestBody CheckMailPostRequest request);
+    @PostMapping("/check-mail")
+    ResponseEntity<APIResponse<Boolean>> checkMail(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody CheckMailPostRequest request);
 
     @Operation(
             summary = "비밀번호 재설정",
@@ -140,7 +131,8 @@ public interface MemberDocs {
                     )
             )
     )
-    @PatchMapping("/members/{loginId}/reset-password")
-    ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(@RequestBody MemberPatch.Request request);
+    @PatchMapping("/members/reset-password")
+    ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                               @RequestBody MemberPatch.Request request);
 
 }

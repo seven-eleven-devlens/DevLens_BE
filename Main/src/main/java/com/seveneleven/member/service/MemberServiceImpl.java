@@ -106,17 +106,17 @@ public class MemberServiceImpl implements MemberService{
      * @return 비밀번호 재설정한 회원 LoginId
      */
     @Transactional
-    public MemberPatch.Response resetPassword(MemberPatch.Request request) {
+    public MemberPatch.Response resetPassword(String LoginId, MemberPatch.Request request) {
         // 1. 회원 조회
 
-        Member member = memberRepository.findByLoginId(request.getLoginId())
+        Member member = memberRepository.findByLoginId(LoginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 비밀번호 암호화 후 저장
         member.resetPassword(passwordEncoder.encode(request.getPassword()));
 
         // 3. 생성된 비밀번호 반환
-        return new MemberPatch.Response(request.getLoginId());
+        return new MemberPatch.Response(LoginId);
     }
 
 

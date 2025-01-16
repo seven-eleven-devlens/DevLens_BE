@@ -1,18 +1,16 @@
 package com.seveneleven.member.controller;
 
 import com.seveneleven.config.JwtFilter;
-import com.seveneleven.member.dto.CheckMailPostRequest;
-import com.seveneleven.member.dto.CompanyResponse;
-import com.seveneleven.member.dto.LoginPost;
-import com.seveneleven.member.dto.MemberPatch;
+import com.seveneleven.member.dto.*;
 import com.seveneleven.member.service.MailService;
 import com.seveneleven.member.service.MemberService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import lombok.AllArgsConstructor;
+import com.seveneleven.util.security.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -71,33 +69,33 @@ public class MemberController implements MemberDocs{
     }
 
     /**
-     * 함수명 : SendMail
+     * 함수명 : sendMail
      * 이메일 전송 메서드. 주어진 이메일 주소로 인증 메일을 발송하며, 생성된 인증 키를 반환합니다.
      *
-     * @param email 인증 메일을 보낼 이메일 주소
      * @return 인증 키를 포함한 성공 응답
      */
-    @PostMapping("/sendMail")
-    public ResponseEntity<APIResponse<String>> sendMail(@RequestParam String email) {
+    @PostMapping("/send-mail")
+    public ResponseEntity<APIResponse<String>> sendMail(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         // 이메일 전송 및 인증 키 생성
-        String key = mailService.sendEmail(email);
+        String key = mailService.sendEmail(userDetails.getEmail());
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, key));
     }
 
     /**
-     * 함수명 : CheckMail
+     * 함수명 : checkMail
      * 이메일 인증 확인 메서드. 사용자가 입력한 인증 키를 검증하여 성공 여부를 반환합니다.
      *
      * @param request 인증 키 확인 요청 정보를 담은 객체
      * @return 인증 성공 여부를 포함한 성공 응답
      */
-    @PostMapping("/checkMail")
-    public ResponseEntity<APIResponse<Boolean>> checkMail(@RequestBody CheckMailPostRequest request){
+    @PostMapping("/check-mail")
+    public ResponseEntity<APIResponse<Boolean>> checkMail(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                          @RequestBody CheckMailPostRequest request) {
 
-        Boolean checkSuccess = mailService.checkMail(request);
+        Boolean checkSuccess = mailService.checkMail(userDetails.getEmail(), request);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, checkSuccess));
@@ -111,11 +109,12 @@ public class MemberController implements MemberDocs{
      * @return 초기화된 임시 비밀번호를 포함한 응답 객체 (APIResponse<MemberPatch.Response>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
-    @PatchMapping("/members/{loginId}/reset-password")
-    public ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(@RequestBody MemberPatch.Request request) {
+    @PatchMapping("/members/reset-password")
+    public ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                      @RequestBody MemberPatch.Request request) {
 
         // 비밀번호 초기화
-        MemberPatch.Response response = memberService.resetPassword(request);
+        MemberPatch.Response response = memberService.resetPassword(userDetails.getLoginId(), request);
 
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())

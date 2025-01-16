@@ -7,5 +7,5 @@ public interface MemberService {
 
     LoginPost.Response login(LoginPost.Request request);
     void logout(String token);
-    MemberPatch.Response resetPassword(MemberPatch.Request request);
+    MemberPatch.Response resetPassword(String LoginId, MemberPatch.Request request);
 }

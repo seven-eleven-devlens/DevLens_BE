@@ -39,7 +39,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
             if(tokenProvider.validateToken(token)) {
 
-                String loginId = tokenProvider.getLoginId(token);
+                String loginId = tokenProvider.getLoginId(token); // null 이 들어감
                 UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginId);
 
                 if (userDetails != null && tokenRepository.existsByTokenAndStatus(token,TokenStatus.ACTIVE)) {
