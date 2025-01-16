@@ -37,11 +37,8 @@ public class GetCompanies {
         }
 
         public static Response getCompaniesResponse(
-                Company company
-        ) {
-            return new Response(
-                    company
-            );
+                Company company) {
+            return new Response(company);
         }
     }
 }

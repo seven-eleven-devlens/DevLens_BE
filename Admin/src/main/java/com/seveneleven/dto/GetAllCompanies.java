@@ -7,18 +7,12 @@ import lombok.Getter;
 public class GetAllCompanies {
     private Long id;
     private String companyName;
-    private GetAllCompanies(
-            Company company
-    ) {
+    private GetAllCompanies(Company company) {
         this.id = company.getId();
         this.companyName = company.getCompanyName();
     }
 
-    public static GetAllCompanies of(
-            Company company
-    ) {
-        return new GetAllCompanies(
-                company
-        );
+    public static GetAllCompanies of(Company company) {
+        return new GetAllCompanies(company);
     }
 }

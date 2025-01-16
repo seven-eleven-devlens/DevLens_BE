@@ -31,67 +31,27 @@ public class ReadProjectHistory {
         private String updatedBy;
 
         private Response(
-                Long id,
-                String projectName,
-                String customerName,
-                String developerName,
-                String description,
-                String statusCode,
-                String typeName,
-                Long bnsManagerId,
-                String contractNumber,
-                LocalDate plannedStartDate,
-                LocalDate startDate,
-                LocalDate plannedEndDate,
-                LocalDate endDate,
-                LocalDateTime createdAt,
-                LocalDateTime updatedAt,
+                ProjectHistory projectHistory,
                 String createdBy,
                 String updatedBy
         ) {
-            this.id = id;
-            this.projectName = projectName;
-            this.customerName = customerName;
-            this.developerName = developerName;
-            this.description = description;
-            this.statusCode = statusCode;
-            this.typeName = typeName;
-            this.bnsManagerId = bnsManagerId;
-            this.contractNumber = contractNumber;
-            this.plannedStartDate = plannedStartDate;
-            this.startDate = startDate;
-            this.plannedEndDate = plannedEndDate;
-            this.endDate = endDate;
-            this.createdAt = createdAt;
-            this.updatedAt = updatedAt;
+            this.id = projectHistory.getId();
+            this.projectName = projectHistory.getProjectName();
+            this.customerName = projectHistory.getCustomerName();
+            this.developerName = projectHistory.getDeveloperName();
+            this.description = projectHistory.getDescription();
+            this.statusCode = projectHistory.getStatusCode();
+            this.typeName = projectHistory.getTypeName();
+            this.bnsManagerId = projectHistory.getBnsManagerId();
+            this.contractNumber = projectHistory.getContractNumber();
+            this.plannedStartDate = projectHistory.getPlannedStartDate();
+            this.startDate = projectHistory.getStartDate();
+            this.plannedEndDate = projectHistory.getPlannedEndDate();
+            this.endDate = projectHistory.getEndDate();
+            this.createdAt = projectHistory.getCreatedAt();
+            this.updatedAt = projectHistory.getUpdatedAt();
             this.createdBy = createdBy;
             this.updatedBy = updatedBy;
-        }
-
-        public static Response from(
-                Response response,
-                String createdBy,
-                String updatedBy
-        ){
-            return new Response(
-                    response.getId(),
-                    response.getProjectName(),
-                    response.getCustomerName(),
-                    response.getDeveloperName(),
-                    response.getDescription(),
-                    response.getStatusCode(),
-                    response.getTypeName(),
-                    response.getBnsManagerId(),
-                    response.getContractNumber(),
-                    response.getPlannedStartDate(),
-                    response.getStartDate(),
-                    response.getPlannedEndDate(),
-                    response.getEndDate(),
-                    response.getCreatedAt(),
-                    response.getUpdatedAt(),
-                    createdBy,
-                    updatedBy
-            );
         }
 
         public static Response of(
@@ -100,21 +60,7 @@ public class ReadProjectHistory {
                 String updatedBy
         ){
             return new Response(
-                    project.getId(),
-                    project.getProjectName(),
-                    project.getCustomerName(),
-                    project.getDeveloperName(),
-                    project.getDescription(),
-                    project.getStatusCode(),
-                    project.getTypeName(),
-                    project.getBnsManagerId(),
-                    project.getContractNumber(),
-                    project.getPlannedStartDate(),
-                    project.getStartDate(),
-                    project.getPlannedEndDate(),
-                    project.getEndDate(),
-                    project.getCreatedAt(),
-                    project.getUpdatedAt(),
+                    project,
                     createdBy,
                     updatedBy
             );

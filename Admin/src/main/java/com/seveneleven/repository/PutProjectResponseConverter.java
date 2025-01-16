@@ -11,23 +11,7 @@ import org.springframework.stereotype.Component;
 public class PutProjectResponseConverter implements EntityConverter<PutProject.Response, Project> {
     @Override
     public PutProject.Response toDTO(Project project) {
-        return PutProject.Response.of(
-                project.getId(),
-                project.getProjectName(),
-                project.getCustomer().getId(),
-                project.getDeveloper().getId(),
-                project.getProjectDescription(),
-                project.getProjectType().getId(),
-                project.getProjectStatusCode(),
-                project.getBnsManager().getId(),
-                project.getContractNumber(),
-                project.getPlannedStartDate(),
-                project.getPlannedEndDate(),
-                project.getStartDate(),
-                project.getEndDate(),
-                project.getFinalApproverId(),
-                project.getFinalApprovalDate()
-        );
+        return PutProject.Response.of(project);
     }
 
     @Override

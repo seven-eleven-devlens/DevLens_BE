@@ -10,9 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProjectResponseConverter implements EntityConverter<GetProject.Response, Project> {
     @Override
-    public GetProject.Response toDTO(
-            Project project
-    ) {
+    public GetProject.Response toDTO(Project project) {
         return GetProject.Response.of(project);
     }
 

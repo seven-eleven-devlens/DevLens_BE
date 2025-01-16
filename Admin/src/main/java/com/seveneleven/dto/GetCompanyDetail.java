@@ -21,7 +21,7 @@ public class GetCompanyDetail {
         private PaginatedResponse<GetCompanyProject> projects;
 
         private Response(
-                Company company
+                Company company, PaginatedResponse<GetCompanyProject> projects
         ) {
             this.id = company.getId();
             this.companyName = company.getCompanyName();
@@ -31,36 +31,14 @@ public class GetCompanyDetail {
             this.address = company.getAddress();
             this.businessType = company.getBusinessType();
             this.businessRegistrationNumber = company.getBusinessRegistrationNumber();
+            this.projects = projects;
         }
 
-        private Response(
-                Response response
-        ) {
-            this.id = response.getId();
-            this.companyName = response.getCompanyName();
-            this.representativeName = response.getRepresentativeName();
-            this.representativeContact = response.getRepresentativeContact();
-            this.representativeEmail = response.getRepresentativeEmail();
-            this.address = response.getAddress();
-            this.businessType = response.getBusinessType();
-            this.businessRegistrationNumber = response.getBusinessRegistrationNumber();
-        }
-
-        public static Response getCompanyResponse(
-                Company company
-        ) {
-            return new Response(
-                    company
-            );
-        }
-
-        public static Response addProjectList(
-                Response response,
+        public static Response of(
+                Company company,
                 PaginatedResponse<GetCompanyProject> projects
         ) {
-            Response newResponse = new Response(response);
-            newResponse.projects = projects;
-            return newResponse;
+            return new Response(company, projects);
         }
     }
 }

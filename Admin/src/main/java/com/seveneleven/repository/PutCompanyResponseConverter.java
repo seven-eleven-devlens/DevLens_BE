@@ -14,9 +14,7 @@ public class PutCompanyResponseConverter implements EntityConverter<PutCompany.R
         함수 목적 : response 를 DTO 로 변환
      */
     @Override
-    public PutCompany.Response toDTO(
-            Company company
-    ) {
+    public PutCompany.Response toDTO(Company company) {
         return PutCompany.Response.of(company);
     }
 

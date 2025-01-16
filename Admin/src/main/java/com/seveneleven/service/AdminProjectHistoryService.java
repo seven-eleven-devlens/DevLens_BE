@@ -17,55 +17,47 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.seveneleven.common.PageSize.DEFAULT_PAGE_SIZE;
+
 @RequiredArgsConstructor
 @Service
 public class AdminProjectHistoryService {
     private final AdminProjectHistoryRepository projectHistoryRepository;
     private final ProjectHistoryConverter projectHistoryConverter;
     private final AdminMemberRepository adminMemberRepository;
-    private final int PAGE_SIZE = 10;
 
     public void saveProjectHistory(Project project) {
         // 이력 저장
-        ProjectHistory projectHistory = new ProjectHistory(project);
-        projectHistoryRepository.save(projectHistory);
+        projectHistoryRepository.save(project.saveHistory());
     }
 
     @Transactional(readOnly = true)
-    public ReadProjectHistory.Response getProjectHistory(
-            Long id
-    ) {
+    public ReadProjectHistory.Response getProjectHistory(Long id) {
         ProjectHistory projectHistory = projectHistoryRepository.findById(id).orElseThrow(ProjectHistoryNotFoundException::new);
         String createdBy = adminMemberRepository.findById(projectHistory.getCreatedBy()).map(Member::getName).orElse(null);
         String updatedBy = adminMemberRepository.findById(projectHistory.getUpdatedBy()).map(Member::getName).orElse(null);
-        return ReadProjectHistory.Response.from(projectHistoryConverter.toDTO(projectHistory), createdBy, updatedBy);
+        return projectHistoryConverter.toDTO(projectHistory, createdBy, updatedBy);
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResponse<ReadProjectHistory.Response> getListOfProjectHistory(
-            Integer page
-    ) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("id").descending());
+    public PaginatedResponse<ReadProjectHistory.Response> getListOfProjectHistory(Integer page) {
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("id").descending());
         Page<ProjectHistory> projectHistories = projectHistoryRepository.findAll(pageable);
         if (projectHistories.getContent().isEmpty()) {
             throw new ProjectHistoryNotFoundException();
         }
         return PaginatedResponse.createPaginatedResponse(
                 projectHistories.map(projectHistory -> {
-                    ReadProjectHistory.Response dto = projectHistoryConverter.toDTO(projectHistory);
                     String createdBy = adminMemberRepository.findById(projectHistory.getCreatedBy()).map(Member::getName).orElse(null);
                     String updatedBy = adminMemberRepository.findById(projectHistory.getUpdatedBy()).map(Member::getName).orElse(null);
-                    return ReadProjectHistory.Response.from(dto, createdBy, updatedBy);
+                    return projectHistoryConverter.toDTO(projectHistory, createdBy, updatedBy);
                 })
         );
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResponse<ReadProjectHistory.Response> searchHistoryByProjectName(
-            String searchTerm,
-            Integer page
-    ) {
-        Pageable pageable = PageRequest.of(page, 5, Sort.by("projectName").ascending());
+    public PaginatedResponse<ReadProjectHistory.Response> searchHistoryByProjectName(String searchTerm, Integer page) {
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("projectName").ascending());
         Page<ProjectHistory> historyPage = projectHistoryRepository.findByProjectNameContainingIgnoreCase(searchTerm ,pageable);
         return PaginatedResponse.createPaginatedResponse(historyPage.map(projectHistoryConverter::toDTO));
     }

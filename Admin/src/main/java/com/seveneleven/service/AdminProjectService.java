@@ -21,13 +21,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static com.seveneleven.common.PageSize.DEFAULT_PAGE_SIZE;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class AdminProjectService {
     private final AdminProjectRepository projectRepository;
     private final ProjectResponseConverter projectResponseConverter;
-    private final int PAGE_SIZE = 10;
     private final PostProjectRequestConverter postProjectRequestConverter;
     private final PostProjectResponseConverter postProjectResponseConverter;
     private final CheckProjectValidity checkProjectValidity;
@@ -46,19 +47,15 @@ public class AdminProjectService {
     }
 
     @Transactional(readOnly = true)
-    public GetProject.Response getProject(
-            Long id
-    ) {
+    public GetProject.Response getProject(Long id) {
         return projectRepository.findById(id)
                 .map(projectResponseConverter::toDTO)
                 .orElseThrow(ProjectNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
-    public PaginatedResponse<GetProject.Response> getListOfProject(
-            Integer page
-    ) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("id").descending());
+    public PaginatedResponse<GetProject.Response> getListOfProject(Integer page) {
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("id").descending());
         Page<Project> projects = projectRepository.findAll(pageable);
         if (projects.getContent().isEmpty()) {
             throw new ProjectNotFoundException();

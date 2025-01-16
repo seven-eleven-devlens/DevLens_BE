@@ -16,6 +16,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Page<Company> findByIsActive(Pageable pageable, YN isActive);
 
-    Page<Company> findByIsActiveAndCompanyNameContainingIgnoreCase(YN isActive, Pageable pageable, String companyName);
-    List<Company> findAllByIsActive(YN isActive);
+    Page<Company> findByIsActiveAndCompanyNameContainingIgnoreCase(YN isActive, String searchTerm, Pageable pageable);
+    List<Company> findAllByIsActiveOrderByCompanyNameAsc(YN isActive);
 }

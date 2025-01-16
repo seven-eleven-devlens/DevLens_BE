@@ -4,7 +4,6 @@ import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.AdminCompanyService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +24,7 @@ public class CompanyController {
         목적 : 회사 생성하여 db에 저장
      */
     @PostMapping("")
-    public ResponseEntity<APIResponse<PostCompany.Response>> createCompany(
-            @Valid @RequestBody
-            PostCompany.Request companyRequest
-    ) {
+    public ResponseEntity<APIResponse<PostCompany.Response>> createCompany(@RequestBody PostCompany.Request companyRequest) {
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED, adminCompanyService.createCompany(companyRequest)));
@@ -40,10 +36,8 @@ public class CompanyController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse<GetCompanyDetail.Response>> readCompany(
-            @PathVariable
-            Long id,
-            @RequestParam(value = "page")
-            Integer page
+            @PathVariable Long id,
+            @RequestParam(value = "page") Integer page
     ) {
         var company = adminCompanyService.getCompanyResponse(id, page);
         return ResponseEntity
@@ -56,10 +50,7 @@ public class CompanyController {
         목적 : 회사 목록 조회
      */
     @GetMapping("")
-    public ResponseEntity<APIResponse<PaginatedResponse<GetCompanies.Response>>> readCompanyList(
-            @RequestParam(value = "page")
-            Integer page
-    ) {
+    public ResponseEntity<APIResponse<PaginatedResponse<GetCompanies.Response>>> readCompanyList(@RequestParam(value = "page") Integer page) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, adminCompanyService.getListOfCompanies(page)));
@@ -71,10 +62,8 @@ public class CompanyController {
      */
     @GetMapping("/search")
     public ResponseEntity<APIResponse<PaginatedResponse<GetCompanyDetail.Response>>> searchCompaniesByName(
-            @RequestParam(value = "name")
-            String name,
-            @RequestParam(value = "page")
-            Integer page
+            @RequestParam(value = "name") String name,
+            @RequestParam(value = "page") Integer page
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -87,10 +76,8 @@ public class CompanyController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<PutCompany.Response>> updateCompany(
-            @PathVariable
-            Long id,
-            @RequestBody
-            PutCompany.Request request
+            @PathVariable Long id,
+            @RequestBody PutCompany.Request request
     ) {
         return ResponseEntity
                 .status(SuccessCode.UPDATED.getStatus())
@@ -103,8 +90,7 @@ public class CompanyController {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<APIResponse<Object>> deleteCompany(
-            @PathVariable
-            Long id
+            @PathVariable Long id
     ) {
         adminCompanyService.deleteCompany(id);
         return ResponseEntity

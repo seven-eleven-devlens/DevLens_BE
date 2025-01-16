@@ -97,6 +97,7 @@ public class AdminProjectController {
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, adminProjectService.updateProject(id, request)));
     }
+
     @GetMapping("/histories/search")
     public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> searchHistories(
             @RequestParam String searchTerm,

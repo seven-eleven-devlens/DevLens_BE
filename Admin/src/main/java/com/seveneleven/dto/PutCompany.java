@@ -50,40 +50,20 @@ public class PutCompany {
         private String businessRegistrationNumber;
         private YN isActive;
 
-        private Response(
-                Long id,
-                String companyName,
-                String representativeName,
-                String representativeContact,
-                String representativeEmail,
-                String address,
-                BusinessType businessType,
-                String businessRegistrationNumber,
-                YN activeStatus
-        ) {
-            this.id = id;
-            this.companyName = companyName;
-            this.representativeName = representativeName;
-            this.representativeContact = representativeContact;
-            this.representativeEmail = representativeEmail;
-            this.address = address;
-            this.businessType = businessType;
-            this.businessRegistrationNumber = businessRegistrationNumber;
-            this.isActive = activeStatus;
+        private Response(Company company) {
+            this.id = company.getId();
+            this.companyName = company.getCompanyName();
+            this.representativeName = company.getRepresentativeName();
+            this.representativeContact = company.getRepresentativeContact();
+            this.representativeEmail = company.getRepresentativeEmail();
+            this.address = company.getAddress();
+            this.businessType = company.getBusinessType();
+            this.businessRegistrationNumber = company.getBusinessRegistrationNumber();
+            this.isActive = company.getIsActive();
         }
 
         public static Response of(Company company) {
-            return new Response(
-                    company.getId(),
-                    company.getCompanyName(),
-                    company.getRepresentativeName(),
-                    company.getRepresentativeContact(),
-                    company.getRepresentativeEmail(),
-                    company.getAddress(),
-                    company.getBusinessType(),
-                    company.getBusinessRegistrationNumber(),
-                    company.getIsActive()
-            );
+            return new Response(company);
         }
     }
 }

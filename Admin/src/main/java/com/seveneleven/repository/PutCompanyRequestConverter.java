@@ -14,9 +14,7 @@ public class PutCompanyRequestConverter implements EntityConverter<PutCompany.Re
         함수 목적 : entity 를 request 로 변환
      */
     @Override
-    public PutCompany.Request toDTO(
-            Company company
-    ) {
+    public PutCompany.Request toDTO(Company company) {
         return null;
     }
 

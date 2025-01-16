@@ -11,9 +11,7 @@ import org.springframework.stereotype.Component;
 public class PostCompanyResponseConverter implements EntityConverter<PostCompany.Response, Company> {
 
     @Override
-    public PostCompany.Response toDTO(
-            Company company
-    ) {
+    public PostCompany.Response toDTO(Company company) {
             return PostCompany.Response.of(company);
     }
 

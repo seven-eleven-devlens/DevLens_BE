@@ -14,9 +14,7 @@ public class PostCompanyRequestConverter implements EntityConverter<PostCompany.
         함수 목적 : entity 를 request 로 변환
      */
     @Override
-    public PostCompany.Request toDTO(
-            Company company
-    ) {
+    public PostCompany.Request toDTO(Company company) {
         //미사용 메서드
         return null;
     }

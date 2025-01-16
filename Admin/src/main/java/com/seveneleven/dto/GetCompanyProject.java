@@ -17,32 +17,16 @@ public class GetCompanyProject {
     private String customerName;
     private String projectStatus;
 
-    private GetCompanyProject(
-            Long id,
-            String projectName,
-            LocalDate plannedStartDate,
-            String developerName,
-            String customerName,
-            String projectStatus
-    ) {
-        this.id = id;
-        this.projectName = projectName;
-        this.plannedStartDate = plannedStartDate;
-        this.developerName = developerName;
-        this.customerName = customerName;
-        this.projectStatus = projectStatus;
+    private GetCompanyProject(Project project) {
+        this.id = project.getId();
+        this.projectName = project.getProjectName();
+        this.plannedStartDate = project.getPlannedStartDate();
+        this.developerName = project.getDeveloper().getCompanyName();
+        this.customerName = project.getCustomer().getCompanyName();
+        this.projectStatus = project.getProjectStatusCode().name();
     }
-    public static GetCompanyProject of(
-            Project project
-    ) {
-        return new GetCompanyProject(
-                project.getId(),
-                project.getProjectName(),
-                project.getPlannedStartDate(),
-                project.getDeveloper().getCompanyName(),
-                project.getCustomer().getCompanyName(),
-                project.getProjectStatusCode().name()
-        );
+    public static GetCompanyProject of(Project project) {
+        return new GetCompanyProject(project);
     }
 
 }

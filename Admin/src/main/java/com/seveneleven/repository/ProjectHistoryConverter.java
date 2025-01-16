@@ -11,10 +11,14 @@ import org.springframework.stereotype.Component;
 public class ProjectHistoryConverter implements EntityConverter<ReadProjectHistory.Response, ProjectHistory> {
     @Override
     public ReadProjectHistory.Response toDTO(ProjectHistory projectHistory) {
+        return null;
+    }
+
+    public ReadProjectHistory.Response toDTO(ProjectHistory projectHistory, String createdBy, String updatedBy) {
         return ReadProjectHistory.Response.of(
                 projectHistory,
-                null,
-                null
+                createdBy,
+                updatedBy
         );
     }
 

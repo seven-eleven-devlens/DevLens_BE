@@ -20,28 +20,6 @@ public class PostProject {
         private String contractNumber; // 계약서 번호
         private LocalDate plannedStartDate; // 시작 예정일
         private LocalDate plannedEndDate; // 종료 예정일
-
-        private Request(
-                String projectName,
-                Long customerId,
-                Long developerId,
-                String projectDescription,
-                Long projectTypeId,
-                Long bnsManagerId,
-                String contractNumber,
-                LocalDate plannedStartDate,
-                LocalDate plannedEndDate
-        ) {
-            this.projectName = projectName;
-            this.customerId = customerId;
-            this.developerId = developerId;
-            this.projectDescription = projectDescription;
-            this.projectTypeId = projectTypeId;
-            this.bnsManagerId = bnsManagerId;
-            this.contractNumber = contractNumber;
-            this.plannedStartDate = plannedStartDate;
-            this.plannedEndDate = plannedEndDate;
-        }
     }
 
     @Getter
@@ -59,47 +37,23 @@ public class PostProject {
         private LocalDate plannedEndDate; // 종료 예정일
 
         private Response(
-                Long id,
-                String projectName,
-                String customerName,
-                String developerName,
-                String projectDescription,
-                String projectTypeName,
-                Project.ProjectStatusCode projectStatusCode,
-                String bnsManagerName,
-                String contractNumber,
-                LocalDate plannedStartDate,
-                LocalDate plannedEndDate
-        ) {
-            this.id = id;
-            this.projectName = projectName;
-            this.customerName = customerName;
-            this.developerName = developerName;
-            this.projectDescription = projectDescription;
-            this.projectTypeName = projectTypeName;
-            this.projectStatusCode = projectStatusCode;
-            this.bnsManagerName = bnsManagerName;
-            this.contractNumber = contractNumber;
-            this.plannedStartDate = plannedStartDate;
-            this.plannedEndDate = plannedEndDate;
-        }
-
-        public static Response of(
                 Project project
         ) {
-            return new Response(
-                    project.getId(),
-                    project.getProjectName(),
-                    project.getCustomer().getCompanyName(),
-                    project.getDeveloper().getCompanyName(),
-                    project.getProjectDescription(),
-                    project.getProjectType().getProjectTypeName(),
-                    project.getProjectStatusCode(),
-                    project.getBnsManager().getName(),
-                    project.getContractNumber(),
-                    project.getPlannedStartDate(),
-                    project.getPlannedEndDate()
-            );
+            this.id = project.getId();
+            this.projectName = project.getProjectName();
+            this.customerName = project.getCustomer().getCompanyName();
+            this.developerName = project.getDeveloper().getCompanyName();
+            this.projectDescription = project.getProjectDescription();
+            this.projectTypeName = project.getProjectType().getProjectTypeName();
+            this.projectStatusCode = project.getProjectStatusCode();
+            this.bnsManagerName = project.getBnsManager().getName();
+            this.contractNumber = project.getContractNumber();
+            this.plannedStartDate = project.getPlannedStartDate();
+            this.plannedEndDate = project.getPlannedEndDate();
+        }
+
+        public static Response of(Project project) {
+            return new Response(project);
         }
     }
 }

@@ -15,15 +15,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
+
+import static com.seveneleven.common.PageSize.DEFAULT_PAGE_SIZE;
 
 @Service
 @RequiredArgsConstructor
 public class AdminCompanyService {
     private final CompanyRepository companyRepository;
     private final PutCompanyResponseConverter putCompanyResponseConverter;
-    private final int PAGE_SIZE = 20;
     private final AdminProjectRepository adminProjectRepository;
     private final GetCompanyProjectResponseConverter getCompanyProjectResponseConverter;
     private final GetCompanyDetailResponseConverter getCompanyDetailResponseConverter;
@@ -38,9 +38,7 @@ public class AdminCompanyService {
         함수명 : createCompany
         함수 목적 : 함수 정보 저장
      */
-    public PostCompany.Response createCompany(
-            PostCompany.Request companyRequest
-    ) {
+    public PostCompany.Response createCompany(PostCompany.Request companyRequest) {
         //사업자 등록번호 중복 조회
         checkCompanyValidity.checkDuplicatedCompanyBusinessRegistrationNumber(companyRequest.getBusinessRegistrationNumber());
         return postCompanyResponseConverter.toDTO(companyRepository.save(postCompanyRequestConverter.toEntity(companyRequest)));
@@ -57,20 +55,18 @@ public class AdminCompanyService {
         //참여 프로젝트 조회를 위한 회사 조회
         Company company = companyRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
         //참여 프로젝트 조회 및 페이지 생성
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("projectName").ascending());
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("projectName").ascending());
         Page<Project> projectPage = adminProjectRepository.findByCustomerOrDeveloper(pageable, company, company);
-        //회사 조회
-        GetCompanyDetail.Response response = companyRepository
-                .findByIdAndIsActive(id, YN.Y)
-                .map(getCompanyDetailResponseConverter::toDTO)
-                .orElseThrow(CompanyNotFoundException::new);
 
-        return GetCompanyDetail.Response.addProjectList(
-                response,
-                PaginatedResponse.createPaginatedResponse(
-                        projectPage.map(getCompanyProjectResponseConverter::toDTO)
-                )
-        );
+        return companyRepository
+                .findByIdAndIsActive(id, YN.Y)
+                .map(company1 -> getCompanyDetailResponseConverter.toDTO(
+                        company,
+                        PaginatedResponse.createPaginatedResponse(
+                                projectPage.map(getCompanyProjectResponseConverter::toDTO)
+                        )
+                ))
+                .orElseThrow(CompanyNotFoundException::new);
     }
 
     /*
@@ -78,10 +74,8 @@ public class AdminCompanyService {
         함수 목적 : 회사 목록조회
     */
     @Transactional(readOnly = true)
-    public PaginatedResponse<GetCompanies.Response> getListOfCompanies(
-            Integer page
-    ) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by("companyName").ascending());
+    public PaginatedResponse<GetCompanies.Response> getListOfCompanies(Integer page) {
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("companyName").ascending());
         Page<Company> companyPage = companyRepository.findByIsActive(pageable, YN.Y);
         if (companyPage.getContent().isEmpty()) {
             throw new CompanyNotFoundException();
@@ -96,15 +90,14 @@ public class AdminCompanyService {
     public PaginatedResponse<GetCompanyDetail.Response> searchCompaniesByName(
             String name, Integer page
     ) {
-        Pageable pageable = PageRequest.of(page, 5, Sort.by("companyName").ascending());
-        Page<Company> companyPage = companyRepository.findByIsActiveAndCompanyNameContainingIgnoreCase(YN.Y, pageable, name);
+        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("companyName").ascending());
+        Page<Company> companyPage = companyRepository.findByIsActiveAndCompanyNameContainingIgnoreCase(YN.Y, name, pageable);
         return PaginatedResponse.createPaginatedResponse(companyPage.map(getCompanyDetailResponseConverter::toDTO));
     }
 
     @Transactional
     public PutCompany.Response updateCompany(
-            Long id,
-            PutCompany.Request request
+            Long id, PutCompany.Request request
     ) {
         //비활성화 및 존재 여부 확인
         Company oldCompany = checkCompanyValidity.checkCompanyExistsOrDeactivated(id);
@@ -118,9 +111,7 @@ public class AdminCompanyService {
     }
 
     @Transactional
-    public void deleteCompany(
-            Long id
-    ) {
+    public void deleteCompany(Long id) {
         //비활성화 및 존재 여부 확인
         Company company = checkCompanyValidity.checkCompanyExistsOrDeactivated(id);
         //회사 isActive N으로 변경
@@ -128,8 +119,8 @@ public class AdminCompanyService {
     }
 
     public List<GetAllCompanies> getAllCompanies() {
-        return companyRepository.findAllByIsActive(YN.Y)
-                .stream().sorted(Comparator.comparing(Company::getCompanyName))
+        return companyRepository.findAllByIsActiveOrderByCompanyNameAsc(YN.Y)
+                .stream()
                 .map(getAllCompaniesConverter::toDTO)
                 .toList();
     }
