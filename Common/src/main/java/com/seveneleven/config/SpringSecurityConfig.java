@@ -2,6 +2,7 @@ package com.seveneleven.config;
 
 import com.seveneleven.util.security.TokenRepository;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -23,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SpringSecurityConfig {
 
     private final TokenProvider tokenProvider;
