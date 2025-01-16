@@ -21,9 +21,7 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 생성
      */
     @PostMapping("")
-    public ResponseEntity<APIResponse<PostProject.Response>> newProject(
-            @RequestBody PostProject.Request request
-    ) {
+    public ResponseEntity<APIResponse<PostProject.Response>> newProject(@RequestBody PostProject.Request request) {
         PostProject.Response project = adminProjectService.createProject(request);
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
@@ -35,9 +33,7 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 조회
      */
     @GetMapping("/{id}")
-    public ResponseEntity<APIResponse<GetProject.Response>> readProject(
-            @PathVariable Long id
-    ) {
+    public ResponseEntity<APIResponse<GetProject.Response>> readProject(@PathVariable Long id) {
         GetProject.Response response = adminProjectService.getProject(id);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
@@ -49,9 +45,7 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 목록 조회
      */
     @GetMapping("")
-    public ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> getListOfProjects(
-            @RequestParam(value = "page") Integer page
-    ) {
+    public ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> getListOfProjects(@RequestParam(value = "page") Integer page) {
         PaginatedResponse<GetProject.Response> response = adminProjectService.getListOfProject(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
@@ -63,9 +57,7 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 이력 목록 조회
      */
     @GetMapping("/histories")
-    public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> getListOfProjectHistory(
-            @RequestParam(value = "page") Integer page
-    ) {
+    public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> getListOfProjectHistory(@RequestParam(value = "page") Integer page) {
         PaginatedResponse<ReadProjectHistory.Response> response = adminProjectHistoryService.getListOfProjectHistory(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
@@ -77,9 +69,7 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 이력 조회
      */
     @GetMapping("/histories/{id}")
-    public ResponseEntity<APIResponse<ReadProjectHistory.Response>> getProjectHistory(
-            @PathVariable Long id
-    ) {
+    public ResponseEntity<APIResponse<ReadProjectHistory.Response>> getProjectHistory(@PathVariable Long id) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, adminProjectHistoryService.getProjectHistory(id)));
@@ -112,9 +102,7 @@ public class AdminProjectController {
         함수 목적 : 프로젝트 삭제
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<APIResponse<Void>> deleteProject(
-            @PathVariable Long id
-    ){
+    public ResponseEntity<APIResponse<Void>> deleteProject(@PathVariable Long id){
         adminProjectService.deleteProject(id);
         return ResponseEntity
                 .status(SuccessCode.DELETED.getStatus())
