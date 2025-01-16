@@ -26,9 +26,6 @@ public class Company extends BaseEntity {
     @Column(name = "company_name", nullable = false, length = 255)
     private String companyName; // 회사명
 
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Department> departments = new ArrayList<>(); // 부서 리스트
-
     @Column(name = "representative_name", nullable = false, length = 100)
     private String representativeName; // 대표자명
 
@@ -103,15 +100,4 @@ public class Company extends BaseEntity {
         this.isActive = YN.N;
     }
 
-    // 부서 추가 메서드
-    public void addDepartment(Department department) {
-        this.departments.add(department);
-        department.setCompany(this);
-    }
-
-    // 부서 삭제 메서드
-    public void removeDepartment(Department department) {
-        this.departments.remove(department);
-        department.setCompany(null);
-    }
 }

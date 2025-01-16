@@ -55,16 +55,16 @@ public class Member extends BaseEntity {
     @Column(name = "phone_number", length = 20)
     private String phoneNumber; // 전화번호
 
-    @Column(name = "department_id")
-    private Long departmentId; // 부서명
+    @Column(name = "department")
+    private String department; // 부서명
 
-    @Column(name = "position_id")
-    private Long positionId; // 직책
+    @Column(name = "position")
+    private String position; // 직책
 
 
     // 생성 메서드
     public static Member createMember(String loginId, String password, Company company, Role role, String name, String email,
-                                      LocalDate birthDate, String phoneNumber, Long departmentId, Long positionId) {
+                                      LocalDate birthDate, String phoneNumber, String department, String position) {
         Member member = new Member();
         member.name         = name;
         member.role         = role;
@@ -74,20 +74,21 @@ public class Member extends BaseEntity {
         member.company      = company;
         member.birthDate    = birthDate;
         member.phoneNumber  = phoneNumber;
-        member.positionId   = positionId;
-        member.departmentId = departmentId;
+        member.position     = position;
+        member.department   = department;
         return member;
     }
 
     // 업데이트 메서드
-    public void updateMember(String name, String phoneNumber, Role role, Company company,
-                             Long departmentId, Long positionId) {
+    public void updateMember(String name, String email, String phoneNumber, Role role, Company company,
+                             String department, String position) {
         this.name               = StringUtils.isNotBlank(name) ? name : this.name;
         this.role               = Objects.nonNull(role) ? role : this.role;
+        this.email              = Objects.nonNull(email) ? email : this.email;
         this.company            = Objects.nonNull(company) ? company : this.company;
         this.phoneNumber        = StringUtils.isNotBlank(phoneNumber) ? phoneNumber : this.phoneNumber;
-        this.departmentId       = Objects.nonNull(departmentId) ? departmentId : this.departmentId;
-        this.positionId         = Objects.nonNull(positionId) ? positionId : this.positionId;
+        this.department         = Objects.nonNull(department) ? department : this.department;
+        this.position           = Objects.nonNull(position) ? position : this.position;
     }
 
 
@@ -99,6 +100,11 @@ public class Member extends BaseEntity {
     // 삭제 메서드
     public void deleteMember() {
         this.status = MemberStatus.INACTIVE;
+    }
+
+    // 탈퇴 메서드
+    public void withDrawMember() {
+        this.status = MemberStatus.WITHDRAW;
     }
 
     // 복구 메서드

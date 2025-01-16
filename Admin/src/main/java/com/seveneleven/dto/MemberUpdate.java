@@ -33,8 +33,8 @@ public class MemberUpdate {
         private Long companyId;
         private Role role;
         private String phoneNumber;
-        private Long departmentId;
-        private Long positionId;
+        private String department;
+        private String position;
     }
 
     @Getter

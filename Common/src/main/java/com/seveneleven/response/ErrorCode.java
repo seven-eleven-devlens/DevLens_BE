@@ -14,17 +14,21 @@ public enum ErrorCode {
     NOT_FOUND_TOKEN(1002, HttpStatus.INTERNAL_SERVER_ERROR, "유효하지 않은 JWT 토큰입니다."),
     EXPIRED_TOKEN(1003, HttpStatus.INTERNAL_SERVER_ERROR, "만료된 JWT 토큰입니다."),
     JWT_FILTER_ERROR(1004, HttpStatus.INTERNAL_SERVER_ERROR, "필터 처리 중 예외가 발생했습니다."),
-    USER_NOT_FOUND(1005, HttpStatus.BAD_REQUEST,"회원 정보를 찾을 수 없습니다."),
+    USER_NOT_FOUND(1005, HttpStatus.NOT_FOUND,"회원 정보를 찾을 수 없습니다."),
     MEMBER_INACTIVE(1006, HttpStatus.BAD_REQUEST,"비활성화된 회원입니다."),
     MEMBER_SUSPENDED(1007, HttpStatus.BAD_REQUEST,"정지된 회원입니다."),
-    DUPLICATE_USER_ID(1008, HttpStatus.BAD_REQUEST,"이미 존재하는 ID 입니다."),
-    DUPLICATE_EMAIL(1009, HttpStatus.BAD_REQUEST,"이미 존재하는 이메일 입니다."),
-    INVALID_PASSWORD_LENGTH(1010, HttpStatus.BAD_REQUEST,"비밀번호는 8자 이상, 20자 이하로 입력해야 합니다."),
-    INVALID_PASSWORD_FORMAT(1011, HttpStatus.BAD_REQUEST,"비밀번호는 숫자와 특수문자를 포함해야 합니다."),
+    MEMBER_WITHDRAW(1008, HttpStatus.BAD_REQUEST,"탈퇴한 회원입니다."),
+    DUPLICATE_USER_ID(1009, HttpStatus.BAD_REQUEST,"이미 존재하는 ID 입니다."),
+    DUPLICATE_EMAIL(1010, HttpStatus.BAD_REQUEST,"이미 존재하는 이메일 입니다."),
+    INVALID_PASSWORD_LENGTH(1011, HttpStatus.BAD_REQUEST,"비밀번호는 8자 이상, 20자 이하로 입력해야 합니다."),
+    INVALID_PASSWORD_FORMAT(1012, HttpStatus.BAD_REQUEST,"비밀번호는 숫자와 특수문자를 포함해야 합니다."),
 
     COMPANY_DUPLICATED_NUMBER(1051, HttpStatus.BAD_REQUEST,"이미 등록된 회사입니다."),
     COMPANY_IS_DEACTIVATED(1052, HttpStatus.BAD_REQUEST,"비활성화된 회사 정보입니다."),
     COMPANY_IS_NOT_FOUND(1053,HttpStatus.BAD_REQUEST,"회사 정보를 찾을 수 없습니다."),
+
+    NOT_FOUND_DEPARTMENT(1060, HttpStatus.NOT_FOUND, "해당 부서를 찾을 수 없습니다."),
+    NOT_FOUND_POSITION(1061, HttpStatus.NOT_FOUND, "해당 직책을 찾을 수 없습니다."),
 
     // 2000번대 코드 : 프로젝트 관련
     PROJECT_NOT_FOUND(2000,HttpStatus.BAD_REQUEST,"프로젝트 정보를 찾을 수 없습니다."),
