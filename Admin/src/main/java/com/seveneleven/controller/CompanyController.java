@@ -1,40 +1,34 @@
 package com.seveneleven.controller;
 
-import com.seveneleven.dto.CompanyDto;
-import com.seveneleven.dto.GetCompany;
-import com.seveneleven.dto.PaginatedResponse;
+import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.service.CompanyCreateService;
-import com.seveneleven.service.CompanyReadService;
-import com.seveneleven.service.CompanyUpdateService;
-import jakarta.validation.Valid;
+import com.seveneleven.service.AdminCompanyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/companies")
 public class CompanyController {
-    private final CompanyCreateService companyCreateService;
-    private final CompanyReadService companyReadService;
-    private final CompanyUpdateService companyUpdateService;
+    private final AdminCompanyService adminCompanyService;
 
     /*
         함수명 : createCompany
         목적 : 회사 생성하여 db에 저장
      */
     @PostMapping("")
-    public ResponseEntity<APIResponse<CompanyDto.CompanyResponse>> createCompany(
-            @Valid @RequestBody CompanyDto.CompanyRequest companyRequest
-    ) {
-        var company = companyCreateService.createCompany(companyRequest);
+    public ResponseEntity<APIResponse<PostCompany.Response>> createCompany(@RequestBody PostCompany.Request companyRequest) {
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED, company));
+                .body(APIResponse.success(SuccessCode.CREATED, adminCompanyService.createCompany(companyRequest)));
     }
 
     /*
@@ -42,11 +36,11 @@ public class CompanyController {
         목적 : 회사 상세 정보 조회
      */
     @GetMapping("/{id}")
-    public ResponseEntity<APIResponse<GetCompany.Response>> readCompany(
+    public ResponseEntity<APIResponse<GetCompanyDetail.Response>> readCompany(
             @PathVariable Long id,
-            @RequestParam(value = "page", required = true) Integer page
+            @RequestParam(value = "page") Integer page
     ) {
-        var company = companyReadService.getCompanyResponse(id, page);
+        var company = adminCompanyService.getCompanyResponse(id, page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, company));
@@ -57,13 +51,24 @@ public class CompanyController {
         목적 : 회사 목록 조회
      */
     @GetMapping("")
-    public ResponseEntity<APIResponse<PaginatedResponse<CompanyDto.CompanyResponse>>> readCompanyList(
-            @RequestParam(value = "page", required = true) Integer page
-    ) {
-        PaginatedResponse<CompanyDto.CompanyResponse> response = companyReadService.getListOfCompanies(page);
+    public ResponseEntity<APIResponse<PaginatedResponse<GetCompanies.Response>>> readCompanyList(@RequestParam(value = "page") Integer page) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, response));
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyService.getListOfCompanies(page)));
+    }
+
+    /*
+        함수명 : searchCompaniesByName
+        함수 목적 : 회사 검색
+     */
+    @GetMapping("/search")
+    public ResponseEntity<APIResponse<PaginatedResponse<GetCompanies.Response>>> searchCompaniesByName(
+            @RequestParam(value = "name") String name,
+            @RequestParam(value = "page") Integer page
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyService.searchCompaniesByName(name,page)));
     }
 
     /*
@@ -71,13 +76,13 @@ public class CompanyController {
         목적 : 회사 상세 정보 수정
      */
     @PutMapping("/{id}")
-    public ResponseEntity<APIResponse<CompanyDto.CompanyResponse>> updateCompany(
+    public ResponseEntity<APIResponse<PutCompany.Response>> updateCompany(
             @PathVariable Long id,
-            @RequestBody CompanyDto.CompanyRequest companyRequest
+            @RequestBody PutCompany.Request request
     ) {
         return ResponseEntity
                 .status(SuccessCode.UPDATED.getStatus())
-                .body(APIResponse.success(SuccessCode.UPDATED, companyUpdateService.updateCompany(id, companyRequest)));
+                .body(APIResponse.success(SuccessCode.UPDATED, adminCompanyService.updateCompany(id, request)));
     }
 
     /*
@@ -88,9 +93,16 @@ public class CompanyController {
     public ResponseEntity<APIResponse<Object>> deleteCompany(
             @PathVariable Long id
     ) {
-        companyUpdateService.deleteCompany(id);
+        adminCompanyService.deleteCompany(id);
         return ResponseEntity
                 .status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<APIResponse<List<GetAllCompanies>>> readAllCompany() {
+        return ResponseEntity
+                .status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyService.getAllCompanies()));
     }
 }

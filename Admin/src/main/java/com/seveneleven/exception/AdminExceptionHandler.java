@@ -1,6 +1,6 @@
 package com.seveneleven.exception;
 
-import com.seveneleven.dto.CompanyDto;
+import com.seveneleven.dto.PutCompany;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.ErrorCode;
 import jakarta.persistence.EntityNotFoundException;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class AdminExceptionHandler {
     @ExceptionHandler(value = {CompanyDuplicatedException.class, CompanyNotFoundException.class,
             ProjectHistoryNotFoundException.class, ProjectNameDuplicatedException.class, ProjectNotFoundException.class})
-    public ResponseEntity<APIResponse<CompanyDto.CompanyResponse>> handleCompanyDuplicatedException(
+    public ResponseEntity<APIResponse<PutCompany.Response>> handleCompanyDuplicatedException(
             BusinessException e
     ) {
         return ResponseEntity
