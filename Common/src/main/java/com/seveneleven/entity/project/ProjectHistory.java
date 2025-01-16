@@ -48,48 +48,22 @@ public class ProjectHistory extends BaseEntity {
 
     private LocalDate endDate; // 종료일
 
-    public ProjectHistory(
-            String projectName,
-            String customerName,
-            String developerName,
-            String description,
-            String statusCode,
-            String typeName,
-            Long bnsManagerId,
-            String contractNumber,
-            LocalDate plannedStartDate,
-            LocalDate startDate,
-            LocalDate plannedEndDate,
-            LocalDate endDate
-    ) {
-        this.projectName = projectName;
-        this.customerName = customerName;
-        this.developerName = developerName;
-        this.description = description;
-        this.statusCode = statusCode;
-        this.typeName = typeName;
-        this.bnsManagerId = bnsManagerId;
-        this.contractNumber = contractNumber;
-        this.plannedStartDate = plannedStartDate;
-        this.startDate = startDate;
-        this.plannedEndDate = plannedEndDate;
-        this.endDate = endDate;
+    private ProjectHistory(Project project) {
+        this.projectName = project.getProjectName();
+        this.customerName = project.getCustomer().getCompanyName();
+        this.developerName = project.getDeveloper().getCompanyName();
+        this.description = project.getProjectDescription();
+        this.statusCode = project.getProjectStatusCode().name();
+        this.typeName = project.getProjectType().getProjectTypeName();
+        this.bnsManagerId = project.getBnsManager().getId();
+        this.contractNumber = project.getContractNumber();
+        this.plannedStartDate = project.getPlannedStartDate();
+        this.startDate = project.getStartDate();
+        this.plannedEndDate = project.getPlannedEndDate();
+        this.endDate = project.getEndDate();
     }
 
-    public ProjectHistory(Project project) {
-        this(
-                project.getProjectName(),
-                project.getCustomer().getCompanyName(),
-                project.getDeveloper().getCompanyName(),
-                project.getProjectDescription(),
-                project.getProjectStatusCode().name(),
-                project.getProjectType().getProjectTypeName(),
-                project.getBnsManager().getId(),
-                project.getContractNumber(),
-                project.getPlannedStartDate(),
-                project.getStartDate(),
-                project.getPlannedEndDate(),
-                project.getEndDate()
-        );
+    public static ProjectHistory create(Project project) {
+        return new ProjectHistory(project);
     }
 }
