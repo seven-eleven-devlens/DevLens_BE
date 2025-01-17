@@ -1,11 +1,14 @@
-package com.seveneleven.util.file.Service;
+package com.seveneleven.service;
 
+import com.seveneleven.entity.file.FileMetadata;
+import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.repository.CompanyRepository;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.response.SuccessCode;
+import com.seveneleven.util.file.Service.FileService;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,40 +33,59 @@ public class CompanyFileService {
      */
 
     @Transactional
-    public APIResponse uploadLogoImage(MultipartFile file, Long companyId, Long uploaderId) throws Exception{
+    public void uploadLogoImage(MultipartFile file, Long companyId, Long uploaderId) {
         //1. 회사 id로 존재여부 판별
         Company companyEntity = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
         //TODO) 2. 수행자 권한 판별 validation - admin판별, super의 회사 판별
 
-        //3. S3파일 업로드, 메타데이터 테이블 저장
-        APIResponse uploadResponse = fileService.uploadFile(file, "COMPANY_LOGO_IMAGE", companyId);
+        //3. 로고 이미 존재하는지 판별
+        if(fileMetadataRepository.existsByCategoryAndReferenceId(FileCategory.COMPANY_LOGO_IMAGE, companyId)){
+            throw new BusinessException(ErrorCode.LOGO_ALREADY_EXIST_ERROR);
+        }
 
-        //4. 회사 대표 이미지 유무 칸을 Y로 변경한다.
-        companyRepository.save(companyEntity);
-
-        //5. 반환
-        return uploadResponse;
+        //4. S3파일 업로드, 메타데이터 테이블 저장
+        fileService.uploadFile(file, FileCategory.COMPANY_LOGO_IMAGE, companyId);
     }
 
     /**
      * 2. 회사 로고 이미지 조회
      * @auth admin, super(해당 회사 대표회원)
      * @param companyId 해당 회사 id
-     * @return APIResponse S3에 저장된 파일의 메타데이터 response
+     * @return fileDto S3에 저장된 파일의 메타데이터 DTO
      */
     @Transactional(readOnly = true)
-    public APIResponse getLogoImage(Long companyId) throws Exception{
+    public FileMetadataDto getLogoImage(Long companyId) {
         //회사 유효성 검사
         if(!companyRepository.existsById(companyId)){
             throw new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND);
         }
 
         //카테고리와 참조 id 로 FileMetadata 탐색
-        FileMetadataDto fileDto = fileService.getFile("COMPANY_LOGO_IMAGE", companyId);
+        FileMetadataDto fileDto = fileService.getFile(FileCategory.COMPANY_LOGO_IMAGE, companyId);
 
-        return APIResponse.success(SuccessCode.OK, fileDto);
+        return fileDto;
+    }
+
+    /**
+     * 3. 회사 로고 이미지 삭제
+     * @auth admin, super(해당 회사 대표회원)
+     * @param companyId 해당 회사 ID
+     */
+    @Transactional
+    public void deleteLogoImage(Long companyId, Long uploaderId) {
+        //1.회사 유효성 검사
+        Company companyEntity = companyRepository.findById(companyId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+
+        //TODO) 2. 수행자 ID 정보 판별
+
+        //3. 삭제수행
+        fileService.deleteFile(FileCategory.COMPANY_LOGO_IMAGE, companyId);
+
+        //TODO) 4. 삭제 이력 남기기
+
     }
 }
 
