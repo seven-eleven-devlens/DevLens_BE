@@ -140,18 +140,18 @@ public class MemberServiceImpl implements MemberService{
      * 함수명 getProfileImageUrl
      * 파일 조회(단일)
      *
-     * @param memberId 회원ID(pk)
-     * @return FileMetadataDto 파일 메타데이터를 담은 응답 객체
+     * @param memberId 회원 id(pk)
+     * @return String 프로필 이미지 url 반환
      */
     @Transactional
     public String getProfileImageUrl(Long memberId) {
-        //해당 파일 카테고리와 참조 id로 entity를 가져온다.
-        //파일이 존재하지 않아도 예외를 던지면 안됨.
+        // 해당 파일 카테고리와 참조 id(회원 id)로 entity를 가져온다.
+        // 파일이 존재하지 않아도 예외를 던지면 안됨.
         FileMetadata fileMetadataEntity = fileMetadataRepository.findByCategoryAndReferenceId(FileCategory.USER_PROFILE_IMAGE, memberId)
                 .orElse(null);
 
-        //dto 변환 후 반환
-        return fileMetadataEntity.getFilePath();
+        // 프로필 이미지 url 반환
+        return Objects.nonNull(fileMetadataEntity)?fileMetadataEntity.getFilePath():null;
     }
 
 
