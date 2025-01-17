@@ -1,7 +1,5 @@
 package com.seveneleven.board.repository;
 
-import com.seveneleven.board.dto.PostListResponse;
-import com.seveneleven.board.service.PostService;
 import com.seveneleven.entity.board.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

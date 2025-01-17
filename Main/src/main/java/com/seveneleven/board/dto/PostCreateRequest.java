@@ -41,4 +41,11 @@ public class PostCreateRequest {
     @NotNull
     private LocalDateTime registerDate; // 등록일시
 
+    public Long getParentPostId() {
+        if(parentPostId == null) {
+            return null;
+        }
+        return parentPostId;
+    }
+
 }

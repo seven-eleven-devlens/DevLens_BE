@@ -36,7 +36,7 @@ public enum ErrorCode {
     NOT_FOUND_PROJECT_STEP(2501, HttpStatus.NOT_FOUND, "해당 프로젝트 단계를 찾을 수 없습니다."),
     NOT_FOUND_MEMBER(2502, HttpStatus.NOT_FOUND, "해당 회원을 찾을 수 없습니다."),
     NOT_FOUND_POST(2503, HttpStatus.NOT_FOUND, "해당 게시물을 찾을 수 없습니다."),
-    NOT_AUTHORIZED_TO_DELETE(2504, HttpStatus.FORBIDDEN, "게시글은 작성자만 삭제할 수 있습니다."),
+    NOT_AUTHORIZED_TO_POST(2504, HttpStatus.FORBIDDEN, "작성자만 게시글을 수정 및 삭제할 수 있습니다."),
     NOT_FOUND_WRITER(2505, HttpStatus.NOT_FOUND, "작성자 정보를 찾을 수 없습니다."),
     NOT_DELETE_PARENT_POST(2506, HttpStatus.BAD_REQUEST, "관련된 게시글이 존재하는 경우 해당 게시글을 삭제할 수 없습니다."),
     NOT_MATCH_PROJECTSTEPID(2507, HttpStatus.BAD_REQUEST, "게시글의 프로젝트 단계가 일치하지 않습니다."),

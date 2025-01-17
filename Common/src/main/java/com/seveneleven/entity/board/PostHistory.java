@@ -83,7 +83,7 @@ public class PostHistory extends BaseEntity {
     public static PostHistory createPostHistory(Post post, PostAction action) {
         PostHistory postHistory = new PostHistory();
         postHistory.projectStepId = post.getProjectStep().getId();
-        postHistory.parentPostId = (post.getParentPost() != null ? post.getParentPost().getId() : null);
+        postHistory.parentPostId = postHistory.getParentPostId();
         postHistory.postId = post.getId();
         postHistory.isPinnedPost = post.getIsPinnedPost();
         postHistory.priority = post.getPriority();
@@ -97,5 +97,10 @@ public class PostHistory extends BaseEntity {
         return postHistory;
     }
 
-
+    private Long getParentPostId() {
+        if(parentPostId == null) {
+            return null;
+        }
+        return parentPostId;
+    }
 }

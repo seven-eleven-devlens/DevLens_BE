@@ -1,5 +1,6 @@
 package com.seveneleven.board.dto;
 
+import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.global.YesNo;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class PostResponse {
     // private List<comment> comments;
 
 
-    public PostResponse(
+    private PostResponse(
             Long postId,
             Long projectStepId,
             Long parentPostId,
@@ -56,5 +57,23 @@ public class PostResponse {
         this.createDate = createDate;
         this.updateDate = updateDate;
     }
+
+    public static PostResponse getPostResponse(Post post, Long parentPostId, String memberName) {
+        return new PostResponse(
+                post.getId(),
+                post.getProjectStep().getId(),
+                parentPostId,           // 부모게시물이 없는 경우 null 반환
+                post.getIsPinnedPost(),
+                post.getPriority(),
+                post.getStatus(),
+                post.getTitle(),
+                post.getContent(),
+                post.getDeadline(),
+                memberName,             // memberId가 아닌 name
+                post.getCreatedAt(),
+                post.getUpdatedAt()
+        );
+    }
+
 
 }

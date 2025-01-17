@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
-@Slf4j
 @NoArgsConstructor
 public class PostListResponse {
 
@@ -25,9 +24,8 @@ public class PostListResponse {
     private LocalDate deadline;         // 마감일자
 
     private PostListResponse(Post post, String writer) {
-        log.info("PostListResponse: post = {} : start", post.getId());
         this.projectStepId = post.getProjectStep().getId();
-        this.parentPostId = post.getParentPost() != null ? post.getParentPost().getId() : null;
+        this.parentPostId = getParentPostId();
         this.postId = post.getId();
         this.status = post.getStatus();
         this.priority = post.getPriority();
@@ -35,11 +33,17 @@ public class PostListResponse {
         this.writer = writer;
         this.createDate = post.getCreatedAt();
         this.deadline = post.getDeadline();
-        log.info("PostListResponse: post = {} : end", post.getId());
     }
 
     public static PostListResponse toDto(Post post, String writer) {
         return new PostListResponse(post, writer);
+    }
+
+    private Long getParentPostId() {
+        if(parentPostId == null) {
+            return null;
+        }
+        return parentPostId;
     }
 
 }

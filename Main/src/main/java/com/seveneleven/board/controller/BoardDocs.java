@@ -3,6 +3,7 @@ package com.seveneleven.board.controller;
 import com.seveneleven.board.dto.*;
 import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.response.APIResponse;
+import com.seveneleven.response.PageResponse;
 import com.seveneleven.response.SuccessCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
