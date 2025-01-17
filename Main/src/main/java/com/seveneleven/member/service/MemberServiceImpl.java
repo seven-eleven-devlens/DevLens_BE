@@ -1,6 +1,8 @@
 package com.seveneleven.member.service;
 
 import com.seveneleven.config.TokenProvider;
+import com.seveneleven.entity.file.FileMetadata;
+import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.Token;
 import com.seveneleven.entity.member.constant.MemberStatus;
@@ -11,6 +13,7 @@ import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.CompanyRepository;
 import com.seveneleven.member.repository.MemberRepository;
+import com.seveneleven.util.file.repository.FileMetadataRepository;
 import com.seveneleven.util.security.CustomUserDetails;
 import com.seveneleven.util.security.TokenRepository;
 import com.seveneleven.response.ErrorCode;
@@ -35,6 +38,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
     private final TokenRepository tokenRepository;
+    private final FileMetadataRepository fileMetadataRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
 
     /**
@@ -73,7 +77,7 @@ public class MemberServiceImpl implements MemberService{
         String companyName  = companyRepository.findNameByIdAndIsActive(companyId, YN.Y);
 
         LoginResponse company = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
-                member.getRole(), companyId, companyName, member.getDepartment(), member.getPosition());
+                member.getRole(), getProfileImageUrl(member.getId()), companyId, companyName, member.getDepartment(), member.getPosition());
 
         return new LoginPost.Response(token, company);
     }
@@ -129,6 +133,25 @@ public class MemberServiceImpl implements MemberService{
 
         // 4. 생성된 비밀번호 반환
         return new MemberPatch.Response(userDetails.getLoginId());
+    }
+
+
+    /**
+     * 함수명 getProfileImageUrl
+     * 파일 조회(단일)
+     *
+     * @param memberId 회원ID(pk)
+     * @return FileMetadataDto 파일 메타데이터를 담은 응답 객체
+     */
+    @Transactional
+    public String getProfileImageUrl(Long memberId) {
+        //해당 파일 카테고리와 참조 id로 entity를 가져온다.
+        //파일이 존재하지 않아도 예외를 던지면 안됨.
+        FileMetadata fileMetadataEntity = fileMetadataRepository.findByCategoryAndReferenceId(FileCategory.USER_PROFILE_IMAGE, memberId)
+                .orElse(null);
+
+        //dto 변환 후 반환
+        return fileMetadataEntity.getFilePath();
     }
 
 

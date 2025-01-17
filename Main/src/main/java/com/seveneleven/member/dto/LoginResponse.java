@@ -13,6 +13,7 @@ public class LoginResponse {
     private String name;
     private String email;
     private Role role;
+    private String profileUrl;
     private Long companyId;
     private String companyName;
     private String department;
