@@ -6,7 +6,7 @@ import com.seveneleven.entity.member.Token;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
-import com.seveneleven.member.dto.CompanyResponse;
+import com.seveneleven.member.dto.LoginResponse;
 import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.CompanyRepository;
@@ -71,7 +71,9 @@ public class MemberServiceImpl implements MemberService{
 
         Long companyId      = member.getCompany().getId();
         String companyName  = companyRepository.findNameByIdAndIsActive(companyId, YN.Y);
-        CompanyResponse company = new CompanyResponse(companyId, companyName, member.getDepartment(), member.getPosition());
+
+        LoginResponse company = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
+                member.getRole(), companyId, companyName, member.getDepartment(), member.getPosition());
 
         return new LoginPost.Response(token, company);
     }
