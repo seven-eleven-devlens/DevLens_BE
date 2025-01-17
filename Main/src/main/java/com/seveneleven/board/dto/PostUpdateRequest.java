@@ -16,7 +16,7 @@ public class PostUpdateRequest {
     private Long projectStepId;     // 프로젝트 단계 ID
     private Long parentPostId;      // 부모 게시물 ID
     private Long postId;            // 게시물 ID
-    private YesNo isPinnedPost;        // 상단고정여부
+    private YesNo isPinnedPost;     // 상단고정여부
     private Integer priority;       // 우선순위
     private PostStatus status;      // 상태
     private String title;           // 제목
