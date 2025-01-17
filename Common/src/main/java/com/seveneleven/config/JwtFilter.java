@@ -6,7 +6,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +19,6 @@ import java.io.IOException;
  * - HTTP 요청에서 JWT 토큰을 추출하고, 해당 토큰의 유효성을 검증합니다.
  * - 유효한 JWT 토큰이 있을 경우, 인증 정보를 Security Context에 저장합니다.
  */
-@AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -28,6 +26,11 @@ public class JwtFilter extends OncePerRequestFilter {
     private final TokenRepository tokenRepository;
     private final TokenProvider tokenProvider;
 
+    public JwtFilter(CustomUserDetailsService customUserDetailsService, TokenRepository tokenRepository, TokenProvider tokenProvider) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.tokenRepository = tokenRepository;
+        this.tokenProvider = tokenProvider;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {

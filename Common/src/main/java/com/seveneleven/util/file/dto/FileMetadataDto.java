@@ -24,6 +24,10 @@ public class FileMetadataDto {
 
     //Entity -> DTO
     public static FileMetadataDto toDto(FileMetadata metadata) {
+        if(metadata == null){
+            return null;
+        }
+
         FileMetadataDto dto = new FileMetadataDto();
         dto.id = metadata.getId();
         dto.category = metadata.getCategory().name();

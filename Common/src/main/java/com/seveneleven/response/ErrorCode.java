@@ -46,7 +46,7 @@ public enum ErrorCode {
     NOT_AUTHORIZED_TO_DELETE(2504, HttpStatus.FORBIDDEN, "게시글은 작성자만 삭제할 수 있습니다."),
     NOT_FOUND_WRITER(2505, HttpStatus.NOT_FOUND, "작성자 정보를 찾을 수 없습니다."),
     // 3000번대 코드 : DB 관련
-
+    FILE_NOT_FOUND_ERROR(3000, HttpStatus.NOT_FOUND, "해당 파일을 찾을 수 없습니다."),
 
     // 4000번대 코드 : 파일 s3 버킷 업/다운로드 관련
     FILE_UPLOAD_FAIL_ERROR(4000, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),

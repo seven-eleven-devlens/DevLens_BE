@@ -1,7 +1,8 @@
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.1'
-    id 'io.spring.dependency-management' version '1.1.7'    
+    id 'io.spring.dependency-management' version '1.1.7'
+    id "org.sonarqube" version "4.0.0.2929"
 }
 
 group = 'com.seveneleven'
@@ -31,9 +32,83 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.sonarqube'
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-security'
+        implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+
+        implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+        runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+        runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+        compileOnly 'org.projectlombok:lombok'
+        developmentOnly 'org.springframework.boot:spring-boot-devtools'
+        testCompileOnly 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
+        runtimeOnly 'com.mysql:mysql-connector-j'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        implementation 'org.modelmapper:modelmapper:2.4.4'
+
+        implementation 'com.h2database:h2'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0'
+
+        implementation 'org.springframework.boot:spring-boot-starter-mail'
+        implementation group: 'io.github.cdimascio', name: 'dotenv-java', version: '3.0.0'
+
+        implementation 'javax.xml.bind:jaxb-api:2.3.1'
+        implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+        implementation 'com.sun.xml.bind:jaxb-impl:2.3.3'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+project(':Common') {
+    jar {
+        archiveBaseName = 'common'
+    }
+}
+
+project(':Main') {
+    jar {
+        archiveBaseName = 'main'
+    }
+    dependencies {
+        testCompileOnly project(':Common')
+        compileOnly project(':Common')
+    }
+}
+
+project(':Admin') {
+    jar {
+        archiveBaseName = 'admin'
+    }
+    dependencies {
+        testCompileOnly project(':Common')
+        compileOnly project(':Common')
+    }
 }

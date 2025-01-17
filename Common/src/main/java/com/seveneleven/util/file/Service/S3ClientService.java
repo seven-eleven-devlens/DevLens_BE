@@ -3,8 +3,6 @@ package com.seveneleven.util.file.Service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +49,7 @@ public class S3ClientService {
     /**
      * 파일 업로드
      */
-    public String uploadFile(MultipartFile file, String s3Key) throws Exception {
+    public String uploadFile(MultipartFile file, String s3Key) {
         try {
             //S3 저장할 파일의 메타데이터 설정
             ObjectMetadata metadata = new ObjectMetadata();
@@ -76,20 +74,20 @@ public class S3ClientService {
         amazonS3.deleteObject(bucket, s3Key);
     }
 
-    /**
-     * S3 파일 다운로드 (바이트 배열로 반환)
-     */
-    public byte[] downloadFile(String s3Key) {
-        try (S3Object s3Object = amazonS3.getObject(bucket, s3Key);
-             S3ObjectInputStream inputStream = (s3Object != null ? s3Object.getObjectContent() : null)) {
-
-            if (s3Object == null || inputStream == null) {
-                throw new RuntimeException("S3 OBJECT IS NULL : " + s3Key);
-            }
-
-            return inputStream.readAllBytes();
-        } catch (IOException e) {
-            throw new RuntimeException("FAILED TO DOWNLOAD FILE FROM S3", e);
-        }
-    }
+//    /**
+//     * S3 파일 다운로드 (바이트 배열로 반환)
+//     */
+//    public byte[] downloadFile(String s3Key) {
+//        try (S3Object s3Object = amazonS3.getObject(bucket, s3Key);
+//             S3ObjectInputStream inputStream = (s3Object != null ? s3Object.getObjectContent() : null)) {
+//
+//            if (s3Object == null || inputStream == null) {
+//                throw new RuntimeException("S3 OBJECT IS NULL : " + s3Key);
+//            }
+//
+//            return inputStream.readAllBytes();
+//        } catch (IOException e) {
+//            throw new RuntimeException("FAILED TO DOWNLOAD FILE FROM S3", e);
+//        }
+//    }
 }

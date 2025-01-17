@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FileMetadataRepository extends JpaRepository<FileMetadata, Long> {
-    Optional<FileMetadata> findTopByCategoryAndReferenceIdOrderByCreatedAtDesc(FileCategory category, Long referenceId);
+    Optional<FileMetadata> findByCategoryAndReferenceId(FileCategory category, Long referenceId);
 
     List<FileMetadata> findAllByCategoryAndReferenceId(FileCategory category, Long referenceId);
 
+    Boolean existsByCategoryAndReferenceId(FileCategory category, Long referenceId);
 }

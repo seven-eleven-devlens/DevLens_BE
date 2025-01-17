@@ -1,8 +1,6 @@
 package com.seveneleven.config;
 
 import com.seveneleven.util.security.TokenRepository;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -14,6 +12,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 /**
  * Spring Security 설정을 정의하는 클래스
@@ -24,7 +27,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
-@RequiredArgsConstructor
 public class SpringSecurityConfig {
 
     private final TokenProvider tokenProvider;
@@ -32,6 +34,14 @@ public class SpringSecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+
+    public SpringSecurityConfig(TokenProvider tokenProvider, TokenRepository tokenRepository, CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+        this.tokenProvider = tokenProvider;
+        this.tokenRepository = tokenRepository;
+        this.customUserDetailsService = customUserDetailsService;
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+    }
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/member/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
@@ -65,6 +75,7 @@ public class SpringSecurityConfig {
             .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers(AUTH_WHITELIST).permitAll()
+                            .requestMatchers("api/login/**").permitAll()
                             .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
                             .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
             );
@@ -82,26 +93,27 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-//    /**
-//     * CORS 설정을 정의합니다.
-//     *
-//     * - 모든 Origin, 메서드, 헤더를 허용합니다.
-//     * - 자격 증명 허용 설정을 활성화합니다.
-//     *
-//     * @return CORS 설정을 포함하는 CorsConfigurationSource 객체
-//     */
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.addAllowedOriginPattern("*"); // 모든 Origin 허용
-//        configuration.addAllowedMethod("*");       // 모든 HTTP 메서드 허용
-//        configuration.addAllowedHeader("*");       // 모든 헤더 허용
-//        configuration.setAllowCredentials(true);   // 자격 증명 허용
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 적용
-//        return source;
-//    }
+    /**
+     * CORS 설정을 정의합니다.
+     *
+     * - 모든 Origin, 메서드, 헤더를 허용합니다.
+     * - 자격 증명 허용 설정을 활성화합니다.
+     *
+     * @return CORS 설정을 포함하는 CorsConfigurationSource 객체
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(Arrays.asList("https://kernel-dev-lens.vercel.app", "http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);   // 자격 증명 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 적용
+        return source;
+    }
 
 }
 
