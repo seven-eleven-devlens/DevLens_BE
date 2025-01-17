@@ -77,10 +77,11 @@ public class MyPageController implements MyPageDocs{
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
 
+
     /**
      * 함수명 : uploadProfileImage
      * 계정 프로필 이미지를 업로드합니다.
-     *
+     * @auth admin, 해당 계정주
      * @param memberId 해당 회원 Id
      * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체
      */
@@ -96,6 +97,7 @@ public class MyPageController implements MyPageDocs{
                 .status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED));
     }
+
 
     /**
      * 함수명 : getProfileImage
@@ -115,9 +117,11 @@ public class MyPageController implements MyPageDocs{
                 .body(APIResponse.success(SuccessCode.OK, profileImage));
     }
 
+
     /**
      * 함수명 : deleteProfileImage
      * 계정 프로필 이미지를 삭제합니다.
+     * @auth admin, 해당 계정주
      * @param memberId 해당 회원 Id
      * @param userDetails 수행자 정보
      * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체
@@ -133,9 +137,4 @@ public class MyPageController implements MyPageDocs{
                 .status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
-
-
-
-
-
 }

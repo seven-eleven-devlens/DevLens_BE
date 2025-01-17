@@ -1,6 +1,5 @@
 package com.seveneleven.member.service;
 
-import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.exception.BusinessException;
@@ -67,7 +66,7 @@ public class MemberFileService {
 
     /**
      * 함수명 : deleteProfileImage
-     * 2. 계정 프로필 이미지 삭제
+     * 3. 계정 프로필 이미지 삭제
      * @auth admin, 해당 user
      * @param memberId 해당 회원 id
      */
@@ -85,8 +84,4 @@ public class MemberFileService {
         //TODO) 4. 삭제 이력 추가
 
     }
-
-
-
-
 }
