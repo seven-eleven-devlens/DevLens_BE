@@ -1,13 +1,17 @@
 package com.seveneleven.member.controller;
 
+import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.member.dto.MyPageGetMember;
 import com.seveneleven.member.dto.PatchMember;
+import com.seveneleven.member.service.MemberFileService;
 import com.seveneleven.member.service.MyPageService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
+import com.seveneleven.util.file.dto.FileMetadataDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 /*
  * 마이페이지 API Controller
@@ -20,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class MyPageController implements MyPageDocs{
 
     private final MyPageService myPageService;
+    private final MemberFileService memberFileService;
 
     /**
      * 함수명 : memberDetail
@@ -73,4 +78,63 @@ public class MyPageController implements MyPageDocs{
     }
 
 
+    /**
+     * 함수명 : uploadProfileImage
+     * 계정 프로필 이미지를 업로드합니다.
+     * @auth admin, 해당 계정주
+     * @param memberId 해당 회원 Id
+     * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체
+     */
+    @PostMapping(value="/{memberId}/profile-image", consumes = "multipart/form-data")
+    public ResponseEntity<APIResponse<SuccessCode>> uploadProfileImage(@PathVariable("memberId") Long memberId,
+                                                                       @RequestParam("file") MultipartFile file) {
+        //TODO) userDetails에서 회원 정보 가져오기
+        Long uploaderId = 1L;
+
+        memberFileService.uploadProfileImage(file, memberId, uploaderId);
+
+        return ResponseEntity
+                .status(SuccessCode.CREATED.getStatus())
+                .body(APIResponse.success(SuccessCode.CREATED));
+    }
+
+
+    /**
+     * 함수명 : getProfileImage
+     * 계정 프로필 이미지를 조회합니다.
+     *
+     * @param memberId 해당 회원 Id
+     * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체
+     */
+    @GetMapping(value = "/{memberId}/profile-image")
+    public ResponseEntity<APIResponse<FileMetadataDto>> getProfileImage(@PathVariable("memberId") Long memberId) {
+        //memberId로 프로필 이미지 조회
+        FileMetadataDto profileImage = memberFileService.getProfileImage(memberId);
+
+        //반환
+        return ResponseEntity
+                .status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, profileImage));
+    }
+
+
+    /**
+     * 함수명 : deleteProfileImage
+     * 계정 프로필 이미지를 삭제합니다.
+     * @auth admin, 해당 계정주
+     * @param memberId 해당 회원 Id
+     * @param userDetails 수행자 정보
+     * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체
+     */
+    @DeleteMapping(value="/{memberId}/profile-image")
+    public ResponseEntity<APIResponse<SuccessCode>> deleteProfileImage(@PathVariable("memberId") Long memberId) {
+        //TODO) UserDetails 확인
+        Long uploaderId = 1L;
+
+        memberFileService.deleteProfileImage(memberId, uploaderId);
+
+        return ResponseEntity
+                .status(SuccessCode.DELETED.getStatus())
+                .body(APIResponse.success(SuccessCode.DELETED));
+    }
 }
