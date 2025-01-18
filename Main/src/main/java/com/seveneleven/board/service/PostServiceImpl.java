@@ -21,8 +21,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-
 import static com.seveneleven.board.dto.PostResponse.getPostResponse;
 import static com.seveneleven.response.ErrorCode.*;
 
@@ -234,7 +232,9 @@ public class PostServiceImpl implements PostService {
      * 함수 목적 : (답글) 부모게시글과 자식게시글의 프로젝트 단계 일치 여부 확인 메서드
      */
     private boolean matchesProjectStepParentAndChild(Long childProjectStepId, Long childParentPostId) throws Exception {
-        return Objects.equals(childProjectStepId, (postRepository.findById(childParentPostId).get()).getProjectStep().getId());
+        Post post = postRepository.findById(childParentPostId)
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
+        return post.getProjectStep().getId().equals(childProjectStepId);
     }
 
     /**
