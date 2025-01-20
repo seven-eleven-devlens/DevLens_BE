@@ -1,4 +1,4 @@
-package com.seveneleven.service;
+package com.seveneleven.service.adminProject;
 
 import com.seveneleven.common.CheckProjectValidity;
 import com.seveneleven.dto.GetProject;
@@ -12,6 +12,7 @@ import com.seveneleven.entity.project.ProjectType;
 import com.seveneleven.exception.CompanyNotFoundException;
 import com.seveneleven.exception.ProjectNotFoundException;
 import com.seveneleven.repository.*;
+import com.seveneleven.service.AdminProjectHistoryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ import static com.seveneleven.common.PageSize.DEFAULT_PAGE_SIZE;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class AdminProjectService {
+public class AdminProjectServiceImpl implements AdminProjectService{
     private final AdminProjectRepository projectRepository;
     private final ProjectResponseConverter projectResponseConverter;
     private final PostProjectRequestConverter postProjectRequestConverter;
@@ -37,6 +38,7 @@ public class AdminProjectService {
     private final AdminMemberRepository adminMemberRepository;
     private final AdminProjectTypeRepository adminProjectTypeRepository;
     private final PutProjectResponseConverter responseConverter;
+    private final AdminProjectReader adminProjectReader;
 
     public PostProject.Response createProject(PostProject.Request request) {
         checkProjectValidity.checkProjectDuplicatedName(request.getProjectName());
@@ -47,23 +49,25 @@ public class AdminProjectService {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public GetProject.Response getProject(Long id) {
-        return projectRepository.findById(id)
+        return adminProjectReader.getProject(id)
                 .map(projectResponseConverter::toDTO)
                 .orElseThrow(ProjectNotFoundException::new);
     }
 
     @Transactional(readOnly = true)
+    @Override
     public PaginatedResponse<GetProject.Response> getListOfProject(Integer page) {
         Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("id").descending());
-        Page<Project> projects = projectRepository.findAll(pageable);
-        if (projects.getContent().isEmpty()) {
-            throw new ProjectNotFoundException();
-        }
+        Page<Project> projects = adminProjectReader.findAll(pageable);
+        if (projects.getContent().isEmpty()) throw new ProjectNotFoundException();
+
         return PaginatedResponse.createPaginatedResponse(projects.map(projectResponseConverter::toDTO));
     }
 
     @Transactional
+    @Override
     public PutProject.Response updateProject(Long id, PutProject.Request request) {
         Company customer = companyRepository.findById(request.getCustomerId()).orElseThrow(CompanyNotFoundException::new);
         Company developer = companyRepository.findById(request.getDeveloperId()).orElseThrow(CompanyNotFoundException::new);
@@ -81,6 +85,7 @@ public class AdminProjectService {
     }
 
     @Transactional
+    @Override
     public void deleteProject(Long id) {
         adminProjectHistoryService.saveProjectHistory(projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new));
         projectRepository.deleteById(id);

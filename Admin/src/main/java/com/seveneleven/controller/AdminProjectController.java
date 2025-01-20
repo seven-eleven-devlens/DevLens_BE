@@ -1,10 +1,11 @@
 package com.seveneleven.controller;
 
+import com.seveneleven.application.adminProject.AdminProjectFacade;
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.AdminProjectHistoryService;
-import com.seveneleven.service.AdminProjectService;
+import com.seveneleven.service.adminProject.AdminProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminProjectController implements AdminProjectDocs{
     private final AdminProjectService adminProjectService;
     private final AdminProjectHistoryService adminProjectHistoryService;
+    private final AdminProjectFacade adminProjectFacade;
 
     /*
         함수명 : newProject
@@ -22,7 +24,7 @@ public class AdminProjectController implements AdminProjectDocs{
      */
     @PostMapping("")
     public ResponseEntity<APIResponse<PostProject.Response>> newProject(@RequestBody PostProject.Request request) {
-        PostProject.Response project = adminProjectService.createProject(request);
+        PostProject.Response project = adminProjectFacade.registerProject(request);
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED, project));
@@ -34,7 +36,7 @@ public class AdminProjectController implements AdminProjectDocs{
      */
     @GetMapping("/{id}")
     public ResponseEntity<APIResponse<GetProject.Response>> readProject(@PathVariable Long id) {
-        GetProject.Response response = adminProjectService.getProject(id);
+        GetProject.Response response = adminProjectFacade.getProject(id);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
