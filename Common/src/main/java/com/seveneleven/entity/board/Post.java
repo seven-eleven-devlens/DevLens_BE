@@ -9,6 +9,9 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import java.time.LocalDate;
 
@@ -20,15 +23,16 @@ public class Post extends BaseEntity {
 
     /*
         id : 게시물 ID (문서번호)
-        projectStepId : 프로젝트 단계 ID
-        parentPostId : 부모 게시물 ID
+        projectStep : 프로젝트 단계 ID
+        parentPost : 부모 게시물 ID
+        ref : 게시글 그룹 구분
+        refOrder : 게시글 그룹 순서
+        childPostNum : 자식 게시물 개수
         isPinnedPost : 상단고정 여부 (Y, N)
         priority : 우선순위 (1,2,3)
         status : 상태 (DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD)
         title : 제목
         content : 내용
-        hasFile : 파일 유무 (Y, N)
-        hasLink : 링크 유무 (Y, N)
         deadline : 마감일자
         registerIp : 등록자 IP
         modifierIp : 수정자 IP
@@ -41,15 +45,23 @@ public class Post extends BaseEntity {
 
     @JoinColumn(name = "project_step_id", nullable = false, referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private ProjectStep projectStepId;
+    private ProjectStep projectStep;
 
-    @JoinColumn(name = "parent_post_id", referencedColumnName = "id")
+    @JoinColumn(name = "parent_post_id", nullable = true, referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Post parentPostId;
+    @NotFound(action = NotFoundAction.IGNORE)
+    private Post parentPost;
+
+    @Column(name = "ref")
+    private Long ref;
+
+    @Column(name = "ref_order")
+    private Integer refOrder;
+
+    @Column(name = "child_post_num")
+    private Integer childPostNum;
 
     @Column(name = "is_pinned_post")
-    @Convert(converter = YesNoConverter.class)
-    @Enumerated(EnumType.STRING)
     private YesNo isPinnedPost;
 
     @Column(name = "priority")
@@ -65,16 +77,6 @@ public class Post extends BaseEntity {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
-    @Column(name = "has_file", nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    @Enumerated(EnumType.STRING)
-    private YesNo hasFile = YesNo.NO;
-
-    @Column(name = "has_link", nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    @Enumerated(EnumType.STRING)
-    private YesNo hasLink = YesNo.NO;
-
     @Column(name = "deadline")
     private LocalDate deadline;
 
@@ -86,8 +88,11 @@ public class Post extends BaseEntity {
 
     // 게시글 생성
     public static Post createPost(
-            ProjectStep projectStepId,
-            Post parentPostId,
+            ProjectStep projectStep,
+            Post parentPost,
+            Long ref,
+            Integer refOrder,
+            Integer childPostNum,
             YesNo isPinnedPost,
             Integer priority,
             PostStatus status,
@@ -98,8 +103,11 @@ public class Post extends BaseEntity {
             String modifierIp
     ) {
         Post post = new Post();
-        post.projectStepId = projectStepId;
-        post.parentPostId = parentPostId;
+        post.projectStep = projectStep;
+        post.parentPost = parentPost;
+        post.ref = ref;
+        post.refOrder = refOrder;
+        post.childPostNum = childPostNum;
         post.isPinnedPost = isPinnedPost;
         post.priority = priority;
         post.status = status;
@@ -130,19 +138,13 @@ public class Post extends BaseEntity {
         this.modifierIp = modifierIp;
     }
 
-    // 파일 존재 여부 변경 메서드
-    public void yesHasFile(YesNo hasFile) {
-        this.hasFile = YesNo.YES;
+    // 답글 생성 시 child_post_num 증가
+    public void increaseChildPostNum() {
+        childPostNum++;
     }
-    public void noHasFile(YesNo hasFile) {
-        this.hasFile = YesNo.NO;
+    // 답글 삭제 시 child_post_num 감소
+    public void decreaseChildPostNum() {
+        childPostNum--;
     }
 
-    // 링크 존재 여부 변경 메서드
-    public void yesHasLink(YesNo hasLink) {
-        this.hasLink = YesNo.YES;
-    }
-    public void noHasLink(YesNo hasLink) {
-        this.hasLink = YesNo.NO;
-    }
 }

@@ -54,10 +54,11 @@ public class CompanyFileController {
     /**
      * 3. 회사 로고 삭제
      * @param companyId 해당 회사 id
-     *
+     * @param userDetails 수행자 정보
+     * @return ResponseEntity<APIResponse<SuccessCode>>
      */
     @DeleteMapping(value = "/{companyId}/logo-image")
-    public ResponseEntity<APIResponse> deleteLogo(@PathVariable("companyId") Long companyId) {
+    public ResponseEntity<APIResponse<SuccessCode>> deleteLogo(@PathVariable("companyId") Long companyId) {
         //TODO) 토큰에서 uploader 정보 가져오기
         Long uploaderId = 1L;
 

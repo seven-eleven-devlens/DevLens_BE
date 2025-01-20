@@ -1,13 +1,10 @@
 package com.seveneleven.service;
 
-import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.repository.CompanyRepository;
-import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.Service.FileService;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
@@ -29,7 +26,6 @@ public class CompanyFileService {
      * @param file 업로드할 로고 이미지 파일
      * @param companyId 해당 회사 id
      * @param uploaderId 업로드 수행자 id
-     * @return APIResponse S3에 저장된 파일의 메타데이터 response
      */
 
     @Transactional
@@ -47,13 +43,14 @@ public class CompanyFileService {
 
         //4. S3파일 업로드, 메타데이터 테이블 저장
         fileService.uploadFile(file, FileCategory.COMPANY_LOGO_IMAGE, companyId);
+
+        //TODO) 5. 파일 업로드 이력 추가
     }
 
     /**
      * 2. 회사 로고 이미지 조회
-     * @auth admin, super(해당 회사 대표회원)
      * @param companyId 해당 회사 id
-     * @return fileDto S3에 저장된 파일의 메타데이터 DTO
+     * @return fileMetadataDto S3에 저장된 파일의 메타데이터 DTO
      */
     @Transactional(readOnly = true)
     public FileMetadataDto getLogoImage(Long companyId) {
@@ -84,7 +81,7 @@ public class CompanyFileService {
         //3. 삭제수행
         fileService.deleteFile(FileCategory.COMPANY_LOGO_IMAGE, companyId);
 
-        //TODO) 4. 삭제 이력 남기기
+        //TODO) 4. 삭제 이력 추가
 
     }
 }

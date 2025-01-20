@@ -18,6 +18,9 @@ public class Comment extends BaseEntity {
         id : 댓글 ID
         postId : 게시물 ID
         parentCommentId : 부모 댓글 ID
+        ref : 댓글 그룹 구분
+        refOrder : 댓글 그룹 순서
+        childCommentNum : 자식 댓글의 수
         isActive : 사용 유무 (Y, N)
         content : 내용
         registerIp : 등록자 IP
@@ -36,6 +39,15 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "parent_comment_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private Comment parentCommentId;
+
+    @Column(name = "ref")
+    private Long ref;
+
+    @Column(name = "ref_order")
+    private Integer refOrder;
+
+    @Column(name = "child_comment_num")
+    private Integer childCommentNum;
 
     @Column(name = "is_active", nullable = false)
     @Convert(converter = YesNoConverter.class)
