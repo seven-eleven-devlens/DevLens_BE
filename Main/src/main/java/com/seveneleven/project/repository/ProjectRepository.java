@@ -18,7 +18,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         JOIN ProjectAuthorization p_a
             ON
                 p_a.member.id = :memberId AND
-                p_a.isDeleted = 'N' AND
+                p_a.isActive = 'N' AND
                 p_a.projectStep.project.id = p.id
         WHERE
             p.projectStatusCode = 'IN_PROGRESS'
