@@ -8,7 +8,6 @@ import com.seveneleven.project.dto.PutProjectChecklist;
 import com.seveneleven.project.repository.ChecklistRepository;
 import com.seveneleven.project.repository.ProjectStepRepository;
 import com.seveneleven.response.ErrorCode;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,7 +29,7 @@ public class ChecklistStoreImpl implements ChecklistStore {
                 projectStepRepository.findByIdAndIsActive(
                         request.getProjectStepId(),
                         YesNo.YES
-                ).orElseThrow(EntityNotFoundException::new)));
+                ).orElseThrow(() -> new BusinessException(ErrorCode.CHECKLIST_NOT_FOUND))));
     }
 
     @Override

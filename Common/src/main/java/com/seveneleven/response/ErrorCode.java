@@ -46,8 +46,6 @@ public enum ErrorCode {
     PROJECT_STEP_ALREADY_DELETED(2301, HttpStatus.BAD_REQUEST, "이미 삭제된 단계입니다."),
 
     NOT_FOUND_PROJECT_STEP(2501, HttpStatus.NOT_FOUND, "해당 프로젝트 단계를 찾을 수 없습니다."),
-    NOT_FOUND_PROJECT_STEP(2300, HttpStatus.NOT_FOUND, "해당 프로젝트 단게를 찾을 수 없습니다."),
-    PROJECT_STEP_ALREADY_DELETED(2301, HttpStatus.BAD_REQUEST, "해당 프로젝트 단계는 이미 삭제되었습니다."),
     NOT_FOUND_MEMBER(2502, HttpStatus.NOT_FOUND, "해당 회원을 찾을 수 없습니다."),
     NOT_FOUND_POST(2503, HttpStatus.NOT_FOUND, "해당 게시물을 찾을 수 없습니다."),
     NOT_AUTHORIZED_TO_POST(2504, HttpStatus.FORBIDDEN, "작성자만 게시글을 수정 및 삭제할 수 있습니다."),
