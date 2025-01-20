@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     // REF의 최대값 구하기
-    @Query("SELECT MAX(p.ref) FROM Post p")
+    @Query("SELECT COALESCE(MAX(p.ref), 0) FROM Post p")
     Long findFirstRefByOrderByRefDesc();
 
     // 부모게시글의 REF 구하기

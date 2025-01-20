@@ -51,6 +51,7 @@ public enum ErrorCode {
     NOT_FOUND_WRITER(2505, HttpStatus.NOT_FOUND, "작성자 정보를 찾을 수 없습니다."),
     NOT_DELETE_PARENT_POST(2506, HttpStatus.BAD_REQUEST, "관련된 게시글이 존재하는 경우 해당 게시글을 삭제할 수 없습니다."),
     NOT_MATCH_PROJECTSTEPID(2507, HttpStatus.BAD_REQUEST, "게시글의 프로젝트 단계가 일치하지 않습니다."),
+
     // 3000번대 코드 : DB 관련
     FILE_NOT_FOUND_ERROR(3000, HttpStatus.NOT_FOUND, "해당 파일을 찾을 수 없습니다."),
 
@@ -64,6 +65,9 @@ public enum ErrorCode {
     FILE_SIZE_EXCEED_ERROR(4006, HttpStatus.BAD_REQUEST, "파일 사이즈가 초과되었습니다."),
     S3_UPLOAD_FAIL_ERROR(4007, HttpStatus.INTERNAL_SERVER_ERROR, "S3 업로드에 실패했습니다."),
     LOGO_ALREADY_EXIST_ERROR(4008, HttpStatus.BAD_REQUEST, "회사 로고가 존재합니다."),
+    FILE_QUANTITY_EXCEED_ERROR(4009, HttpStatus.BAD_REQUEST, "업로드할 파일 갯수가 10개를 초과했습니다."),
+    FILE_METADATA_HASHING_FAILURE(4010, HttpStatus.INTERNAL_SERVER_ERROR, "DB 파일 메타데이터 해싱에 실패했습니다."),
+    CLIENT_FILE_HASHING_FAILURE(4011, HttpStatus.INTERNAL_SERVER_ERROR, "클라이언트 파일 메타데이터 해싱에 실패했습니다."),
 
     // 5000번대 코드 : 서버 내부 오류 관련
     INTERNAL_SERVER_ERROR(5001, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."),
