@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Administrator Project Management API", description = "관리자 프로젝트 관리 API")
-@RequestMapping("/api/admin/project")
+@RequestMapping("/api/admin/projects")
 public interface AdminProjectDocs {
 
     @PostMapping("")
@@ -109,10 +109,10 @@ public interface AdminProjectDocs {
     )
     ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> getListOfProjectHistory(@RequestParam(value = "page") Integer page);
 
-    @GetMapping("/histories/{id}")
+    @GetMapping("/{id}/histories")
     @Operation(
             summary = "프로젝트 이력 상세 조회",
-            description = "프로젝트 이력을 id로 상세 조회",
+            description = "프로젝트 이력을 프로젝트 이력 id로 상세 조회",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
