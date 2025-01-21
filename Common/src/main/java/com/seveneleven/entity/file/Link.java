@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "link")
 public class Link {
-    //Magic Number
     private static final int MAX_LINK_LENGTH = 1000;
 
     @Id
@@ -32,6 +31,9 @@ public class Link {
 
     @Column(name = "reference_id", nullable = false)
     private Long referenceId; //참조 ID
+
+    @Column(name = "link_title")
+    private String linkTitle; //링크명
 
     @Column(name = "link", length = MAX_LINK_LENGTH, nullable = false)
     private String link; //링크
@@ -48,11 +50,13 @@ public class Link {
 
     public static Link registerLink(LinkCategory category,
                                     Long referenceId,
+                                    String linkTitle,
                                     String link) {
 
         Link linkData = new Link();
         linkData.category = category;
         linkData.referenceId = referenceId;
+        linkData.linkTitle = linkTitle;
         linkData.link = link;
 
         return linkData;
