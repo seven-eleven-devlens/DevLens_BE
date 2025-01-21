@@ -2,6 +2,7 @@ package com.seveneleven.board.service;
 
 import com.seveneleven.board.repository.PostRepository;
 import com.seveneleven.entity.board.Post;
+import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -69,9 +71,17 @@ public class PostFileService {
 
         //카테고리와 게시물 id로 찾은 모든 파일을 가져온다.
         //페이지네이션 없이 일단 다 보내기
-        List<FileMetadataDto> fileDtos = fileService.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId());
+        List<FileMetadata> fileEntities = fileService.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId());
 
-        return fileDtos;
+        //entity를 dto에 담는다.
+        List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
+        for (FileMetadata fileMetadata : fileEntities) {
+            FileMetadataDto dto = FileMetadataDto.toDto(fileMetadata);
+            fileMetadataDtos.add(dto);
+        }
+
+        //반환
+        return fileMetadataDtos;
     }
 
     /**
@@ -89,8 +99,8 @@ public class PostFileService {
         //TODO) 2. 수행자 권한 판별
 
         //3. 해당 게시물의 파일들을 전체 삭제한다.
-        for(FileMetadataDto file : fileService.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId())) {
-            fileService.deleteFileById(file.getId());
+        for(FileMetadata fileEntity : fileService.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId())) {
+            fileService.deleteFileById(fileEntity.getId());
         }
     }
 

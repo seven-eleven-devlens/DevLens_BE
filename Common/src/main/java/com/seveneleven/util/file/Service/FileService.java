@@ -4,7 +4,6 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.util.file.FileValidator;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.entity.file.constant.FileCategory;
-import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
@@ -80,14 +79,13 @@ public class FileService {
      * @return FileMetadataDto 파일 메타데이터를 담은 응답 객체
      */
     @Transactional(readOnly = true)
-    public FileMetadataDto getFile(FileCategory fileCategory, Long referenceId) {
+    public FileMetadata getFile(FileCategory fileCategory, Long referenceId) {
         //해당 파일 카테고리와 참조 id로 entity를 가져온다.
         //파일이 존재하지 않아도 예외를 던지면 안됨.
         FileMetadata fileMetadataEntity = fileMetadataRepository.findByCategoryAndReferenceId(fileCategory, referenceId)
                 .orElse(null);
 
-        //dto 변환 후 반환
-        return FileMetadataDto.toDto(fileMetadataEntity);
+        return fileMetadataEntity;
     }
 
     /**
@@ -98,20 +96,12 @@ public class FileService {
      * @return List<FileMetadataDto> 파일 메타데이터 목록을 담은 응답 객체
      */
     @Transactional(readOnly = true)
-    public List<FileMetadataDto> getFiles(FileCategory fileCategory, Long referenceId) {
+    public List<FileMetadata> getFiles(FileCategory fileCategory, Long referenceId) {
 
         //해당 파일 카테고리와 참조 id로 entity를 가져온다.
         List<FileMetadata> fileMetadataEntities = fileMetadataRepository.findAllByCategoryAndReferenceId(fileCategory, referenceId);
 
-        //entity를 dto에 담는다.
-        List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
-        for (FileMetadata fileMetadata : fileMetadataEntities) {
-            FileMetadataDto dto = FileMetadataDto.toDto(fileMetadata);
-            fileMetadataDtos.add(dto);
-        }
-
-        //반환
-        return fileMetadataDtos;
+        return fileMetadataEntities;
     }
 
     /**
@@ -142,7 +132,7 @@ public class FileService {
         FileMetadata toDeleteData = fileMetadataRepository.findById(fileId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.FILE_NOT_FOUND_ERROR));
 
-        fileMetadataRepository.deleteById(fileId);
+        fileMetadataRepository.deleteById(toDeleteData.getId());
 
         //TODO) 삭제 이력 남기기
     }
