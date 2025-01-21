@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReadProjectHistory {
+public class GetProjectHistory {
     @Getter
     public static class Response {
         private Long id;

@@ -107,7 +107,7 @@ public interface AdminProjectDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> getListOfProjectHistory(@RequestParam(value = "page") Integer page);
+    ResponseEntity<APIResponse<PaginatedResponse<GetProjectHistory.Response>>> getListOfProjectHistory(@RequestParam(value = "page") Integer page);
 
     @GetMapping("/{id}/histories")
     @Operation(
@@ -119,7 +119,7 @@ public interface AdminProjectDocs {
                             description = "프로젝트 이력을 성공적으로 반환했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ReadProjectHistory.Response.class)
+                                    schema = @Schema(implementation = GetProjectHistory.Response.class)
                             )
                     )
             },
@@ -132,7 +132,7 @@ public interface AdminProjectDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<ReadProjectHistory.Response>> getProjectHistory(@PathVariable Long id);
+    ResponseEntity<APIResponse<GetProjectHistory.Response>> getProjectHistory(@PathVariable Long id);
 
     @GetMapping("/histories/search")
     @Operation(
@@ -144,7 +144,7 @@ public interface AdminProjectDocs {
                             description = "Successfully searched project histories",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ReadProjectHistory.Response.class)
+                                    schema = @Schema(implementation = GetProjectHistory.Response.class)
                             )
                     )
             },
@@ -163,7 +163,7 @@ public interface AdminProjectDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> searchHistories(
+    ResponseEntity<APIResponse<PaginatedResponse<GetProjectHistory.Response>>> searchHistories(
             @RequestParam String searchTerm,
             @RequestParam Integer page
     );

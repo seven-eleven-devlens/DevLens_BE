@@ -1,6 +1,7 @@
 package com.seveneleven.controller;
 
 import com.seveneleven.application.adminProject.AdminProjectFacade;
+import com.seveneleven.application.adminProject.AdminProjectHistoryFacade;
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminProjectController implements AdminProjectDocs{
     private final AdminProjectHistoryService adminProjectHistoryService;
     private final AdminProjectFacade adminProjectFacade;
+    private final AdminProjectHistoryFacade adminProjectHistoryFacade;
 
     /*
         함수명 : newProject
@@ -57,8 +59,8 @@ public class AdminProjectController implements AdminProjectDocs{
         함수 목적 : 프로젝트 이력 목록 조회
      */
     @GetMapping("/histories")
-    public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> getListOfProjectHistory(@RequestParam(value = "page") Integer page) {
-        PaginatedResponse<ReadProjectHistory.Response> response = adminProjectHistoryService.getListOfProjectHistory(page);
+    public ResponseEntity<APIResponse<PaginatedResponse<GetProjectHistory.Response>>> getListOfProjectHistory(@RequestParam(value = "page") Integer page) {
+        PaginatedResponse<GetProjectHistory.Response> response = adminProjectHistoryService.getListOfProjectHistory(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
@@ -69,10 +71,10 @@ public class AdminProjectController implements AdminProjectDocs{
         함수 목적 : 프로젝트 이력 조회
      */
     @GetMapping("/{id}/histories")
-    public ResponseEntity<APIResponse<ReadProjectHistory.Response>> getProjectHistory(@PathVariable Long id) {
+    public ResponseEntity<APIResponse<GetProjectHistory.Response>> getProjectHistory(@PathVariable Long id) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, adminProjectHistoryService.getProjectHistory(id)));
+                .body(APIResponse.success(SuccessCode.OK, adminProjectHistoryFacade.getProjectHistory(id)));
     }
 
     /*
@@ -94,7 +96,7 @@ public class AdminProjectController implements AdminProjectDocs{
         함수 목적 : 특정 프로젝트 이력 목록 검색
      */
     @GetMapping("/histories/search")
-    public ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> searchHistories(
+    public ResponseEntity<APIResponse<PaginatedResponse<GetProjectHistory.Response>>> searchHistories(
             @RequestParam String searchTerm,
             @RequestParam Integer page
     ){

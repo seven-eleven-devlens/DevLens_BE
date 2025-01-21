@@ -76,7 +76,7 @@ public class AdminProjectServiceImpl implements AdminProjectService{
         }
 
         Project updatedProject = request.updateProject(project, customer, developer, projectType, bnsManager);
-        return responseConverter.toDTO(updatedProject);
+        return responseConverter.toDTO(adminProjectStore.store(updatedProject));
     }
 
     @Transactional

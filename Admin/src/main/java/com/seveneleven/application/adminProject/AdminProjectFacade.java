@@ -23,7 +23,7 @@ public class AdminProjectFacade {
 
     public PutProject.Response updateProject(Long id,PutProject.Request request){
         PutProject.Response response = adminProjectService.updateProject(id, request);
-        adminProjectHistoryService.saveProjectHistory(request.getId());
+        adminProjectHistoryService.saveProjectHistory(id);
         return response;
     }
 

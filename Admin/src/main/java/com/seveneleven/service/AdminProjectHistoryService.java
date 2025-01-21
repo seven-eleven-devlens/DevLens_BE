@@ -1,11 +1,11 @@
 package com.seveneleven.service;
 
+import com.seveneleven.dto.GetProjectHistory;
 import com.seveneleven.dto.PaginatedResponse;
-import com.seveneleven.dto.ReadProjectHistory;
 
 public interface AdminProjectHistoryService {
     void saveProjectHistory(Long id);
-    ReadProjectHistory.Response getProjectHistory(Long id);
-    PaginatedResponse<ReadProjectHistory.Response> getListOfProjectHistory(Integer page);
-    PaginatedResponse<ReadProjectHistory.Response> searchHistoryByProjectName(String searchTerm, Integer page);
+    GetProjectHistory.Response getProjectHistory(Long id);
+    PaginatedResponse<GetProjectHistory.Response> getListOfProjectHistory(Integer page);
+    PaginatedResponse<GetProjectHistory.Response> searchHistoryByProjectName(String searchTerm, Integer page);
 }
