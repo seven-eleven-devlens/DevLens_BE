@@ -22,6 +22,7 @@ public class LinkHistory {
     private static final int MAX_REFERENCE_IDENTIFIER_LENGTH = 300;
     private static final int MAX_WRITER_NAME_LENGTH = 200;
     private static final int MAX_WRITER_AUTHORITY_LENGTH = 50;
+    private static final int MAX_LINK_TITLE_LENGTH = 100;
     private static final int MAX_LINK_LENGTH = 1000;
 
     @Id
@@ -56,7 +57,7 @@ public class LinkHistory {
     @Column(name = "written_at", nullable = false)
     private LocalDateTime writtenAt; // 링크 등록 일시
 
-    @Column(name = "link_title")
+    @Column(name = "link_title", length = MAX_LINK_TITLE_LENGTH)
     private String linkTitle; //링크명
 
     @Column(name = "link", length = MAX_LINK_LENGTH, nullable = false)

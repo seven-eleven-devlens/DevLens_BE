@@ -1,6 +1,7 @@
 package com.seveneleven.entity.file;
 
 import com.seveneleven.entity.file.constant.LinkCategory;
+import com.seveneleven.util.file.dto.LinkPayload;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 @Table(name = "link")
 public class Link {
     private static final int MAX_LINK_LENGTH = 1000;
+    private static final int MAX_LINK_TITLE_LENGTH = 100;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +34,7 @@ public class Link {
     @Column(name = "reference_id", nullable = false)
     private Long referenceId; //참조 ID
 
-    @Column(name = "link_title")
+    @Column(name = "link_title", length = MAX_LINK_TITLE_LENGTH)
     private String linkTitle; //링크명
 
     @Column(name = "link", length = MAX_LINK_LENGTH, nullable = false)
@@ -48,16 +50,12 @@ public class Link {
     private LocalDateTime createdAt; //최초 등록 일시
 
 
-    public static Link registerLink(LinkCategory category,
-                                    Long referenceId,
-                                    String linkTitle,
-                                    String link) {
-
+    public static Link registerLink(LinkPayload linkPayload) {
         Link linkData = new Link();
-        linkData.category = category;
-        linkData.referenceId = referenceId;
-        linkData.linkTitle = linkTitle;
-        linkData.link = link;
+        linkData.category = linkPayload.getLinkCategory();
+        linkData.referenceId = linkPayload.getReferenceId();
+        linkData.linkTitle = linkPayload.getLinkTitle();
+        linkData.link = linkPayload.getLink();
 
         return linkData;
     }
