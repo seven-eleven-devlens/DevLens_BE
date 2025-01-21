@@ -147,6 +147,11 @@ public class Project extends BaseEntity {
         return ProjectHistory.create(this);
     }
 
+    public Project delete(){
+        this.projectStatusCode = ProjectStatusCode.CANCELLED;
+        return this;
+    }
+
     public enum ProjectStatusCode {
         PREPARED,
         IN_PROGRESS,

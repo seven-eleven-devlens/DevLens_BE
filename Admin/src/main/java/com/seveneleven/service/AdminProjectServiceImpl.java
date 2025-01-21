@@ -1,4 +1,4 @@
-package com.seveneleven.service.adminProject;
+package com.seveneleven.service;
 
 import com.seveneleven.common.CheckProjectValidity;
 import com.seveneleven.dto.GetProject;
@@ -12,7 +12,6 @@ import com.seveneleven.entity.project.ProjectType;
 import com.seveneleven.exception.CompanyNotFoundException;
 import com.seveneleven.exception.ProjectNotFoundException;
 import com.seveneleven.repository.*;
-import com.seveneleven.service.AdminProjectHistoryService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,31 +27,29 @@ import static com.seveneleven.common.PageSize.DEFAULT_PAGE_SIZE;
 @Transactional
 @RequiredArgsConstructor
 public class AdminProjectServiceImpl implements AdminProjectService{
-    private final AdminProjectRepository projectRepository;
     private final ProjectResponseConverter projectResponseConverter;
     private final PostProjectRequestConverter postProjectRequestConverter;
     private final PostProjectResponseConverter postProjectResponseConverter;
-    private final CheckProjectValidity checkProjectValidity;
-    private final AdminProjectHistoryService adminProjectHistoryService;
-    private final CompanyRepository companyRepository;
-    private final AdminMemberRepository adminMemberRepository;
-    private final AdminProjectTypeRepository adminProjectTypeRepository;
     private final PutProjectResponseConverter responseConverter;
+    private final CheckProjectValidity checkProjectValidity;
+    private final AdminMemberRepository adminMemberRepository;
+    private final CompanyRepository companyRepository;
+    private final AdminProjectTypeRepository adminProjectTypeRepository;
     private final AdminProjectReader adminProjectReader;
+    private final AdminProjectStore adminProjectStore;
 
     public PostProject.Response createProject(PostProject.Request request) {
+        //중복 확인
         checkProjectValidity.checkProjectDuplicatedName(request.getProjectName());
         return postProjectResponseConverter.toDTO(
-                projectRepository.save(postProjectRequestConverter.toEntity(request))
+                adminProjectStore.store(postProjectRequestConverter.toEntity(request))
         );
     }
 
     @Transactional(readOnly = true)
     @Override
     public GetProject.Response getProject(Long id) {
-        return adminProjectReader.getProject(id)
-                .map(projectResponseConverter::toDTO)
-                .orElseThrow(ProjectNotFoundException::new);
+        return projectResponseConverter.toDTO(adminProjectReader.getProject(id));
     }
 
     @Transactional(readOnly = true)
@@ -71,7 +68,7 @@ public class AdminProjectServiceImpl implements AdminProjectService{
         Company customer = companyRepository.findById(request.getCustomerId()).orElseThrow(CompanyNotFoundException::new);
         Company developer = companyRepository.findById(request.getDeveloperId()).orElseThrow(CompanyNotFoundException::new);
         Member bnsManager = adminMemberRepository.findById(request.getBnsManagerId()).orElseThrow(() -> new EntityNotFoundException("bns 담당자를 찾을 수 없습니다."));
-        Project project = projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
+        Project project = adminProjectReader.getProject(id);
         ProjectType projectType = adminProjectTypeRepository.findById(request.getProjectTypeId()).orElseThrow(() -> new EntityNotFoundException("프로젝트 타입을 찾을 수 없습니다"));
         //현재 프로젝트 명과 다르면 중복 체크
         if (!project.getProjectName().equals(request.getProjectName())) {
@@ -79,14 +76,12 @@ public class AdminProjectServiceImpl implements AdminProjectService{
         }
 
         Project updatedProject = request.updateProject(project, customer, developer, projectType, bnsManager);
-        adminProjectHistoryService.saveProjectHistory(updatedProject);
         return responseConverter.toDTO(updatedProject);
     }
 
     @Transactional
     @Override
     public void deleteProject(Long id) {
-        adminProjectHistoryService.saveProjectHistory(projectRepository.findById(id).orElseThrow(ProjectNotFoundException::new));
-        projectRepository.deleteById(id);
+        adminProjectStore.delete(id);
     }
 }

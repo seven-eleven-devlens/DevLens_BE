@@ -5,7 +5,7 @@ import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.AdminProjectHistoryService;
-import com.seveneleven.service.adminProject.AdminProjectService;
+import com.seveneleven.service.AdminProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -88,7 +88,7 @@ public class AdminProjectController implements AdminProjectDocs{
     ){
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, adminProjectService.updateProject(id, request)));
+                .body(APIResponse.success(SuccessCode.OK, adminProjectFacade.updateProject(id, request)));
     }
 
     /*
@@ -110,7 +110,7 @@ public class AdminProjectController implements AdminProjectDocs{
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<APIResponse<Void>> deleteProject(@PathVariable Long id){
-        adminProjectService.deleteProject(id);
+        adminProjectFacade.deleteProject(id);
         return ResponseEntity
                 .status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));

@@ -1,4 +1,4 @@
-package com.seveneleven.service.adminProject;
+package com.seveneleven.service;
 
 import com.seveneleven.dto.GetProject;
 import com.seveneleven.dto.PaginatedResponse;

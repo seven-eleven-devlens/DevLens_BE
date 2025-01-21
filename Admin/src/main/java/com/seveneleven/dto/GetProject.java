@@ -1,6 +1,7 @@
 package com.seveneleven.dto;
 
 import com.seveneleven.entity.project.Project;
+import com.seveneleven.exception.ProjectNotFoundException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -49,6 +50,12 @@ public class GetProject {
 
         public static Response of(Project project){
             return new Response(project);
+        }
+
+        public Response checkProjectDeleted(){
+            if(this.projectStatusCode == Project.ProjectStatusCode.CANCELLED)
+                throw new ProjectNotFoundException();
+            return this;
         }
     }
 }
