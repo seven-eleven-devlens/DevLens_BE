@@ -42,10 +42,9 @@ public class AdminProjectServiceImpl implements AdminProjectService{
 
     public PostProject.Response createProject(PostProject.Request request) {
         checkProjectValidity.checkProjectDuplicatedName(request.getProjectName());
-        Project project = projectRepository.save(postProjectRequestConverter.toEntity(request));
-        //이력 저장
-        adminProjectHistoryService.saveProjectHistory(project);
-        return postProjectResponseConverter.toDTO(project);
+        return postProjectResponseConverter.toDTO(
+                projectRepository.save(postProjectRequestConverter.toEntity(request))
+        );
     }
 
     @Transactional(readOnly = true)
