@@ -5,7 +5,6 @@ import com.seveneleven.application.adminProject.AdminProjectHistoryFacade;
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.service.AdminProjectHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/projects")
 public class AdminProjectController implements AdminProjectDocs{
-    private final AdminProjectHistoryService adminProjectHistoryService;
     private final AdminProjectFacade adminProjectFacade;
     private final AdminProjectHistoryFacade adminProjectHistoryFacade;
 
@@ -60,7 +58,7 @@ public class AdminProjectController implements AdminProjectDocs{
      */
     @GetMapping("/histories")
     public ResponseEntity<APIResponse<PaginatedResponse<GetProjectHistory.Response>>> getListOfProjectHistory(@RequestParam(value = "page") Integer page) {
-        PaginatedResponse<GetProjectHistory.Response> response = adminProjectHistoryService.getListOfProjectHistory(page);
+        PaginatedResponse<GetProjectHistory.Response> response = adminProjectHistoryFacade.getListOfProjectHistory(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
@@ -102,7 +100,7 @@ public class AdminProjectController implements AdminProjectDocs{
     ){
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, adminProjectHistoryService.searchHistoryByProjectName(searchTerm, page)));
+                .body(APIResponse.success(SuccessCode.OK, adminProjectHistoryFacade.searchHistoryByProjectName(searchTerm, page)));
     }
     /*
         함수명 : deleteProject
