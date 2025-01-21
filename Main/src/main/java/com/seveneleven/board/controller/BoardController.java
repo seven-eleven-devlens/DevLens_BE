@@ -106,7 +106,6 @@ public class BoardController implements BoardDocs {
     public ResponseEntity<APIResponse<SuccessCode>> deletePost(@PathVariable Long postId,
                                                                @PathVariable Long registerId
     ) throws Exception {
-        postFileService.deleteAllPostFiles(postId, registerId);
         postService.deletePost(postId, registerId);
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));

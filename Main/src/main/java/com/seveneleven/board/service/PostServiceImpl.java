@@ -11,7 +11,6 @@ import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.repository.MemberRepository;
-import com.seveneleven.project.repository.ProjectRepository;
 import com.seveneleven.project.repository.ProjectStepRepository;
 import com.seveneleven.response.PageResponse;
 import lombok.RequiredArgsConstructor;
@@ -100,7 +99,7 @@ public class PostServiceImpl implements PostService {
             postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 
-            // todo: 파일, 링크 저장 로직 추가 예정
+            // todo: 링크 저장 로직 추가 예정
         } else {
         // 답글인 경우
             if(!matchesProjectStepParentAndChild(postCreateRequest.getProjectStepId(), postCreateRequest.getParentPostId())) {
@@ -115,7 +114,7 @@ public class PostServiceImpl implements PostService {
             // 원글의 Child_Post_Num 컬럼값에 +1
             increaseChildPostNum(postCreateRequest.getParentPostId());
 
-            // todo: 파일, 링크 저장 로직 추가 예정
+            // todo: 링크 저장 로직 추가 예정
         }
     }
 
@@ -147,8 +146,6 @@ public class PostServiceImpl implements PostService {
 
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.UPDATE));
 
-
-        // todo: 파일, 링크 저장 로직 추가 예정
     }
 
     /**
@@ -173,6 +170,8 @@ public class PostServiceImpl implements PostService {
             Post parentPost = getParentPost(post);
             decreaseChildPostNum(parentPost.getId());
         }
+        //게시물 파일 일괄 삭제
+        postFileService.deleteAllPostFiles(post.getId(), registeredId);
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.DELETE));
         postRepository.delete(post);
     }

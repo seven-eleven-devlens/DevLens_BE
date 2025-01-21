@@ -75,23 +75,7 @@ public class PostFileService {
     }
 
     /**
-     * 3. 게시물 파일 삭제
-     * 함수명 : deletePostFiles
-     * @auth admin, 해당 게시물 작성자
-     * @param fileIds 해당 파일 id 목록
-     */
-    @Transactional
-    public void deletePostFiles(List<Long> fileIds){
-        //TODO) 1. 수행자 권한 판별
-
-        //2. 파일 삭제 호출
-        for(Long fileId : fileIds) {
-            fileMetadataRepository.deleteById(fileId);
-        }
-    }
-
-    /**
-     * 3-1. 게시물 파일 일괄 삭제
+     * 3. 게시물 파일 일괄 삭제
      * 함수명 : deleteAllPostFiles
      * @auth admin, 해당 게시물 작성자
      * @param postId 해당 게시물 id
@@ -106,7 +90,7 @@ public class PostFileService {
 
         //3. 해당 게시물의 파일들을 전체 삭제한다.
         for(FileMetadataDto file : fileService.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId())) {
-            fileMetadataRepository.deleteById(file.getId());
+            fileService.deleteFileById(file.getId());
         }
     }
 
