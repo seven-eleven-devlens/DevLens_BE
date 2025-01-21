@@ -5,9 +5,11 @@ import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.global.YesNo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -25,53 +27,36 @@ public class PostResponse {
     private String writer;              // 작성자
     private LocalDateTime createDate;   // 작성일자
     private LocalDateTime updateDate;   // 최근수정일자
-
-    // todo: 댓글 리스트 추가 예정
-    // private List<comment> comments;
-
+    @Setter
+    private List<GetCommentResponse> comments;
 
     private PostResponse(
-            Long postId,
-            Long projectStepId,
+            Post post,
             Long parentPostId,
-            YesNo isPinnedPost,
-            Integer priority,
-            PostStatus status,
-            String title,
-            String content,
-            LocalDate deadline,
             String writer,
-            LocalDateTime createDate,
-            LocalDateTime updateDate
+            List<GetCommentResponse> comments
     ) {
-        this.postId = postId;
-        this.projectStepId = projectStepId;
+        this.postId = post.getId();
+        this.projectStepId = post.getProjectStep().getId();
         this.parentPostId = parentPostId;
-        this.isPinnedPost = isPinnedPost;
-        this.priority = priority;
-        this.status = status;
-        this.title = title;
-        this.content = content;
-        this.deadline = deadline;
+        this.isPinnedPost = post.getIsPinnedPost();
+        this.priority = post.getPriority();
+        this.status = post.getStatus();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.deadline = post.getDeadline();
         this.writer = writer;
-        this.createDate = createDate;
-        this.updateDate = updateDate;
+        this.createDate = post.getCreatedAt();
+        this.updateDate = post.getUpdatedAt();
+        this.comments = comments;
     }
 
-    public static PostResponse getPostResponse(Post post, Long parentPostId, String memberName) {
+    public static PostResponse getPostResponse(Post post, Long parentPostId, String writer, List<GetCommentResponse> comments) {
         return new PostResponse(
-                post.getId(),
-                post.getProjectStep().getId(),
-                parentPostId,           // 부모게시물이 없는 경우 null 반환
-                post.getIsPinnedPost(),
-                post.getPriority(),
-                post.getStatus(),
-                post.getTitle(),
-                post.getContent(),
-                post.getDeadline(),
-                memberName,             // memberId가 아닌 name
-                post.getCreatedAt(),
-                post.getUpdatedAt()
+                post,
+                parentPostId,
+                writer,
+                comments
         );
     }
 
