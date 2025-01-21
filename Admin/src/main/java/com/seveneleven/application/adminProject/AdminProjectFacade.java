@@ -1,6 +1,7 @@
 package com.seveneleven.application.adminProject;
 
 import com.seveneleven.dto.GetProject;
+import com.seveneleven.dto.PaginatedResponse;
 import com.seveneleven.dto.PostProject;
 import com.seveneleven.dto.PutProject;
 import com.seveneleven.service.AdminProjectHistoryService;
@@ -28,6 +29,10 @@ public class AdminProjectFacade {
 
     public GetProject.Response getProject(Long id){
         return adminProjectService.getProject(id);
+    }
+
+    public PaginatedResponse<GetProject.Response> getListOfProject(Integer page) {
+        return adminProjectService.getListOfProject(page);
     }
 
     public void deleteProject(Long id){

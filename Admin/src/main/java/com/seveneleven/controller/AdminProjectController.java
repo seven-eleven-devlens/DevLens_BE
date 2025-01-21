@@ -5,7 +5,6 @@ import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.AdminProjectHistoryService;
-import com.seveneleven.service.AdminProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/projects")
 public class AdminProjectController implements AdminProjectDocs{
-    private final AdminProjectService adminProjectService;
     private final AdminProjectHistoryService adminProjectHistoryService;
     private final AdminProjectFacade adminProjectFacade;
 
@@ -48,7 +46,7 @@ public class AdminProjectController implements AdminProjectDocs{
      */
     @GetMapping("")
     public ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> getListOfProjects(@RequestParam(value = "page") Integer page) {
-        PaginatedResponse<GetProject.Response> response = adminProjectService.getListOfProject(page);
+        PaginatedResponse<GetProject.Response> response = adminProjectFacade.getListOfProject(page);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
