@@ -1,6 +1,9 @@
 package com.seveneleven.dto;
 
+import com.seveneleven.entity.member.Company;
+import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
+import com.seveneleven.entity.project.ProjectType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +23,26 @@ public class PostProject {
         private String contractNumber; // 계약서 번호
         private LocalDate plannedStartDate; // 시작 예정일
         private LocalDate plannedEndDate; // 종료 예정일
+
+        public Project toEntity(
+                Company customer,
+                Company developer,
+                ProjectType projectType,
+                Member bnsManager
+        ) {
+            return Project.create(
+                    this.projectName,
+                    customer,
+                    developer,
+                    this.projectDescription,
+                    projectType,
+                    Project.ProjectStatusCode.PREPARED,
+                    bnsManager,
+                    this.contractNumber,
+                    this.plannedStartDate,
+                    this.plannedEndDate
+            );
+        }
     }
 
     @Getter

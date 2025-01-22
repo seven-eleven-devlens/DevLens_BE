@@ -17,7 +17,7 @@ public class AdminProjectStoreImpl implements AdminProjectStore {
 
     @Override
     public void delete(Long id) {
-        Project project = adminProjectRepository.findById(id).orElseThrow(ProjectNotFoundException::new);
+        Project project = adminProjectRepository.findByIdAndProjectStatusCodeNot(id, Project.ProjectStatusCode.CANCELLED).orElseThrow(ProjectNotFoundException::new);
         project.delete();
     }
 }

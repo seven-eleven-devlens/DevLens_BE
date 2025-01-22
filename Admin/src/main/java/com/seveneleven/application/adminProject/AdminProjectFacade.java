@@ -36,6 +36,7 @@ public class AdminProjectFacade {
     }
 
     public void deleteProject(Long id){
+        adminProjectHistoryService.saveProjectHistory(id);
         adminProjectService.deleteProject(id);
     }
 }

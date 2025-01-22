@@ -1,6 +1,7 @@
 package com.seveneleven.repository;
 
 import com.seveneleven.entity.project.Project;
+import com.seveneleven.exception.ProjectNameDuplicatedException;
 import com.seveneleven.exception.ProjectNotFoundException;
 import com.seveneleven.service.AdminProjectReader;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,12 @@ public class AdminProjectReaderImpl implements AdminProjectReader {
     @Override
     public Page<Project> findAll(Pageable pageable) {
         return adminProjectRepository.findAllByProjectStatusCodeNot(pageable, Project.ProjectStatusCode.CANCELLED);
+    }
+
+    @Override
+    public void checkProjectExists(String name) {
+        adminProjectRepository.findByProjectNameAndProjectStatusCodeNot(name, Project.ProjectStatusCode.CANCELLED).ifPresent(project -> {
+            throw new ProjectNameDuplicatedException();
+        });
     }
 }
