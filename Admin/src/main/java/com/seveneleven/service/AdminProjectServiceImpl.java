@@ -9,8 +9,6 @@ import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectType;
 import com.seveneleven.exception.ProjectNotFoundException;
-import com.seveneleven.repository.AdminMemberRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,11 +23,11 @@ import static com.seveneleven.common.PageSize.DEFAULT_PAGE_SIZE;
 @Transactional
 @RequiredArgsConstructor
 public class AdminProjectServiceImpl implements AdminProjectService {
-    private final AdminMemberRepository adminMemberRepository;
     private final AdminProjectReader adminProjectReader;
     private final AdminProjectStore adminProjectStore;
     private final AdminCompanyReader adminCompanyReader;
     private final AdminProjectTypeReader adminProjectTypeReader;
+    private final AdminMemberReader adminMemberReader;
 
     @Override
     public PostProject.Response createProject(PostProject.Request request) {
@@ -38,7 +36,7 @@ public class AdminProjectServiceImpl implements AdminProjectService {
 
         Company customer = adminCompanyReader.getCompany(request.getCustomerId());
         Company developer = adminCompanyReader.getCompany(request.getDeveloperId());
-        Member bnsManager = adminMemberRepository.findById(request.getBnsManagerId()).orElseThrow(() -> new EntityNotFoundException("bns 담당자를 찾을 수 없습니다."));
+        Member bnsManager = adminMemberReader.getMember(request.getBnsManagerId());
         ProjectType projectType = adminProjectTypeReader.getProjectType(request.getProjectTypeId());
 
         Project project = adminProjectStore.store(request.toEntity(customer, developer, projectType, bnsManager));
@@ -72,7 +70,7 @@ public class AdminProjectServiceImpl implements AdminProjectService {
 
         Company customer = adminCompanyReader.getCompany(request.getCustomerId());
         Company developer = adminCompanyReader.getCompany(request.getDeveloperId());
-        Member bnsManager = adminMemberRepository.findById(request.getBnsManagerId()).orElseThrow(() -> new EntityNotFoundException("bns 담당자를 찾을 수 없습니다."));
+        Member bnsManager = adminMemberReader.getMember(request.getBnsManagerId());
         ProjectType projectType = adminProjectTypeReader.getProjectType(request.getProjectTypeId());
 
         Project updatedProject = request.updateProject(project, customer, developer, projectType, bnsManager);
