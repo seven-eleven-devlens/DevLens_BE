@@ -1,8 +1,9 @@
 package com.seveneleven.board.controller;
 
 import com.seveneleven.board.dto.*;
+import com.seveneleven.board.service.CommentService;
 import com.seveneleven.board.service.PostFileService;
-import com.seveneleven.board.service.PostServiceImpl;
+import com.seveneleven.board.service.PostService;
 import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PageResponse;
@@ -14,14 +15,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/posts")
 public class BoardController implements BoardDocs {
-    private final PostServiceImpl postService;
+
+    private final PostService postService;
+    private final CommentService commentService;
     private final PostFileService postFileService;
 
     /**
@@ -34,8 +36,8 @@ public class BoardController implements BoardDocs {
                                                                                    @RequestParam(required = false) String keyword,
                                                                                    @RequestParam(required = false) PostFilter filter
                                                                                    // todo: 정렬기준 추후 추가 예정
-    ) throws Exception {
-        PageResponse<PostListResponse> postList = postService.selectList(projectStepId, page, keyword, filter);
+    ) {
+        PageResponse<PostListResponse> postList = postService.selectPostList(projectStepId, page, keyword, filter);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, postList));
@@ -49,6 +51,7 @@ public class BoardController implements BoardDocs {
     @Override
     public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) throws Exception {
         PostResponse postResponse = postService.selectPost(postId);
+        postResponse.setComments(commentService.selectCommentList(postId));
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                         .body(APIResponse.success(SuccessCode.OK, postResponse));
@@ -59,7 +62,7 @@ public class BoardController implements BoardDocs {
      * 게시글의 파일 목록을 불러오는 메서드
      */
     @GetMapping("/{postId}/files")
-    public ResponseEntity<APIResponse<List<FileMetadataDto>>> selectPostFiles(@PathVariable Long postId) throws Exception {
+    public ResponseEntity<APIResponse<List<FileMetadataDto>>> selectPostFiles(@PathVariable Long postId) {
         List<FileMetadataDto> fileDataDtos = postFileService.getPostFiles(postId);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
