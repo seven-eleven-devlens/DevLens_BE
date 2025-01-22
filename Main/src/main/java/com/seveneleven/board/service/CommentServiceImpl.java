@@ -34,8 +34,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     @Override
     public List<GetCommentResponse> selectCommentList(Long postId){
-        // todo: 댓글 페이징 기능 고려 . 더보기 기능은 페이징 기능과 비슷하다.
-        // postId 존재 여부 확인
+        // todo: 댓글 페이징 기능 고려
         Post post = getPost(postId);
 
         return commentRepository.getCommentList(post.getId())
@@ -56,16 +55,16 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public void createComment(Long postId, PostCommentRequest postCommentRequest) {
-        // postId 존재 여부 확인
         Post post = getPost(postId);
 
         // 댓글인 경우
         if(postCommentRequest.getParentCommentId() == null) {
             saveComment(post, null, commentRepository.findMaxRef() + 1, 0, postCommentRequest);
-        } else {
+        }
+
         // 대댓글인 경우
-            Comment parentComment = commentRepository.findById(postCommentRequest.getParentCommentId())
-                    .orElseThrow(() -> new BusinessException(NOT_FOUND_COMMENT));
+        if(postCommentRequest.getParentCommentId() != null) {
+            Comment parentComment = getComment(postCommentRequest.getParentCommentId());
             saveComment(post, parentComment, parentComment.getRef(), parentComment.getChildCommentNum() + 1, postCommentRequest);
             // 부모 댓글의 child_comment_num 값 1 증가
             increaseChildCommentNum(postCommentRequest.getParentCommentId());
@@ -79,18 +78,14 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public void updateComment(Long postId, Long commentId, PatchCommentRequest patchCommentRequest) {
-        // postId 및 commentId 존재 여부 확인
-        Post post = getPost(postId);
+        existPost(postId);
         Comment comment = getComment(commentId);
 
         // 작성자 일치 여부 확인
         matchCommentWriter(comment.getCreatedBy(), patchCommentRequest.getModifierId());
 
         // 기존 댓글 수정
-        comment.updateComment(
-                patchCommentRequest.getContent(),
-                patchCommentRequest.getModifierIp()
-        );
+        comment.updateComment(patchCommentRequest.getContent(), patchCommentRequest.getModifierIp());
         commentRepository.save(comment);
     }
 
@@ -101,28 +96,27 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public void deleteComment(Long postId, Long commentId, DeleteCommentRequest deleteCommentRequest) {
-        // postId 및 commentId 존재 여부 확인
-        getPost(postId);
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_COMMENT));
+        existPost(postId);
+        Comment comment = getComment(commentId);
 
         // 작성자 일치 여부 확인
         matchCommentWriter(comment.getCreatedBy(), deleteCommentRequest.getModifierId());
 
-        // 댓글인 경우,
+        // 댓글인 경우
         if(comment.getParentCommentId() == null) {
+            // 대댓글이 존재하는 경우, 댓글 삭제 불가능
             if(comment.getChildCommentNum() >= 1) {
                 throw new BusinessException(NOT_DELETE_PARENT_COMMENT);
             }
-            comment.deleteComment(deleteCommentRequest.getModifierIp());
-            commentRepository.save(comment);
-        } else {
+        }
+
         // 대댓글인 경우
+        if(comment.getParentCommentId() != null) {
             // 댓글의 child_comment_num - 1 감소
             decreaseChildCommentNum(comment.getParentCommentId().getId());
-            comment.deleteComment(deleteCommentRequest.getModifierIp());
-            commentRepository.save(comment);
         }
+        comment.deleteComment(deleteCommentRequest.getModifierIp());
+        commentRepository.save(comment);
     }
 
     /**
@@ -144,8 +138,18 @@ public class CommentServiceImpl implements CommentService {
     }
 
     /**
-     * 함수명 : getPost()
+     * 함수명 : existPost()
      * 함수 목적 : 게시글 존재 여부 확인
+     */
+    private void existPost(Long postId) {
+        if(postRepository.findById(postId).isEmpty()) {
+            throw new BusinessException(NOT_FOUND_POST);
+        }
+    }
+
+    /**
+     * 함수명 : getPost()
+     * 함수 목적 : 게시글 정보 가져오기
      */
     private Post getPost(Long postId) {
         return postRepository.findById(postId)
@@ -154,7 +158,7 @@ public class CommentServiceImpl implements CommentService {
 
     /**
      * 함수명 : getComment()
-     * 함수 목적 : 댓글 존재 여부 확인
+     * 함수 목적 : 댓글 정보 가져오기
      */
     private Comment getComment(Long commentId) {
         return commentRepository.findById(commentId)
