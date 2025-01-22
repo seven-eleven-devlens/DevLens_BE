@@ -9,7 +9,6 @@ import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectType;
-import com.seveneleven.exception.CompanyNotFoundException;
 import com.seveneleven.exception.ProjectNotFoundException;
 import com.seveneleven.repository.*;
 import jakarta.persistence.EntityNotFoundException;
@@ -33,10 +32,10 @@ public class AdminProjectServiceImpl implements AdminProjectService{
     private final PutProjectResponseConverter responseConverter;
     private final CheckProjectValidity checkProjectValidity;
     private final AdminMemberRepository adminMemberRepository;
-    private final CompanyRepository companyRepository;
     private final AdminProjectTypeRepository adminProjectTypeRepository;
     private final AdminProjectReader adminProjectReader;
     private final AdminProjectStore adminProjectStore;
+    private final AdminCompanyReader adminCompanyReader;
 
     public PostProject.Response createProject(PostProject.Request request) {
         //중복 확인
@@ -65,8 +64,8 @@ public class AdminProjectServiceImpl implements AdminProjectService{
     @Transactional
     @Override
     public PutProject.Response updateProject(Long id, PutProject.Request request) {
-        Company customer = companyRepository.findById(request.getCustomerId()).orElseThrow(CompanyNotFoundException::new);
-        Company developer = companyRepository.findById(request.getDeveloperId()).orElseThrow(CompanyNotFoundException::new);
+        Company customer = adminCompanyReader.getCompany(request.getCustomerId());
+        Company developer = adminCompanyReader.getCompany(request.getDeveloperId());
         Member bnsManager = adminMemberRepository.findById(request.getBnsManagerId()).orElseThrow(() -> new EntityNotFoundException("bns 담당자를 찾을 수 없습니다."));
         Project project = adminProjectReader.getProject(id);
         ProjectType projectType = adminProjectTypeRepository.findById(request.getProjectTypeId()).orElseThrow(() -> new EntityNotFoundException("프로젝트 타입을 찾을 수 없습니다"));
