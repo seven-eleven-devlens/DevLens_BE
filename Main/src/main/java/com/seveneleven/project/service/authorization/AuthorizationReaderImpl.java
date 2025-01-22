@@ -2,8 +2,9 @@ package com.seveneleven.project.service.authorization;
 
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.project.ProjectAuthorization;
+import com.seveneleven.exception.BusinessException;
 import com.seveneleven.project.repository.ProjectAuthorizationRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,6 @@ public class AuthorizationReaderImpl implements AuthorizationReader {
     @Override
     public ProjectAuthorization readByStepIdAndUserId(Long projectStepId, Long userId) {
         return projectAuthorizationRepository.findByProjectStepIdAndMemberIdAndIsActive(projectStepId, userId, YesNo.YES)
-                .orElseThrow(EntityNotFoundException::new);
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }

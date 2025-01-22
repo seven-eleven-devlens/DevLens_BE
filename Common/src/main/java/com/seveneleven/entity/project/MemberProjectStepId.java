@@ -18,8 +18,11 @@ public class MemberProjectStepId implements Serializable {
     private Long projectStepId; // 프로젝트 단계 ID
 
     public MemberProjectStepId(Long memberId, Long projectStepId) {
-        if(memberId == null || projectStepId == null) {
-            throw new BusinessException(ErrorCode.BAD_REQUEST);
+        if(memberId == null) {
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        }
+        if(projectStepId == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_PROJECT_STEP);
         }
 
         this.memberId = memberId;
