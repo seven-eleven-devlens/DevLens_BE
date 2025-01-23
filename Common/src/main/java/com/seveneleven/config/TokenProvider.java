@@ -4,12 +4,9 @@ import com.seveneleven.entity.member.RefreshToken;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.util.security.repository.RefreshTokenRepositoryImpl;
-import com.seveneleven.util.security.service.RefreshTokenServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -87,9 +84,9 @@ public class TokenProvider implements InitializingBean {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject((String) userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
+                .claim("memberId", userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
                 .claim("loginId", userDetails.getLoginId()) // 로그인 ID 추가
-                .claim("email", userDetails.getEmail()) // 이메일 추가
+                .claim("name", userDetails.getUsername()) // 이메일 추가
                 .claim(AUTHORITIES_KEY, authorities) // 권한 추가
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
@@ -129,7 +126,8 @@ public class TokenProvider implements InitializingBean {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject((String) userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
+                .claim("memberId", userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
+                .claim("loginId", userDetails.getLoginId()) // 로그인 ID 추가
                 .signWith(key, SignatureAlgorithm.HS512) // 동일한 키 사용
                 .setExpiration(validity) // 만료 시간 설정
                 .compact();
@@ -210,22 +208,31 @@ public class TokenProvider implements InitializingBean {
     }
 
     /**
-     * Token에서 User ID 추출
+     * Token에서 login ID 추출
      * @param token
-     * @return User ID
+     * @return login ID
      */
     public String getLoginId(String token) {
         return parseClaims(token).get("loginId", String.class);
     }
 
     /**
+     * Token에서 Member ID 추출
+     * @param token
+     * @return Member ID
+     */
+    public String getMemberId(String token) {
+        return parseClaims(token).get("memberId", String.class);
+    }
+
+    /**
      * JWT Claims 추출
-     * @param accessToken
+     * @param token
      * @return JWT Claims
      */
-    public Claims parseClaims(String accessToken) {
+    public Claims parseClaims(String token) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }

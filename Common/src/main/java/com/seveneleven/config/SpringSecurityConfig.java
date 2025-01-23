@@ -77,6 +77,7 @@ public class SpringSecurityConfig {
                             .requestMatchers(AUTH_WHITELIST).permitAll()
                             .requestMatchers("api/login/**").permitAll()
                             .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
+                            .requestMatchers("/auth/refresh").permitAll() // Refresh Token 경로 허용
                             .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
             );
 
@@ -107,7 +108,7 @@ public class SpringSecurityConfig {
 
         configuration.setAllowedOrigins(Arrays.asList("https://kernel-dev-lens.vercel.app", "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "X-Refresh-Token", "Content-Type"));
         configuration.setAllowCredentials(true);   // 자격 증명 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -1,15 +1,12 @@
-package com.seveneleven.util.security;
+package com.seveneleven.member.controller;
 
-import com.seveneleven.config.TokenProvider;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.util.security.service.RefreshTokenService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.token.TokenService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,9 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class AuthController {
-    private final TokenProvider tokenProvider;
     private final RefreshTokenService refreshTokenService;
 
     /**
@@ -28,14 +24,11 @@ public class AuthController {
      *
      */
     @PostMapping("/refresh")
-    public ResponseEntity<APIResponse<TokenResponse>> refreshAccessToken(@AuthenticationPrincipal Authentication authentication,
-                                                                         @RequestHeader("X-Refresh-Token") String token) {
+    public ResponseEntity<APIResponse<TokenResponse>> refreshAccessToken(@RequestHeader("X-Refresh-Token") String refreshToken) {
 
-        System.out.println("authentication.getAuthorities() = " + authentication.getAuthorities());
-        System.out.println("authentication.getName() = " + authentication.getName());
-        System.out.println("token = " + token);
+        System.out.println("/refresh ::::::::::::::::::: refreshToken = " + refreshToken);
 
-        TokenResponse tokens = refreshTokenService.refreshAccessToken(authentication, token);
+        TokenResponse tokens = refreshTokenService.refreshAccessToken(refreshToken);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, tokens));

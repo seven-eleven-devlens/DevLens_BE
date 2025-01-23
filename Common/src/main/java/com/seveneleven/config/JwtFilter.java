@@ -1,5 +1,7 @@
 package com.seveneleven.config;
 
+import com.seveneleven.exception.BusinessException;
+import com.seveneleven.response.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,24 +34,40 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        String requestURI = request.getRequestURI(); // 요청 경로 확인
+
+        // Refresh 요청은 필터를 통과시키도록 설정
+        if ("/auth/refresh".equals(requestURI)) {
+            System.out.println(" ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ " +requestURI);
+            filterChain.doFilter(request, response); // Refresh 요청은 그대로 통과
+            return;
+        }
+
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
         String refreshToken = request.getHeader(REFRESH_HEADER);
+        System.out.println(" !!!!!!!!!!!!!!!!!!!!!!!!!!! ");
 
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String accessToken = authorizationHeader.substring(7);
 
+            System.out.println(" ############################ ");
+
             // Access Token이 유효할 때
             if(tokenProvider.validateToken(accessToken)) {
+                System.out.println(" ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ ");
                 setAuthentication(accessToken);
             }
             // Access Token이 만료되었지만, Refresh Token이 유효할 때
             else if(refreshToken != null && tokenProvider.validateToken(refreshToken)) {
-                handleRefreshToken(response, refreshToken);
+                System.out.println(" ********************************************* ");
+                throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
             }
             // Access Token과 Refresh Token 모두 만료되었을 때
             else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Access Token 과 Refresh Token이 만료되었습니다.");
+                System.out.println("둘다 만료 ================================== ");
+
                 return;
             }
         }
@@ -72,28 +90,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
     }
 
-    /**
-     * Refresh Token을 사용해 새로운 Access Token 발급 및 응답
-     *
-     * @param response HttpServletResponse 객체
-     * @param refreshToken 클라이언트가 제공한 Refresh Token
-     */
-    private void handleRefreshToken(HttpServletResponse response, String refreshToken) throws IOException {
-        String loginId = tokenProvider.getLoginId(refreshToken); // Refresh Token에서 사용자 ID 추출
 
-        if (loginId != null) {
-            // 새로운 Access Token 생성
-            String newAccessToken = tokenProvider.createAccessToken(loginId);
-
-            // 새 Access Token을 응답 헤더에 추가
-            response.setHeader("Authorization", "Bearer " + newAccessToken);
-
-            // 사용자 인증 설정
-            setAuthentication(newAccessToken);
-        } else {
-            // Refresh Token이 유효하지 않은 경우 401 반환
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Invalid refresh token");
-        }
 }
 
