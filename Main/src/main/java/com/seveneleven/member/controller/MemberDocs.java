@@ -3,7 +3,7 @@ package com.seveneleven.member.controller;
 import com.seveneleven.member.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

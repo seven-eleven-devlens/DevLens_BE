@@ -1,4 +1,4 @@
-package com.seveneleven.util.security;
+package com.seveneleven.util.security.dto;
 
 
 import lombok.Getter;

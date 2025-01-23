@@ -6,7 +6,7 @@ import com.seveneleven.member.service.MailService;
 import com.seveneleven.member.service.MemberService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +43,8 @@ public class MemberController implements MemberDocs{
 
         // JWT 토큰을 Authorization 헤더에 추가
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + response.getToken());
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + response.getToken().getAccessToken());
+        httpHeaders.add(JwtFilter.REFRESH_HEADER, response.getToken().getRefreshToken());
 
         // 성공 응답 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
@@ -62,7 +63,7 @@ public class MemberController implements MemberDocs{
     @PostMapping("/logout")
     public ResponseEntity<APIResponse<SuccessCode>> logout(@RequestHeader("Authorization") String token) {
 
-         memberService.logout(token);
+         //memberService.logout(token);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK));

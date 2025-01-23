@@ -1,6 +1,5 @@
 package com.seveneleven.config;
 
-import com.seveneleven.util.security.TokenRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,16 +7,9 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-import java.util.Arrays;
 
 /**
  * Spring Security 설정을 정의하는 클래스
@@ -31,15 +23,13 @@ import java.util.Arrays;
 public class SpringSecurityConfig {
 
     private final TokenProvider tokenProvider;
-    private final TokenRepository tokenRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final ApplicationEventPublisher eventPublisher;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    public SpringSecurityConfig(TokenProvider tokenProvider, TokenRepository tokenRepository, CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, ApplicationEventPublisher eventPublisher, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+    public SpringSecurityConfig(TokenProvider tokenProvider, CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, ApplicationEventPublisher eventPublisher, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
         this.tokenProvider = tokenProvider;
-        this.tokenRepository = tokenRepository;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.eventPublisher = eventPublisher;
