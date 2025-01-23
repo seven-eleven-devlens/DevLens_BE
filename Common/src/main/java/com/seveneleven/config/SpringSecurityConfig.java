@@ -1,6 +1,6 @@
 package com.seveneleven.config;
 
-import com.seveneleven.util.security.TokenRepository;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -30,14 +30,13 @@ import java.util.Arrays;
 public class SpringSecurityConfig {
 
     private final TokenProvider tokenProvider;
-    private final TokenRepository tokenRepository;
+    //private final RefreshTokenRepository tokenRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    public SpringSecurityConfig(TokenProvider tokenProvider, TokenRepository tokenRepository, CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+    public SpringSecurityConfig(TokenProvider tokenProvider, CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
         this.tokenProvider = tokenProvider;
-        this.tokenRepository = tokenRepository;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
@@ -73,7 +72,7 @@ public class SpringSecurityConfig {
             .headers(headers -> // H2-console 허용
                     headers.frameOptions(frameOptions -> frameOptions.sameOrigin())
             )
-            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenProvider), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers(AUTH_WHITELIST).permitAll()
                             .requestMatchers("api/login/**").permitAll()

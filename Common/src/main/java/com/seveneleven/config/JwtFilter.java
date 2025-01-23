@@ -1,7 +1,5 @@
 package com.seveneleven.config;
 
-import com.seveneleven.entity.member.constant.TokenStatus;
-import com.seveneleven.util.security.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,13 +20,12 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String REFRESH_HEADER = "X-Refresh-Token";
     private final CustomUserDetailsService customUserDetailsService;
-    private final TokenRepository tokenRepository;
     private final TokenProvider tokenProvider;
 
-    public JwtFilter(CustomUserDetailsService customUserDetailsService, TokenRepository tokenRepository, TokenProvider tokenProvider) {
+    public JwtFilter(CustomUserDetailsService customUserDetailsService, TokenProvider tokenProvider) {
         this.customUserDetailsService = customUserDetailsService;
-        this.tokenRepository = tokenRepository;
         this.tokenProvider = tokenProvider;
     }
 
@@ -36,27 +33,67 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
+        String refreshToken = request.getHeader(REFRESH_HEADER);
 
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String token = authorizationHeader.substring(7);
+            String accessToken = authorizationHeader.substring(7);
 
-            if(tokenProvider.validateToken(token)) {
-
-                String loginId = tokenProvider.getLoginId(token); // null 이 들어감
-                UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginId);
-
-                if (userDetails != null && tokenRepository.existsByTokenAndStatus(token,TokenStatus.ACTIVE)) {
-                    // UserDetsils, Password, Role -> 접근권한 인증 Token 생성
-                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
-                    //현재 Request의 Security Context에 접근권한 설정
-                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                }
+            // Access Token이 유효할 때
+            if(tokenProvider.validateToken(accessToken)) {
+                setAuthentication(accessToken);
+            }
+            // Access Token이 만료되었지만, Refresh Token이 유효할 때
+            else if(refreshToken != null && tokenProvider.validateToken(refreshToken)) {
+                handleRefreshToken(response, refreshToken);
+            }
+            // Access Token과 Refresh Token 모두 만료되었을 때
+            else {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Access Token 과 Refresh Token이 만료되었습니다.");
+                return;
             }
         }
-
         filterChain.doFilter(request, response); // 다음 필터로 넘기기
     }
+
+    /**
+     * Access Token으로 사용자 인증 설정
+     *
+     * @param token 유효한 Access Token
+     */
+    private void setAuthentication(String token) {
+        String loginId = tokenProvider.getLoginId(token);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(loginId);
+
+        if (userDetails != null) {
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+    }
+
+    /**
+     * Refresh Token을 사용해 새로운 Access Token 발급 및 응답
+     *
+     * @param response HttpServletResponse 객체
+     * @param refreshToken 클라이언트가 제공한 Refresh Token
+     */
+    private void handleRefreshToken(HttpServletResponse response, String refreshToken) throws IOException {
+        String loginId = tokenProvider.getLoginId(refreshToken); // Refresh Token에서 사용자 ID 추출
+
+        if (loginId != null) {
+            // 새로운 Access Token 생성
+            String newAccessToken = tokenProvider.createAccessToken(loginId);
+
+            // 새 Access Token을 응답 헤더에 추가
+            response.setHeader("Authorization", "Bearer " + newAccessToken);
+
+            // 사용자 인증 설정
+            setAuthentication(newAccessToken);
+        } else {
+            // Refresh Token이 유효하지 않은 경우 401 반환
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid refresh token");
+        }
 }
 

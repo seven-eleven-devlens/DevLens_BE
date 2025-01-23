@@ -1,9 +1,15 @@
 package com.seveneleven.config;
 
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.entity.member.RefreshToken;
+import com.seveneleven.util.security.dto.CustomUserDetails;
+import com.seveneleven.util.security.dto.TokenResponse;
+import com.seveneleven.util.security.repository.RefreshTokenRepositoryImpl;
+import com.seveneleven.util.security.service.RefreshTokenServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -30,22 +36,29 @@ import java.util.stream.Collectors;
 public class TokenProvider implements InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
+
     private static final String AUTHORITIES_KEY = "auth";
+    private final long ACCESS_TOKEN_EXPIRE_TIME;
+    private final long REFRESH_TOKEN_EXPIRE_TIME;
+    private final RefreshTokenRepositoryImpl refreshTokenRepositoryImpl;
     private final String secret;
-    private final long tokenValidityInMilliseconds;
     private Key key;
 
     /**
      * 생성자: JWT 토큰의 비밀키와 유효 시간을 초기화합니다.
      *
      * @param secret              Base64로 인코딩된 JWT 비밀키
-     * @param tokenValidityInSeconds JWT 토큰의 유효 기간 (초 단위)
+     * @param acessTokenValidityInSeconds JWT Access 토큰의 유효 기간 (초 단위)
+     * @param refreshTokenValidityInSeconds JWT Refresh 토큰의 유효 기간 (초 단위)
      */
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
-            @Value("${jwt.token-validity}") long tokenValidityInSeconds) {
+            @Value("${jwt.access-token-validity}") long acessTokenValidityInSeconds,
+            @Value("${jwt.refresh-token-validity}") long refreshTokenValidityInSeconds, RefreshTokenRepositoryImpl refreshTokenRepositoryImpl) {
         this.secret = secret;
-        this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+        this.ACCESS_TOKEN_EXPIRE_TIME = acessTokenValidityInSeconds * 1000;
+        this.REFRESH_TOKEN_EXPIRE_TIME = refreshTokenValidityInSeconds * 1000;
+        this.refreshTokenRepositoryImpl = refreshTokenRepositoryImpl;
     }
 
     /**
@@ -63,13 +76,13 @@ public class TokenProvider implements InitializingBean {
      * @param authentication Spring Security의 Authentication 객체
      * @return 생성된 JWT 토큰
      */
-    public String createToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+        Date validity = new Date(now + this.ACCESS_TOKEN_EXPIRE_TIME);
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
@@ -82,6 +95,79 @@ public class TokenProvider implements InitializingBean {
                 .setExpiration(validity)
                 .compact();
     }
+
+    /**
+     * 인증 정보를 기반으로 Access Token과 Refresh Token을 생성합니다.
+     *
+     * @param authentication Spring Security의 Authentication 객체
+     * @return Access Token과 Refresh Token을 포함한 DTO
+     */
+    public TokenResponse createTokens(Authentication authentication) {
+        String accessToken = createAccessToken(authentication);
+        String refreshToken = createRefreshToken(authentication);
+
+        // Refresh Token은 Redis에 저장
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        refreshTokenRepositoryImpl.save(
+                new RefreshToken(refreshToken, userDetails.getId()),
+                REFRESH_TOKEN_EXPIRE_TIME
+        );
+
+        return new TokenResponse(accessToken, refreshToken);
+    }
+
+    /**
+     * 인증 정보를 기반으로 Refresh Token을 생성합니다.
+     *
+     * @param authentication Spring Security의 Authentication 객체
+     * @return 생성된 Refresh Token
+     */
+    public String createRefreshToken(Authentication authentication) {
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + this.REFRESH_TOKEN_EXPIRE_TIME); // Refresh Token 만료 시간 설정
+
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+        return Jwts.builder()
+                .setSubject((String) userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
+                .signWith(key, SignatureAlgorithm.HS512) // 동일한 키 사용
+                .setExpiration(validity) // 만료 시간 설정
+                .compact();
+    }
+
+
+    public String generateTokenDto(Authentication authentication) {
+        // 권한들 가져오기
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        long now = (new Date()).getTime();
+
+        // Access Token 생성
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
+        String accessToken = Jwts.builder()
+                .setSubject(authentication.getName())       // payload "sub": "name"
+                .claim(AUTHORITIES_KEY, authorities)        // payload "auth": "USER"
+                .setExpiration(accessTokenExpiresIn)        // payload "exp": 151621022 (ex)
+                .signWith(key, SignatureAlgorithm.HS512)    // header "alg": "HS512"
+                .compact();
+
+        // Refresh Token 생성
+        String refreshToken = Jwts.builder()
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        return "";
+//        return TokenDto.builder()
+//                .grantType(BEARER_TYPE)
+//                .accessToken(accessToken)
+//                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
+//                .refreshToken(refreshToken)
+//                .build();
+    }
+
 
     /*
     * 함수명 : getExpirationFromToken
