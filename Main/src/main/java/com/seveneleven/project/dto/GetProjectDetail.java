@@ -44,16 +44,16 @@ public class GetProjectDetail {
                 Long projectId,
                 String projectTypeName,
                 String projectName,
-                String projectDescription,
-                String name,
-                String phoneNumber
+                String projectDescription
+//                String name,
+//                String phoneNumber
         ) {
             this.projectId = projectId;
             this.projectTypeName = projectTypeName;
             this.projectName = projectName;
             this.projectDescription = projectDescription;
-            this.projectContact = name;
-            this.projectContactPhone = phoneNumber;
+//            this.projectContact = name;
+//            this.projectContactPhone = phoneNumber;
         }
     }
 
