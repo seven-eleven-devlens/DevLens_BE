@@ -28,6 +28,7 @@ public enum ErrorCode {
     PROFILE_IMAGE_ALREADY_EXIST(1016, HttpStatus.BAD_REQUEST, "프로필 이미지가 존재합니다."),
     INVALID_REFRESH_TOKEN(1017, HttpStatus.UNAUTHORIZED,"Refresh Token이 유효하지 않습니다."),
     INVALID_ACCESS_TOKEN(1018, HttpStatus.UNAUTHORIZED,"Access Token이 유효하지 않습니다."),
+    NO_SUCH_ENCRYPT_ERROR(1019,HttpStatus.BAD_REQUEST,"암호화 복호화 알고리즘 오류"),
 
 
     COMPANY_DUPLICATED_NUMBER(1051, HttpStatus.BAD_REQUEST,"이미 등록된 회사입니다."),

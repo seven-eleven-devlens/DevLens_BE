@@ -1,4 +1,4 @@
-package com.seveneleven.member.controller;
+package com.seveneleven.controller;
 
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;

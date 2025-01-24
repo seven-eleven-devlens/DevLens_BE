@@ -38,36 +38,30 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Refresh 요청은 필터를 통과시키도록 설정
         if ("/auth/refresh".equals(requestURI)) {
-            System.out.println(" ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ " +requestURI);
             filterChain.doFilter(request, response); // Refresh 요청은 그대로 통과
             return;
         }
 
         String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
         String refreshToken = request.getHeader(REFRESH_HEADER);
-        System.out.println(" !!!!!!!!!!!!!!!!!!!!!!!!!!! ");
 
         if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String accessToken = authorizationHeader.substring(7);
 
-            System.out.println(" ############################ ");
-
             // Access Token이 유효할 때
             if(tokenProvider.validateToken(accessToken)) {
-                System.out.println(" ㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇㅇ ");
                 setAuthentication(accessToken);
             }
             // Access Token이 만료되었지만, Refresh Token이 유효할 때
             else if(refreshToken != null && tokenProvider.validateToken(refreshToken)) {
-                System.out.println(" ********************************************* ");
-                throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+                // throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+                 handleBusinessException(response, new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN));
+                 return;
             }
             // Access Token과 Refresh Token 모두 만료되었을 때
             else {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Access Token 과 Refresh Token이 만료되었습니다.");
-                System.out.println("둘다 만료 ================================== ");
-
                 return;
             }
         }
@@ -90,6 +84,12 @@ public class JwtFilter extends OncePerRequestFilter {
         }
     }
 
+    // BusinessException 응답 처리 메서드
+    private void handleBusinessException(HttpServletResponse response, BusinessException ex) throws IOException {
+        response.setStatus(ex.getErrorCode().getStatus().value()); // HTTP 상태 코드 설정
+        response.setContentType("application/json");
+        response.getWriter().write("{\"code\": \"" + ex.getErrorCode().getCode() + "\", \"message\": \"" +  ex.getMessage() + "\", \"data\": \"\" }");
+    }
 
 }
 
