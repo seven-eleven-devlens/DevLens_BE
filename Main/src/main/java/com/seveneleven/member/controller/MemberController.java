@@ -8,7 +8,9 @@ import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Slf4j
 public class MemberController implements MemberDocs{
 
     private final MemberService memberService;
@@ -41,10 +44,26 @@ public class MemberController implements MemberDocs{
         // 로그인 처리 및 JWT 토큰 발급
         LoginPost.Response response = memberService.login(request);
 
-        // JWT 토큰을 Authorization 헤더에 추가
+        // Access Token 쿠키 생성
+        ResponseCookie accessTokenCookie = createCookie(
+                "Access-Token",
+                response.getAccessToken(),
+                response.getExpiredAccess() / 1000
+        );
+
+        // Refresh Token 쿠키 생성
+        ResponseCookie refreshTokenCookie = createCookie(
+                "Refresh-Token",
+                response.getAccessToken(),
+                response.getExpiredRefresh()
+        );
+        System.out.println("accessTokenCookie.toString() = " + accessTokenCookie.toString());
+        System.out.println("refreshTokenCookie.toString() = " + refreshTokenCookie.toString());
+
+        // HTTP 응답에 쿠키 추가
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + response.getToken().getAccessToken());
-        httpHeaders.add(JwtFilter.REFRESH_HEADER, response.getToken().getRefreshToken());
+        httpHeaders.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        httpHeaders.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
         // 성공 응답 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
@@ -120,5 +139,23 @@ public class MemberController implements MemberDocs{
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
+    }
+
+    /**
+     * 쿠키 생성 메서드.
+     *
+     * @param name     쿠키 이름
+     * @param value    쿠키 값
+     * @param maxAge   쿠키 만료 시간 (초 단위)
+     * @return 생성된 ResponseCookie
+     */
+    private ResponseCookie createCookie(String name, String value, Long maxAge) {
+        return ResponseCookie.from(name, value)
+                .httpOnly(true) // 클라이언트 측 스크립트에서 쿠키 접근 방지
+                .secure(true) // HTTPS 환경에서만 전송
+                .path("/") // 쿠키가 모든 경로에서 유효하도록 설정
+                .maxAge(maxAge) // 쿠키 만료 시간 설정
+                .sameSite("Strict") // CSRF 방지
+                .build();
     }
 }

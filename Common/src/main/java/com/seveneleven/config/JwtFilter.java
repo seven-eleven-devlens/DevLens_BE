@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI(); // 요청 경로 확인
 
         // Refresh 요청은 필터를 통과시키도록 설정
-        if ("/auth/refresh".equals(requestURI)) {
+        if ("/api/auth/refresh".equals(requestURI)) {
             filterChain.doFilter(request, response); // Refresh 요청은 그대로 통과
             return;
         }
@@ -54,14 +54,12 @@ public class JwtFilter extends OncePerRequestFilter {
             }
             // Access Token이 만료되었지만, Refresh Token이 유효할 때
             else if(refreshToken != null && tokenProvider.validateToken(refreshToken)) {
-                // throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
-                 handleBusinessException(response, new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN));
-                 return;
+                handleBusinessException(response, new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN));
+                return;
             }
             // Access Token과 Refresh Token 모두 만료되었을 때
             else {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("Access Token 과 Refresh Token이 만료되었습니다.");
+                handleBusinessException(response, new BusinessException(ErrorCode.UNAUTHORIZED));
                 return;
             }
         }

@@ -68,7 +68,11 @@ public class MemberServiceImpl implements MemberService{
         LoginResponse company = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
                 member.getRole(), getProfileImageUrl(member.getId()), companyId, companyName, member.getDepartment(), member.getPosition());
 
-        return new LoginPost.Response(tokens, company);
+        return new LoginPost.Response(tokens.getAccessToken(),
+                tokenProvider.getAccessTokenExpireTime(),
+                tokens.getRefreshToken(),
+                tokenProvider.getRefreshTokenExpireTime(),
+                company);
     }
 
     /**
@@ -109,7 +113,6 @@ public class MemberServiceImpl implements MemberService{
     public MemberPatch.Response resetPassword(CustomUserDetails userDetails, MemberPatch.Request request) {
 
         if(Objects.isNull(userDetails)) {
-            System.out.println(" 여기는 MemberServiceImpl 클래스 입니다ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ ");
             throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
         }
 

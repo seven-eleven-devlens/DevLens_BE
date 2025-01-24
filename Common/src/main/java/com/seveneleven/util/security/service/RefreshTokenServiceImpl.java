@@ -30,18 +30,24 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
      * @return 새로운 Access Token
      */
     @Transactional
-    public TokenResponse refreshAccessToken(String refreshToken) {
+    public TokenResponse refreshAccessToken(String accessToken, String refreshToken) {
 
-        // 1. Refresh Token 검증
+        // 1. Access Token 검증 (Access Token이 있는지, 만료되었는지 check)
+        if (tokenProvider.validateToken(accessToken)) {
+            throw new BusinessException(ErrorCode.VALID_ACCESS_TOKEN);
+        }
+
+        // 2. Refresh Token 검증
         if (!tokenProvider.validateToken(refreshToken)) {
             throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
         }
 
-        // 2. Refresh Token의 사용자 ID 확인
+        // 3. Refresh Token의 사용자 ID 확인
+        // Access Token userId == Refresh Token userId 확인
         String memberId = tokenProvider.getMemberId(refreshToken);
         String loginId = tokenProvider.getLoginId(refreshToken);
 
-        // 3. Redis 또는 DB에서 Refresh Token 확인
+        // 4. Redis 또는 DB에서 Refresh Token 확인
         String storedRefreshToken = refreshTokenRepository.findByUsername(memberId);
         if (Objects.isNull(storedRefreshToken) || !storedRefreshToken.equals(refreshToken)) {
             throw new BusinessException(ErrorCode.INVALID_REFRESH_TOKEN);
@@ -52,7 +58,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-        // 4. 새로운 Access Token 생성 후 반환
+        // 5. 새로운 Access Token 생성 후 반환
         return tokenProvider.createTokens(authentication);
     }
 
