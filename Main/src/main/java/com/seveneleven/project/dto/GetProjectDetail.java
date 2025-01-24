@@ -12,7 +12,6 @@ public class GetProjectDetail {
     @Getter
     @Setter
     @ToString
-    @AllArgsConstructor
     public static class Response {
         private ProjectDetail projectDetail;
         private List<ProjectStepInfo> projectStep;
