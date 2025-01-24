@@ -16,6 +16,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -126,13 +128,31 @@ public class TokenProvider implements InitializingBean {
                 .compact();
     }
 
-//    /*
-//    * 함수명 : getExpirationFromToken
-//    * JWT 만료 시간 추출
-//    *
-//    * @param token JWT 토큰
-//    * @return 만료 시간 반환
-//    * */
+    /**
+     * Access Token 만료 시간을 반환합니다.
+     *
+     * @return Access Token 만료 시간 (밀리초 단위)
+     */
+    public long getAccessTokenExpireTime() {
+        return ACCESS_TOKEN_EXPIRE_TIME;
+    }
+
+    /**
+     * Refresh Token 만료 시간을 반환합니다.
+     *
+     * @return Refresh Token 만료 시간 (밀리초 단위)
+     */
+    public long getRefreshTokenExpireTime() {
+        return REFRESH_TOKEN_EXPIRE_TIME;
+    }
+
+    /*
+    * 함수명 : getExpirationFromToken
+    * JWT 만료 시간 추출
+    *
+    * @param token JWT 토큰
+    * @return 만료 시간 반환
+    * */
 //    public LocalDateTime getExpirationFromToken(String token) {
 //        Claims claims = Jwts.parser()
 //                .setSigningKey(secret)

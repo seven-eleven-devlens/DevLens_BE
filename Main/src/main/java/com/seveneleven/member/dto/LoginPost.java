@@ -19,7 +19,10 @@ public class LoginPost {
     @Setter
     @AllArgsConstructor
     public static class Response{
-        private TokenResponse token;
+        private String accessToken;
+        private Long expiredAccess;
+        private String refreshToken;
+        private Long expiredRefresh;
         private LoginResponse companyInfo;
     }
 }

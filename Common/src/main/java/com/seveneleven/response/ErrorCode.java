@@ -29,6 +29,7 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN(1017, HttpStatus.UNAUTHORIZED,"Refresh Token이 유효하지 않습니다."),
     INVALID_ACCESS_TOKEN(1018, HttpStatus.UNAUTHORIZED,"Access Token이 유효하지 않습니다."),
     NO_SUCH_ENCRYPT_ERROR(1019,HttpStatus.BAD_REQUEST,"암호화 복호화 알고리즘 오류"),
+    VALID_ACCESS_TOKEN(1020,HttpStatus.BAD_REQUEST,"Access 토큰이 유효합니다. 재발급이 불가합니다."),
 
 
     COMPANY_DUPLICATED_NUMBER(1051, HttpStatus.BAD_REQUEST,"이미 등록된 회사입니다."),
