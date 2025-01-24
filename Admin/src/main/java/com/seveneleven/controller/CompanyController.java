@@ -2,6 +2,7 @@ package com.seveneleven.controller;
 
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
+import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.AdminCompanyService;
 import lombok.RequiredArgsConstructor;

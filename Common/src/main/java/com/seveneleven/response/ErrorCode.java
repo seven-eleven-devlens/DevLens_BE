@@ -53,11 +53,12 @@ public enum ErrorCode {
     NOT_FOUND_PROJECT_STEP(2501, HttpStatus.NOT_FOUND, "해당 프로젝트 단계를 찾을 수 없습니다."),
     NOT_FOUND_MEMBER(2502, HttpStatus.NOT_FOUND, "해당 회원을 찾을 수 없습니다."),
     NOT_FOUND_POST(2503, HttpStatus.NOT_FOUND, "해당 게시물을 찾을 수 없습니다."),
-    NOT_AUTHORIZED_TO_POST(2504, HttpStatus.FORBIDDEN, "작성자만 게시글을 수정 및 삭제할 수 있습니다."),
+    NOT_MATCH_WRITER(2504, HttpStatus.FORBIDDEN, "작성자만 수정 및 삭제할 수 있습니다."),
     NOT_FOUND_WRITER(2505, HttpStatus.NOT_FOUND, "작성자 정보를 찾을 수 없습니다."),
     NOT_DELETE_PARENT_POST(2506, HttpStatus.BAD_REQUEST, "관련된 게시글이 존재하는 경우 해당 게시글을 삭제할 수 없습니다."),
-    NOT_MATCH_PROJECTSTEPID(2507, HttpStatus.BAD_REQUEST, "게시글의 프로젝트 단계가 일치하지 않습니다."),
-
+    NOT_DELETE_PARENT_COMMENT(2507, HttpStatus.BAD_REQUEST, "관련된 댓글이 존재하는 경우, 해당 댓글을 삭제할 수 없습니다."),
+    NOT_MATCH_PROJECTSTEPID(2508, HttpStatus.BAD_REQUEST, "게시글의 프로젝트 단계가 일치하지 않습니다."),
+    NOT_FOUND_COMMENT(2509, HttpStatus.NOT_FOUND, "해당 댓글(부모 댓글)을 찾을 수 없습니다."),
     // 3000번대 코드 : DB 관련
     FILE_NOT_FOUND_ERROR(3000, HttpStatus.NOT_FOUND, "해당 파일을 찾을 수 없습니다."),
 
@@ -81,7 +82,8 @@ public enum ErrorCode {
 
     // 10000 : 알 수 없는 예외
     UNKNOWN_ERROR(10000, HttpStatus.BAD_REQUEST, "알 수 없는 예외입니다,"),
-    ENTITY_NOT_FOUND(10001, HttpStatus.BAD_REQUEST,"정보를 찾을 수 없습니다");
+    ENTITY_NOT_FOUND(10001, HttpStatus.BAD_REQUEST,"정보를 찾을 수 없습니다"),
+    BAD_REQUEST(10002, HttpStatus.BAD_REQUEST, "잘못된 요청입니다.");
     private final Integer code;
     private final HttpStatus status;
     private final String message;

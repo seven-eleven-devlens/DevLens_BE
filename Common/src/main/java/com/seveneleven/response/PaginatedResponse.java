@@ -1,4 +1,4 @@
-package com.seveneleven.dto;
+package com.seveneleven.response;
 
 import lombok.AccessLevel;
 import lombok.Getter;

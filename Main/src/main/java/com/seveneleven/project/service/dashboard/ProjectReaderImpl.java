@@ -37,13 +37,13 @@ public class ProjectReaderImpl implements ProjectReader {
         );
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public GetProjectDetail.Response getProjectDetail(Long projectId) {
-        return new GetProjectDetail.Response(
-                projectRepository.getProjectDetail(projectId),
-                projectStepRepository.findStepProcessRate(projectId),
-                checkRequestRepository.findAllApplicationLists(projectId)
-        );
-    }
+//    @Override
+//    @Transactional(readOnly = true)
+//    public GetProjectDetail.Response getProjectDetail(Long projectId) {
+//        return GetProjectDetail.Response.toDto(
+//                projectRepository.getProjectDetail(projectId),
+//                projectStepRepository.findStepProcessRate(projectId),
+//                checkRequestRepository.findAllApplicationLists(projectId)
+//        );
+//    }
 }

@@ -18,7 +18,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
         JOIN ProjectAuthorization p_a
             ON
                 p_a.member.id = :memberId AND
-                p_a.isDeleted = 'N' AND
+                p_a.isActive = 'N' AND
                 p_a.projectStep.project.id = p.id
         WHERE
             p.projectStatusCode = 'IN_PROGRESS'
@@ -37,24 +37,24 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     """)
     List<Project> findAllCompanyProgressingProjects(Long companyId);
 
-    @Query(value = """
-        SELECT
-        new com.seveneleven.project.dto.GetProjectDetail$ProjectDetail(
-                p.id,
-                p_t.projectTypeName,
-                p.projectName,
-                p.projectDescription,
-                m.name,
-                m.phoneNumber
-        )
-        FROM
-            Project p
-        JOIN
-            ProjectType p_t ON p_t.id = p.projectType.id
-        JOIN
-            Member m ON m.id = p.bnsManager.id
-        WHERE
-             p.id = :projectId
-        """)
-    GetProjectDetail.ProjectDetail getProjectDetail(@Param("projectId") Long projectId);
+//    @Query(value = """
+//        SELECT
+//        new com.seveneleven.project.dto.GetProjectDetail$ProjectDetail(
+//                p.id,
+//                p_t.projectTypeName,
+//                p.projectName,
+//                p.projectDescription,
+//                m.name,
+//                m.phoneNumber
+//        )
+//        FROM
+//            Project p
+//        JOIN
+//            ProjectType p_t ON p_t.id = p.projectType.id
+//        JOIN
+//            Member m ON m.id = p.bnsManager.id
+//        WHERE
+//             p.id = :projectId
+//        """)
+//    GetProjectDetail.ProjectDetail getProjectDetail(@Param("projectId") Long projectId);
 }

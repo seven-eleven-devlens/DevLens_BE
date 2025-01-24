@@ -32,5 +32,17 @@ public class ProjectAuthorizationHistory extends BaseEntity {
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter.class)
-    private YesNo isDeleted; // 삭제 여부
+    private YesNo isActive; // 삭제 여부
+
+    private ProjectAuthorizationHistory(ProjectAuthorization authorization) {
+        this.memberName = authorization.getMember().getName();
+        this.projectStepName = authorization.getProjectStep().getStepName();
+        this.memberType = authorization.getMemberType().name();
+        this.authorizationCode = authorization.getAuthorizationCode();
+        this.isActive = authorization.getIsActive();
+    }
+
+    public static ProjectAuthorizationHistory create(ProjectAuthorization authorization) {
+        return new ProjectAuthorizationHistory(authorization);
+    }
 }

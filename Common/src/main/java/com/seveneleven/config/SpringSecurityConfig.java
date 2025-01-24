@@ -45,8 +45,7 @@ public class SpringSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/member/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
-            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**",
-            "/api/**"
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html"
     };
 
     @Bean
@@ -112,19 +111,24 @@ public class SpringSecurityConfig {
      *
      * @return CORS 설정을 포함하는 CorsConfigurationSource 객체
      */
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.setAllowedOrigins(Arrays.asList("https://kernel-dev-lens.vercel.app", "http://localhost:3000"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("X-Access-Token", "X-Refresh-Token", "Content-Type"));
-        configuration.setAllowCredentials(true);   // 자격 증명 허용
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 적용
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//
+//        configuration.setAllowedOrigins(Arrays.asList("http://kernel-dev-lens.vercel.app",
+//                "https://kernel-dev-lens.vercel.app",
+//                "http://localhost:3000",
+//                "https://www.devlens.work",
+//                "https://devlens.work",
+//                "https://api.devlens.work"));
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
+//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+//        configuration.setAllowCredentials(true);   // 자격 증명 허용
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 적용
+//        return source;
+//    }
 
 }
 
