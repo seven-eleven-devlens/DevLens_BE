@@ -63,7 +63,7 @@ public class MemberController implements MemberDocs{
     @PostMapping("/logout")
     public ResponseEntity<APIResponse<SuccessCode>> logout(@RequestHeader("Authorization") String token) {
 
-         //memberService.logout(token);
+         memberService.logout(token);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK));
