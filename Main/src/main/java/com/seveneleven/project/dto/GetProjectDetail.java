@@ -11,6 +11,7 @@ public class GetProjectDetail {
      */
     @Getter
     @Setter
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
@@ -20,6 +21,7 @@ public class GetProjectDetail {
     }
 
     @Getter
+    @ToString
     public static class ProjectDetail {
         private Long projectId;
         private String projectTypeName;
@@ -48,6 +50,7 @@ public class GetProjectDetail {
 
     @Getter
     @Setter
+    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProjectStepInfo {

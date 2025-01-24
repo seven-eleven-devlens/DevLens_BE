@@ -41,7 +41,7 @@ public class ProjectReaderImpl implements ProjectReader {
     @Transactional(readOnly = true)
     public GetProjectDetail.Response getProjectDetail(Long projectId) {
         return new GetProjectDetail.Response(
-                projectRepository.getProjectDetail(projectId),
+                projectRepository.getProjectDetail(projectId).orElseThrow(() -> new BusinessException(ErrorCode.PROJECT_NOT_FOUND)),
                 projectStepRepository.findStepProcessRate(projectId),
                 checkRequestRepository.findAllApplicationLists(projectId)
         );

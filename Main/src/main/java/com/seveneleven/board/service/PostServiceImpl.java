@@ -100,7 +100,9 @@ public class PostServiceImpl implements PostService {
             Post post = getCreatePost(postCreateRequest, postRepository.findMaxRef() + 1, 0);
             postRepository.save(post);
             //게시물 파일 업로드
-            postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
+            if(!(files == null || files.isEmpty())) {
+                postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
+            }
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 
             // todo: 링크 저장 로직 추가 예정

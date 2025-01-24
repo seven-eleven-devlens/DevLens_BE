@@ -1,6 +1,7 @@
 package com.seveneleven.config;
 
 import com.seveneleven.util.security.TokenRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -33,13 +34,15 @@ public class SpringSecurityConfig {
     private final TokenRepository tokenRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final ApplicationEventPublisher eventPublisher;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    public SpringSecurityConfig(TokenProvider tokenProvider, TokenRepository tokenRepository, CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+    public SpringSecurityConfig(TokenProvider tokenProvider, TokenRepository tokenRepository, CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, ApplicationEventPublisher eventPublisher, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
         this.tokenProvider = tokenProvider;
         this.tokenRepository = tokenRepository;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.eventPublisher = eventPublisher;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
     }
 
@@ -73,7 +76,7 @@ public class SpringSecurityConfig {
             .headers(headers -> // H2-console 허용
                     headers.frameOptions(frameOptions -> frameOptions.sameOrigin())
             )
-            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider, eventPublisher), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers(AUTH_WHITELIST).permitAll()
                             .requestMatchers("api/login/**").permitAll()
@@ -108,7 +111,7 @@ public class SpringSecurityConfig {
 
         configuration.setAllowedOrigins(Arrays.asList("https://kernel-dev-lens.vercel.app", "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Forwarded-For"));
         configuration.setAllowCredentials(true);   // 자격 증명 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
