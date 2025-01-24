@@ -20,6 +20,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 import static com.seveneleven.board.dto.PostResponse.getPostResponse;
 import static com.seveneleven.response.ErrorCode.*;
@@ -32,6 +35,8 @@ public class PostServiceImpl implements PostService {
     private final PostHistoryRepository postHistoryRepository;
     private final ProjectStepRepository projectStepRepository;
     private final MemberRepository memberRepository;
+    private final PostFileService postFileService;
+    private final CommentService commentService;
 
     private final int PAGE_SIZE = 10;
 
@@ -42,7 +47,7 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional(readOnly = true)
     @Override
-    public PageResponse<PostListResponse> selectList(Long projectStepId, Integer page, String keyword, PostFilter filter) {
+    public PageResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Order.desc("ref"), Sort.Order.asc("refOrder")));
 
         // todo : 필터 검색 기능 추가 예정
@@ -64,7 +69,7 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional(readOnly = true)
     @Override
-    public PostResponse selectPost(Long postId) throws Exception {
+    public PostResponse selectPost(Long postId) {
         Post post = getPost(postId);
 
         String memberName = memberRepository.findNameById((post.getCreatedBy()))
@@ -75,7 +80,10 @@ public class PostServiceImpl implements PostService {
             parentPostId = post.getParentPost().getId();
         }
 
-        return getPostResponse(post, parentPostId, memberName);
+        // 댓글 목록 조회
+        List<GetCommentResponse> comments = commentService.selectCommentList(postId);
+
+        return getPostResponse(post, parentPostId, memberName, comments);
     }
 
     /**
@@ -84,16 +92,18 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void createPost(PostCreateRequest postCreateRequest) throws Exception {
+    public void createPost(PostCreateRequest postCreateRequest, List<MultipartFile> files) {
         // todo : 작성권한 확인 로직 추가 예정
 
         // 원글인 경우
         if (postCreateRequest.getParentPostId() == null) {
-            Post post = getCreatePost(postCreateRequest, postRepository.findFirstRefByOrderByRefDesc() + 1, 0);
+            Post post = getCreatePost(postCreateRequest, postRepository.findMaxRef() + 1, 0);
             postRepository.save(post);
+            //게시물 파일 업로드
+            postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 
-            // todo: 파일, 링크 저장 로직 추가 예정
+            // todo: 링크 저장 로직 추가 예정
         } else {
         // 답글인 경우
             if(!matchesProjectStepParentAndChild(postCreateRequest.getProjectStepId(), postCreateRequest.getParentPostId())) {
@@ -101,12 +111,14 @@ public class PostServiceImpl implements PostService {
             }
             Post post = getCreatePost(postCreateRequest, getRef(postCreateRequest.getParentPostId()), getRefOrder(postCreateRequest.getParentPostId())+1);
             postRepository.save(post);
+            //게시물 파일 업로드
+            postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 
             // 원글의 Child_Post_Num 컬럼값에 +1
             increaseChildPostNum(postCreateRequest.getParentPostId());
 
-            // todo: 파일, 링크 저장 로직 추가 예정
+            // todo: 링크 저장 로직 추가 예정
         }
     }
 
@@ -116,7 +128,7 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void updatePost(PostUpdateRequest postUpdateRequest) throws Exception {
+    public void updatePost(PostUpdateRequest postUpdateRequest, List<MultipartFile> files) {
         // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = getPost(postUpdateRequest.getPostId());
         matchPostWriter(post.getCreatedBy(), postUpdateRequest.getModifierId());
@@ -133,18 +145,20 @@ public class PostServiceImpl implements PostService {
         );
 
         postRepository.save(post);
+        //파일 수정
+        postFileService.updatePostFiles(post.getId(), files);
+
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.UPDATE));
 
-        // todo: 파일, 링크 저장 로직 추가 예정
     }
 
     /**
-     * 함수명 : updatePost()
+     * 함수명 : deletePost()
      * 함수 목적 : 게시글을 삭제하는 메서드
      * param : 게시글 ID, 등록자 ID
      */
     @Transactional
-    public void deletePost(Long postId, Long registeredId) throws Exception {
+    public void deletePost(Long postId, Long registeredId) {
         // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = getPost(postId);
         matchPostWriter(post.getCreatedBy(), registeredId);
@@ -160,6 +174,8 @@ public class PostServiceImpl implements PostService {
             Post parentPost = getParentPost(post);
             decreaseChildPostNum(parentPost.getId());
         }
+        //게시물 파일 일괄 삭제
+        postFileService.deleteAllPostFiles(post.getId(), registeredId);
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.DELETE));
         postRepository.delete(post);
     }
@@ -168,7 +184,7 @@ public class PostServiceImpl implements PostService {
      * 함수명 : getParentPost()
      * 함수 목적 : 부모게시물 여부 확인 메서드
      */
-    private Post getParentPost(Post post) throws Exception {
+    private Post getParentPost(Post post) {
         if(post.getParentPost() != null) {
             return postRepository.findById(post.getParentPost().getId())
                     .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
@@ -180,7 +196,7 @@ public class PostServiceImpl implements PostService {
      * 함수명 : getPost()
      * 함수 목적 : 게시물 존재 여부 확인 메서드
      */
-    private Post getPost(Long postId) throws Exception {
+    private Post getPost(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
     }
@@ -189,9 +205,9 @@ public class PostServiceImpl implements PostService {
      * 함수명 : matchPostWriter()
      * 함수 목적 : 게시물 작성자 일치 여부 확인 메서드
      */
-    private void matchPostWriter(Long createdBy, Long modifierId) throws Exception {
+    private void matchPostWriter(Long createdBy, Long modifierId) {
         if(!createdBy.equals(modifierId)) {
-            throw new BusinessException(NOT_AUTHORIZED_TO_POST);
+            throw new BusinessException(NOT_MATCH_WRITER);
         }
     }
 
@@ -199,7 +215,7 @@ public class PostServiceImpl implements PostService {
      * 함수명 : getCreatePost()
      * 함수 목적 : (원글,답글) 게시글 생성 메서드
      */
-    private Post getCreatePost(PostCreateRequest postCreateRequest, Long ref, Integer refOrder) throws Exception {
+    private Post getCreatePost(PostCreateRequest postCreateRequest, Long ref, Integer refOrder) {
         // 프로젝트 단계 확인
         ProjectStep projectStep = projectStepRepository.findById(postCreateRequest.getProjectStepId())
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_PROJECT_STEP));
@@ -231,7 +247,8 @@ public class PostServiceImpl implements PostService {
      * 함수명 : matchesProjectStepParentAndChild()
      * 함수 목적 : (답글) 부모게시글과 자식게시글의 프로젝트 단계 일치 여부 확인 메서드
      */
-    private boolean matchesProjectStepParentAndChild(Long childProjectStepId, Long childParentPostId) throws Exception {
+    private boolean matchesProjectStepParentAndChild(Long childProjectStepId, Long childParentPostId) {
+        // 부모게시글의 프로젝트 단계 값 받기
         Post post = postRepository.findById(childParentPostId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
         return post.getProjectStep().getId().equals(childProjectStepId);
@@ -241,7 +258,7 @@ public class PostServiceImpl implements PostService {
      * 함수명 : getRef()
      * 함수 목적 : (답글) 원글의 REF 반환 메서드
      */
-    private Long getRef(Long parentPostId) throws Exception {
+    private Long getRef(Long parentPostId) {
         Post post = postRepository.findById(parentPostId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
         if (post.getRef() == null) {
@@ -254,7 +271,7 @@ public class PostServiceImpl implements PostService {
      * 함수명 : getRefOrder()
      * 함수 목적 : (답글) 동일 그룹의 REF_ORDER 최대값 반환 메서드
      */
-    private Integer getRefOrder(Long parentPostId) throws Exception {
+    private Integer getRefOrder(Long parentPostId) {
         if(postRepository.findById(parentPostId).orElseThrow(() -> new BusinessException(NOT_FOUND_POST)).getChildPostNum().equals(0)) {
             return 0;
         }
@@ -266,7 +283,7 @@ public class PostServiceImpl implements PostService {
      * 함수명 : increaseChildPostNum()
      * 함수 목적 : 답글 생성 시 child_post_num 증가
      */
-    private void increaseChildPostNum(Long parentPostId) throws Exception {
+    private void increaseChildPostNum(Long parentPostId) {
         Post post = postRepository.findById(parentPostId).orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
         post.increaseChildPostNum();
         postRepository.save(post);
@@ -276,7 +293,7 @@ public class PostServiceImpl implements PostService {
      * 함수명 : decreaseChildPostNum()
      * 함수 목적 : 답글 삭제 시 child_post_num 감소
      */
-    private void decreaseChildPostNum(Long parentPostId) throws Exception {
+    private void decreaseChildPostNum(Long parentPostId) {
         Post post = postRepository.findById(parentPostId).orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
         post.decreaseChildPostNum();
         postRepository.save(post);

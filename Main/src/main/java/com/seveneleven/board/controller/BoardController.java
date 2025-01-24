@@ -1,11 +1,14 @@
 package com.seveneleven.board.controller;
 
 import com.seveneleven.board.dto.*;
-import com.seveneleven.board.service.PostServiceImpl;
+import com.seveneleven.board.service.CommentService;
+import com.seveneleven.board.service.PostFileService;
+import com.seveneleven.board.service.PostService;
 import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PageResponse;
 import com.seveneleven.response.SuccessCode;
+import com.seveneleven.util.file.dto.FileMetadataDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +22,9 @@ import java.util.List;
 @RequestMapping("/api/posts")
 public class BoardController implements BoardDocs {
 
-    private final PostServiceImpl postService;
+    private final PostService postService;
+    private final CommentService commentService;
+    private final PostFileService postFileService;
 
     /**
      * 함수명 : selectList()
@@ -31,8 +36,8 @@ public class BoardController implements BoardDocs {
                                                                                    @RequestParam(required = false) String keyword,
                                                                                    @RequestParam(required = false) PostFilter filter
                                                                                    // todo: 정렬기준 추후 추가 예정
-    ) throws Exception {
-        PageResponse<PostListResponse> postList = postService.selectList(projectStepId, page, keyword, filter);
+    ) {
+        PageResponse<PostListResponse> postList = postService.selectPostList(projectStepId, page, keyword, filter);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, postList));
@@ -46,9 +51,22 @@ public class BoardController implements BoardDocs {
     @Override
     public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) throws Exception {
         PostResponse postResponse = postService.selectPost(postId);
+        postResponse.setComments(commentService.selectCommentList(postId));
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                         .body(APIResponse.success(SuccessCode.OK, postResponse));
+    }
+
+    /**
+     * 함수명 : selectPostFiles
+     * 게시글의 파일 목록을 불러오는 메서드
+     */
+    @GetMapping("/{postId}/files")
+    public ResponseEntity<APIResponse<List<FileMetadataDto>>> selectPostFiles(@PathVariable Long postId) {
+        List<FileMetadataDto> fileDataDtos = postFileService.getPostFiles(postId);
+
+        return ResponseEntity.status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, fileDataDtos));
     }
 
     /**
@@ -60,9 +78,7 @@ public class BoardController implements BoardDocs {
     public ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestPart PostCreateRequest postCreateRequest,
                                                                @RequestPart(required = false) List<MultipartFile> files
     ) throws Exception {
-        postService.createPost(postCreateRequest);
-
-        // todo: 파일&링크 관련 메서드 추가 예정
+        postService.createPost(postCreateRequest, files);
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED));
@@ -78,9 +94,7 @@ public class BoardController implements BoardDocs {
                                                                @RequestPart PostUpdateRequest postUpdateRequest,
                                                                @RequestPart(required = false) List<MultipartFile> files
     ) throws Exception {
-        postService.updatePost(postUpdateRequest);
-
-        // todo: 파일&링크 관련 메서드 추가 예정
+        postService.updatePost(postUpdateRequest, files);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED));
@@ -96,7 +110,6 @@ public class BoardController implements BoardDocs {
                                                                @PathVariable Long registerId
     ) throws Exception {
         postService.deletePost(postId, registerId);
-
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
