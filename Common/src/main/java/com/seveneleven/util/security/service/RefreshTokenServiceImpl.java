@@ -2,20 +2,16 @@ package com.seveneleven.util.security.service;
 
 import com.seveneleven.config.CustomUserDetailsService;
 import com.seveneleven.config.TokenProvider;
-import com.seveneleven.entity.member.RefreshToken;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.security.dto.TokenResponse;
-import com.seveneleven.util.security.repository.RefreshTokenRepositoryImpl;
-import jakarta.servlet.http.HttpServletResponse;
+import com.seveneleven.util.security.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.util.Objects;
 
 @Service
@@ -23,23 +19,8 @@ import java.util.Objects;
 @Transactional
 public class RefreshTokenServiceImpl implements RefreshTokenService{
     private final TokenProvider tokenProvider;
-    private final RefreshTokenRepositoryImpl refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final CustomUserDetailsService customUserDetailsService;
-
-//    @Transactional
-//    public void saveRefreshToken(String refreshToken, String userId) {
-//        RefreshToken token = RefreshToken.builder()
-//                .refreshToken(refreshToken)
-//                .userId(userId)
-//                .build();
-//        refreshTokenRepository.save(token);
-//    }
-//
-//    @Transactional
-//    public void removeRefreshToken(String refreshToken) {
-//        refreshTokenRepository.findRefreshTokenByRefreshToken(refreshToken)
-//                .ifPresent(token -> refreshTokenRepository.delete(token));
-//    }
 
     /**
      * 함수명 : refreshAccessToken

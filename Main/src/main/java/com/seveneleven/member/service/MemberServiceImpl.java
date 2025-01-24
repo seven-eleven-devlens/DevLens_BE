@@ -17,7 +17,6 @@ import com.seveneleven.util.file.repository.FileMetadataRepository;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.security.service.AuthService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -40,7 +39,6 @@ public class MemberServiceImpl implements MemberService{
     private final CompanyRepository companyRepository;
     private final FileMetadataRepository fileMetadataRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
-    private final AuthService authService;
 
     /**
      * 함수명 : login
@@ -105,6 +103,7 @@ public class MemberServiceImpl implements MemberService{
     public MemberPatch.Response resetPassword(CustomUserDetails userDetails, MemberPatch.Request request) {
 
         if(Objects.isNull(userDetails)) {
+            System.out.println(" 여기는 MemberServiceImpl 클래스 입니다ㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏㅏ ");
             throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
         }
 
