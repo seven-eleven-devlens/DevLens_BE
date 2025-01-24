@@ -71,19 +71,19 @@ public class PutProject {
         private LocalDateTime finalApprovalDate; // 최종 결재일시
 
         private Response(Project project) {
-            this.id = project.getId();
-            this.projectName = project.getProjectName();
-            this.customerId = project.getCustomer().getCompanyName();
-            this.developerId = project.getDeveloper().getCompanyName();
-            this.projectDescription = project.getProjectDescription();
-            this.projectType = project.getProjectType().getProjectTypeName();
-            this.bnsManager = project.getBnsManager();
-            this.contractNumber = project.getContractNumber();
-            this.plannedStartDate = project.getPlannedStartDate();
-            this.plannedEndDate = project.getPlannedEndDate();
-            this.startDate = project.getStartDate(); // 시작일
-            this.endDate = project.getEndDate(); //종료일
-            this.finalApprovalDate = project.getFinalApprovalDate(); // 최종 결재일시
+            id = project.getId();
+            projectName = project.getProjectName();
+            customerId = project.getCustomer().getCompanyName();
+            developerId = project.getDeveloper().getCompanyName();
+            projectDescription = project.getProjectDescription();
+            projectType = project.getProjectType().getProjectTypeName();
+            bnsManager = project.getBnsManager();
+            contractNumber = project.getContractNumber();
+            plannedStartDate = project.getPlannedStartDate();
+            plannedEndDate = project.getPlannedEndDate();
+            startDate = project.getStartDate(); // 시작일
+            endDate = project.getEndDate(); //종료일
+            finalApprovalDate = project.getFinalApprovalDate(); // 최종 결재일시
         }
 
         public static Response of(Project project) {

@@ -60,17 +60,17 @@ public class PostProject {
         private Response(
                 Project project
         ) {
-            this.id = project.getId();
-            this.projectName = project.getProjectName();
-            this.customerName = project.getCustomer().getCompanyName();
-            this.developerName = project.getDeveloper().getCompanyName();
-            this.projectDescription = project.getProjectDescription();
-            this.projectTypeName = project.getProjectType().getProjectTypeName();
-            this.projectStatusCode = project.getProjectStatusCode();
-            this.bnsManagerName = project.getBnsManager();
-            this.contractNumber = project.getContractNumber();
-            this.plannedStartDate = project.getPlannedStartDate();
-            this.plannedEndDate = project.getPlannedEndDate();
+            id = project.getId();
+            projectName = project.getProjectName();
+            customerName = project.getCustomer().getCompanyName();
+            developerName = project.getDeveloper().getCompanyName();
+            projectDescription = project.getProjectDescription();
+            projectTypeName = project.getProjectType().getProjectTypeName();
+            projectStatusCode = project.getProjectStatusCode();
+            bnsManagerName = project.getBnsManager();
+            contractNumber = project.getContractNumber();
+            plannedStartDate = project.getPlannedStartDate();
+            plannedEndDate = project.getPlannedEndDate();
         }
 
         public static Response of(Project project) {

@@ -35,45 +35,45 @@ public class GetProjectHistory {
                 String createdBy,
                 String updatedBy
         ) {
-            this.id = projectHistory.getId();
-            this.projectName = projectHistory.getProjectName();
-            this.customerName = projectHistory.getCustomerName();
-            this.developerName = projectHistory.getDeveloperName();
-            this.description = projectHistory.getDescription();
-            this.statusCode = projectHistory.getStatusCode();
-            this.typeName = projectHistory.getTypeName();
-            this.bnsManager = projectHistory.getBnsManager();
-            this.contractNumber = projectHistory.getContractNumber();
-            this.plannedStartDate = projectHistory.getPlannedStartDate();
-            this.startDate = projectHistory.getStartDate();
-            this.plannedEndDate = projectHistory.getPlannedEndDate();
-            this.endDate = projectHistory.getEndDate();
-            this.createdAt = projectHistory.getCreatedAt();
-            this.updatedAt = projectHistory.getUpdatedAt();
-            this.createdBy = createdBy;
-            this.updatedBy = updatedBy;
+            id = projectHistory.getId();
+            projectName = projectHistory.getProjectName();
+            customerName = projectHistory.getCustomerName();
+            developerName = projectHistory.getDeveloperName();
+            description = projectHistory.getDescription();
+            statusCode = projectHistory.getStatusCode();
+            typeName = projectHistory.getTypeName();
+            bnsManager = projectHistory.getBnsManager();
+            contractNumber = projectHistory.getContractNumber();
+            plannedStartDate = projectHistory.getPlannedStartDate();
+            startDate = projectHistory.getStartDate();
+            plannedEndDate = projectHistory.getPlannedEndDate();
+            endDate = projectHistory.getEndDate();
+            createdAt = projectHistory.getCreatedAt();
+            updatedAt = projectHistory.getUpdatedAt();
+            createdBy = createdBy;
+            updatedBy = updatedBy;
         }
 
         public Response(
                 ProjectHistory projectHistory
         ) {
-            this.id = projectHistory.getId();
-            this.projectName = projectHistory.getProjectName();
-            this.customerName = projectHistory.getCustomerName();
-            this.developerName = projectHistory.getDeveloperName();
-            this.description = projectHistory.getDescription();
-            this.statusCode = projectHistory.getStatusCode();
-            this.typeName = projectHistory.getTypeName();
-            this.bnsManager = projectHistory.getBnsManager();
-            this.contractNumber = projectHistory.getContractNumber();
-            this.plannedStartDate = projectHistory.getPlannedStartDate();
-            this.startDate = projectHistory.getStartDate();
-            this.plannedEndDate = projectHistory.getPlannedEndDate();
-            this.endDate = projectHistory.getEndDate();
-            this.createdAt = projectHistory.getCreatedAt();
-            this.updatedAt = projectHistory.getUpdatedAt();
-            this.createdBy = null;
-            this.updatedBy = null;
+            id = projectHistory.getId();
+            projectName = projectHistory.getProjectName();
+            customerName = projectHistory.getCustomerName();
+            developerName = projectHistory.getDeveloperName();
+            description = projectHistory.getDescription();
+            statusCode = projectHistory.getStatusCode();
+            typeName = projectHistory.getTypeName();
+            bnsManager = projectHistory.getBnsManager();
+            contractNumber = projectHistory.getContractNumber();
+            plannedStartDate = projectHistory.getPlannedStartDate();
+            startDate = projectHistory.getStartDate();
+            plannedEndDate = projectHistory.getPlannedEndDate();
+            endDate = projectHistory.getEndDate();
+            createdAt = projectHistory.getCreatedAt();
+            updatedAt = projectHistory.getUpdatedAt();
+            createdBy = null;
+            updatedBy = null;
         }
 
         public static Response from(ProjectHistory projectHistory) {
