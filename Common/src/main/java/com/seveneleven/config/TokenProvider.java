@@ -1,6 +1,8 @@
 package com.seveneleven.config;
 
 import com.seveneleven.entity.member.RefreshToken;
+import com.seveneleven.exception.BusinessException;
+import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.util.security.repository.RefreshTokenRepository;
@@ -16,8 +18,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -146,45 +146,6 @@ public class TokenProvider implements InitializingBean {
         return REFRESH_TOKEN_EXPIRE_TIME;
     }
 
-    /*
-    * 함수명 : getExpirationFromToken
-    * JWT 만료 시간 추출
-    *
-    * @param token JWT 토큰
-    * @return 만료 시간 반환
-    * */
-//    public LocalDateTime getExpirationFromToken(String token) {
-//        Claims claims = Jwts.parser()
-//                .setSigningKey(secret)
-//                .parseClaimsJws(token)
-//                .getBody();
-//
-//        Date expiration = claims.getExpiration();
-//        return expiration.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-//    }
-//
-//    /**
-//     * JWT 토큰을 파싱하여 Authentication 객체를 생성합니다.
-//     *
-//     * @param token JWT 토큰
-//     * @return Authentication 객체
-//     */
-//    public Authentication getAuthentication(String token) {
-//        Claims claims = Jwts.parserBuilder()
-//                .setSigningKey(key)
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody();
-//
-//        Collection<? extends GrantedAuthority> authorities =
-//                Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
-//                        .map(SimpleGrantedAuthority::new)
-//                        .collect(Collectors.toList());
-//
-//        User principal = new User(claims.getSubject(), "", authorities);
-//
-//        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
-//    }
 
     /**
      * Token에서 login ID 추출
@@ -229,12 +190,15 @@ public class TokenProvider implements InitializingBean {
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             logger.info("잘못된 JWT 서명입니다.");
+            throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
         } catch (ExpiredJwtException e) {
             logger.info("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
             logger.info("지원되지 않는 JWT 토큰입니다.");
+            throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
         } catch (IllegalArgumentException e) {
             logger.info("JWT 토큰이 잘못되었습니다.");
+            throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
         return false;
     }

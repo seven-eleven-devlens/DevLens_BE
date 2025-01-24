@@ -6,6 +6,7 @@ import com.seveneleven.member.dto.MyPageGetMember;
 import com.seveneleven.member.dto.PatchMember;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +14,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequestMapping("/api/members")
 @Tag(name = "My Page API", description = "APIs Related to My Page")
@@ -30,18 +33,10 @@ public interface MyPageDocs {
                                     schema = @Schema(implementation = MyPageGetMember.class)
                             )
                     )
-            },
-            parameters = {
-                    @Parameter(
-                            name = "loginId",
-                            description = "조회할 회원의 로그인 ID",
-                            required = true,
-                            example = "john123"
-                    )
             }
     )
-    @GetMapping("/{loginId}")
-    ResponseEntity<APIResponse<MyPageGetMember>> memberDetail(@PathVariable String loginId);
+    @GetMapping("")
+    ResponseEntity<APIResponse<MyPageGetMember>> memberDetail(@AuthenticationPrincipal CustomUserDetails userDetails);
 
     @Operation(
             summary = "회원 정보 수정",
@@ -55,19 +50,11 @@ public interface MyPageDocs {
                                     schema = @Schema(implementation = PatchMember.Response.class)
                             )
                     )
-            },
-            parameters = {
-                    @Parameter(
-                            name = "loginId",
-                            description = "수정할 회원의 로그인 ID",
-                            required = true,
-                            example = "john123"
-                    )
             }
     )
-    @PatchMapping("/{loginId}")
-    ResponseEntity<APIResponse<PatchMember.Response>> updateMember( @PathVariable String loginId,
-                                                                    @RequestBody PatchMember.Request requestDto);
+    @PatchMapping("")
+    ResponseEntity<APIResponse<PatchMember.Response>> updateMember(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                   @RequestBody PatchMember.Request requestDto);
 
 
     @Operation(
@@ -82,17 +69,10 @@ public interface MyPageDocs {
                                     schema = @Schema(implementation = SuccessCode.class)
                             )
                     )
-            },
-            parameters = {
-                    @Parameter(
-                            name = "loginId",
-                            description = "탈퇴할 회원의 로그인 ID",
-                            required = true,
-                            example = "john123"
-                    )
             }
     )
-    @DeleteMapping("/{loginId}")
-    ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String loginId);
+    @DeleteMapping("")
+    ResponseEntity<APIResponse<SuccessCode>> deleteMember(@AuthenticationPrincipal CustomUserDetails userDetails);
+
 
 }

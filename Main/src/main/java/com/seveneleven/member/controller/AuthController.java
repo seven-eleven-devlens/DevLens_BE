@@ -6,10 +6,7 @@ import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.util.security.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,9 +20,10 @@ public class AuthController {
      *
      */
     @PostMapping("/refresh")
-    public ResponseEntity<APIResponse<TokenResponse>> refreshAccessToken(@RequestHeader("X-Refresh-Token") String refreshToken) {
+    public ResponseEntity<APIResponse<TokenResponse>> refreshAccessToken (@CookieValue("X-Access-Token") String accessToken,
+                                                                          @CookieValue("X-Refresh-Token") String refreshToken) {
 
-        TokenResponse tokens = refreshTokenService.refreshAccessToken(refreshToken);
+        TokenResponse tokens = refreshTokenService.refreshAccessToken(accessToken, refreshToken);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, tokens));
