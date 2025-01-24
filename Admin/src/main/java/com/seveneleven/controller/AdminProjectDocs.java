@@ -1,7 +1,11 @@
 package com.seveneleven.controller;
 
-import com.seveneleven.dto.*;
+import com.seveneleven.dto.GetProject;
+import com.seveneleven.dto.GetProjectHistory;
+import com.seveneleven.dto.PostProject;
+import com.seveneleven.dto.PutProject;
 import com.seveneleven.response.APIResponse;
+import com.seveneleven.response.PaginatedResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

@@ -1,7 +1,7 @@
 package com.seveneleven.application.adminProject;
 
 import com.seveneleven.dto.GetProjectHistory;
-import com.seveneleven.dto.PaginatedResponse;
+import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.service.AdminProjectHistoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

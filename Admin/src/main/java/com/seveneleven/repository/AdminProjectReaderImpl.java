@@ -18,7 +18,7 @@ public class AdminProjectReaderImpl implements AdminProjectReader {
     }
 
     @Override
-    public Page<Project> findAll(Pageable pageable) {
+    public Page<Project> getProjectList(Pageable pageable) {
         return adminProjectRepository.findAllByProjectStatusCodeNot(pageable, Project.ProjectStatusCode.DELETED);
     }
 

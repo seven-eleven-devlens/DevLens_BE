@@ -1,7 +1,6 @@
 package com.seveneleven.service;
 
 import com.seveneleven.dto.GetProject;
-import com.seveneleven.dto.PaginatedResponse;
 import com.seveneleven.dto.PostProject;
 import com.seveneleven.dto.PutProject;
 import com.seveneleven.entity.member.Company;
@@ -9,6 +8,7 @@ import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectType;
 import com.seveneleven.exception.ProjectNameDuplicatedException;
 import com.seveneleven.exception.ProjectNotFoundException;
+import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,7 +30,7 @@ public class AdminProjectServiceImpl implements AdminProjectService {
 
     @Transactional
     @Override
-    public PostProject.Response createProject(PostProject.Request request) {
+    public Project createProject(PostProject.Request request) {
         //프로젝트 이름 중복 체크
         if(adminProjectReader.checkProjectExists(request.getProjectName())){
             throw new ProjectNameDuplicatedException();
@@ -40,8 +40,7 @@ public class AdminProjectServiceImpl implements AdminProjectService {
         Company developer = adminCompanyReader.getCompany(request.getDeveloperId());
         ProjectType projectType = adminProjectTypeReader.getProjectType(request.getProjectTypeId());
 
-        Project project = adminProjectStore.store(request.toEntity(customer, developer, projectType));
-        return PostProject.Response.of(project);
+        return adminProjectStore.store(request.toEntity(customer, developer, projectType));
     }
 
     @Transactional(readOnly = true)
@@ -54,7 +53,7 @@ public class AdminProjectServiceImpl implements AdminProjectService {
     @Override
     public PaginatedResponse<GetProject.Response> getListOfProject(Integer page) {
         Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("id").descending());
-        Page<Project> projects = adminProjectReader.findAll(pageable);
+        Page<Project> projects = adminProjectReader.getProjectList(pageable);
         if (projects.getContent().isEmpty()) throw new ProjectNotFoundException();
 
         return PaginatedResponse.createPaginatedResponse(projects.map(GetProject.Response::of));
@@ -62,11 +61,13 @@ public class AdminProjectServiceImpl implements AdminProjectService {
 
     @Transactional
     @Override
-    public PutProject.Response updateProject(Long id, PutProject.Request request) {
+    public Project updateProject(Long id, PutProject.Request request) {
         Project project = adminProjectReader.getProject(id);
         //현재 프로젝트 명과 다르면 중복 체크
         if (!project.getProjectName().equals(request.getProjectName())) {
-            adminProjectReader.checkProjectExists(request.getProjectName());
+            if(adminProjectReader.checkProjectExists(request.getProjectName())){
+                throw new ProjectNameDuplicatedException();
+            }
         }
 
         Company customer = adminCompanyReader.getCompany(request.getCustomerId());
@@ -74,13 +75,14 @@ public class AdminProjectServiceImpl implements AdminProjectService {
         ProjectType projectType = adminProjectTypeReader.getProjectType(request.getProjectTypeId());
 
         Project updatedProject = request.updateProject(project, customer, developer, projectType);
-        return PutProject.Response.of(adminProjectStore.store(updatedProject));
+        return adminProjectStore.store(updatedProject);
     }
 
     @Transactional
     @Override
-    public void deleteProject(Long id) {
-        adminProjectStore.delete(id);
+    public Project deleteProject(Long id) {
+        Project project = adminProjectReader.getProject(id);
+        return adminProjectStore.delete(project);
     }
 
     @Transactional

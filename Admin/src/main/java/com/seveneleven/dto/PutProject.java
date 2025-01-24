@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 public class PutProject {
     @Getter
     public static class Request {
-        private Long id;
         private String projectName; // 프로젝트명
         private Long customerId; // 고객사 ID (Company 엔티티의 ID)
         private Long developerId; // 개발사 ID (Company 엔티티의 ID)

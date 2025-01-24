@@ -6,6 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface AdminProjectReader {
     Project getProject(Long id);
-    Page<Project> findAll(Pageable pageable);
+    Page<Project> getProjectList(Pageable pageable);
     boolean checkProjectExists(String name);
 }

@@ -2,6 +2,7 @@ package com.seveneleven.dto;
 
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.BusinessType;
+import com.seveneleven.response.PaginatedResponse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

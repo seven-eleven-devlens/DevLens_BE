@@ -2,6 +2,7 @@ package com.seveneleven.controller;
 
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
+import com.seveneleven.response.PaginatedResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;

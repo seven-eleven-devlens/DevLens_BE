@@ -1,7 +1,6 @@
 package com.seveneleven.repository;
 
 import com.seveneleven.entity.project.Project;
-import com.seveneleven.exception.ProjectNotFoundException;
 import com.seveneleven.service.AdminProjectStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -16,8 +15,7 @@ public class AdminProjectStoreImpl implements AdminProjectStore {
     }
 
     @Override
-    public void delete(Long id) {
-        Project project = adminProjectRepository.findByIdAndProjectStatusCodeNot(id, Project.ProjectStatusCode.DELETED).orElseThrow(ProjectNotFoundException::new);
-        project.delete();
+    public Project delete(Project project) {
+        return project.delete();
     }
 }

@@ -1,13 +1,13 @@
 package com.seveneleven.service;
 
 import com.seveneleven.dto.GetProjectHistory;
-import com.seveneleven.dto.PaginatedResponse;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectHistory;
 import com.seveneleven.exception.ProjectHistoryNotFoundException;
 import com.seveneleven.repository.AdminMemberRepository;
 import com.seveneleven.repository.AdminProjectHistoryRepository;
+import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -24,12 +24,10 @@ public class AdminProjectHistoryServiceImpl implements AdminProjectHistoryServic
     private final AdminProjectHistoryRepository projectHistoryRepository;
     private final AdminMemberRepository adminMemberRepository;
     private final AdminProjectHistoryStore adminProjectHistoryStore;
-    private final AdminProjectReader adminProjectReader;
     private final AdminProjectHistoryReader adminProjectHistoryReader;
     @Override
-    public void saveProjectHistory(Long id) {
+    public void saveProjectHistory(Project project) {
         // 이력 저장
-        Project project = adminProjectReader.getProject(id);
         adminProjectHistoryStore.store(project.saveHistory());
     }
 
