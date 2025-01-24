@@ -4,6 +4,7 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * JWT 필터 클래스
@@ -21,7 +23,7 @@ import java.io.IOException;
  */
 public class JwtFilter extends OncePerRequestFilter {
 
-    public static final String AUTHORIZATION_HEADER = "Authorization";
+    public static final String ACCESS_HEADER  = "X-Access-Token";
     public static final String REFRESH_HEADER = "X-Refresh-Token";
     private final CustomUserDetailsService customUserDetailsService;
     private final TokenProvider tokenProvider;
@@ -42,11 +44,22 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        String authorizationHeader = request.getHeader(AUTHORIZATION_HEADER);
-        String refreshToken = request.getHeader(REFRESH_HEADER);
+        // 쿠키에서 토큰 가져오기
+        String accessToken = null;
+        String refreshToken = null;
 
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String accessToken = authorizationHeader.substring(7);
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (ACCESS_HEADER.equals(cookie.getName())) {
+                    accessToken = cookie.getValue();
+                } else if (REFRESH_HEADER.equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                }
+            }
+        }
+
+
+        if(Objects.nonNull(accessToken)) {
 
             // Access Token이 유효할 때
             if(tokenProvider.validateToken(accessToken)) {
@@ -63,6 +76,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
         }
+
         filterChain.doFilter(request, response); // 다음 필터로 넘기기
     }
 

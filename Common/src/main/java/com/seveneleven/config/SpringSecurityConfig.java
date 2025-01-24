@@ -3,6 +3,8 @@ package com.seveneleven.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -30,7 +32,6 @@ import java.util.Arrays;
 public class SpringSecurityConfig {
 
     private final TokenProvider tokenProvider;
-    //private final RefreshTokenRepository tokenRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
@@ -47,6 +48,14 @@ public class SpringSecurityConfig {
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**",
             "/api/**"
     };
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        // 권한 계층 설정
+        roleHierarchy.setHierarchy("ROLE_ADMIN > ROLE_SUPER \n ROLE_SUPER > ROLE_USER");
+        return roleHierarchy;
+    }
 
     /**
      * Spring Security 필터 체인을 구성합니다.
@@ -77,6 +86,7 @@ public class SpringSecurityConfig {
                             .requestMatchers(AUTH_WHITELIST).permitAll()
                             .requestMatchers("api/login/**").permitAll()
                             .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
+                            .requestMatchers("api/**").hasRole("USER") // 관리자 페이지 경로는 ADMIN 역할만 허용
                             .requestMatchers("/api/auth/refresh").permitAll() // Refresh Token 경로 허용
                             .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
             );
@@ -108,7 +118,7 @@ public class SpringSecurityConfig {
 
         configuration.setAllowedOrigins(Arrays.asList("https://kernel-dev-lens.vercel.app", "http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "X-Refresh-Token", "Content-Type"));
+        configuration.setAllowedHeaders(Arrays.asList("X-Access-Token", "X-Refresh-Token", "Content-Type"));
         configuration.setAllowCredentials(true);   // 자격 증명 허용
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -65,7 +65,7 @@ public interface MemberDocs {
             }
     )
     @PostMapping("/logout")
-    ResponseEntity<APIResponse<SuccessCode>> logout(@RequestHeader("Authorization") String token);
+    ResponseEntity<APIResponse<SuccessCode>> logout(@CookieValue("X-Access-Token") String accessToken);
 
     @Operation(
             summary = "이메일 인증 번호 전송",

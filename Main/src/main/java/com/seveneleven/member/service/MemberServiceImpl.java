@@ -4,7 +4,6 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Member;
-import com.seveneleven.entity.member.RefreshToken;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
@@ -26,7 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -84,17 +82,12 @@ public class MemberServiceImpl implements MemberService{
     @Transactional
     public void logout(String token) {
 
-        // 1. Bearer 제거
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-
-        // 2. Access Token 검증
-        if (!tokenProvider.validateToken(token)) {
+        // 1. Access Token 검증
+        if (Objects.isNull(token) || !tokenProvider.validateToken(token)) {
             throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
 
-        // 3. Refresh Token 삭제
+        // 2. Refresh Token 삭제
         String memberId = tokenProvider.getMemberId(token); // Access Token에서 사용자 ID 추출
         if (memberId != null) {
             refreshTokenRepository.delete(memberId); // 사용자와 연관된 Refresh Token 삭제

@@ -1,6 +1,5 @@
 package com.seveneleven.member.controller;
 
-import com.seveneleven.config.JwtFilter;
 import com.seveneleven.member.dto.*;
 import com.seveneleven.member.service.MailService;
 import com.seveneleven.member.service.MemberService;
@@ -46,19 +45,17 @@ public class MemberController implements MemberDocs{
 
         // Access Token 쿠키 생성
         ResponseCookie accessTokenCookie = createCookie(
-                "Access-Token",
+                "X-Access-Token",
                 response.getAccessToken(),
                 response.getExpiredAccess() / 1000
         );
 
         // Refresh Token 쿠키 생성
         ResponseCookie refreshTokenCookie = createCookie(
-                "Refresh-Token",
-                response.getAccessToken(),
-                response.getExpiredRefresh()
+                "X-Refresh-Token",
+                response.getRefreshToken(),
+                response.getExpiredRefresh()/ 1000
         );
-        System.out.println("accessTokenCookie.toString() = " + accessTokenCookie.toString());
-        System.out.println("refreshTokenCookie.toString() = " + refreshTokenCookie.toString());
 
         // HTTP 응답에 쿠키 추가
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -74,15 +71,14 @@ public class MemberController implements MemberDocs{
     /**
      * 함수명 : logout
      * 사용자 로그아웃 처리 메서드.
-     * 토큰의 상태를 BLACKLISTED로 변경하여 더 이상 사용할 수 없도록 처리
      *
-     * @param token 클라이언트에서 전달된 JWT 토큰 (Authorization 헤더에 포함)
+     * @param accessToken 클라이언트에서 전달된 JWT Access 토큰 (쿠키에 포함)
      * @return 로그아웃 성공 응답
      */
     @PostMapping("/logout")
-    public ResponseEntity<APIResponse<SuccessCode>> logout(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<APIResponse<SuccessCode>> logout(@CookieValue("X-Access-Token") String accessToken) {
 
-         memberService.logout(token);
+         memberService.logout(accessToken);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK));

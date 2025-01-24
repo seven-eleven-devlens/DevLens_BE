@@ -43,7 +43,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
         }
 
         // 3. Refresh Token의 사용자 ID 확인
-        // Access Token userId == Refresh Token userId 확인
         String memberId = tokenProvider.getMemberId(refreshToken);
         String loginId = tokenProvider.getLoginId(refreshToken);
 
@@ -61,7 +60,4 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
         // 5. 새로운 Access Token 생성 후 반환
         return tokenProvider.createTokens(authentication);
     }
-
-    // 토큰 삭제
-
 }
