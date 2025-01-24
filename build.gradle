@@ -81,6 +81,8 @@ subprojects {
         implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
         implementation 'com.sun.xml.bind:jaxb-impl:2.3.3'
 
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
         implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
         implementation 'org.springframework.boot:spring-boot-starter-actuator'
