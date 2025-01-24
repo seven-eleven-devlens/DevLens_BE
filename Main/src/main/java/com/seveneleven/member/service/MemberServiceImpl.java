@@ -17,6 +17,7 @@ import com.seveneleven.util.file.repository.FileMetadataRepository;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.response.ErrorCode;
+import com.seveneleven.util.security.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -38,6 +39,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
     private final FileMetadataRepository fileMetadataRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
 
     /**
@@ -75,22 +77,26 @@ public class MemberServiceImpl implements MemberService{
      *
      * @param token 로그아웃할 사용자 토큰. "Bearer " 접두어가 포함될 수 있습니다.
      */
-/*    @Transactional
+    @Transactional
     public void logout(String token) {
 
+        // 1. Bearer 제거
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
         }
 
-        // 토큰 객체 조회
-        //authService.isRefreshTokenExpired(token)
-        RefreshToken existingToken = tokenRepository.findByToken(token)
-                .orElseThrow(() -> new BusinessException(ErrorCode.EXPIRED_TOKEN));
+        // 2. Access Token 검증
+        if (!tokenProvider.validateToken(token)) {
+            throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+        }
 
-        // 상태를 BLACKLISTED로 변경
-        existingToken.setBlackList();
-        tokenRepository.save(existingToken);
-    }*/
+        // 3. Refresh Token 삭제
+        String memberId = tokenProvider.getMemberId(token); // Access Token에서 사용자 ID 추출
+        if (memberId != null) {
+            refreshTokenRepository.delete(memberId); // 사용자와 연관된 Refresh Token 삭제
+        }
+
+    }
 
     /**
      * 함수명 : resetPassword
