@@ -30,10 +30,12 @@ public interface ProjectStepRepository extends JpaRepository<ProjectStep, Long> 
 
     @Query("""
     SELECT
+        new com.seveneleven.project.dto.GetProjectStep$ProjectChecklist(
         p_c.id,
         p_c.title,
         p_c.isChecked,
         p_c.approvalDate
+        )
     FROM
         Checklist p_c
     WHERE

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@Tag(name = "프로젝트 API", description = "프로젝트 관련 API")
+@Tag(name = "Project API", description = "프로젝트 관련 API")
 @RequestMapping("/api/projects")
 public interface ProjectDocs {
 

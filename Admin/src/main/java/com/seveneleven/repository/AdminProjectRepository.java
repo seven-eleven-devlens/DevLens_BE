@@ -9,7 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface AdminProjectRepository extends JpaRepository<Project, Long> {
-    Optional<Project> findByProjectName(String projectName);
-
+    Optional<Project> findByProjectNameAndProjectStatusCodeNot(String projectName, Project.ProjectStatusCode projectStatusCode);
     Page<Project> findByCustomerOrDeveloper(Pageable pageable, Company customer, Company developer);
+
+    Optional<Project> findByIdAndProjectStatusCodeNot(Long id, Project.ProjectStatusCode projectStatusCode);
+    Page<Project> findAllByProjectStatusCodeNot(Pageable pageable, Project.ProjectStatusCode projectStatusCode);
 }
