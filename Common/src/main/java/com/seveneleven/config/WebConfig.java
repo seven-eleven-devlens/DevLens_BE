@@ -26,18 +26,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("http://kernel-dev-lens.vercel.app",
-                        "https://kernel-dev-lens.vercel.app",
+                .allowedOriginPatterns(
                         "http://localhost:3000",
-                        "https://localhost:3000",
-                        "http://www.devlens.work",
                         "https://www.devlens.work",
-                        "http://devlens.work",
                         "https://devlens.work",
-                        "http://api.devlens.work",
                         "https://api.devlens.work")
-
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
