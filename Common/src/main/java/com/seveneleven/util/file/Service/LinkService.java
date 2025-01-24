@@ -19,17 +19,19 @@ public class LinkService {
 
     /**
      * 1. 링크 저장
-     * 함수명 : saveLink
+     * 함수명 : uploadLink
      * @param linkPayload 링크 정보 dto
      * @return savedLinkEntity
      */
     @Transactional
-    public Link saveLink(LinkPayload linkPayload){
+    public Link uploadLink(LinkPayload linkPayload){
         Link linkEntity = Link.registerLink(linkPayload);
 
         Link savedLinkEntity = linkRepository.save(linkEntity);
 
         return savedLinkEntity;
+
+        //TODO) 저장 이력 추가
     }
 
     /**
@@ -50,17 +52,56 @@ public class LinkService {
 
     /**
      * 3. 링크 삭제(카테고리, 참조ID)
-     * 함수명 : deleteLinks
+     * 함수명 : deleteLink
      * @param linkCategory 링크 카테고리
      * @param referenceId 링크 참조 ID
      */
     @Transactional
-    public void deleteLinks(LinkCategory linkCategory, Long referenceId){
+    public void deleteLink(LinkCategory linkCategory, Long referenceId){
         //카테고리와 참조 ID로 링크 유무 판별
         Link toDeleteLink = linkRepository.findByCategoryAndReferenceId(linkCategory, referenceId)
                         .orElseThrow(() -> new BusinessException(ErrorCode.LINK_NOT_FOUND_ERROR));
 
         linkRepository.delete(toDeleteLink);
+
+        //TODO) 삭제 이력 추가
+    }
+
+    /**
+     * 3-1. 링크 삭제(링크 Id)
+     * 함수명 : deleteLinkById
+     * @param linkId 링크 Id
+     */
+    @Transactional
+    public void deleteLinkById(Long linkId){
+        //해당 링크 존재 유무 판별
+        Link toDeleteLink = linkRepository.findById(linkId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.LINK_NOT_FOUND_ERROR));
+
+        linkRepository.delete(toDeleteLink);
+
+        //TODO) 삭제 이력 남기기
+    }
+
+    /**
+     * 4. 링크 갯수 판별
+     * 함수명 : countLinks
+     * @param linkCategory 링크 카테고리
+     * @param referenceId 링크 참조 ID
+     * @return 링크 갯수 반환
+     */
+    public Integer countLinks(LinkCategory linkCategory, Long referenceId){
+        Integer currentLinkCnt = linkRepository.countByCategoryAndReferenceId(linkCategory, referenceId);
+        return currentLinkCnt;
+    }
+
+    /**
+     * 5. 링크 수정
+     * 함수명 : updateLinks
+     * @param linkPayload 수정할 링크 목록
+     */
+    public void updateLinks(LinkPayload linkPayload){
+
     }
 
 }

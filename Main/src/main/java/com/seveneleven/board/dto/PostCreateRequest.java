@@ -2,15 +2,18 @@ package com.seveneleven.board.dto;
 
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.global.YesNo;
+import com.seveneleven.util.file.dto.LinkInput;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,6 +43,9 @@ public class PostCreateRequest {
 
     @NotNull
     private LocalDateTime registerDate; // 등록일시
+
+    @Size(min = 0)
+    private List<LinkInput> linkInputList = new ArrayList<>(); //링크 목록
 
     public Long getParentPostId() {
         if(parentPostId == null) {

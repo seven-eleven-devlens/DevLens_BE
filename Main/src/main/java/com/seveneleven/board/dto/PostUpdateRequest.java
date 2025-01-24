@@ -2,11 +2,15 @@ package com.seveneleven.board.dto;
 
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.global.YesNo;
+import com.seveneleven.util.file.dto.LinkInput;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -25,4 +29,6 @@ public class PostUpdateRequest {
     private Long modifierId;        // 수정자 ID
     private String modifierIp;      // 수정자 IP
 
+    @Size(min = 0)
+    private List<LinkInput> linkInputList = new ArrayList<>(); //링크 목록
 }

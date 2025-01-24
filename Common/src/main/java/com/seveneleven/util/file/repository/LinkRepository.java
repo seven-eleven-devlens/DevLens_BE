@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface LinkRepository extends JpaRepository<Link, Long> {
     Optional<Link> findByCategoryAndReferenceId(LinkCategory category, Long referenceId);
     List<Link> findAllByCategoryAndReferenceId(LinkCategory linkCategory, Long referenceId);
+    Integer countByCategoryAndReferenceId(LinkCategory category, Long referenceId);
 }

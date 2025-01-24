@@ -57,6 +57,7 @@ public enum ErrorCode {
     // 3000번대 코드 : DB 관련
     FILE_NOT_FOUND_ERROR(3000, HttpStatus.NOT_FOUND, "해당 파일을 찾을 수 없습니다."),
     LINK_NOT_FOUND_ERROR(3001, HttpStatus.NOT_FOUND, "해당 링크를 찾을 수 없습니다."),
+    LINK_QUANTITY_EXCEED_ERROR(3002, HttpStatus.BAD_REQUEST, "업로드할 링크 갯수가 10개를 초과했습니다."),
 
     // 4000번대 코드 : 파일 s3 버킷 업/다운로드 관련
     FILE_UPLOAD_FAIL_ERROR(4000, HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다."),
