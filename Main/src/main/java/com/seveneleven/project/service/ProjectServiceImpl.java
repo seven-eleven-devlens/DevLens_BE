@@ -20,8 +20,8 @@ public class ProjectServiceImpl implements ProjectService {
         return projectReader.getProjectList(memberId, memberService.getCompanyIdById(memberId));
     }
 
-    @Override
-    public GetProjectDetail.Response getProjectDetail(Long projectId) {
-        return projectReader.getProjectDetail(projectId);
-    }
+//    @Override
+//    public GetProjectDetail.Response getProjectDetail(Long projectId) {
+//        return projectReader.getProjectDetail(projectId);
+//    }
 }

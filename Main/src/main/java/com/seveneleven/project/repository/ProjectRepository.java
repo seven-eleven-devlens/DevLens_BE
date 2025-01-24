@@ -37,24 +37,24 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     """)
     List<Project> findAllCompanyProgressingProjects(Long companyId);
 
-    @Query(value = """
-        SELECT
-        new com.seveneleven.project.dto.GetProjectDetail$ProjectDetail(
-                p.id,
-                p_t.projectTypeName,
-                p.projectName,
-                p.projectDescription,
-                m.name,
-                m.phoneNumber
-        )
-        FROM
-            Project p
-        JOIN
-            ProjectType p_t ON p_t.id = p.projectType.id
-        JOIN
-            Member m ON m.id = p.bnsManager.id
-        WHERE
-             p.id = :projectId
-        """)
-    GetProjectDetail.ProjectDetail getProjectDetail(@Param("projectId") Long projectId);
+//    @Query(value = """
+//        SELECT
+//        new com.seveneleven.project.dto.GetProjectDetail$ProjectDetail(
+//                p.id,
+//                p_t.projectTypeName,
+//                p.projectName,
+//                p.projectDescription,
+//                m.name,
+//                m.phoneNumber
+//        )
+//        FROM
+//            Project p
+//        JOIN
+//            ProjectType p_t ON p_t.id = p.projectType.id
+//        JOIN
+//            Member m ON m.id = p.bnsManager.id
+//        WHERE
+//             p.id = :projectId
+//        """)
+//    GetProjectDetail.ProjectDetail getProjectDetail(@Param("projectId") Long projectId);
 }
