@@ -19,7 +19,7 @@ public class GetProjectHistory {
         private String description;
         private String statusCode;
         private String typeName;
-        private Long bnsManagerId;
+        private String bnsManager;
         private String contractNumber;
         private LocalDate plannedStartDate;
         private LocalDate startDate;
@@ -42,7 +42,7 @@ public class GetProjectHistory {
             this.description = projectHistory.getDescription();
             this.statusCode = projectHistory.getStatusCode();
             this.typeName = projectHistory.getTypeName();
-            this.bnsManagerId = projectHistory.getBnsManagerId();
+            this.bnsManager = projectHistory.getBnsManager();
             this.contractNumber = projectHistory.getContractNumber();
             this.plannedStartDate = projectHistory.getPlannedStartDate();
             this.startDate = projectHistory.getStartDate();
@@ -64,7 +64,7 @@ public class GetProjectHistory {
             this.description = projectHistory.getDescription();
             this.statusCode = projectHistory.getStatusCode();
             this.typeName = projectHistory.getTypeName();
-            this.bnsManagerId = projectHistory.getBnsManagerId();
+            this.bnsManager = projectHistory.getBnsManager();
             this.contractNumber = projectHistory.getContractNumber();
             this.plannedStartDate = projectHistory.getPlannedStartDate();
             this.startDate = projectHistory.getStartDate();

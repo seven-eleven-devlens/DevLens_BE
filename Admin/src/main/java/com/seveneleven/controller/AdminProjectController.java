@@ -29,6 +29,18 @@ public class AdminProjectController implements AdminProjectDocs{
     }
 
     /*
+        함수명 : checkProjectName
+        함수 목적 : 프로젝트 이름 중복 확인 api
+     */
+    @GetMapping("/check")
+    public ResponseEntity<APIResponse<String>> checkProjectName(@RequestParam String name){
+        String message = adminProjectFacade.checkProjectNameExists(name);
+        return ResponseEntity
+                .status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, message));
+    }
+
+    /*
         함수명 : readProject
         함수 목적 : 프로젝트 조회
      */
@@ -77,7 +89,7 @@ public class AdminProjectController implements AdminProjectDocs{
 
     /*
         함수명 : updateProject
-        함수 목적 : 프로젝트 이력 조회
+        함수 목적 : 프로젝트 이력 수정
      */
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<PutProject.Response>> updateProject(

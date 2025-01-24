@@ -39,4 +39,8 @@ public class AdminProjectFacade {
         adminProjectHistoryService.saveProjectHistory(id);
         adminProjectService.deleteProject(id);
     }
+
+    public String checkProjectNameExists(String name){
+        return adminProjectService.checkProjectNameExists(name);
+    }
 }

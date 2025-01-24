@@ -36,7 +36,7 @@ public class ProjectHistory extends BaseEntity {
     @Column(nullable = false)
     private String typeName; // 프로젝트 유형명
 
-    private Long bnsManagerId; // BNS 담당자 ID
+    private String bnsManager; // BNS 담당자 ID
 
     private String contractNumber; // 계약서 번호
 
@@ -55,7 +55,7 @@ public class ProjectHistory extends BaseEntity {
         this.description = project.getProjectDescription();
         this.statusCode = project.getProjectStatusCode().name();
         this.typeName = project.getProjectType().getProjectTypeName();
-        this.bnsManagerId = project.getBnsManager().getId();
+        this.bnsManager = project.getBnsManager();
         this.contractNumber = project.getContractNumber();
         this.plannedStartDate = project.getPlannedStartDate();
         this.startDate = project.getStartDate();

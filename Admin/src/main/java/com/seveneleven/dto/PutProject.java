@@ -1,7 +1,6 @@
 package com.seveneleven.dto;
 
 import com.seveneleven.entity.member.Company;
-import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectType;
 import lombok.AccessLevel;
@@ -22,7 +21,7 @@ public class PutProject {
         private String projectDescription; // 프로젝트 설명
         private Long projectTypeId; // 프로젝트 유형 ID
         private Project.ProjectStatusCode projectStatusCode; //
-        private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
+        private String bnsManager; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
         private LocalDate plannedStartDate; // 시작 예정일
         private LocalDate plannedEndDate; // 종료 예정일
@@ -30,7 +29,12 @@ public class PutProject {
         private LocalDate endDate; // 종료일
         private LocalDateTime finalApprovalDate; // 최종 결재일시
 
-        public Project updateProject(Project project, Company customer, Company developer, ProjectType projectType, Member bnsManager) {
+        public Project updateProject(
+                Project project,
+                Company customer,
+                Company developer,
+                ProjectType projectType
+        ) {
             return project.update(
                     projectName,
                     projectDescription,
@@ -58,7 +62,7 @@ public class PutProject {
         private String projectDescription; // 프로젝트 설명
         private String projectType; // 프로젝트 유형 ID
         private Project.ProjectStatusCode projectStatusCode; //
-        private String bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
+        private String bnsManager; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
         private LocalDate plannedStartDate; // 시작 예정일
         private LocalDate plannedEndDate; // 종료 예정일
@@ -73,7 +77,7 @@ public class PutProject {
             this.developerId = project.getDeveloper().getCompanyName();
             this.projectDescription = project.getProjectDescription();
             this.projectType = project.getProjectType().getProjectTypeName();
-            this.bnsManagerId = project.getBnsManager().getName();
+            this.bnsManager = project.getBnsManager();
             this.contractNumber = project.getContractNumber();
             this.plannedStartDate = project.getPlannedStartDate();
             this.plannedEndDate = project.getPlannedEndDate();

@@ -1,7 +1,6 @@
 package com.seveneleven.dto;
 
 import com.seveneleven.entity.member.Company;
-import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectType;
 import lombok.AccessLevel;
@@ -19,7 +18,7 @@ public class PostProject {
         private Long developerId; // 개발사 ID (Company 엔티티의 ID)
         private String projectDescription; // 프로젝트 설명
         private Long projectTypeId; // 프로젝트 유형 ID
-        private Long bnsManagerId; // BNS 담당자 ID (Member 엔티티의 ID)
+        private String bnsManager; // BNS 담당자 ID (Member 엔티티의 ID)
         private String contractNumber; // 계약서 번호
         private LocalDate plannedStartDate; // 시작 예정일
         private LocalDate plannedEndDate; // 종료 예정일
@@ -27,20 +26,19 @@ public class PostProject {
         public Project toEntity(
                 Company customer,
                 Company developer,
-                ProjectType projectType,
-                Member bnsManager
+                ProjectType projectType
         ) {
             return Project.create(
-                    this.projectName,
+                    projectName,
                     customer,
                     developer,
-                    this.projectDescription,
+                    projectDescription,
                     projectType,
                     Project.ProjectStatusCode.PREPARED,
                     bnsManager,
-                    this.contractNumber,
-                    this.plannedStartDate,
-                    this.plannedEndDate
+                    contractNumber,
+                    plannedStartDate,
+                    plannedEndDate
             );
         }
     }
@@ -69,7 +67,7 @@ public class PostProject {
             this.projectDescription = project.getProjectDescription();
             this.projectTypeName = project.getProjectType().getProjectTypeName();
             this.projectStatusCode = project.getProjectStatusCode();
-            this.bnsManagerName = project.getBnsManager().getName();
+            this.bnsManagerName = project.getBnsManager();
             this.contractNumber = project.getContractNumber();
             this.plannedStartDate = project.getPlannedStartDate();
             this.plannedEndDate = project.getPlannedEndDate();

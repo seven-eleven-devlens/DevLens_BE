@@ -38,7 +38,7 @@ public class GetProject {
             this.projectDescription = project.getProjectDescription();
             this.projectTypeName = project.getProjectType().getProjectTypeName();
             this.projectStatusCode = project.getProjectStatusCode();
-            this.bnsManagerName = project.getBnsManager().getName();
+            this.bnsManagerName = project.getBnsManager();
             this.contractNumber = project.getContractNumber();
             this.plannedStartDate = project.getPlannedStartDate();
             this.plannedEndDate = project.getPlannedEndDate();

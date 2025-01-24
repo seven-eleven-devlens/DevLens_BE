@@ -5,9 +5,9 @@ import com.seveneleven.dto.PaginatedResponse;
 import com.seveneleven.dto.PostProject;
 import com.seveneleven.dto.PutProject;
 import com.seveneleven.entity.member.Company;
-import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectType;
+import com.seveneleven.exception.ProjectNameDuplicatedException;
 import com.seveneleven.exception.ProjectNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,19 +27,20 @@ public class AdminProjectServiceImpl implements AdminProjectService {
     private final AdminProjectStore adminProjectStore;
     private final AdminCompanyReader adminCompanyReader;
     private final AdminProjectTypeReader adminProjectTypeReader;
-    private final AdminMemberReader adminMemberReader;
 
+    @Transactional
     @Override
     public PostProject.Response createProject(PostProject.Request request) {
-        //중복 확인
-        adminProjectReader.checkProjectExists(request.getProjectName());
+        //프로젝트 이름 중복 체크
+        if(adminProjectReader.checkProjectExists(request.getProjectName())){
+            throw new ProjectNameDuplicatedException();
+        }
 
         Company customer = adminCompanyReader.getCompany(request.getCustomerId());
         Company developer = adminCompanyReader.getCompany(request.getDeveloperId());
-        Member bnsManager = adminMemberReader.getMember(request.getBnsManagerId());
         ProjectType projectType = adminProjectTypeReader.getProjectType(request.getProjectTypeId());
 
-        Project project = adminProjectStore.store(request.toEntity(customer, developer, projectType, bnsManager));
+        Project project = adminProjectStore.store(request.toEntity(customer, developer, projectType));
         return PostProject.Response.of(project);
     }
 
@@ -70,10 +71,9 @@ public class AdminProjectServiceImpl implements AdminProjectService {
 
         Company customer = adminCompanyReader.getCompany(request.getCustomerId());
         Company developer = adminCompanyReader.getCompany(request.getDeveloperId());
-        Member bnsManager = adminMemberReader.getMember(request.getBnsManagerId());
         ProjectType projectType = adminProjectTypeReader.getProjectType(request.getProjectTypeId());
 
-        Project updatedProject = request.updateProject(project, customer, developer, projectType, bnsManager);
+        Project updatedProject = request.updateProject(project, customer, developer, projectType);
         return PutProject.Response.of(adminProjectStore.store(updatedProject));
     }
 
@@ -81,5 +81,15 @@ public class AdminProjectServiceImpl implements AdminProjectService {
     @Override
     public void deleteProject(Long id) {
         adminProjectStore.delete(id);
+    }
+
+    @Transactional
+    @Override
+    public String checkProjectNameExists(String projectName) {
+        if(adminProjectReader.checkProjectExists(projectName)){
+            return "이미 존재하는 프로젝트 이름입니다.";
+        }
+        else
+            return "생성 가능한 프로젝트 이름입니다.";
     }
 }

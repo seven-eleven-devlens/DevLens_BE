@@ -33,6 +33,28 @@ public interface AdminProjectDocs {
     )
     ResponseEntity<APIResponse<PostProject.Response>> newProject(@RequestBody PostProject.Request request);
 
+    @GetMapping("/check")
+    @Operation(
+            summary = "프로젝트 중복 체크",
+            description = "프로젝트 이름으로 중복체크를 함",
+            responses =
+                    {
+                            @ApiResponse(
+                                    responseCode = "200",
+                                    description = "성공적으로 중복 체크를 했습니다"
+                            )
+                    },
+            parameters = {
+                    @Parameter(
+                            name = "name",
+                            description = "중복체크하고자 하는 이름",
+                            required = true,
+                            example = "신규 프로젝트"
+                    )
+            }
+    )
+    ResponseEntity<APIResponse<String>> checkProjectName(@RequestParam String name);
+
     @GetMapping("/{id}")
     @Operation(
             summary = "프로젝트 상세 조회",
