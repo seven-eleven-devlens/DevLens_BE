@@ -7,6 +7,7 @@ import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.exception.CompanyNotFoundException;
 import com.seveneleven.repository.*;
+import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

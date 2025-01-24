@@ -4,9 +4,9 @@ import com.seveneleven.entity.global.BaseEntity;
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.global.converter.YesNoConverter;
 import com.seveneleven.entity.member.Member;
+import com.seveneleven.entity.project.constant.MemberType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,19 +30,33 @@ public class ProjectAuthorization extends BaseEntity {
     private ProjectStep projectStep;
 
     @Enumerated(EnumType.STRING)
-    private memberType memberType; // 회원 구분 (client, developer)
+    private MemberType memberType; // 회원 구분 (client, developer)
 
     private String authorizationCode; // 권한 코드
 
     @Convert(converter = YesNoConverter.class)
-    private YesNo isDeleted; // 삭제 여부
+    private YesNo isActive; // 삭제 여부
 
-    @Getter
-    @AllArgsConstructor
-    enum memberType {
-        CLIENT("client"),
-        DEVELOPER("developer");
+    private ProjectAuthorization(Member member, ProjectStep projectStep, MemberType memberType, String authorizationCode) {
+        this.id = new MemberProjectStepId(member.getId(), projectStep.getId());
+        this.member = member;
+        this.projectStep = projectStep;
+        this.memberType = memberType;
+        this.authorizationCode = authorizationCode;
+        this.isActive = YesNo.YES;
+    }
 
-        final String description;
+    public static ProjectAuthorization create(Member member, ProjectStep projectStep, MemberType memberType, String authorizationCode) {
+        return new ProjectAuthorization(member, projectStep, memberType, authorizationCode);
+    }
+
+    public void edit(MemberType memberType, String authorizationCode) {
+        this.memberType = memberType;
+        this.authorizationCode = authorizationCode;
+    }
+
+    public ProjectAuthorizationHistory delete() {
+        isActive = YesNo.NO;
+        return ProjectAuthorizationHistory.create(this);
     }
 }

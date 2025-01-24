@@ -12,12 +12,24 @@ public class GetProjectDetail {
     @Getter
     @Setter
     @ToString
-    @NoArgsConstructor
     @AllArgsConstructor
     public static class Response {
         private ProjectDetail projectDetail;
         private List<ProjectStepInfo> projectStep;
         private List<ChecklistApplicationList> checklistApplicationList;
+
+        private Response(ProjectDetail projectDetail, List<ProjectStepInfo> projectStep, List<ChecklistApplicationList> checklistApplicationList) {
+            this.projectDetail = projectDetail;
+            this.projectStep = projectStep;
+            this.checklistApplicationList = checklistApplicationList;
+        }
+
+        public static Response toDto(ProjectDetail projectDetail,
+                                     List<ProjectStepInfo> projectStep,
+                                     List<ChecklistApplicationList> checklistApplicationList
+        ) {
+            return new Response(projectDetail, projectStep, checklistApplicationList);
+        }
     }
 
     @Getter

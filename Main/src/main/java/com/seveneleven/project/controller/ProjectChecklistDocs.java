@@ -17,9 +17,36 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.util.List;
 
-@Tag(name = "프로젝트 체크리스트 API", description = "프로젝트 체크리스트 관련 API")
+@Tag(name = "Project Checklist API", description = "프로젝트 체크리스트 관련 API")
 @RequestMapping("/api/projects")
 public interface ProjectChecklistDocs {
+
+    @GetMapping("/steps/{stepId}")
+    @Operation(
+            summary = "체크리스트 조회",
+            description = "특정 단계의 체크리스트를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공적으로 체크리스트를 반환했습니다.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = GetStepChecklist.Response.class)
+                            )
+                    )
+            },
+            parameters = {
+                    @Parameter(
+                            name = "stepId",
+                            description = "체크리스트를 조회할 단계의 ID",
+                            required = true,
+                            example = "1"
+                    )
+            }
+    )
+    ResponseEntity<APIResponse<GetStepChecklist.Response>> getProjectChecklist(
+            @PathVariable Long stepId
+    );
 
     @PostMapping("")
     @Operation(

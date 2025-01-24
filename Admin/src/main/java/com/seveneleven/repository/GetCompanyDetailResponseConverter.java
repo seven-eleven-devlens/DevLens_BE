@@ -3,8 +3,8 @@ package com.seveneleven.repository;
 import com.seveneleven.common.EntityConverter;
 import com.seveneleven.dto.GetCompanyDetail;
 import com.seveneleven.dto.GetCompanyProject;
-import com.seveneleven.dto.PaginatedResponse;
 import com.seveneleven.entity.member.Company;
+import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
