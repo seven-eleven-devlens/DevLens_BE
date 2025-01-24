@@ -2,7 +2,6 @@ package com.seveneleven.entity.project;
 
 import com.seveneleven.entity.global.BaseEntity;
 import com.seveneleven.entity.member.Company;
-import com.seveneleven.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -42,9 +41,7 @@ public class Project extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProjectStatusCode projectStatusCode; // 프로젝트 상태 코드 (준비, 진행, 완료, 보류, 취소)
 
-    @JoinColumn(name = "bns_manager_id", nullable = false, referencedColumnName = "id")
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member bnsManager; // BNS 담당자 ID
+    private String bnsManager; // BNS 담당자 ID
 
     private String contractNumber; // 계약서 번호
 
@@ -69,7 +66,7 @@ public class Project extends BaseEntity {
             String projectDescription,
             ProjectType projectTypeId,
             ProjectStatusCode projectStatusCode,
-            Member bnsManager,
+            String bnsManager,
             String contractNumber,
             LocalDate plannedStartDate,
             LocalDate plannedEndDate
@@ -93,7 +90,7 @@ public class Project extends BaseEntity {
             String projectDescription,
             ProjectType projectTypeId,
             ProjectStatusCode projectStatusCode,
-            Member bnsManager,
+            String bnsManager,
             String contractNumber,
             LocalDate plannedStartDate,
             LocalDate plannedEndDate
@@ -125,7 +122,7 @@ public class Project extends BaseEntity {
             Company customer,
             Company developer,
             ProjectType ProjectType,
-            Member bnsManager
+            String bnsManager
     ) {
         this.projectName = name;
         this.customer = customer;
@@ -145,6 +142,11 @@ public class Project extends BaseEntity {
 
     public ProjectHistory saveHistory() {
         return ProjectHistory.create(this);
+    }
+
+    public Project delete(){
+        this.projectStatusCode = ProjectStatusCode.DELETED;
+        return this;
     }
 
     public enum ProjectStatusCode {

@@ -1,7 +1,11 @@
 package com.seveneleven.controller;
 
-import com.seveneleven.dto.*;
+import com.seveneleven.dto.GetProject;
+import com.seveneleven.dto.GetProjectHistory;
+import com.seveneleven.dto.PostProject;
+import com.seveneleven.dto.PutProject;
 import com.seveneleven.response.APIResponse;
+import com.seveneleven.response.PaginatedResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,6 +36,28 @@ public interface AdminProjectDocs {
                     }
     )
     ResponseEntity<APIResponse<PostProject.Response>> newProject(@RequestBody PostProject.Request request);
+
+    @GetMapping("/check")
+    @Operation(
+            summary = "프로젝트 중복 체크",
+            description = "프로젝트 이름으로 중복체크를 함",
+            responses =
+                    {
+                            @ApiResponse(
+                                    responseCode = "200",
+                                    description = "성공적으로 중복 체크를 했습니다"
+                            )
+                    },
+            parameters = {
+                    @Parameter(
+                            name = "name",
+                            description = "중복체크하고자 하는 이름",
+                            required = true,
+                            example = "신규 프로젝트"
+                    )
+            }
+    )
+    ResponseEntity<APIResponse<String>> checkProjectName(@RequestParam String name);
 
     @GetMapping("/{id}")
     @Operation(
@@ -107,7 +133,7 @@ public interface AdminProjectDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> getListOfProjectHistory(@RequestParam(value = "page") Integer page);
+    ResponseEntity<APIResponse<PaginatedResponse<GetProjectHistory.Response>>> getListOfProjectHistory(@RequestParam(value = "page") Integer page);
 
     @GetMapping("/{id}/histories")
     @Operation(
@@ -119,7 +145,7 @@ public interface AdminProjectDocs {
                             description = "프로젝트 이력을 성공적으로 반환했습니다.",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ReadProjectHistory.Response.class)
+                                    schema = @Schema(implementation = GetProjectHistory.Response.class)
                             )
                     )
             },
@@ -132,7 +158,7 @@ public interface AdminProjectDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<ReadProjectHistory.Response>> getProjectHistory(@PathVariable Long id);
+    ResponseEntity<APIResponse<GetProjectHistory.Response>> getProjectHistory(@PathVariable Long id);
 
     @GetMapping("/histories/search")
     @Operation(
@@ -144,7 +170,7 @@ public interface AdminProjectDocs {
                             description = "Successfully searched project histories",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = ReadProjectHistory.Response.class)
+                                    schema = @Schema(implementation = GetProjectHistory.Response.class)
                             )
                     )
             },
@@ -163,7 +189,7 @@ public interface AdminProjectDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<PaginatedResponse<ReadProjectHistory.Response>>> searchHistories(
+    ResponseEntity<APIResponse<PaginatedResponse<GetProjectHistory.Response>>> searchHistories(
             @RequestParam String searchTerm,
             @RequestParam Integer page
     );
