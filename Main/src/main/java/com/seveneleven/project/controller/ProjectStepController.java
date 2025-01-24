@@ -30,18 +30,7 @@ public class ProjectStepController implements ProjectStepDocs{
                 .body(APIResponse.success(SuccessCode.OK, projectStepFacade.getProjectStepAndChecklist(projectId)));
     }
 
-    /**
-     * 함수명 : getStepChecklist
-     * 해당 단계의 체크리스트 목록을 반환하는 함수
-     */
-    @GetMapping("/{stepId}")
-    public ResponseEntity<APIResponse<GetStepChecklist.Response>> getProjectChecklist(
-            @PathVariable Long stepId
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(APIResponse.success(SuccessCode.OK, projectStepFacade.getStepChecklist(stepId)));
-    }
+
 
     /**
      * 함수명 : postProjectStep
@@ -69,5 +58,28 @@ public class ProjectStepController implements ProjectStepDocs{
     ) {
         return ResponseEntity.status(SuccessCode.OK.getStatusCode())
                 .body(APIResponse.success(SuccessCode.OK, projectStepFacade.deleteProjectStep(requestDto)));
+    }
+
+    @PostMapping("/{stepId}/authorizations")
+    public ResponseEntity<APIResponse<PostProjectAuthorization.Response>> postProjectAuthorization(
+            @PathVariable Long stepId,
+            @RequestBody PostProjectAuthorization.Request requestDto
+    ) {
+        PostProjectAuthorization.Response responseDto = projectStepFacade.postProjectAuthorization(requestDto, stepId);
+
+        if(responseDto.getFailList().isEmpty()) {
+            return ResponseEntity.status(SuccessCode.CREATED.getStatusCode())
+                    .body(APIResponse.success(SuccessCode.OK, responseDto));
+        }
+        return ResponseEntity.status(SuccessCode.MULTISTATUS.getStatusCode())
+                .body(APIResponse.success(SuccessCode.MULTISTATUS, responseDto));
+    }
+
+    @GetMapping("/{stepId}/authorizations")
+    public ResponseEntity<APIResponse<GetProjectAuthorization.Response>> getProjectAuthorization(
+            @PathVariable Long stepId
+    ) {
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(SuccessCode.OK, projectStepFacade.getProjectAuthorization(stepId)));
     }
 }

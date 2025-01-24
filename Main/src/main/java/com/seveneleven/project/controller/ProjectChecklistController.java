@@ -16,14 +16,27 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/projects")
+@RequestMapping("/api/projects/checklists")
 public class ProjectChecklistController implements ProjectChecklistDocs {
 
     private final ProjectChecklistFacade projectChecklistFacade;
 
     /**
+     * 함수명 : getStepChecklist
+     * 해당 단계의 체크리스트 목록을 반환하는 함수
+     */
+    @GetMapping("/{stepId}")
+    public ResponseEntity<APIResponse<GetStepChecklist.Response>> getProjectChecklist(
+            @PathVariable Long stepId
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.getStepChecklist(stepId)));
+    }
+
+    /**
      * 함수명 : postProjectChecklist
-     * 해당 프로젝트 단계에 단일 체크리스트를 추가하는 함수
+     * 해당 프로젝트 단계에 체크리스트를 추가하는 함수
      */
     @PostMapping("")
     public ResponseEntity<APIResponse<PostProjectChecklist.Response>> postProjectChecklist(
@@ -57,6 +70,10 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 .body(APIResponse.success(SuccessCode.DELETED, projectChecklistFacade.deleteProjectChecklist(checklistId)));
     }
 
+    /**
+     * 함수명 : getProjectChecklistApplication
+     * 프로젝트 체크리스트에 승인 요청을 확인하는 함수
+     */
     @GetMapping("/applications/{applicationId}")
     public ResponseEntity<APIResponse<GetProjectChecklistApplication.Response>> getProjectChecklistApplication(
             @PathVariable Long applicationId
@@ -75,8 +92,6 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
             @RequestBody List<MultipartFile> files,
             HttpServletRequest request
     ) {
-        // TODO - 파일 관련 처리 필요.
-
         return ResponseEntity.status(HttpStatus.OK)
                 .body(APIResponse.success(SuccessCode.CREATED, projectChecklistFacade.postProjectChecklistApplication(requestDto, request)));
     }
@@ -117,8 +132,6 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 memberId,
                 request
         );
-
-        // TODO - 파일 등록 필요.
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatusCode())
                 .body(APIResponse.success(SuccessCode.CREATED, response));

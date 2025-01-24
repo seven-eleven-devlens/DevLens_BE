@@ -2,6 +2,7 @@ package com.seveneleven.project.controller;
 
 import com.seveneleven.project.dto.*;
 import com.seveneleven.project.service.ProjectChecklistService;
+import com.seveneleven.project.service.ProjectStepService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +14,14 @@ import org.springframework.stereotype.Component;
 public class ProjectChecklistFacade {
 
     private final ProjectChecklistService projectChecklistService;
+    private final ProjectStepService projectStepService;
 
     public GetProjectChecklistApplication.Response getProjectChecklistApplication(Long applicationId) {
         return projectChecklistService.getApplicationDetail(applicationId);
+    }
+
+    public GetStepChecklist.Response getStepChecklist(Long stepId) {
+        return projectStepService.getStepChecklist(stepId);
     }
 
     public PostProjectChecklist.Response postProjectChecklist(PostProjectChecklist.Request postProjectChecklist) {
