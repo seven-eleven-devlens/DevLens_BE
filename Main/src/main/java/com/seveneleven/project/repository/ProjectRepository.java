@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, Long> {
@@ -37,24 +38,20 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     """)
     List<Project> findAllCompanyProgressingProjects(Long companyId);
 
-//    @Query(value = """
-//        SELECT
-//        new com.seveneleven.project.dto.GetProjectDetail$ProjectDetail(
-//                p.id,
-//                p_t.projectTypeName,
-//                p.projectName,
-//                p.projectDescription,
-//                m.name,
-//                m.phoneNumber
-//        )
-//        FROM
-//            Project p
-//        JOIN
-//            ProjectType p_t ON p_t.id = p.projectType.id
-//        JOIN
-//            Member m ON m.id = p.bnsManager.id
-//        WHERE
-//             p.id = :projectId
-//        """)
-//    GetProjectDetail.ProjectDetail getProjectDetail(@Param("projectId") Long projectId);
+    @Query(value = """
+        SELECT
+        new com.seveneleven.project.dto.GetProjectDetail$ProjectDetail(
+                p.id,
+                p_t.projectTypeName,
+                p.projectName,
+                p.projectDescription
+        )
+        FROM
+            Project p
+        JOIN
+            ProjectType p_t ON p_t.id = p.projectType.id
+        WHERE
+             p.id = :projectId
+        """)
+    Optional<GetProjectDetail.ProjectDetail> getProjectDetail(@Param("projectId") Long projectId);
 }
