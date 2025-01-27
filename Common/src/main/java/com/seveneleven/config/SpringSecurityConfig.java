@@ -61,23 +61,24 @@ public class SpringSecurityConfig {
             .csrf(csrf -> csrf.disable()) // CSRF 비활성화
             .formLogin((form) -> form.disable()) // FormLogin 비활성화
 
-            .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy( // 세션 정책 설정 (STATELESS)
-                SessionCreationPolicy.STATELESS)
-            )
-            .exceptionHandling(exceptionHandling -> // 인증 및 접근 거부 처리
-                    exceptionHandling
-                            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                            .accessDeniedHandler(jwtAccessDeniedHandler)
-            )
-            .headers(headers -> // H2-console 허용
-                    headers.frameOptions(frameOptions -> frameOptions.sameOrigin())
-            )
-            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider), UsernamePasswordAuthenticationFilter.class)
+//            .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy( // 세션 정책 설정 (STATELESS)
+//                SessionCreationPolicy.STATELESS)
+//            )
+//            .exceptionHandling(exceptionHandling -> // 인증 및 접근 거부 처리
+//                    exceptionHandling
+//                            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//                            .accessDeniedHandler(jwtAccessDeniedHandler)
+//            )
+//            .headers(headers -> // H2-console 허용
+//                    headers.frameOptions(frameOptions -> frameOptions.sameOrigin())
+//            )
+//            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers(AUTH_WHITELIST).permitAll()
-                            .requestMatchers("api/login/**").permitAll()
-                            .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
-                            .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
+                            .anyRequest().permitAll()
+//                            .requestMatchers(AUTH_WHITELIST).permitAll()
+//                            .requestMatchers("api/login/**").permitAll()
+//                            .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
+//                            .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
             );
 
         return http.build();
