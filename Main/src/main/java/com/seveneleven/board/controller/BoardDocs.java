@@ -5,6 +5,7 @@ import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PageResponse;
 import com.seveneleven.response.SuccessCode;
+import com.seveneleven.util.file.dto.LinkInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -13,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -109,8 +109,8 @@ public interface BoardDocs {
             }
     )
     @PostMapping()
-    ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestPart PostCreateRequest postCreateRequest,
-                                                        @RequestPart(required = false) List<MultipartFile> files
+    ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestBody PostCreateRequest postCreateRequest
+
     ) throws Exception;
 
     // 수정
@@ -138,8 +138,7 @@ public interface BoardDocs {
     )
     @PutMapping("/{postId}")
     ResponseEntity<APIResponse<SuccessCode>> updatePost(@PathVariable Long postId,
-                                                        @RequestPart PostUpdateRequest postUpdateRequest,
-                                                        @RequestPart(required = false) List<MultipartFile> files
+                                                        @RequestBody PostUpdateRequest postUpdateRequest
     ) throws Exception;
 
     // 삭제

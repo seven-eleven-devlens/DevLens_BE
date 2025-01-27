@@ -19,10 +19,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "link_history")
 public class LinkHistory {
-    //Magic Number
     private static final int MAX_REFERENCE_IDENTIFIER_LENGTH = 300;
     private static final int MAX_WRITER_NAME_LENGTH = 200;
     private static final int MAX_WRITER_AUTHORITY_LENGTH = 50;
+    private static final int MAX_LINK_TITLE_LENGTH = 100;
     private static final int MAX_LINK_LENGTH = 1000;
 
     @Id
@@ -57,7 +57,10 @@ public class LinkHistory {
     @Column(name = "written_at", nullable = false)
     private LocalDateTime writtenAt; // 링크 등록 일시
 
-    @Column(name = "link", length = MAX_LINK_LENGTH)
+    @Column(name = "link_title", length = MAX_LINK_TITLE_LENGTH)
+    private String linkTitle; //링크명
+
+    @Column(name = "link", length = MAX_LINK_LENGTH, nullable = false)
     private String link; // 링크
 
     //시스템 컬럼
@@ -78,6 +81,7 @@ public class LinkHistory {
                                              String writerName,
                                              Role writerAuthority,
                                              LocalDateTime writtenAt,
+                                             String linkTitle,
                                              String link){
 
         LinkHistory history = new LinkHistory();
@@ -89,6 +93,7 @@ public class LinkHistory {
         history.writerName = writerName;
         history.writerAuthority = writerAuthority;
         history.writtenAt = writtenAt;
+        history.linkTitle = linkTitle;
         history.link = link;
 
         return history;
@@ -102,11 +107,12 @@ public class LinkHistory {
                                                 String writerName,
                                                 Role writerAuthority,
                                                 LocalDateTime writtenAt,
+                                                String linkTitle,
                                                 String link){
 
         return createHistory(LinkHistoryType.REGISTER,
                 linkCategory, referenceId, referenceIdentifier,
-                writerEmail, writerName, writerAuthority, writtenAt, link);
+                writerEmail, writerName, writerAuthority, writtenAt, linkTitle, link);
     }
 
     //파일 삭제 이력 생성
@@ -117,11 +123,12 @@ public class LinkHistory {
                                                 String writerName,
                                                 Role writerAuthority,
                                                 LocalDateTime writtenAt,
+                                                String linkTitle,
                                                 String link){
 
         return createHistory(LinkHistoryType.DELETE,
                 linkCategory, referenceId, referenceIdentifier,
-                writerEmail, writerName, writerAuthority, writtenAt, link);
+                writerEmail, writerName, writerAuthority, writtenAt, linkTitle, link);
     }
 
 }
