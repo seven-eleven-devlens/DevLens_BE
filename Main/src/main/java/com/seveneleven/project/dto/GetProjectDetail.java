@@ -32,24 +32,24 @@ public class GetProjectDetail {
 
     @Getter
     public static class ProjectDetail {
-        private Long projectId;
+        private Long id;
         private String projectTypeName;
         private String projectName;
         private String projectDescription;
-        private String projectContact;
-        private String projectContactPhone;
-        private String projectImageURL;
+        private String bnsManagerName;
 
         public ProjectDetail(
                 Long projectId,
                 String projectTypeName,
                 String projectName,
-                String projectDescription
+                String projectDescription,
+                String name
         ) {
-            this.projectId = projectId;
+            this.id = projectId;
             this.projectTypeName = projectTypeName;
             this.projectName = projectName;
             this.projectDescription = projectDescription;
+            this.bnsManagerName = name;
         }
     }
 
