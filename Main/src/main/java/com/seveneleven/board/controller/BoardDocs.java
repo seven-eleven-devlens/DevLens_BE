@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -139,7 +138,7 @@ public interface BoardDocs {
     )
     @PutMapping("/{postId}")
     ResponseEntity<APIResponse<SuccessCode>> updatePost(@PathVariable Long postId,
-                                                        @RequestPart PostUpdateRequest postUpdateRequest
+                                                        @RequestBody PostUpdateRequest postUpdateRequest
     ) throws Exception;
 
     // 삭제
