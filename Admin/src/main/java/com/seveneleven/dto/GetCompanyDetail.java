@@ -2,7 +2,6 @@ package com.seveneleven.dto;
 
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.BusinessType;
-import com.seveneleven.response.PaginatedResponse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,10 +18,9 @@ public class GetCompanyDetail {
         private String address;
         private BusinessType businessType;
         private String businessRegistrationNumber;
-        private PaginatedResponse<GetCompanyProject> projects;
 
         private Response(
-                Company company, PaginatedResponse<GetCompanyProject> projects
+                Company company
         ) {
             this.id = company.getId();
             this.companyName = company.getCompanyName();
@@ -32,14 +30,12 @@ public class GetCompanyDetail {
             this.address = company.getAddress();
             this.businessType = company.getBusinessType();
             this.businessRegistrationNumber = company.getBusinessRegistrationNumber();
-            this.projects = projects;
         }
 
         public static Response of(
-                Company company,
-                PaginatedResponse<GetCompanyProject> projects
+                Company company
         ) {
-            return new Response(company, projects);
+            return new Response(company);
         }
     }
 }

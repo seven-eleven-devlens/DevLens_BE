@@ -14,6 +14,18 @@ public class PostCompany {
         private String address;
         private BusinessType businessType;
         private String businessRegistrationNumber;
+
+        public Company toEntity(){
+            return Company.createCompany(
+                    this.companyName,
+                    this.representativeName,
+                    this.representativeContact,
+                    this.representativeEmail,
+                    this.address,
+                    this.businessType,
+                    this.businessRegistrationNumber
+            );
+        }
     }
 
     @Getter
