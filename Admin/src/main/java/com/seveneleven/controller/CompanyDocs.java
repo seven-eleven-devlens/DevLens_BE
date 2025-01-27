@@ -55,18 +55,45 @@ public interface CompanyDocs {
                             description = "회사 id",
                             required = true,
                             example = "1"
+                    )
+            }
+    )
+    ResponseEntity<APIResponse<GetCompanyDetail.Response>> readCompany(
+            @PathVariable Long id
+    );
+
+    @GetMapping("/{id}")
+    @Operation(
+            summary = "회사 참여 프로젝트",
+            description = "회사 참여 프로젝트",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공적으로 회사 참여 프로젝트를 조회했습니다.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = PaginatedResponse.class)
+                            )
+                    )
+            },
+            parameters = {
+                    @Parameter(
+                            name = "id",
+                            description = "회사 id",
+                            required = true,
+                            example = "1"
                     ),
                     @Parameter(
                             name = "page",
-                            description = "회사 담당(고객사, 개발사) 프로젝트 리스트 페이지",
+                            description = "프로젝트 페이지 번호",
                             required = true,
                             example = "1"
                     )
             }
     )
-    ResponseEntity<APIResponse<GetCompanyDetail.Response>> readCompany(
+    ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> readCompanyProject(
             @PathVariable Long id,
-            @RequestParam(value = "page") Integer page
+            @RequestParam Integer page
     );
 
     @GetMapping("")

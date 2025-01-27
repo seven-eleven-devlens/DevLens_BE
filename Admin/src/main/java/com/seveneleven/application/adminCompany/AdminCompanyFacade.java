@@ -1,7 +1,9 @@
 package com.seveneleven.application.adminCompany;
 
 import com.seveneleven.dto.GetCompanyDetail;
+import com.seveneleven.dto.GetProject;
 import com.seveneleven.dto.PostCompany;
+import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.service.AdminCompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,5 +18,9 @@ public class AdminCompanyFacade {
 
     public GetCompanyDetail.Response getCompanyDetail(Long id) {
         return adminCompanyService.getCompanyDetail(id);
+    }
+
+    public PaginatedResponse<GetProject.Response> getCompanyProject(Long id, Integer page) {
+        return adminCompanyService.getCompanyProject(page, id);
     }
 }

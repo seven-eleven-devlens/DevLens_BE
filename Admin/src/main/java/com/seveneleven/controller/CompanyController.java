@@ -27,6 +27,7 @@ public class CompanyController implements CompanyDocs{
         목적 : 회사 생성하여 db에 저장
      */
     @PostMapping("")
+    @Override
     public ResponseEntity<APIResponse<PostCompany.Response>> createCompany(@RequestBody PostCompany.Request companyRequest) {
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
@@ -38,9 +39,9 @@ public class CompanyController implements CompanyDocs{
         목적 : 회사 상세 정보 조회
      */
     @GetMapping("/{id}")
+    @Override
     public ResponseEntity<APIResponse<GetCompanyDetail.Response>> readCompany(
-            @PathVariable Long id,
-            @RequestParam(value = "page") Integer page
+            @PathVariable Long id
     ) {
         var company = adminCompanyFacade.getCompanyDetail(id);
         return ResponseEntity
@@ -48,11 +49,23 @@ public class CompanyController implements CompanyDocs{
                 .body(APIResponse.success(SuccessCode.OK, company));
     }
 
+    @GetMapping("/{id}/projects")
+    @Override
+    public ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> readCompanyProject(
+            @PathVariable Long id,
+            @RequestParam Integer page
+    ) {
+        return ResponseEntity
+                .status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyFacade.getCompanyProject(id, page)));
+    }
+
     /*
-        함수명 : readCompanyList
-        목적 : 회사 목록 조회
-     */
+            함수명 : readCompanyList
+            목적 : 회사 목록 조회
+         */
     @GetMapping("")
+    @Override
     public ResponseEntity<APIResponse<PaginatedResponse<GetCompanies.Response>>> readCompanyList(@RequestParam(value = "page") Integer page) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
@@ -64,6 +77,7 @@ public class CompanyController implements CompanyDocs{
         함수 목적 : 회사 검색
      */
     @GetMapping("/search")
+    @Override
     public ResponseEntity<APIResponse<PaginatedResponse<GetCompanies.Response>>> searchCompaniesByName(
             @RequestParam(value = "name") String name,
             @RequestParam(value = "page") Integer page
@@ -78,6 +92,7 @@ public class CompanyController implements CompanyDocs{
         목적 : 회사 상세 정보 수정
      */
     @PutMapping("/{id}")
+    @Override
     public ResponseEntity<APIResponse<PutCompany.Response>> updateCompany(
             @PathVariable Long id,
             @RequestBody PutCompany.Request request
@@ -92,6 +107,7 @@ public class CompanyController implements CompanyDocs{
         목적 : 회사 상세 정보 삭제
      */
     @DeleteMapping("/{id}")
+    @Override
     public ResponseEntity<APIResponse<Object>> deleteCompany(
             @PathVariable Long id
     ) {
@@ -106,6 +122,7 @@ public class CompanyController implements CompanyDocs{
         목적 : 회사 전체 정보 전달
      */
     @GetMapping("/all")
+    @Override
     public ResponseEntity<APIResponse<List<GetAllCompanies>>> readAllCompany() {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
