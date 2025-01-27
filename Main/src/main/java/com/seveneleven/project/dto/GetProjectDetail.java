@@ -11,7 +11,6 @@ public class GetProjectDetail {
      */
     @Getter
     @Setter
-    @ToString
     public static class Response {
         private ProjectDetail projectDetail;
         private List<ProjectStepInfo> projectStep;
@@ -32,7 +31,6 @@ public class GetProjectDetail {
     }
 
     @Getter
-    @ToString
     public static class ProjectDetail {
         private Long projectId;
         private String projectTypeName;
@@ -47,21 +45,16 @@ public class GetProjectDetail {
                 String projectTypeName,
                 String projectName,
                 String projectDescription
-//                String name,
-//                String phoneNumber
         ) {
             this.projectId = projectId;
             this.projectTypeName = projectTypeName;
             this.projectName = projectName;
             this.projectDescription = projectDescription;
-//            this.projectContact = name;
-//            this.projectContactPhone = phoneNumber;
         }
     }
 
     @Getter
     @Setter
-    @ToString
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ProjectStepInfo {
@@ -74,7 +67,6 @@ public class GetProjectDetail {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    @ToString
     public static class ChecklistApplicationList {
         private Long checklistApplicationId;
         private String StepName;

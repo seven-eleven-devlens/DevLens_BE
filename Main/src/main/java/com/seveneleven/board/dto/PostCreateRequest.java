@@ -17,7 +17,6 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class PostCreateRequest {
 
     // todo: Dto validation 추가 예정
