@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AdminCompanyService {
     PostCompany.Response createCompany(PostCompany.Request companyRequest);
-    GetCompanyDetail.Response getCompanyResponse(Long id, Integer page);
+    GetCompanyDetail.Response getCompanyDetail(Long id);
     PaginatedResponse<GetCompanies.Response> getListOfCompanies(Integer page);
     PaginatedResponse<GetCompanies.Response> searchCompaniesByName(String name, Integer page);
     PutCompany.Response updateCompany(Long id, PutCompany.Request request);

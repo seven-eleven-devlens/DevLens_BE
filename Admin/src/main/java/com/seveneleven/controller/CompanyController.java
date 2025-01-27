@@ -42,7 +42,7 @@ public class CompanyController implements CompanyDocs{
             @PathVariable Long id,
             @RequestParam(value = "page") Integer page
     ) {
-        var company = adminCompanyService.getCompanyResponse(id, page);
+        var company = adminCompanyFacade.getCompanyDetail(id);
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, company));
