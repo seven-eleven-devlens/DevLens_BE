@@ -106,7 +106,7 @@ public class PostServiceImpl implements PostService {
             List<LinkInput> linkInputs = postCreateRequest.getLinkInputList();
 
             //게시물 링크 업로드
-            postLinkService.uploadPostLink(linkInputs, post.getId(), post.getCreatedBy());
+            postLinkService.uploadPostLinks(linkInputs, post.getId(), post.getCreatedBy());
 
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 
@@ -122,7 +122,7 @@ public class PostServiceImpl implements PostService {
             List<LinkInput> linkInputs = postCreateRequest.getLinkInputList();
 
             //게시물 링크 업로드
-            postLinkService.uploadPostLink(linkInputs, post.getId(), post.getCreatedBy());
+            postLinkService.uploadPostLinks(linkInputs, post.getId(), post.getCreatedBy());
 
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 

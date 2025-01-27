@@ -27,22 +27,22 @@ public class PostLinkService {
     private final PostRepository postRepository;
 
     /**
-     * 1. 게시물 링크 업로드
-     * 함수명 : uploadPostLink
+     * 1. 게시물 링크 일괄 업로드
+     * 함수명 : uploadPostLinks
      * @auth admin, 게시물 작성자
-     * @param linkInputs 업로드할 링크 DTO
+     * @param linkInputs 업로드할 링크 DTO 목록
      * @param postId 해당 게시물 id
      * @param uploaderId 업로드 수행자 id
      */
     @Transactional
-    public void uploadPostLink(List<LinkInput> linkInputs, Long postId, Long uploaderId) {
+    public void uploadPostLinks(List<LinkInput> linkInputs, Long postId, Long uploaderId) {
         //1. 게시물 id로 존재여부 판별
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
 
         //TODO) 2. 수행자 판별 - admin 해당 게시글 작성자
 
-        //3. 현재 저장된 파일 갯수 확인(저장할 파일 갯수 + 현재 저장 갯수 > 10인지 판별)
+        //3. 현재 저장된 링크 갯수 확인(저장할 링크 갯수 + 현재 저장 갯수 > 10인지 판별)
         Integer currentLinkCnt = linkService.countLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId());
         if(currentLinkCnt + linkInputs.size() >= MAX_LINK_COUNT){
             throw new BusinessException(ErrorCode.LINK_QUANTITY_EXCEED_ERROR);
@@ -90,9 +90,35 @@ public class PostLinkService {
         return linkResponses;
     }
 
+    /**
+     * 3. 게시물 단일 삭제
+     * 함수명 : deletePostLink
+     * 게시글 수정시 링크 수정용으로 사용
+     * @param linkId 삭제할 링크 id
+     */
+    @Transactional
+    public void deletePostLink(Long postId, Long linkId, Long deleterId){
+        //1. 게시물 존재 여부 판별
+        Post postEntity = postRepository.findById(postId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
+
+        //TODO) 2. 수행자 권한 검증
+
+        //3. 해당 게시물의 링크인지 판별
+        //파일 메타데이터 테이블에서 해당 카테고리와 첨부 id로 메타데이터 id 목록 생성
+        List<Link> linkEntities = linkService.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postId);
+        List<Long> linkIds = linkEntities.stream().map(Link::getId).collect(Collectors.toList());
+        //id 목록에 linkId가 있는지 판별
+        if(!linkIds.contains(linkId)){
+            throw new BusinessException(ErrorCode.LINKID_NOT_EXIST_ERROR);
+        }
+
+        //3. 게시물 링크 삭제
+        linkService.deleteLinkById(linkId);
+    }
 
     /**
-     * 3. 게시물 링크 일괄 삭제
+     * 3-1. 게시물 링크 일괄 삭제
      * 함수명 : deleteAllPostLinks
      * @param postId 해당 게시물 id
      */
@@ -109,26 +135,5 @@ public class PostLinkService {
             linkService.deleteLinkById(linkEntity.getId());
         }
     }
-
-
-    /**
-     * 4. 게시물 링크 수정
-     * 함수명 : updatePostLinks
-     * @param links 업데이트할 링크 목록
-     */
-    @Transactional
-    public void updatePostLinks(Long postId, List<LinkInput> linkInputs){
-        //1. 게시물 존재 여부 판별
-        Post PostEntity = postRepository.findById(postId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
-
-        //TODO) 2. 수행자 권한 검증
-
-        //3. 게시물 링크 수정
-//        linkService.updateLinks()
-    }
-
-
-
 
 }

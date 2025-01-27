@@ -11,12 +11,12 @@ import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PageResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.LinkInput;
 import com.seveneleven.util.file.dto.LinkResponse;
+import jdk.dynalink.linker.LinkRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -128,5 +128,37 @@ public class BoardController implements BoardDocs {
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
 
+    //링크
+    /**
+     * 함수명 : uploadLinks()
+     * 게시물에 링크를 등록하는 메서드(수정화면)
+     */
+    @PostMapping("/{postId}/links")
+    public ResponseEntity<APIResponse<SuccessCode>> uploadLinks(@PathVariable Long postId,
+                                                                @RequestBody List<LinkInput> linkInputs){
 
+        //TODO)토큰으로 업로더 정보 가져오기
+        Long uploaderId = 1L;
+
+        postLinkService.uploadPostLinks(linkInputs, postId, uploaderId);
+
+        return ResponseEntity.status(SuccessCode.CREATED.getStatus())
+                .body(APIResponse.success(SuccessCode.CREATED));
+    }
+
+    /**
+     * 함수명 : deleteLink()
+     * 게시물의 링크를 단일 삭제하는 메서드(수정화면)
+     */
+    @DeleteMapping("/{postId}/links/{linkId}")
+    public ResponseEntity<APIResponse<SuccessCode>> deleteLink(@PathVariable Long postId,
+                                                               @PathVariable Long linkId){
+        //TODO) 토큰으로 삭제수행자 정보 가져오기
+        Long deleterId = 1L;
+
+        postLinkService.deletePostLink(postId, linkId, deleterId);
+
+        return ResponseEntity.status(SuccessCode.DELETED.getStatus())
+                .body(APIResponse.success(SuccessCode.DELETED));
+    }
 }

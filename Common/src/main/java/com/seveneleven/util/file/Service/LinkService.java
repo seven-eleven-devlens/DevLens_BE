@@ -95,13 +95,4 @@ public class LinkService {
         return currentLinkCnt;
     }
 
-    /**
-     * 5. 링크 수정
-     * 함수명 : updateLinks
-     * @param linkPayload 수정할 링크 목록
-     */
-    public void updateLinks(LinkPayload linkPayload){
-
-    }
-
 }
