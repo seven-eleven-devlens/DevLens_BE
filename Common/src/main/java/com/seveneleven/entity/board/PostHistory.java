@@ -28,6 +28,7 @@ public class PostHistory extends BaseEntity {
         status : 상태 (DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD)
         title : 제목
         content : 내용
+        writer : 작성자 이름
         deadline : 마감일자
         action : 작업 종류 (CREATE, UPDATE, DELETE)
         registerIp : 등록자 IP
@@ -66,6 +67,9 @@ public class PostHistory extends BaseEntity {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "writer", nullable = false)
+    private String writer;
+
     @Column(name = "deadline")
     private LocalDate deadline;
 
@@ -90,6 +94,7 @@ public class PostHistory extends BaseEntity {
         postHistory.status = post.getStatus();
         postHistory.title = post.getTitle();
         postHistory.content = post.getContent();
+        postHistory.writer = post.getWriter();
         postHistory.deadline = post.getDeadline();
         postHistory.action = action;
         postHistory.registeredIp = post.getModifierIp();

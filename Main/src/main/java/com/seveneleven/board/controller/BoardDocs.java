@@ -3,7 +3,7 @@ package com.seveneleven.board.controller;
 import com.seveneleven.board.dto.*;
 import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.response.APIResponse;
-import com.seveneleven.response.PageResponse;
+import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.dto.LinkInput;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,21 +51,21 @@ public interface BoardDocs {
                             name = "keyword",
                             description = "검색 키워드",
                             required = false,
-                            example = "디자인 시안"
+                            example = "기능정의서"
                     ),
                     @Parameter(
                             name = "filter",
-                            description = "필터 조건 (TITLE, CONTENT, WRITER)",
+                            description = "필터 조건 (ALL, TITLE, CONTENT, WRITER)",
                             required = false,
                             example = "TITLE"
                     )
             }
     )
     @GetMapping("/steps/{projectStepId}")
-    public ResponseEntity<APIResponse<PageResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
-                                                                                   @RequestParam(defaultValue = "0") Integer page,
-                                                                                   @RequestParam(required = false) String keyword,
-                                                                                   @RequestParam(required = false) PostFilter filter
+    ResponseEntity<APIResponse<PaginatedResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
+                                                                                        @RequestParam(defaultValue = "0") Integer page,
+                                                                                        @RequestParam(required = false) String keyword,
+                                                                                        @RequestParam(required = false) PostFilter filter
     ) throws Exception;
 
     // 조회
