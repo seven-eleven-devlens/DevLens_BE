@@ -70,7 +70,7 @@ public class PostFileService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
 
         //카테고리와 게시물 id로 찾은 모든 파일을 가져온다.
-        //페이지네이션 없이 일단 다 보내기
+        //페이지네이션 없음
         List<FileMetadata> fileEntities = fileService.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId());
 
         //entity를 dto에 담는다.
@@ -113,11 +113,11 @@ public class PostFileService {
      */
     @Transactional
     public void updatePostFiles(Long postId, List<MultipartFile> files){
-        //TODO) 1. 수행자 권한 판별
-
-        //2. 게시물 유효성 검사
+        //1. 게시물 유효성 검사
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
+
+        //TODO) 2. 수행자 권한 판별
 
         //3. 게시물 파일 수정
         fileService.updateFilesWithHashComparison(FileCategory.POST_ATTACHMENT, postEntity.getId(), files);

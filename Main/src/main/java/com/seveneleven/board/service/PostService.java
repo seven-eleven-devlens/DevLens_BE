@@ -14,7 +14,7 @@ public interface PostService {
 
     PageResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter);
     PostResponse selectPost(Long postId) throws Exception;
-    void createPost(PostCreateRequest postCreateRequest, List<MultipartFile> files) throws Exception;
-    void updatePost(PostUpdateRequest postUpdateRequest, List<MultipartFile> files) throws Exception;
+    void createPost(PostCreateRequest postCreateRequest) throws Exception;
+    void updatePost(PostUpdateRequest postUpdateRequest) throws Exception;
     void deletePost(Long postId, Long registerId) throws Exception;
 }

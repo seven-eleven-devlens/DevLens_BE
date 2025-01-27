@@ -19,7 +19,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "file_metadata_history")
 public class FileMetadataHistory {
-    // Magic Numbers
     private static final int MAX_REFERENCE_IDENTIFIER_LENGTH = 300;
     private static final int MAX_FILE_DISPLAY_TITLE_LENGTH = 300;
     private static final int MAX_FILE_TITLE_LENGTH = 50;
