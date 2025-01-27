@@ -12,8 +12,9 @@ import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.project.repository.ProjectStepRepository;
-import com.seveneleven.response.PageResponse;
+import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import java.util.List;
 import static com.seveneleven.board.dto.PostResponse.getPostResponse;
 import static com.seveneleven.response.ErrorCode.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -47,11 +49,14 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional(readOnly = true)
     @Override
-    public PageResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter) {
+    public PaginatedResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(Sort.Order.desc("ref"), Sort.Order.asc("refOrder")));
 
-        // todo : 필터 검색 기능 추가 예정
-        Page<Post> repoPostList = postRepository.findAllByProjectStepId(projectStepId, pageable);
+        String repoFilter = null;
+        if(filter != null) {
+            repoFilter = filter.name();
+        }
+        Page<Post> repoPostList = postRepository.findAllByProjectStepId(projectStepId, keyword, repoFilter, pageable);
 
         Page<PostListResponse> postListResponsePage = repoPostList.map(post -> {
             Member member = memberRepository.findById(post.getCreatedBy())
@@ -59,7 +64,7 @@ public class PostServiceImpl implements PostService {
             return PostListResponse.toDto(post, member.getName());
         });
 
-        return PageResponse.createPageResponse(postListResponsePage);
+        return PaginatedResponse.createPaginatedResponse(postListResponsePage);
     }
 
     /**
@@ -100,7 +105,9 @@ public class PostServiceImpl implements PostService {
             Post post = getCreatePost(postCreateRequest, postRepository.findMaxRef() + 1, 0);
             postRepository.save(post);
             //게시물 파일 업로드
-            postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
+            if(!(files == null || !files.isEmpty())) {
+                postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
+            }
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 
             // todo: 링크 저장 로직 추가 예정
@@ -112,7 +119,9 @@ public class PostServiceImpl implements PostService {
             Post post = getCreatePost(postCreateRequest, getRef(postCreateRequest.getParentPostId()), getRefOrder(postCreateRequest.getParentPostId())+1);
             postRepository.save(post);
             //게시물 파일 업로드
-            postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
+            if(!(files == null || !files.isEmpty())) {
+                postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
+            }
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 
             // 원글의 Child_Post_Num 컬럼값에 +1
@@ -225,6 +234,9 @@ public class PostServiceImpl implements PostService {
             parentPost = postRepository.findById(postCreateRequest.getParentPostId())
                     .orElseThrow(() -> new BusinessException(NOT_FOUND_PROJECT_STEP));
         }
+        // 작성자 확인
+        Member member = memberRepository.findById(postCreateRequest.getRegisterId())
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
 
         return Post.createPost(
                 projectStep,
@@ -237,6 +249,7 @@ public class PostServiceImpl implements PostService {
                 postCreateRequest.getStatus(),
                 postCreateRequest.getTitle(),
                 postCreateRequest.getContent(),
+                member.getName(),
                 postCreateRequest.getDeadline(),
                 postCreateRequest.getRegisterIp(),
                 postCreateRequest.getRegisterIp()
@@ -272,7 +285,8 @@ public class PostServiceImpl implements PostService {
      * 함수 목적 : (답글) 동일 그룹의 REF_ORDER 최대값 반환 메서드
      */
     private Integer getRefOrder(Long parentPostId) {
-        if(postRepository.findById(parentPostId).orElseThrow(() -> new BusinessException(NOT_FOUND_POST)).getChildPostNum().equals(0)) {
+        if(postRepository.findById(parentPostId)
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_POST)).getChildPostNum().equals(0)) {
             return 0;
         }
         return postRepository.findMaxRefOrderByParentPostId(parentPostId)

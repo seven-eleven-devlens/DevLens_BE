@@ -24,6 +24,25 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT MAX(p.refOrder) FROM Post p WHERE p.parentPost.id = :parentPostId")
     Optional<Integer> findMaxRefOrderByParentPostId(@Param("parentPostId") Long parentPostId);
 
-    Page<Post> findAllByProjectStepId(@Param("projectStepId") Long projectStepId, Pageable pageable);
-
+    // 프로젝트 단게별 게시글 목록 조회
+    @Query("""
+    SELECT p
+    FROM Post p
+    WHERE p.projectStep.id = :projectStepId
+    AND (
+        (:filter = 'TITLE' AND p.title LIKE CONCAT('%', :keyword, '%')) OR
+        (:filter = 'CONTENT' AND p.content LIKE CONCAT('%', :keyword, '%')) OR
+        (:filter = 'WRITER' AND p.writer LIKE CONCAT('%', :keyword, '%')) OR
+        ((:filter IS NULL OR :filter = 'ALL') AND
+            (:keyword IS NULL OR p.title LIKE CONCAT('%', :keyword, '%') OR
+             p.content LIKE CONCAT('%', :keyword, '%') OR
+             p.writer LIKE CONCAT('%', :keyword, '%'))
+        )
+    )
+    ORDER BY p.ref DESC, p.refOrder ASC
+    """)
+    Page<Post> findAllByProjectStepId(@Param("projectStepId") Long projectStepId,
+                                      @Param("keyword") String keyword,
+                                      @Param("filter") String filter,
+                                      Pageable pageable);
 }

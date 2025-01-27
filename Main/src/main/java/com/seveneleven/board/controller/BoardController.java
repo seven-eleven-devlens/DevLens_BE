@@ -6,7 +6,7 @@ import com.seveneleven.board.service.PostFileService;
 import com.seveneleven.board.service.PostService;
 import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.response.APIResponse;
-import com.seveneleven.response.PageResponse;
+import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import lombok.RequiredArgsConstructor;
@@ -31,13 +31,13 @@ public class BoardController implements BoardDocs {
      * 게시글 목록을 조회하는 메서드
      */
     @GetMapping("/steps/{projectStepId}")
-    public ResponseEntity<APIResponse<PageResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
-                                                                                   @RequestParam(defaultValue = "0") Integer page,
-                                                                                   @RequestParam(required = false) String keyword,
-                                                                                   @RequestParam(required = false) PostFilter filter
-                                                                                   // todo: 정렬기준 추후 추가 예정
+    public ResponseEntity<APIResponse<PaginatedResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
+                                                                                        @RequestParam(defaultValue = "0") Integer page,
+                                                                                        @RequestParam(required = false) String keyword,
+                                                                                        @RequestParam(defaultValue = "ALL", required = false) PostFilter filter
+                                                                                        // todo: 정렬기준 추후 추가 예정
     ) {
-        PageResponse<PostListResponse> postList = postService.selectPostList(projectStepId, page, keyword, filter);
+        PaginatedResponse<PostListResponse> postList = postService.selectPostList(projectStepId, page, keyword, filter);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, postList));
@@ -113,6 +113,4 @@ public class BoardController implements BoardDocs {
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
-
-
 }
