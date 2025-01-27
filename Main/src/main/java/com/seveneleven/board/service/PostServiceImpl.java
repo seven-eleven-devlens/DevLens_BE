@@ -13,6 +13,7 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.project.repository.ProjectStepRepository;
 import com.seveneleven.response.PageResponse;
+import com.seveneleven.util.file.dto.LinkInput;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +38,7 @@ public class PostServiceImpl implements PostService {
     private final MemberRepository memberRepository;
     private final PostFileService postFileService;
     private final CommentService commentService;
+    private final PostLinkService postLinkService;
 
     private final int PAGE_SIZE = 10;
 
@@ -92,20 +94,22 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void createPost(PostCreateRequest postCreateRequest, List<MultipartFile> files) {
+    public void createPost(PostCreateRequest postCreateRequest) throws Exception {
         // todo : 작성권한 확인 로직 추가 예정
 
         // 원글인 경우
         if (postCreateRequest.getParentPostId() == null) {
             Post post = getCreatePost(postCreateRequest, postRepository.findMaxRef() + 1, 0);
             postRepository.save(post);
-            //게시물 파일 업로드
-            if(!(files == null || files.isEmpty())) {
-                postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
-            }
+
+            //요청 dto에서 링크 리스트 가져오기
+            List<LinkInput> linkInputs = postCreateRequest.getLinkInputList();
+
+            //게시물 링크 업로드
+            postLinkService.uploadPostLinks(linkInputs, post.getId(), post.getCreatedBy());
+
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 
-            // todo: 링크 저장 로직 추가 예정
         } else {
         // 답글인 경우
             if(!matchesProjectStepParentAndChild(postCreateRequest.getProjectStepId(), postCreateRequest.getParentPostId())) {
@@ -113,14 +117,18 @@ public class PostServiceImpl implements PostService {
             }
             Post post = getCreatePost(postCreateRequest, getRef(postCreateRequest.getParentPostId()), getRefOrder(postCreateRequest.getParentPostId())+1);
             postRepository.save(post);
-            //게시물 파일 업로드
-            postFileService.uploadPostFile(files, post.getId(), post.getCreatedBy());
+
+            //요청 dto에서 링크 리스트 가져오기
+            List<LinkInput> linkInputs = postCreateRequest.getLinkInputList();
+
+            //게시물 링크 업로드
+            postLinkService.uploadPostLinks(linkInputs, post.getId(), post.getCreatedBy());
+
             postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE));
 
             // 원글의 Child_Post_Num 컬럼값에 +1
             increaseChildPostNum(postCreateRequest.getParentPostId());
 
-            // todo: 링크 저장 로직 추가 예정
         }
     }
 
@@ -130,7 +138,7 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void updatePost(PostUpdateRequest postUpdateRequest, List<MultipartFile> files) {
+    public void updatePost(PostUpdateRequest postUpdateRequest) throws Exception {
         // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = getPost(postUpdateRequest.getPostId());
         matchPostWriter(post.getCreatedBy(), postUpdateRequest.getModifierId());
@@ -147,11 +155,8 @@ public class PostServiceImpl implements PostService {
         );
 
         postRepository.save(post);
-        //파일 수정
-        postFileService.updatePostFiles(post.getId(), files);
 
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.UPDATE));
-
     }
 
     /**
@@ -176,9 +181,15 @@ public class PostServiceImpl implements PostService {
             Post parentPost = getParentPost(post);
             decreaseChildPostNum(parentPost.getId());
         }
+
+        //해당 게시물의 링크 일괄 삭제
+        postLinkService.deleteAllPostLinks(postId);
+
         //게시물 파일 일괄 삭제
         postFileService.deleteAllPostFiles(post.getId(), registeredId);
+
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.DELETE));
+
         postRepository.delete(post);
     }
 

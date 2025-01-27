@@ -48,8 +48,7 @@ public class SpringSecurityConfig {
 
     private static final String[] AUTH_WHITELIST = {
             "/api/v1/member/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
-            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/api/v1/auth/**",
-            "/api/**"
+            "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html"
     };
 
     /**
@@ -64,24 +63,24 @@ public class SpringSecurityConfig {
         http.cors(cors -> Customizer.withDefaults()) // CORS 설정
             .csrf(csrf -> csrf.disable()) // CSRF 비활성화
             .formLogin((form) -> form.disable()) // FormLogin 비활성화
-
-            .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy( // 세션 정책 설정 (STATELESS)
-                SessionCreationPolicy.STATELESS)
-            )
-            .exceptionHandling(exceptionHandling -> // 인증 및 접근 거부 처리
-                    exceptionHandling
-                            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                            .accessDeniedHandler(jwtAccessDeniedHandler)
-            )
-            .headers(headers -> // H2-console 허용
-                    headers.frameOptions(frameOptions -> frameOptions.sameOrigin())
-            )
-            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider, eventPublisher), UsernamePasswordAuthenticationFilter.class)
+//            .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy( // 세션 정책 설정 (STATELESS)
+//                SessionCreationPolicy.STATELESS)
+//            )
+//            .exceptionHandling(exceptionHandling -> // 인증 및 접근 거부 처리
+//                    exceptionHandling
+//                            .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//                            .accessDeniedHandler(jwtAccessDeniedHandler)
+//            )
+//            .headers(headers -> // H2-console 허용
+//                    headers.frameOptions(frameOptions -> frameOptions.sameOrigin())
+//            )
+//            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenRepository, tokenProvider), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
-                            .requestMatchers(AUTH_WHITELIST).permitAll()
-                            .requestMatchers("api/login/**").permitAll()
-                            .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
-                            .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
+                            .anyRequest().permitAll()
+//                            .requestMatchers(AUTH_WHITELIST).permitAll()
+//                            .requestMatchers("api/login/**").permitAll()
+//                            .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
+//                            .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
             );
 
         return http.build();
@@ -105,19 +104,24 @@ public class SpringSecurityConfig {
      *
      * @return CORS 설정을 포함하는 CorsConfigurationSource 객체
      */
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.setAllowedOrigins(Arrays.asList("https://kernel-dev-lens.vercel.app", "http://localhost:3000","https://www.devlens.work"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Forwarded-For"));
-        configuration.setAllowCredentials(true);   // 자격 증명 허용
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 적용
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+//
+//        configuration.setAllowedOrigins(Arrays.asList("http://kernel-dev-lens.vercel.app",
+//                "https://kernel-dev-lens.vercel.app",
+//                "http://localhost:3000",
+//                "https://www.devlens.work",
+//                "https://devlens.work",
+//                "https://api.devlens.work"));
+//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH"));
+//        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+//        configuration.setAllowCredentials(true);   // 자격 증명 허용
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration); // 모든 경로에 적용
+//        return source;
+//    }
 
 }
 

@@ -44,16 +44,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                 p.id,
                 p_t.projectTypeName,
                 p.projectName,
-                p.projectDescription,
-                m.name,
-                m.phoneNumber
+                p.projectDescription
         )
         FROM
             Project p
         JOIN
             ProjectType p_t ON p_t.id = p.projectType.id
-        JOIN
-            Member m ON m.id = p.bnsManager.id
         WHERE
              p.id = :projectId
         """)
