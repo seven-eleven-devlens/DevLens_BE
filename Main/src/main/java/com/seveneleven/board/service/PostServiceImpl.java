@@ -154,9 +154,6 @@ public class PostServiceImpl implements PostService {
                 postUpdateRequest.getModifierIp()
         );
 
-        //링크 목록 가져오기
-        List<LinkInput> linkInputs = postUpdateRequest.getLinkInputList();
-
         postRepository.save(post);
 
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.UPDATE));
