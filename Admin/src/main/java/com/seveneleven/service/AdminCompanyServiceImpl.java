@@ -33,6 +33,7 @@ public class AdminCompanyServiceImpl implements AdminCompanyService{
     private final PutCompanyRequestConverter putCompanyRequestConverter;
     private final CheckCompanyValidity checkCompanyValidity;
     private final GetAllCompaniesConverter getAllCompaniesConverter;
+    private final AdminCompanyStore adminCompanyStore;
 
     /*
         함수명 : createCompany
@@ -42,7 +43,7 @@ public class AdminCompanyServiceImpl implements AdminCompanyService{
         //사업자 등록번호 중복 조회
         checkDuplicatedCompanyBusinessRegistrationNumber(companyRequest.getBusinessRegistrationNumber());
 
-        return PostCompany.Response.of(companyRepository.save(companyRequest.toEntity()));
+        return PostCompany.Response.of(adminCompanyStore.store(companyRequest.toEntity()));
     }
 
     /*
