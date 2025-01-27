@@ -3,13 +3,11 @@ package com.seveneleven.entity.board;
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.global.BaseEntity;
 import com.seveneleven.entity.global.YesNo;
-import com.seveneleven.entity.global.converter.YesNoConverter;
 import com.seveneleven.entity.project.ProjectStep;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
@@ -33,6 +31,7 @@ public class Post extends BaseEntity {
         status : 상태 (DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD)
         title : 제목
         content : 내용
+        writer : 작성자 이름
         deadline : 마감일자
         registerIp : 등록자 IP
         modifierIp : 수정자 IP
@@ -77,6 +76,9 @@ public class Post extends BaseEntity {
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "writer", nullable = false)
+    private String writer;
+
     @Column(name = "deadline")
     private LocalDate deadline;
 
@@ -98,6 +100,7 @@ public class Post extends BaseEntity {
             PostStatus status,
             String title,
             String content,
+            String writer,
             LocalDate deadline,
             String registerIp,
             String modifierIp
@@ -113,6 +116,7 @@ public class Post extends BaseEntity {
         post.status = status;
         post.title = title;
         post.content = content;
+        post.writer = writer;
         post.deadline = deadline;
         post.registerIp = registerIp;
         post.modifierIp = modifierIp;
