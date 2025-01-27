@@ -1,5 +1,6 @@
 package com.seveneleven.controller;
 
+import com.seveneleven.application.adminCompany.AdminCompanyFacade;
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PaginatedResponse;
@@ -19,6 +20,7 @@ import java.util.List;
 @RequestMapping("/api/admin/companies")
 public class CompanyController implements CompanyDocs{
     private final AdminCompanyService adminCompanyService;
+    private final AdminCompanyFacade adminCompanyFacade;
 
     /*
         함수명 : createCompany
@@ -28,7 +30,7 @@ public class CompanyController implements CompanyDocs{
     public ResponseEntity<APIResponse<PostCompany.Response>> createCompany(@RequestBody PostCompany.Request companyRequest) {
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED, adminCompanyService.createCompany(companyRequest)));
+                .body(APIResponse.success(SuccessCode.CREATED, adminCompanyFacade.registerCompany(companyRequest)));
     }
 
     /*

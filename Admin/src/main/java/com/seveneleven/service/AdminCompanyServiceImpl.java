@@ -5,6 +5,7 @@ import com.seveneleven.dto.*;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.entity.project.Project;
+import com.seveneleven.exception.CompanyDuplicatedException;
 import com.seveneleven.exception.CompanyNotFoundException;
 import com.seveneleven.repository.*;
 import com.seveneleven.response.PaginatedResponse;
@@ -31,8 +32,6 @@ public class AdminCompanyServiceImpl implements AdminCompanyService{
     private final GetCompaniesResponseConverter getCompaniesResponseConverter;
     private final PutCompanyRequestConverter putCompanyRequestConverter;
     private final CheckCompanyValidity checkCompanyValidity;
-    private final PostCompanyRequestConverter postCompanyRequestConverter;
-    private final PostCompanyResponseConverter postCompanyResponseConverter;
     private final GetAllCompaniesConverter getAllCompaniesConverter;
 
     /*
@@ -41,8 +40,9 @@ public class AdminCompanyServiceImpl implements AdminCompanyService{
      */
     public PostCompany.Response createCompany(PostCompany.Request companyRequest) {
         //사업자 등록번호 중복 조회
-        checkCompanyValidity.checkDuplicatedCompanyBusinessRegistrationNumber(companyRequest.getBusinessRegistrationNumber());
-        return postCompanyResponseConverter.toDTO(companyRepository.save(postCompanyRequestConverter.toEntity(companyRequest)));
+        checkDuplicatedCompanyBusinessRegistrationNumber(companyRequest.getBusinessRegistrationNumber());
+
+        return PostCompany.Response.of(companyRepository.save(companyRequest.toEntity()));
     }
 
     /*
@@ -127,5 +127,29 @@ public class AdminCompanyServiceImpl implements AdminCompanyService{
                 .stream()
                 .map(getAllCompaniesConverter::toDTO)
                 .toList();
+    }
+
+    /*
+        함수명 : checkDuplicatedCompany
+        함수 목적 : 중복 회사 조회
+     */
+    public void checkDuplicatedCompanyBusinessRegistrationNumber(
+            String businessRegistrationNumber
+    ) {
+        companyRepository.findByBusinessRegistrationNumberAndIsActive(businessRegistrationNumber, YN.Y)
+                .ifPresent(company -> {
+                    throw new CompanyDuplicatedException();
+                });
+    }
+
+    /*
+        함수명 : checkCompanyExistsOrDeactivated
+        함수 목적 : 회사 존재여부 확인 및 비활성화 여부 확인
+     */
+    public Company checkCompanyExistsOrDeactivated(
+            Long id
+    ) {
+        return companyRepository.findByIdAndIsActive(id, YN.Y)
+                .orElseThrow(CompanyNotFoundException::new);
     }
 }
