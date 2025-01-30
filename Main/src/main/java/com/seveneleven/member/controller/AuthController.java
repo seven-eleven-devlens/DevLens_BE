@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
-public class AuthController {
+public class AuthController implements AuthDocs{
     private final RefreshTokenService refreshTokenService;
 
     /**
