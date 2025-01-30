@@ -1,4 +1,4 @@
-package com.seveneleven.controller;
+package com.seveneleven.member.controller;
 
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.util.security.dto.TokenResponse;
