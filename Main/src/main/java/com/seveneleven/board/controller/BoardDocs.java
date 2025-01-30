@@ -2,6 +2,7 @@ package com.seveneleven.board.controller;
 
 import com.seveneleven.board.dto.*;
 import com.seveneleven.entity.board.constant.PostFilter;
+import com.seveneleven.entity.board.constant.PostSort;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
@@ -12,10 +13,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "Post API", description = "게시글 관련 API")
 public interface BoardDocs {
@@ -56,15 +56,22 @@ public interface BoardDocs {
                             name = "filter",
                             description = "필터 조건 (ALL, TITLE, CONTENT, WRITER)",
                             required = false,
-                            example = "TITLE"
+                            example = "ALL"
+                    ),
+                    @Parameter(
+                            name = "sortType",
+                            description = "정렬 조건 (NEWEST, OLDEST)",
+                            required = false,
+                            example = "NEWEST"
                     )
             }
     )
     @GetMapping("/steps/{projectStepId}")
     ResponseEntity<APIResponse<PaginatedResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
-                                                                                        @RequestParam(defaultValue = "0") Integer page,
-                                                                                        @RequestParam(required = false) String keyword,
-                                                                                        @RequestParam(required = false) PostFilter filter
+                                                                                 @RequestParam(defaultValue = "0") Integer page,
+                                                                                 @RequestParam(required = false) String keyword,
+                                                                                 @RequestParam(defaultValue = "ALL", required = false) PostFilter filter,
+                                                                                 @RequestParam(defaultValue = "NEWEST", required = false) PostSort sortType
     ) throws Exception;
 
     // 조회
@@ -109,7 +116,8 @@ public interface BoardDocs {
             }
     )
     @PostMapping()
-    ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestBody PostCreateRequest postCreateRequest
+    ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestBody PostCreateRequest postCreateRequest,
+                                                        HttpServletRequest request
 
     ) throws Exception;
 
@@ -138,7 +146,8 @@ public interface BoardDocs {
     )
     @PutMapping("/{postId}")
     ResponseEntity<APIResponse<SuccessCode>> updatePost(@PathVariable Long postId,
-                                                        @RequestBody PostUpdateRequest postUpdateRequest
+                                                        @RequestBody PostUpdateRequest postUpdateRequest,
+                                                        HttpServletRequest request
     ) throws Exception;
 
     // 삭제
@@ -158,6 +167,7 @@ public interface BoardDocs {
     )
     @DeleteMapping("/{postId}/{registerId}")
     ResponseEntity<APIResponse<SuccessCode>> deletePost(@PathVariable Long postId,
-                                                        @PathVariable Long registerId
+                                                        @PathVariable Long registerId,
+                                                        HttpServletRequest request
     ) throws Exception;
 }

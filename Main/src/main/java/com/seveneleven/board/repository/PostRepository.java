@@ -39,9 +39,8 @@ public interface PostRepository extends JpaRepository<Post, Long> {
              p.writer LIKE CONCAT('%', :keyword, '%'))
         )
     )
-    ORDER BY p.ref DESC, p.refOrder ASC
     """)
-    Page<Post> findAllByProjectStepId(@Param("projectStepId") Long projectStepId,
+    Page<Post> findAllByProjectStepId2(@Param("projectStepId") Long projectStepId,
                                       @Param("keyword") String keyword,
                                       @Param("filter") String filter,
                                       Pageable pageable);

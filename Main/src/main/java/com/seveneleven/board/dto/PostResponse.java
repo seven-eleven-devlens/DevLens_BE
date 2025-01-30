@@ -2,6 +2,7 @@ package com.seveneleven.board.dto;
 
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.PostStatus;
+import com.seveneleven.entity.board.constant.TaskPriority;
 import com.seveneleven.entity.global.YesNo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class PostResponse {
     private Long projectStepId;
     private Long parentPostId;
     private YesNo isPinnedPost;
-    private Integer priority;
+    private TaskPriority priority;
     private PostStatus status;
     private String title;
     private String content;
