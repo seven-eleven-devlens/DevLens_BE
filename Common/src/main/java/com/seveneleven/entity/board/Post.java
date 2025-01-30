@@ -1,6 +1,7 @@
 package com.seveneleven.entity.board;
 
 import com.seveneleven.entity.board.constant.PostStatus;
+import com.seveneleven.entity.board.constant.TaskPriority;
 import com.seveneleven.entity.global.BaseEntity;
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.project.ProjectStep;
@@ -64,7 +65,7 @@ public class Post extends BaseEntity {
     private YesNo isPinnedPost;
 
     @Column(name = "priority")
-    private Integer priority;
+    private TaskPriority priority;
 
     @Column(name = "status", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
@@ -96,7 +97,7 @@ public class Post extends BaseEntity {
             Integer refOrder,
             Integer childPostNum,
             YesNo isPinnedPost,
-            Integer priority,
+            TaskPriority priority,
             PostStatus status,
             String title,
             String content,
@@ -126,7 +127,7 @@ public class Post extends BaseEntity {
     // 게시글 수정
     public void updatePost(
             YesNo isPinnedPost,
-            Integer priority,
+            TaskPriority priority,
             PostStatus status,
             String title,
             String content,

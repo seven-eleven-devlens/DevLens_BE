@@ -2,6 +2,7 @@ package com.seveneleven.entity.board;
 
 import com.seveneleven.entity.board.constant.PostAction;
 import com.seveneleven.entity.board.constant.PostStatus;
+import com.seveneleven.entity.board.constant.TaskPriority;
 import com.seveneleven.entity.global.BaseEntity;
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.global.converter.YesNoConverter;
@@ -55,7 +56,7 @@ public class PostHistory extends BaseEntity {
     private YesNo isPinnedPost;
 
     @Column(name = "priority")
-    private Integer priority;
+    private TaskPriority priority;
 
     @Column(name = "status", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
@@ -84,7 +85,7 @@ public class PostHistory extends BaseEntity {
     private String modifierIp; // 수정자 IP
 
     // 게시글 이력 생성
-    public static PostHistory createPostHistory(Post post, PostAction action) {
+    public static PostHistory createPostHistory(Post post, PostAction action, String ip) {
         PostHistory postHistory = new PostHistory();
         postHistory.projectStepId = post.getProjectStep().getId();
         postHistory.parentPostId = postHistory.getParentPostId();
@@ -97,7 +98,8 @@ public class PostHistory extends BaseEntity {
         postHistory.writer = post.getWriter();
         postHistory.deadline = post.getDeadline();
         postHistory.action = action;
-        postHistory.registeredIp = post.getModifierIp();
+        postHistory.registeredIp = ip;
+        postHistory.modifierIp = ip;
 
         return postHistory;
     }
