@@ -6,11 +6,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class GetProjectDetail {
-    /**
-     * AllArgsContructor는 개발 시 삭제 예정
-     */
+
     @Getter
     @Setter
+    @NoArgsConstructor
     public static class Response {
         private ProjectDetail projectDetail;
         private List<ProjectStepInfo> projectStep;
@@ -31,29 +30,26 @@ public class GetProjectDetail {
     }
 
     @Getter
+    @NoArgsConstructor
     public static class ProjectDetail {
-        private Long projectId;
+        private Long id;
         private String projectTypeName;
         private String projectName;
         private String projectDescription;
-        private String projectContact;
-        private String projectContactPhone;
-        private String projectImageURL;
+        private String bnsManagerName;
 
         public ProjectDetail(
                 Long projectId,
                 String projectTypeName,
                 String projectName,
                 String projectDescription,
-                String name,
-                String phoneNumber
+                String name
         ) {
-            this.projectId = projectId;
+            this.id = projectId;
             this.projectTypeName = projectTypeName;
             this.projectName = projectName;
             this.projectDescription = projectDescription;
-            this.projectContact = name;
-            this.projectContactPhone = phoneNumber;
+            this.bnsManagerName = name;
         }
     }
 

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,5 +25,4 @@ public class PostUpdateRequest {
     private LocalDate deadline;     // 마감일자
     private Long modifierId;        // 수정자 ID
     private String modifierIp;      // 수정자 IP
-
 }

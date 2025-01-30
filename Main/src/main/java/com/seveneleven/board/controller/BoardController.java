@@ -3,17 +3,20 @@ package com.seveneleven.board.controller;
 import com.seveneleven.board.dto.*;
 import com.seveneleven.board.service.CommentService;
 import com.seveneleven.board.service.PostFileService;
+import com.seveneleven.board.service.PostLinkService;
+import com.seveneleven.board.service.PostServiceImpl;
 import com.seveneleven.board.service.PostService;
 import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PageResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.LinkInput;
+import com.seveneleven.util.file.dto.LinkResponse;
+import jdk.dynalink.linker.LinkRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -25,6 +28,7 @@ public class BoardController implements BoardDocs {
     private final PostService postService;
     private final CommentService commentService;
     private final PostFileService postFileService;
+    private final PostLinkService postLinkService;
 
     /**
      * 함수명 : selectList()
@@ -58,6 +62,18 @@ public class BoardController implements BoardDocs {
     }
 
     /**
+     * 함수명 : selectPostLinks
+     * 게시글의 링크 목록을 불러오는 메서드
+     */
+    @GetMapping("/{postId}/links")
+    public ResponseEntity<APIResponse<List<LinkResponse>>> selectPostLinks(@PathVariable Long postId) throws Exception {
+        List<LinkResponse> postLists = postLinkService.getPostLinks(postId);
+
+        return ResponseEntity.status(SuccessCode.OK.getStatus())
+                .body(APIResponse.success(SuccessCode.OK, postLists));
+    }
+
+    /**
      * 함수명 : selectPostFiles
      * 게시글의 파일 목록을 불러오는 메서드
      */
@@ -73,12 +89,11 @@ public class BoardController implements BoardDocs {
      * 함수명 : createPost()
      * 게시글을 생성하는 메서드
      */
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping()
     @Override
-    public ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestPart PostCreateRequest postCreateRequest,
-                                                               @RequestPart(required = false) List<MultipartFile> files
+    public ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestBody() PostCreateRequest postCreateRequest
     ) throws Exception {
-        postService.createPost(postCreateRequest, files);
+        postService.createPost(postCreateRequest);
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED));
@@ -88,13 +103,12 @@ public class BoardController implements BoardDocs {
      * 함수명 : updatePost()
      * 게시글을 수정하는 메서드
      */
-    @PutMapping(value = "/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PutMapping(value = "/{postId}")
     @Override
     public ResponseEntity<APIResponse<SuccessCode>> updatePost(@PathVariable Long postId,
-                                                               @RequestPart PostUpdateRequest postUpdateRequest,
-                                                               @RequestPart(required = false) List<MultipartFile> files
+                                                               @RequestBody PostUpdateRequest postUpdateRequest
     ) throws Exception {
-        postService.updatePost(postUpdateRequest, files);
+        postService.updatePost(postUpdateRequest);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED));
@@ -114,5 +128,37 @@ public class BoardController implements BoardDocs {
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
 
+    //링크
+    /**
+     * 함수명 : uploadLinks()
+     * 게시물에 링크를 등록하는 메서드(수정화면)
+     */
+    @PostMapping("/{postId}/links")
+    public ResponseEntity<APIResponse<SuccessCode>> uploadLinks(@PathVariable Long postId,
+                                                                @RequestBody List<LinkInput> linkInputs){
 
+        //TODO)토큰으로 업로더 정보 가져오기
+        Long uploaderId = 1L;
+
+        postLinkService.uploadPostLinks(linkInputs, postId, uploaderId);
+
+        return ResponseEntity.status(SuccessCode.CREATED.getStatus())
+                .body(APIResponse.success(SuccessCode.CREATED));
+    }
+
+    /**
+     * 함수명 : deleteLink()
+     * 게시물의 링크를 단일 삭제하는 메서드(수정화면)
+     */
+    @DeleteMapping("/{postId}/links/{linkId}")
+    public ResponseEntity<APIResponse<SuccessCode>> deleteLink(@PathVariable Long postId,
+                                                               @PathVariable Long linkId){
+        //TODO) 토큰으로 삭제수행자 정보 가져오기
+        Long deleterId = 1L;
+
+        postLinkService.deletePostLink(postId, linkId, deleterId);
+
+        return ResponseEntity.status(SuccessCode.DELETED.getStatus())
+                .body(APIResponse.success(SuccessCode.DELETED));
+    }
 }
