@@ -36,8 +36,8 @@ public class FileService {
         FileValidator.validateFile(file, fileCategory);
 
         //2. 고유 파일 이름(UUID) 및 S3 키 생성
-        //파일명이 없거나 비어있으면 Unknown-File로 설정
-        String originalFilename = StringUtils.isEmpty(file.getOriginalFilename()) ? file.getOriginalFilename() : file.getOriginalFilename();
+        //파일명이 없거나 비어있으면 UNKNOWN-FILE로 설정
+        String originalFilename = StringUtils.isEmpty(file.getOriginalFilename()) ? "UNKNOWN-FILE" : file.getOriginalFilename();
 
         //UUID 생성
         String uniqueFileName = s3ClientService.generateUniqueFileName(originalFilename);
@@ -58,6 +58,8 @@ public class FileService {
 
             //FileMetaData 저장
             FileMetadata savedMetadata = fileMetadataRepository.save(fileMetadata);
+
+            //TODO) 등록 이력 추가
 
             //DTO로 변환 후 반환
             return savedMetadata;

@@ -1,9 +1,11 @@
 package com.seveneleven.project.controller;
 
 import com.seveneleven.project.dto.*;
+import com.seveneleven.project.service.ProjectChecklistService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.security.dto.CustomUserDetails;
+import com.seveneleven.util.file.dto.FileMetadataDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import java.util.List;
 public class ProjectChecklistController implements ProjectChecklistDocs {
 
     private final ProjectChecklistFacade projectChecklistFacade;
+    private final ProjectChecklistService projectChecklistService;
 
     /**
      * 함수명 : getStepChecklist
@@ -77,11 +80,10 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 함수명 : postProjectChecklistApplication
      * 해당 체크리스트에 체크 승인 요청을 보내는 함수
      */
-    @PostMapping(value = "/checklists/{checklistId}/applications", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping("/checklists/{checklistId}/applications")
     public ResponseEntity<APIResponse<PostProjectChecklistApplication.Response>> postProjectChecklistApplication(
             @PathVariable Long checklistId,
             @RequestBody PostProjectChecklistApplication.Request requestDto,
-            @RequestBody List<MultipartFile> files,
             HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.OK)
@@ -89,6 +91,25 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                         SuccessCode.CREATED,
                         projectChecklistFacade.postProjectChecklistApplication(checklistId, requestDto, request))
                 );
+    }
+
+    /**
+     * 함수명 : postProjectChecklistApplicationFiles
+     * 해당 체크리스트에 체크 승인 요청 파일을 업로드하는 함수
+     */
+    @PostMapping(value = "/checklists/{checklistId}/applications/{applicationId}/files", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<APIResponse<SuccessCode>> postProjectChecklistApplication(
+            @PathVariable Long checklistId,
+            @PathVariable Long applicationId,
+            @RequestParam("files") List<MultipartFile> files){
+
+        //TODO) 업로더 판별
+        Long uploaderId = 1L;
+
+        projectChecklistService.postProjectChecklistApplicationFiles(checklistId, applicationId, uploaderId, files);
+
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(SuccessCode.CREATED));
     }
 
     /**
@@ -104,6 +125,21 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                                 SuccessCode.OK,
                                 projectChecklistFacade.getProjectChecklistApplication(applicationId)
                         ));
+    }
+
+    /**
+     * 함수명 : getProjectChecklistApplicationFiles
+     * 프로젝트 체크리스트 승인 요청의 파일을 확인하는 함수
+     */
+    @GetMapping("/checklists/applications/{applicationId}/files")
+    public ResponseEntity<APIResponse<List<FileMetadataDto>>> getProjectChecklistApplicationFiles(
+            @PathVariable Long applicationId
+    ) {
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(
+                        SuccessCode.OK,
+                        projectChecklistService.getApplicationFiles(applicationId)
+                ));
     }
 
     /**
@@ -130,7 +166,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 함수명 : postProjectChecklistReject
      * 해당 체크리스트 승인 요청을 반려 처리하는 함수
      */
-    @PostMapping(name = "/reject/{applicationId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping("/reject/{applicationId}")
     public ResponseEntity<APIResponse<PostProjectChecklistReject.Response>> postProjectChecklistReject(
             @PathVariable Long applicationId,
             @RequestPart PostProjectChecklistReject.Request requestDto,
@@ -148,4 +184,38 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
         return ResponseEntity.status(SuccessCode.OK.getStatusCode())
                 .body(APIResponse.success(SuccessCode.OK, response));
     }
+
+    /**
+     * 함수명 : postProjectChecklistRejectFiles
+     * 체크리스트 승인 요청 반려 사유에 파일을 등록하는 함수
+     */
+    @PostMapping("/reject/{applicationId}/files")
+    public ResponseEntity<APIResponse<SuccessCode>> postProjectChecklistRejectFile(
+            @PathVariable Long applicationId,
+            @RequestParam("files") List<MultipartFile> files){
+
+        //TODO) 업로더 판별
+        Long uploaderId = 1L;
+
+        projectChecklistService.postCheckRejectFiles(applicationId, uploaderId, files);
+
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(SuccessCode.CREATED));
+    }
+
+    /**
+     * 함수명 : getProjectChecklistRejectFiles
+     * 체크리스트 승인 요청 반려 사유의 파일 목록을 조회하는 함수
+     */
+    @GetMapping("/reject/{applicationId}/files")
+    public ResponseEntity<APIResponse<List<FileMetadataDto>>> getProjectChecklistRejectFiles(
+            @PathVariable Long applicationId){
+
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(
+                        SuccessCode.OK,
+                        projectChecklistService.getChecklistRejectFiles(applicationId)
+                ));
+    }
+
 }

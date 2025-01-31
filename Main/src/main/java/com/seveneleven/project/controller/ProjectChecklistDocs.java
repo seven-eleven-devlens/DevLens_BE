@@ -116,7 +116,7 @@ public interface ProjectChecklistDocs {
             @PathVariable Long checklistId
     );
 
-    @PostMapping(value = "/checklists/{checklistId}/applications", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/checklists/{checklistId}/applications")
     @Operation(
             summary = "체크리스트 신청 생성",
             description = "체크리스트에 새로운 신청을 생성합니다.",
@@ -134,7 +134,6 @@ public interface ProjectChecklistDocs {
     ResponseEntity<APIResponse<PostProjectChecklistApplication.Response>> postProjectChecklistApplication(
             @PathVariable Long checklistId,
             @RequestBody PostProjectChecklistApplication.Request requestDto,
-            @RequestBody List<MultipartFile> files,
             HttpServletRequest request
     );
 
