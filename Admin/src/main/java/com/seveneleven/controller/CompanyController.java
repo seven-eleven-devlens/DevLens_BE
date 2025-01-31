@@ -1,11 +1,11 @@
 package com.seveneleven.controller;
 
 import com.seveneleven.application.adminCompany.AdminCompanyFacade;
+import com.seveneleven.application.adminProject.AdminProjectFacade;
 import com.seveneleven.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.service.AdminCompanyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +18,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/companies")
-public class CompanyController implements CompanyDocs{
-    private final AdminCompanyService adminCompanyService;
+public class CompanyController implements CompanyDocs {
     private final AdminCompanyFacade adminCompanyFacade;
+    private final AdminProjectFacade adminProjectFacade;
 
     /*
         함수명 : createCompany
@@ -49,6 +49,10 @@ public class CompanyController implements CompanyDocs{
                 .body(APIResponse.success(SuccessCode.OK, company));
     }
 
+    /*
+            함수명 : readCompanyProject
+            목적 : 회사 참여 프로젝트 조회
+     */
     @GetMapping("/{id}/projects")
     @Override
     public ResponseEntity<APIResponse<PaginatedResponse<GetProject.Response>>> readCompanyProject(
@@ -57,19 +61,19 @@ public class CompanyController implements CompanyDocs{
     ) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, adminCompanyFacade.getCompanyProject(id, page)));
+                .body(APIResponse.success(SuccessCode.OK, adminProjectFacade.getCompanyProject(id, page)));
     }
 
     /*
             함수명 : readCompanyList
             목적 : 회사 목록 조회
-         */
+     */
     @GetMapping("")
     @Override
     public ResponseEntity<APIResponse<PaginatedResponse<GetCompanies.Response>>> readCompanyList(@RequestParam(value = "page") Integer page) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, adminCompanyService.getListOfCompanies(page)));
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyFacade.getCompanyList(page)));
     }
 
     /*
@@ -84,7 +88,7 @@ public class CompanyController implements CompanyDocs{
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(APIResponse.success(SuccessCode.OK, adminCompanyService.searchCompaniesByName(name,page)));
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyFacade.getCompanyBySearchTerm(name, page)));
     }
 
     /*
@@ -99,7 +103,7 @@ public class CompanyController implements CompanyDocs{
     ) {
         return ResponseEntity
                 .status(SuccessCode.UPDATED.getStatus())
-                .body(APIResponse.success(SuccessCode.UPDATED, adminCompanyService.updateCompany(id, request)));
+                .body(APIResponse.success(SuccessCode.UPDATED, adminCompanyFacade.updateCompany(id, request)));
     }
 
     /*
@@ -111,7 +115,7 @@ public class CompanyController implements CompanyDocs{
     public ResponseEntity<APIResponse<Object>> deleteCompany(
             @PathVariable Long id
     ) {
-        adminCompanyService.deleteCompany(id);
+        adminCompanyFacade.deleteCompany(id);
         return ResponseEntity
                 .status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
@@ -126,6 +130,6 @@ public class CompanyController implements CompanyDocs{
     public ResponseEntity<APIResponse<List<GetAllCompanies>>> readAllCompany() {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, adminCompanyService.getAllCompanies()));
+                .body(APIResponse.success(SuccessCode.OK, adminCompanyFacade.getAllCompanies()));
     }
 }

@@ -1,12 +1,11 @@
 package com.seveneleven.service;
 
-import com.seveneleven.common.CheckCompanyValidity;
 import com.seveneleven.dto.*;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.CompanyDuplicatedException;
 import com.seveneleven.exception.CompanyNotFoundException;
-import com.seveneleven.repository.*;
+import com.seveneleven.repository.CompanyRepository;
 import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,13 +21,8 @@ import static com.seveneleven.common.PageSize.DEFAULT_PAGE_SIZE;
 
 @Service
 @RequiredArgsConstructor
-public class AdminCompanyServiceImpl implements AdminCompanyService{
+public class AdminCompanyServiceImpl implements AdminCompanyService {
     private final CompanyRepository companyRepository;
-    private final PutCompanyResponseConverter putCompanyResponseConverter;
-    private final GetCompaniesResponseConverter getCompaniesResponseConverter;
-    private final PutCompanyRequestConverter putCompanyRequestConverter;
-    private final CheckCompanyValidity checkCompanyValidity;
-    private final GetAllCompaniesConverter getAllCompaniesConverter;
     private final AdminCompanyStore adminCompanyStore;
     private final AdminCompanyReader adminCompanyReader;
 
@@ -57,33 +51,21 @@ public class AdminCompanyServiceImpl implements AdminCompanyService{
         return GetCompanyDetail.Response.of(company);
     }
 
-
-    /*
-        함수명 : getCompanyProject
-        함수 목적 : 회사 참여 프로젝트
-     */
-    @Transactional(readOnly = true)
-    @Override
-    public PaginatedResponse<GetProject.Response> getCompanyProject(Integer pageNumber, Long id) {
-        Pageable pageable = PageRequest.of(pageNumber, DEFAULT_PAGE_SIZE.getPageSize());
-        Page<GetProject.Response> page = adminCompanyReader.getCompanyProject(pageable, id);
-        return PaginatedResponse.createPaginatedResponse(page);
-    }
-
     /*
         함수명 : getListOfCompanies
         함수 목적 : 회사 목록조회
     */
     @Transactional(readOnly = true)
     @Override
-    public PaginatedResponse<GetCompanies.Response> getListOfCompanies(Integer page) {
-        Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("companyName").ascending());
-        Page<Company> companyPage = companyRepository.findByIsActive(pageable, YN.Y);
+    public PaginatedResponse<GetCompanies.Response> getListOfCompanies(Integer pageNumber) {
+        Pageable pageable = PageRequest.of(pageNumber, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("companyName").ascending());
+        Page<GetCompanies.Response> companyPage = adminCompanyReader.getCompanies(pageable);
         if (companyPage.getContent().isEmpty()) {
             throw new CompanyNotFoundException();
         }
-        return PaginatedResponse.createPaginatedResponse(companyPage.map(getCompaniesResponseConverter::toDTO));
+        return PaginatedResponse.createPaginatedResponse(companyPage);
     }
+
     /*
             함수명 : searchCompaniesByName
             함수 목적 : 회사 검색
@@ -94,68 +76,67 @@ public class AdminCompanyServiceImpl implements AdminCompanyService{
             String name, Integer page
     ) {
         Pageable pageable = PageRequest.of(page, DEFAULT_PAGE_SIZE.getPageSize(), Sort.by("companyName").ascending());
-        Page<Company> companyPage = companyRepository.findByIsActiveAndCompanyNameContainingIgnoreCase(YN.Y, name, pageable);
+        Page<GetCompanies.Response> companyPage = adminCompanyReader.getCompaniesBySearchTerm(name, pageable);
         if (companyPage.getContent().isEmpty()) {
             throw new CompanyNotFoundException();
         }
-        return PaginatedResponse.createPaginatedResponse(companyPage.map(getCompaniesResponseConverter::toDTO));
+        return PaginatedResponse.createPaginatedResponse(companyPage);
     }
 
+    /*
+            함수명 : updateCompany
+            함수 목적 : 회사 수정
+     */
     @Transactional
     @Override
     public PutCompany.Response updateCompany(
             Long id, PutCompany.Request request
     ) {
         //비활성화 및 존재 여부 확인
-        Company oldCompany = checkCompanyValidity.checkCompanyExistsOrDeactivated(id);
+        Company oldCompany = adminCompanyReader.getCompany(id);
         //회사 isActive N으로 변경
         oldCompany.deleteCompany();
         //중복 회사 등록 번호 확인
-        checkCompanyValidity.checkDuplicatedCompanyBusinessRegistrationNumber(request.getBusinessRegistrationNumber());
+        checkDuplicatedCompanyBusinessRegistrationNumber(request.getBusinessRegistrationNumber());
         //신규 데이터로 회사 생성
-        Company company = putCompanyRequestConverter.toEntity(request);
-        return putCompanyResponseConverter.toDTO(companyRepository.save(company));
+        Company company = request.toEntity();
+        return PutCompany.Response.of(adminCompanyStore.store(company));
     }
 
+    /*
+            함수명 : deleteCompany
+            함수 목적 : 회사 삭제
+     */
     @Transactional
     @Override
     public void deleteCompany(Long id) {
         //비활성화 및 존재 여부 확인
-        Company company = checkCompanyValidity.checkCompanyExistsOrDeactivated(id);
+        Company company = adminCompanyReader.getActiveCompany(id);
         //회사 isActive N으로 변경
         company.deleteCompany();
     }
 
+    /*
+            함수명 : getAllCompanies
+            함수 목적 : 회사 id 이름 프론트 전달
+     */
     @Transactional(readOnly = true)
     @Override
     public List<GetAllCompanies> getAllCompanies() {
-        return companyRepository.findAllByIsActiveOrderByCompanyNameAsc(YN.Y)
-                .stream()
-                .map(getAllCompaniesConverter::toDTO)
-                .toList();
+        return adminCompanyReader.getAllCompanies();
     }
 
     /*
         함수명 : checkDuplicatedCompany
         함수 목적 : 중복 회사 조회
      */
-    public void checkDuplicatedCompanyBusinessRegistrationNumber(
+    @Transactional(readOnly = true)
+    protected void checkDuplicatedCompanyBusinessRegistrationNumber(
             String businessRegistrationNumber
     ) {
         companyRepository.findByBusinessRegistrationNumberAndIsActive(businessRegistrationNumber, YN.Y)
                 .ifPresent(company -> {
                     throw new CompanyDuplicatedException();
                 });
-    }
-
-    /*
-        함수명 : checkCompanyExistsOrDeactivated
-        함수 목적 : 회사 존재여부 확인 및 비활성화 여부 확인
-     */
-    public Company checkCompanyExistsOrDeactivated(
-            Long id
-    ) {
-        return companyRepository.findByIdAndIsActive(id, YN.Y)
-                .orElseThrow(CompanyNotFoundException::new);
     }
 }
