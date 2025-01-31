@@ -108,7 +108,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
 
         projectChecklistService.postProjectChecklistApplicationFiles(checklistId, applicationId, uploaderId, files);
 
-        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+        return ResponseEntity.status(SuccessCode.CREATED.getStatusCode())
                 .body(APIResponse.success(SuccessCode.CREATED));
     }
 
@@ -199,7 +199,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
 
         projectChecklistService.postCheckRejectFiles(applicationId, uploaderId, files);
 
-        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+        return ResponseEntity.status(SuccessCode.CREATED.getStatusCode())
                 .body(APIResponse.success(SuccessCode.CREATED));
     }
 
