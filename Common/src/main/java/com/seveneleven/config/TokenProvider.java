@@ -18,6 +18,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -74,8 +75,8 @@ public class TokenProvider implements InitializingBean {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.ACCESS_TOKEN_EXPIRE_TIME);
+        Instant now = Instant.now();
+        Instant expirationTime = now.plusMillis(this.ACCESS_TOKEN_EXPIRE_TIME);
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
@@ -85,7 +86,8 @@ public class TokenProvider implements InitializingBean {
                 .claim("name", userDetails.getUsername()) // 이름 추가
                 .claim(AUTHORITIES_KEY, authorities) // 권한 추가
                 .signWith(key, SignatureAlgorithm.HS512)
-                .setExpiration(validity)
+                .setIssuedAt(Date.from(now))              // 발급 시간
+                .setExpiration(Date.from(expirationTime)) // 만료 시간
                 .compact();
     }
 
@@ -116,8 +118,8 @@ public class TokenProvider implements InitializingBean {
      * @return 생성된 Refresh Token
      */
     public String createRefreshToken(Authentication authentication) {
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.REFRESH_TOKEN_EXPIRE_TIME); // Refresh Token 만료 시간 설정
+        Instant now = Instant.now();
+        Instant expirationTime = now.plusMillis(this.REFRESH_TOKEN_EXPIRE_TIME);
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
@@ -125,7 +127,8 @@ public class TokenProvider implements InitializingBean {
                 .claim("memberId", userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
                 .claim("loginId", userDetails.getLoginId()) // 로그인 ID 추가
                 .signWith(key, SignatureAlgorithm.HS512) // 동일한 키 사용
-                .setExpiration(validity) // 만료 시간 설정
+                .setIssuedAt(Date.from(now))              // 발급 시간
+                .setExpiration(Date.from(expirationTime)) // 만료 시간
                 .compact();
     }
 
