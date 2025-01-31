@@ -2,6 +2,7 @@ package com.seveneleven.config;
 
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
+import com.seveneleven.util.security.dto.Token;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -45,28 +46,27 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // 쿠키에서 토큰 가져오기
-        String accessToken = null;
-        String refreshToken = null;
+        Token token = null;
 
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if (ACCESS_HEADER.equals(cookie.getName())) {
-                    accessToken = cookie.getValue();
+                    token.setAccessToken(cookie.getValue());
                 } else if (REFRESH_HEADER.equals(cookie.getName())) {
-                    refreshToken = cookie.getValue();
+                    token.setRefreshToken(cookie.getValue());
                 }
             }
         }
 
 
-        if(Objects.nonNull(accessToken)) {
+        if(Objects.nonNull(token.getAccessToken())) {
 
             // Access Token이 유효할 때
-            if(tokenProvider.validateToken(accessToken)) {
-                setAuthentication(accessToken);
+            if(tokenProvider.validateToken(token.getAccessToken())) {
+                setAuthentication(token.getAccessToken());
             }
             // Access Token이 만료되었지만, Refresh Token이 유효할 때
-            else if(refreshToken != null && tokenProvider.validateToken(refreshToken)) {
+            else if(token.getRefreshToken() != null && tokenProvider.validateToken(token.getRefreshToken())) {
                 handleBusinessException(response, new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN));
                 return;
             }

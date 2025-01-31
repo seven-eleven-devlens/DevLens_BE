@@ -32,7 +32,7 @@ public class TokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
     private final long ACCESS_TOKEN_EXPIRE_TIME;
     private final long REFRESH_TOKEN_EXPIRE_TIME;
-    private final RefreshTokenRepository refreshTokenRepositoryImpl;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final String secret;
     private Key key;
 
@@ -46,11 +46,12 @@ public class TokenProvider implements InitializingBean {
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.access-token-validity}") long acessTokenValidityInSeconds,
-            @Value("${jwt.refresh-token-validity}") long refreshTokenValidityInSeconds, RefreshTokenRepository refreshTokenRepositoryImpl) {
+            @Value("${jwt.refresh-token-validity}") long refreshTokenValidityInSeconds,
+            RefreshTokenRepository refreshTokenRepository) {
         this.secret = secret;
         this.ACCESS_TOKEN_EXPIRE_TIME = acessTokenValidityInSeconds * 1000;
         this.REFRESH_TOKEN_EXPIRE_TIME = refreshTokenValidityInSeconds * 1000;
-        this.refreshTokenRepositoryImpl = refreshTokenRepositoryImpl;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
 
     /**
@@ -79,9 +80,9 @@ public class TokenProvider implements InitializingBean {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return Jwts.builder()
-                .claim("memberId", userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
+                .claim("memberId", userDetails.getId()) // 회원 ID(PK) 추가
                 .claim("loginId", userDetails.getLoginId()) // 로그인 ID 추가
-                .claim("name", userDetails.getUsername()) // 이메일 추가
+                .claim("name", userDetails.getUsername()) // 이름 추가
                 .claim(AUTHORITIES_KEY, authorities) // 권한 추가
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
@@ -100,7 +101,7 @@ public class TokenProvider implements InitializingBean {
 
         // Refresh Token은 Redis에 저장
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        refreshTokenRepositoryImpl.save(
+        refreshTokenRepository.save(
                 new RefreshToken(refreshToken, userDetails.getId()),
                 REFRESH_TOKEN_EXPIRE_TIME
         );
