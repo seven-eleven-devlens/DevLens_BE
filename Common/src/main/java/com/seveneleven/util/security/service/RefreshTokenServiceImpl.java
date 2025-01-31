@@ -16,7 +16,6 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class RefreshTokenServiceImpl implements RefreshTokenService{
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
