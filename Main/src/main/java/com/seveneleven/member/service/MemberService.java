@@ -3,7 +3,7 @@ package com.seveneleven.member.service;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 
 public interface MemberService {
 

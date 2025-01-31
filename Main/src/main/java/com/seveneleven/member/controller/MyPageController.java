@@ -8,8 +8,10 @@ import com.seveneleven.member.service.MyPageService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,13 +32,12 @@ public class MyPageController implements MyPageDocs{
      * 함수명 : memberDetail
      * 특정 회원의 정보를 조회합니다.
      *
-     * @param loginId 조회할 회원의 로그인 ID (PathVariable).
      * @return HTTP 상태 코드 200 OK와 성공 응답 객체(APIResponse<MyPageGetMember>).
      */
-    @GetMapping("/{loginId}")
-    public ResponseEntity<APIResponse<MyPageGetMember>> memberDetail(@PathVariable String loginId) {
+    @GetMapping("")
+    public ResponseEntity<APIResponse<MyPageGetMember>> memberDetail(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        MyPageGetMember response = myPageService.getMember(loginId);
+        MyPageGetMember response = myPageService.getMember(userDetails.getLoginId());
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
@@ -46,15 +47,14 @@ public class MyPageController implements MyPageDocs{
      * 함수명 : updateMember
      * 회원의 정보를 수정합니다.
      *
-     * @param loginId 수정할 회원의 로그인 ID (PathVariable).
      * @param requestDto 수정할 정보를 담은 DTO (RequestBody).
      * @return HTTP 상태 코드 200 OK와 성공 응답 객체(APIResponse<PatchMember.Response>).
      */
-    @PatchMapping("/{loginId}")
-    public ResponseEntity<APIResponse<PatchMember.Response>> updateMember(@PathVariable String loginId,
-                                                                     @RequestBody PatchMember.Request requestDto) {
+    @PatchMapping("")
+    public ResponseEntity<APIResponse<PatchMember.Response>> updateMember(@AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                          @RequestBody PatchMember.Request requestDto) {
 
-        PatchMember.Response response = myPageService.updateMember(loginId, requestDto);
+        PatchMember.Response response = myPageService.updateMember(userDetails.getLoginId(), requestDto);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED, response));
@@ -65,13 +65,12 @@ public class MyPageController implements MyPageDocs{
      * 함수명 : deleteMember
      * 회원 탈퇴 메서드로 상태를 변경합니다.
      *
-     * @param loginId 수정할 회원의 로그인 ID (PathVariable).
      * @return HTTP 상태 코드 200 OK와 성공 응답 객체(APIResponse<SuccessCode>).
      */
-    @DeleteMapping("/{loginId}")
-    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String loginId) {
+    @DeleteMapping("")
+    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        myPageService.deleteMember(loginId);
+        myPageService.deleteMember(userDetails.getLoginId());
 
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));

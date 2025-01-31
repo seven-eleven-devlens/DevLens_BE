@@ -1,7 +1,8 @@
-package com.seveneleven.member.dto;
+package com.seveneleven.dto;
 
-import com.seveneleven.util.security.dto.TokenResponse;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /*
  * 로그인 API DTO

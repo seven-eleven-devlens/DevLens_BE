@@ -4,7 +4,7 @@ import com.seveneleven.project.dto.GetProjectList;
 import com.seveneleven.project.service.ProjectService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

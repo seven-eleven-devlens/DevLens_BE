@@ -26,6 +26,11 @@ public enum ErrorCode {
     UNABLE_TO_SEND_EMAIL(1014, HttpStatus.BAD_REQUEST, "이메일 전송을 실패했습니다."),
     EMAIL_AUTH_FAILED(1015, HttpStatus.BAD_REQUEST, "이메일 인증을 실패했습니다."),
     PROFILE_IMAGE_ALREADY_EXIST(1016, HttpStatus.BAD_REQUEST, "프로필 이미지가 존재합니다."),
+    INVALID_REFRESH_TOKEN(1017, HttpStatus.UNAUTHORIZED,"Refresh Token이 유효하지 않습니다."),
+    INVALID_ACCESS_TOKEN(1018, HttpStatus.UNAUTHORIZED,"Access Token이 유효하지 않습니다."),
+    NO_SUCH_ENCRYPT_ERROR(1019,HttpStatus.BAD_REQUEST,"암호화 복호화 알고리즘 오류"),
+    VALID_ACCESS_TOKEN(1020,HttpStatus.BAD_REQUEST,"Access 토큰이 유효합니다. 재발급이 불가합니다."),
+
 
     COMPANY_DUPLICATED_NUMBER(1051, HttpStatus.BAD_REQUEST,"이미 등록된 회사입니다."),
     COMPANY_IS_DEACTIVATED(1052, HttpStatus.BAD_REQUEST,"비활성화된 회사 정보입니다."),

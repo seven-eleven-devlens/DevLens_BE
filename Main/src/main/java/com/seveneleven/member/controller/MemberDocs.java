@@ -3,9 +3,10 @@ package com.seveneleven.member.controller;
 import com.seveneleven.member.dto.*;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,22 +20,22 @@ import org.springframework.web.bind.annotation.*;
 public interface MemberDocs {
     @Operation(
             summary = "회원 로그인",
-            description = "회원 로그인 처리 및 JWT 토큰 발급.",
+            description = "회원 로그인 처리 및 JWT 토큰 발급. 발급된 Access Token과 Refresh Token은 쿠키로 반환됩니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "로그인 성공 및 JWT 토큰 발급",
+                            description = "로그인 성공",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = LoginResponse.class)
+                                    schema = @Schema(implementation = APIResponse.class)
                             )
-                    )
+                    ),
+                    @ApiResponse(responseCode = "401", description = "로그인 실패")
             },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "로그인 요청 데이터",
+                    description = "회원 로그인 요청 데이터",
                     required = true,
                     content = @Content(
-                            mediaType = "application/json",
                             schema = @Schema(implementation = LoginPost.Request.class)
                     )
             )
@@ -44,39 +45,39 @@ public interface MemberDocs {
 
     @Operation(
             summary = "회원 로그아웃",
-            description = "사용자 로그아웃 처리. 토큰의 상태를 BLACKLISTED로 변경하여 더 이상 사용할 수 없도록 처리.",
+            description = "클라이언트에서 전달된 Access Token을 사용해 로그아웃을 처리합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "요청 성공",
+                            description = "로그아웃 성공",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = SuccessCode.class)
+                                    schema = @Schema(implementation = APIResponse.class)
                             )
                     )
             },
             parameters = {
                     @Parameter(
-                            name = "Authorization",
-                            description = "클라이언트에서 전달된 JWT 토큰",
-                            required = true,
-                            example = "Bearer <JWT_TOKEN>"
+                            name = "X-Access-Token",
+                            description = "JWT Access Token",
+                            in = ParameterIn.COOKIE,
+                            required = true
                     )
             }
     )
     @PostMapping("/logout")
-    ResponseEntity<APIResponse<SuccessCode>> logout(@RequestHeader("Authorization") String token);
+    ResponseEntity<APIResponse<SuccessCode>> logout(@CookieValue("X-Access-Token") String accessToken);
 
     @Operation(
-            summary = "이메일 인증 번호 전송",
-            description = "주어진 이메일 주소로 인증 메일을 발송하며, 생성된 인증 키를 반환합니다.",
+            summary = "이메일 인증 메일 전송",
+            description = "로그인한 사용자에게 이메일 인증 메일을 전송합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "요청 성공",
+                            description = "이메일 전송 성공",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = String.class)
+                                    schema = @Schema(implementation = APIResponse.class)
                             )
                     )
             }
@@ -86,39 +87,41 @@ public interface MemberDocs {
 
     @Operation(
             summary = "이메일 인증 확인",
-            description = "사용자가 입력한 인증 키를 검증하여 성공 여부를 반환합니다.",
+            description = "사용자가 입력한 인증 키를 검증하여 인증 성공 여부를 반환합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "요청 성공",
+                            description = "인증 키 확인 성공",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = Boolean.class)
+                                    schema = @Schema(implementation = APIResponse.class)
                             )
                     )
             },
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "인증 키 확인 요청 데이터",
+                    description = "이메일 인증 키 확인 요청 데이터",
                     required = true,
                     content = @Content(
-                            mediaType = "application/json",
                             schema = @Schema(implementation = CheckMailPostRequest.class)
                     )
             )
     )
     @PostMapping("/check-mail")
-    ResponseEntity<APIResponse<Boolean>> checkMail(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestBody CheckMailPostRequest request);
+    ResponseEntity<APIResponse<Boolean>> checkMail(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody CheckMailPostRequest request
+    );
 
     @Operation(
             summary = "비밀번호 재설정",
-            description = "회원 비밀번호를 재설정합니다.",
+            description = "회원 비밀번호를 초기화하여 임시 비밀번호를 반환합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
                             description = "비밀번호 재설정 성공",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = MemberPatch.Response.class)
+                                    schema = @Schema(implementation = APIResponse.class)
                             )
                     )
             },
@@ -126,13 +129,14 @@ public interface MemberDocs {
                     description = "비밀번호 재설정 요청 데이터",
                     required = true,
                     content = @Content(
-                            mediaType = "application/json",
                             schema = @Schema(implementation = MemberPatch.Request.class)
                     )
             )
     )
     @PatchMapping("/members/reset-password")
-    ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                               @RequestBody MemberPatch.Request request);
+    ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @RequestBody MemberPatch.Request request
+    );
 
 }

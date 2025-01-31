@@ -4,7 +4,6 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Member;
-import com.seveneleven.entity.member.Token;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
@@ -14,9 +13,10 @@ import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.CompanyRepository;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
-import com.seveneleven.util.security.CustomUserDetails;
-import com.seveneleven.util.security.TokenRepository;
+import com.seveneleven.util.security.dto.CustomUserDetails;
+import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.response.ErrorCode;
+import com.seveneleven.util.security.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +25,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 
@@ -37,8 +36,8 @@ public class MemberServiceImpl implements MemberService{
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
-    private final TokenRepository tokenRepository;
     private final FileMetadataRepository fileMetadataRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
 
     /**
@@ -58,8 +57,8 @@ public class MemberServiceImpl implements MemberService{
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
         }
 
-        // 토큰 생성
-        String token = getToken(request.getLoginId(), request.getPassword());
+        // Access Token, Refresh Token 생성
+        TokenResponse tokens = getToken(request.getLoginId(), request.getPassword());
 
         Long companyId      = member.getCompany().getId();
         String companyName  = companyRepository.findNameByIdAndIsActive(companyId, YN.Y);
@@ -67,7 +66,11 @@ public class MemberServiceImpl implements MemberService{
         LoginResponse company = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
                 member.getRole(), getProfileImageUrl(member.getId()), companyId, companyName, member.getDepartment(), member.getPosition());
 
-        return new LoginPost.Response(token, company);
+        return new LoginPost.Response(tokens.accessToken(),
+                tokenProvider.getAccessTokenExpireTime(),
+                tokens.refreshToken(),
+                tokenProvider.getRefreshTokenExpireTime(),
+                company);
     }
 
     /**
@@ -79,17 +82,17 @@ public class MemberServiceImpl implements MemberService{
     @Transactional
     public void logout(String token) {
 
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
+        // 1. Access Token 검증
+        if (Objects.isNull(token) || !tokenProvider.validateToken(token)) {
+            throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
         }
 
-        // 토큰 객체 조회
-        Token existingToken = tokenRepository.findByToken(token)
-                .orElseThrow(() -> new BusinessException(ErrorCode.EXPIRED_TOKEN));
+        // 2. Refresh Token 삭제
+        String memberId = tokenProvider.getMemberId(token); // Access Token에서 사용자 ID 추출
+        if (memberId != null) {
+            refreshTokenRepository.delete(memberId); // 사용자와 연관된 Refresh Token 삭제
+        }
 
-        // 상태를 BLACKLISTED로 변경
-        existingToken.setBlackList();
-        tokenRepository.save(existingToken);
     }
 
     /**
@@ -150,7 +153,7 @@ public class MemberServiceImpl implements MemberService{
      * @param pwd     로그인에 사용할 사용자 비밀번호
      * @return 생성된 JWT 토큰
      */
-    public String getToken(String loginId, String pwd) {
+    public TokenResponse getToken(String loginId, String pwd) {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginId, pwd);
 
@@ -158,17 +161,9 @@ public class MemberServiceImpl implements MemberService{
         Authentication authentication = authenticationMngrBuilder.getObject().authenticate(authenticationToken);
 
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성 후 반환
-        String token = tokenProvider.createToken(authentication);
+        TokenResponse tokens = tokenProvider.createTokens(authentication);
 
-        // JWT 만료 시간 계산
-        LocalDateTime expiresAt = tokenProvider.getExpirationFromToken(token);
-
-        // Token 엔티티 생성 및 저장
-        Token newToken = Token.create(token, expiresAt);
-
-        tokenRepository.save(newToken);
-
-        return token;
+        return tokens;
     }
 
     @Override

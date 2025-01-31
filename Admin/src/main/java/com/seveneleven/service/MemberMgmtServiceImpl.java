@@ -1,8 +1,7 @@
 package com.seveneleven.service;
 
-import com.seveneleven.dto.MemberDto;
-import com.seveneleven.dto.MemberSpecification;
-import com.seveneleven.dto.MemberUpdate;
+import com.seveneleven.config.TokenProvider;
+import com.seveneleven.dto.*;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.constant.MemberStatus;
@@ -13,12 +12,15 @@ import com.seveneleven.MemberValidator;
 import com.seveneleven.repository.AdminMemberRepository;
 import com.seveneleven.repository.CompanyRepository;
 import com.seveneleven.response.ErrorCode;
-import lombok.AllArgsConstructor;
+import com.seveneleven.util.security.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +36,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberMgmtServiceImpl implements MemberMgmtService{
 
+
+    private final AuthenticationManagerBuilder authenticationMngrBuilder;
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenProvider tokenProvider;
+
+    /**
+     * 함수명 : login
+     * 사용자 로그인 처리 메서드. 로그인 ID와 비밀번호를 확인하여 인증하고, JWT 토큰을 생성하여 반환합니다.
+     *
+     * @param request 로그인 요청 정보 (로그인 ID와 비밀번호 포함)
+     * @return 생성된 JWT 토큰
+     */
+    @jakarta.transaction.Transactional
+    public LoginPost.Response login(LoginPost.Request request) {
+
+        Member member = memberRepository.findByLoginId(request.getLoginId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
+        if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+            throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
+        }
+
+        // Access Token, Refresh Token 생성
+        TokenResponse tokens = getToken(request.getLoginId(), request.getPassword());
+
+        LoginResponse company = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
+                member.getRole(),"", 0L, "", member.getDepartment(), member.getPosition());
+
+        return new LoginPost.Response(tokens.accessToken(),
+                tokenProvider.getAccessTokenExpireTime(),
+                tokens.refreshToken(),
+                tokenProvider.getRefreshTokenExpireTime(),
+                company);
+    }
 
     /**
      * 함수명 : getFilteredMembers
@@ -241,6 +276,27 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
      */
     private String generateTemporaryPassword() {
         return RandomStringUtils.randomAlphanumeric(12);
+    }
+
+    /**
+     * 함수명 : getToken
+     * 사용자 인증 정보를 확인하고, JWT 토큰을 생성하여 반환합니다.
+     *
+     * @param loginId 로그인에 사용할 사용자 ID
+     * @param pwd     로그인에 사용할 사용자 비밀번호
+     * @return 생성된 JWT 토큰
+     */
+    public TokenResponse getToken(String loginId, String pwd) {
+
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginId, pwd);
+
+        // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
+        Authentication authentication = authenticationMngrBuilder.getObject().authenticate(authenticationToken);
+
+        // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성 후 반환
+        TokenResponse tokens = tokenProvider.createTokens(authentication);
+
+        return tokens;
     }
 
 }

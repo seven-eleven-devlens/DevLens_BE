@@ -1,5 +1,6 @@
 package com.seveneleven.service;
 
+import com.seveneleven.dto.LoginPost;
 import com.seveneleven.dto.MemberDto;
 import com.seveneleven.dto.MemberUpdate;
 import com.seveneleven.entity.member.constant.MemberStatus;
@@ -10,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface MemberMgmtService {
+    LoginPost.Response login(LoginPost.Request request);
+
     Page<MemberDto.Response> getFilteredMembers(String name, MemberStatus status, Role role, String loginId, Pageable pageable);
 
     MemberDto.Response getMemberDetail(String loginId);
