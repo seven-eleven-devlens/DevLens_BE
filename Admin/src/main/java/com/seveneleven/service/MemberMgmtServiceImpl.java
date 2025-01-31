@@ -13,7 +13,6 @@ import com.seveneleven.repository.AdminMemberRepository;
 import com.seveneleven.repository.CompanyRepository;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.security.dto.TokenResponse;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
@@ -67,9 +66,9 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
         LoginResponse company = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
                 member.getRole(),"", 0L, "", member.getDepartment(), member.getPosition());
 
-        return new LoginPost.Response(tokens.getAccessToken(),
+        return new LoginPost.Response(tokens.accessToken(),
                 tokenProvider.getAccessTokenExpireTime(),
-                tokens.getRefreshToken(),
+                tokens.refreshToken(),
                 tokenProvider.getRefreshTokenExpireTime(),
                 company);
     }

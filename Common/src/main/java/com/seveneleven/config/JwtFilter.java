@@ -46,9 +46,9 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // 쿠키에서 토큰 가져오기
-        Token token = null;
+        Token token = new Token();
 
-        if (request.getCookies() != null) {
+        if (Objects.nonNull(request.getCookies())) {
             for (Cookie cookie : request.getCookies()) {
                 if (ACCESS_HEADER.equals(cookie.getName())) {
                     token.setAccessToken(cookie.getValue());

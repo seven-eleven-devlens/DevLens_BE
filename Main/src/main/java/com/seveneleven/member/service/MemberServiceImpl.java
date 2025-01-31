@@ -66,9 +66,9 @@ public class MemberServiceImpl implements MemberService{
         LoginResponse company = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
                 member.getRole(), getProfileImageUrl(member.getId()), companyId, companyName, member.getDepartment(), member.getPosition());
 
-        return new LoginPost.Response(tokens.getAccessToken(),
+        return new LoginPost.Response(tokens.accessToken(),
                 tokenProvider.getAccessTokenExpireTime(),
-                tokens.getRefreshToken(),
+                tokens.refreshToken(),
                 tokenProvider.getRefreshTokenExpireTime(),
                 company);
     }
