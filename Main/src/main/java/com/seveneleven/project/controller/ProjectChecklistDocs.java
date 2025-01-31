@@ -2,7 +2,7 @@ package com.seveneleven.project.controller;
 
 import com.seveneleven.project.dto.*;
 import com.seveneleven.response.APIResponse;
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
