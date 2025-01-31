@@ -59,7 +59,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
 
-        if(Objects.nonNull(token.getAccessToken())) {
+        if(Objects.nonNull(token) && Objects.nonNull(token.getAccessToken())) {
 
             // Access Token이 유효할 때
             if(tokenProvider.validateToken(token.getAccessToken())) {
