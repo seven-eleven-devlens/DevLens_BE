@@ -8,9 +8,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -22,16 +27,19 @@ import java.util.Objects;
  * - HTTP 요청에서 JWT 토큰을 추출하고, 해당 토큰의 유효성을 검증합니다.
  * - 유효한 JWT 토큰이 있을 경우, 인증 정보를 Security Context에 저장합니다.
  */
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
     public static final String ACCESS_HEADER  = "X-Access-Token";
     public static final String REFRESH_HEADER = "X-Refresh-Token";
     private final CustomUserDetailsService customUserDetailsService;
     private final TokenProvider tokenProvider;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public JwtFilter(CustomUserDetailsService customUserDetailsService, TokenProvider tokenProvider) {
+    public JwtFilter(CustomUserDetailsService customUserDetailsService, TokenProvider tokenProvider, ApplicationEventPublisher eventPublisher) {
         this.customUserDetailsService = customUserDetailsService;
         this.tokenProvider = tokenProvider;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -68,11 +76,13 @@ public class JwtFilter extends OncePerRequestFilter {
             // Access Token이 만료되었지만, Refresh Token이 유효할 때
             else if(token.getRefreshToken() != null && tokenProvider.validateToken(token.getRefreshToken())) {
                 handleBusinessException(response, new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN));
+                eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(null, new UsernameNotFoundException("Access Token Expired")));
                 return;
             }
             // Access Token과 Refresh Token 모두 만료되었을 때
             else {
                 handleBusinessException(response, new BusinessException(ErrorCode.UNAUTHORIZED));
+                eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(null, new UsernameNotFoundException("User Not Found")));
                 return;
             }
         }
@@ -93,6 +103,7 @@ public class JwtFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            eventPublisher.publishEvent(new AuthenticationSuccessEvent(authentication));
         }
     }
 

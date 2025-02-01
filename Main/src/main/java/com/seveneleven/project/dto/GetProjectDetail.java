@@ -67,7 +67,6 @@ public class GetProjectDetail {
     @Setter
     @NoArgsConstructor
     @AllArgsConstructor
-    @ToString
     public static class ChecklistApplicationList {
         private Long checklistApplicationId;
         private String StepName;
