@@ -83,7 +83,6 @@ public class SpringSecurityConfig {
                             .requestMatchers("api/login/**").permitAll()
                             .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
                             .requestMatchers("api/**").hasRole("USER") // 관리자 페이지 경로는 ADMIN 역할만 허용
-                            .requestMatchers("/api/auth/refresh").permitAll() // Refresh Token 경로 허용
                             .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
             );
 
