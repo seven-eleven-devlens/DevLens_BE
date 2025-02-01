@@ -13,7 +13,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -73,18 +72,17 @@ public class JwtFilter extends OncePerRequestFilter {
             // Access Token이 유효할 때
             if(tokenProvider.validateToken(token.getAccessToken())) {
                 setAuthentication(token.getAccessToken());
-                eventPublisher.publishEvent(new AuthenticationSuccessEvent(usernamePasswordAuthenticationToken));
             }
             // Access Token이 만료되었지만, Refresh Token이 유효할 때
             else if(token.getRefreshToken() != null && tokenProvider.validateToken(token.getRefreshToken())) {
                 handleBusinessException(response, new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN));
-                eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(auth, new UsernameNotFoundException("Access Token Expired")));
+                eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(null, new UsernameNotFoundException("Access Token Expired")));
                 return;
             }
             // Access Token과 Refresh Token 모두 만료되었을 때
             else {
                 handleBusinessException(response, new BusinessException(ErrorCode.UNAUTHORIZED));
-                eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(auth, new UsernameNotFoundException("User Not Found")));
+                eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(null, new UsernameNotFoundException("User Not Found")));
                 return;
             }
         }
@@ -105,6 +103,7 @@ public class JwtFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            eventPublisher.publishEvent(new AuthenticationSuccessEvent(authentication));
         }
     }
 

@@ -3,7 +3,7 @@ package com.seveneleven.config.aop;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.util.GetIpUtil;
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

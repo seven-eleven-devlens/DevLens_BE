@@ -1,7 +1,6 @@
 package com.seveneleven.config;
 
-import com.seveneleven.util.GetIpUtil;
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 public class AuthenticationEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthenticationEventListener.class);
-    private final GetIpUtil getIpUtil = new GetIpUtil();
 
     @Async
     @EventListener
