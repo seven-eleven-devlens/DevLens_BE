@@ -56,7 +56,7 @@ public class BoardController implements BoardDocs {
      */
     @GetMapping("/{postId}")
     @Override
-    public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) throws Exception {
+    public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) {
         PostResponse postResponse = postService.selectPost(postId);
         postResponse.setComments(commentService.selectCommentList(postId));
 
@@ -69,7 +69,7 @@ public class BoardController implements BoardDocs {
      * 게시글의 링크 목록을 불러오는 메서드
      */
     @GetMapping("/{postId}/links")
-    public ResponseEntity<APIResponse<List<LinkResponse>>> selectPostLinks(@PathVariable Long postId) throws Exception {
+    public ResponseEntity<APIResponse<List<LinkResponse>>> selectPostLinks(@PathVariable Long postId) {
         List<LinkResponse> postLists = postLinkService.getPostLinks(postId);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
@@ -96,7 +96,7 @@ public class BoardController implements BoardDocs {
     @Override
     public ResponseEntity<APIResponse<SuccessCode>> createPost(@Valid @RequestBody PostCreateRequest postCreateRequest,
                                                                HttpServletRequest request
-    ) throws Exception {
+    ) {
         postService.createPost(postCreateRequest, request);
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
@@ -132,7 +132,7 @@ public class BoardController implements BoardDocs {
     public ResponseEntity<APIResponse<SuccessCode>> updatePost(@PathVariable Long postId,
                                                                @Valid @RequestBody PostUpdateRequest postUpdateRequest,
                                                                HttpServletRequest request
-    ) throws Exception {
+    ) {
         postService.updatePost(postUpdateRequest, request);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
@@ -149,8 +149,8 @@ public class BoardController implements BoardDocs {
     public ResponseEntity<APIResponse<SuccessCode>> deletePost(@PathVariable Long postId,
                                                                @PathVariable Long registerId,
                                                                HttpServletRequest request
-    ) throws Exception {
-        postService.deletePost(postId, registerId,  request);
+    ) {
+        postService.deletePost(postId, registerId, request);
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }

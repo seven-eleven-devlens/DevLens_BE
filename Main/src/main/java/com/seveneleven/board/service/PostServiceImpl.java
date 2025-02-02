@@ -49,18 +49,14 @@ public class PostServiceImpl implements PostService {
     private final int PAGE_SIZE = 10;
 
     /**
-     * 함수명 : selectList()
+     * 함수명 : selectPostList()
      * 함수 목적 : 게시글 목록을 조회하는 메서드
-     * param : 프로젝트 단계 ID, 현재 페이지 수, 입력 키워드, 필터
+     * param : 프로젝트 단계 ID, 현재 페이지 수, 입력 키워드, 필터, 정렬 타입
      */
     @Transactional(readOnly = true)
     @Override
     public PaginatedResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType) {
-        Sort sort = Sort.by(Sort.Order.desc("ref"), Sort.Order.asc("refOrder")); // 기본 정렬 기준 (최신순)
-        if (PostSort.OLDEST.equals(sortType)) {
-            sort = Sort.by(Sort.Order.asc("ref"), Sort.Order.asc("refOrder"));  // (오래된순)
-        }
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, sort);
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE, getSort(sortType));
 
         String repoFilter = null;
         if(filter != null) {
@@ -108,43 +104,38 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request) throws Exception {
+    public void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request) {
         // todo : 작성권한 확인 로직 추가 예정
-
         String registerIp = getIpUtil.getIpAddress(request);
 
         // 원글인 경우
         if (postCreateRequest.getParentPostId() == null) {
-            Post post = getCreatePost(postCreateRequest, registerIp, postRepository.findMaxRef() + 1, 0);
-            postRepository.save(post);
+            Post post = getCreatePost(
+                    postCreateRequest,
+                    registerIp,
+                    postRepository.findMaxRef() + 1,
+                    0
+            );
+            savePostAndPostHistory(post, registerIp);
 
-            //요청 dto에서 링크 리스트 가져오기
-            List<LinkInput> linkInputs = postCreateRequest.getLinkInputList();
-
-            //게시물 링크 업로드
-            postLinkService.uploadPostLinks(linkInputs, post.getId(), post.getCreatedBy());
-
-            postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE, registerIp));
-
+            // 요청 dto 에서 링크 리스트를 가져와서 게시물 링크 업로드
+            uploadLink(postCreateRequest, post);
         } else {
-        // 답글인 경우
+            // 답글인 경우
             if(!matchesProjectStepParentAndChild(postCreateRequest.getProjectStepId(), postCreateRequest.getParentPostId())) {
                 throw new BusinessException(NOT_MATCH_PROJECTSTEPID);
             }
-            Post post = getCreatePost(postCreateRequest, registerIp, getRef(postCreateRequest.getParentPostId()), getRefOrder(postCreateRequest.getParentPostId())+1);
-            postRepository.save(post);
-
-            //요청 dto에서 링크 리스트 가져오기
-            List<LinkInput> linkInputs = postCreateRequest.getLinkInputList();
-
-            //게시물 링크 업로드
-            postLinkService.uploadPostLinks(linkInputs, post.getId(), post.getCreatedBy());
-
-            postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE, registerIp));
-
-            // 원글의 Child_Post_Num 컬럼값에 +1
+            Post post = getCreatePost(
+                    postCreateRequest,
+                    registerIp,
+                    getRef(postCreateRequest.getParentPostId()),
+                    getRefOrder(postCreateRequest.getParentPostId())+1
+            );
+            savePostAndPostHistory(post, registerIp);
             increaseChildPostNum(postCreateRequest.getParentPostId());
 
+            // 요청 dto 에서 링크 리스트를 가져와서 게시물 링크 업로드
+            uploadLink(postCreateRequest, post);
         }
     }
 
@@ -154,7 +145,7 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request) throws Exception {
+    public void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request) {
         // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = getPost(postUpdateRequest.getPostId());
         matchPostWriter(post.getCreatedBy(), postUpdateRequest.getModifierId());
@@ -172,7 +163,6 @@ public class PostServiceImpl implements PostService {
         );
 
         postRepository.save(post);
-
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.UPDATE, modifierIp));
     }
 
@@ -208,8 +198,39 @@ public class PostServiceImpl implements PostService {
         postFileService.deleteAllPostFiles(post.getId(), registeredId);
 
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.DELETE, modifierIp));
-
         postRepository.delete(post);
+    }
+
+    /**
+     * 함수명 : getSort()
+     * 함수 목적 : 게시물 목록 조회 시 sortType 에 따른 정렬 기준 반환 메서드
+     */
+    private Sort getSort(PostSort sortType) {
+        Sort sort = Sort.by(Sort.Order.desc("ref"), Sort.Order.asc("refOrder")); // 기본 정렬 기준 (최신순)
+        if (PostSort.OLDEST.equals(sortType)) {
+            sort = Sort.by(Sort.Order.asc("ref"), Sort.Order.asc("refOrder"));  // (오래된순)
+        }
+        return sort;
+    }
+
+    /**
+     * 함수명 : savePostAndPostHistory()
+     * 함수 목적 : 게시글 및 게시글 이력 저장 메서드
+     */
+    private void savePostAndPostHistory(Post post, String registerIp) {
+        postRepository.save(post);
+        postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.CREATE, registerIp));
+    }
+
+    /**
+     * 함수명 : uploadLink()
+     * 함수 목적 : 요청 dto 에서 링크 리스트를 가져와 게시물 링크를 업로드하는 메서드
+     */
+    private void uploadLink(PostCreateRequest postCreateRequest, Post post) {
+        //요청 dto 에서 링크 리스트 가져오기
+        List<LinkInput> linkInputs = postCreateRequest.getLinkInputList();
+        //게시물 링크 업로드
+        postLinkService.uploadPostLinks(linkInputs, post.getId(), post.getCreatedBy());
     }
 
     /**
@@ -323,7 +344,6 @@ public class PostServiceImpl implements PostService {
     private void increaseChildPostNum(Long parentPostId) {
         Post post = postRepository.findById(parentPostId).orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
         post.increaseChildPostNum();
-        postRepository.save(post);
     }
 
     /**
@@ -333,6 +353,5 @@ public class PostServiceImpl implements PostService {
     private void decreaseChildPostNum(Long parentPostId) {
         Post post = postRepository.findById(parentPostId).orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
         post.decreaseChildPostNum();
-        postRepository.save(post);
     }
 }
