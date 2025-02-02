@@ -151,7 +151,7 @@ public class MemberController implements MemberDocs{
                 .secure(true) // HTTPS 환경에서만 전송
                 .path("/") // 쿠키가 모든 경로에서 유효하도록 설정
                 .maxAge(maxAge) // 쿠키 만료 시간 설정
-                .sameSite("Strict") // CSRF 방지
+                .sameSite("None")
                 .build();
     }
 }
