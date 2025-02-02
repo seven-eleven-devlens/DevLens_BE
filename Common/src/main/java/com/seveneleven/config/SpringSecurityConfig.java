@@ -1,5 +1,6 @@
 package com.seveneleven.config;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
@@ -29,12 +30,14 @@ public class SpringSecurityConfig {
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public SpringSecurityConfig(TokenProvider tokenProvider, CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+    public SpringSecurityConfig(TokenProvider tokenProvider, CustomUserDetailsService customUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler, ApplicationEventPublisher applicationEventPublisher) {
         this.tokenProvider = tokenProvider;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     private static final String[] AUTH_WHITELIST = {
@@ -58,7 +61,7 @@ public class SpringSecurityConfig {
      * @throws Exception 보안 설정 중 예외가 발생할 경우
      */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, ApplicationEventPublisher applicationEventPublisher) throws Exception {
         http.cors(cors -> Customizer.withDefaults()) // CORS 설정
             .csrf(csrf -> csrf.disable()) // CSRF 비활성화
             .formLogin((form) -> form.disable()) // FormLogin 비활성화
@@ -74,7 +77,7 @@ public class SpringSecurityConfig {
             .headers(headers -> // H2-console 허용
                     headers.frameOptions(frameOptions -> frameOptions.sameOrigin())
             )
-            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenProvider), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new JwtFilter(customUserDetailsService, tokenProvider, applicationEventPublisher), UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers(AUTH_WHITELIST).permitAll()
                             .requestMatchers("api/login/**").permitAll()
