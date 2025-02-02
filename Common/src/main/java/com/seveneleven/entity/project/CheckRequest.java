@@ -28,9 +28,6 @@ public class CheckRequest extends BaseEntity {
     @JoinColumn(nullable = false)
     private Checklist checklist; // 체크 리스트 ID
 
-    @Column(nullable = false)
-    private LocalDateTime requestDate; // 체크 요청 일시
-
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus; // 승인 여부(결과)
 
@@ -56,6 +53,7 @@ public class CheckRequest extends BaseEntity {
         this.title = title;
         this.content = content;
         this.isActive = YesNo.YES;
+        this.approvalStatus = ApprovalStatus.WAITING;
     }
 
     public static CheckRequest create(Checklist checklist, String title, String content, Member requester, String requestIp) {

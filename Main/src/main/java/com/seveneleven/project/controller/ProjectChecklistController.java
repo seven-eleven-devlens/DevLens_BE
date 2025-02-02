@@ -77,17 +77,17 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 함수명 : postProjectChecklistApplication
      * 해당 체크리스트에 체크 승인 요청을 보내는 함수
      */
-    @PostMapping(value = "/checklists/{checklistId}/applications", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping("/checklists/{checklistId}/applications")
     public ResponseEntity<APIResponse<PostProjectChecklistApplication.Response>> postProjectChecklistApplication(
+            @AuthenticationPrincipal CustomUserDetails user,
             @PathVariable Long checklistId,
             @RequestBody PostProjectChecklistApplication.Request requestDto,
-            @RequestBody List<MultipartFile> files,
             HttpServletRequest request
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(APIResponse.success(
                         SuccessCode.CREATED,
-                        projectChecklistFacade.postProjectChecklistApplication(checklistId, requestDto, request))
+                        projectChecklistFacade.postProjectChecklistApplication(checklistId, user.getMember().getId(), requestDto, request))
                 );
     }
 
@@ -130,10 +130,10 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 함수명 : postProjectChecklistReject
      * 해당 체크리스트 승인 요청을 반려 처리하는 함수
      */
-    @PostMapping(name = "/reject/{applicationId}", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping("/applications/{applicationId}/reject")
     public ResponseEntity<APIResponse<PostProjectChecklistReject.Response>> postProjectChecklistReject(
             @PathVariable Long applicationId,
-            @RequestPart PostProjectChecklistReject.Request requestDto,
+            @RequestBody PostProjectChecklistReject.Request requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             HttpServletRequest request
     ) {

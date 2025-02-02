@@ -54,8 +54,8 @@ public class ProjectStepFacade {
      * 함수명 : deleteProjectStep
      * 프로젝트 단계를 삭제하는 함수
      */
-    public DeleteProjectStep.Response deleteProjectStep(DeleteProjectStep.Request request) {
-        return projectStepService.deleteProjectStep(request.getProjectId(), request.getStepId());
+    public DeleteProjectStep.Response deleteProjectStep(Long projectId, Long stepId) {
+        return projectStepService.deleteProjectStep(projectId, stepId);
     }
 
     /**

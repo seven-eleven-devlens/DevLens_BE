@@ -60,19 +60,20 @@ public class ProjectStepController implements ProjectStepDocs {
      * 함수명 : deleteProjectStep
      * 프로젝트 단계를 삭제하는 함수
      */
-    @DeleteMapping("/steps")
+    @DeleteMapping("/{projectId}/steps/{stepId}")
     public ResponseEntity<APIResponse<DeleteProjectStep.Response>> deleteProjectStep(
-            @RequestBody DeleteProjectStep.Request requestDto
+        @PathVariable Long projectId,
+        @PathVariable Long stepId
     ) {
         return ResponseEntity.status(SuccessCode.OK.getStatusCode())
-                .body(APIResponse.success(SuccessCode.OK, projectStepFacade.deleteProjectStep(requestDto)));
+                .body(APIResponse.success(SuccessCode.OK, projectStepFacade.deleteProjectStep(projectId, stepId)));
     }
 
     /**
      * 함수명 : postProjectAuthorization
      * 프로젝트 접근 권한을 편집하는 함수
      */
-    @PostMapping("/{stepId}/authorizations")
+    @PostMapping("/steps/{stepId}/authorizations")
     public ResponseEntity<APIResponse<PostProjectAuthorization.Response>> postProjectAuthorization(
             @PathVariable Long stepId,
             @RequestBody PostProjectAuthorization.Request requestDto
@@ -91,7 +92,7 @@ public class ProjectStepController implements ProjectStepDocs {
      * 함수명 : getProjectAuthorization
      * 접근 권한자 목록을 반환하는 함수
      */
-    @GetMapping("/{stepId}/authorizations")
+    @GetMapping("/steps/{stepId}/authorizations")
     public ResponseEntity<APIResponse<GetProjectAuthorization.Response>> getProjectAuthorization(
             @PathVariable Long stepId
     ) {

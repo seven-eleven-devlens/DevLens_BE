@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -44,6 +45,7 @@ public class AuthorizationStoreImpl implements AuthorizationStore {
     ) {
         for (PostProjectAuthorization.MemberAuthorization request : requestDto.getAuthorizations()) {
             try {
+                log.warn("request.getMember.getId : {}", request.getMemberId());
                 forProjectAuthorizationDto(request, projectAuthorizations, step);
             } catch (BusinessException e) {
                 responseDto.getFailList().add(
@@ -62,9 +64,11 @@ public class AuthorizationStoreImpl implements AuthorizationStore {
     ) {
         Member member = memberRepository.findByIdAndStatus(request.getMemberId(), MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
         for(ProjectAuthorization projectAuthorization : projectAuthorizationList) {
-            if(projectAuthorization.getMember().getId().equals(projectAuthorization.getMember().getId())) {
+            if(Objects.equals(
+                    request.getMemberId(),
+                    projectAuthorization.getMember().getId()
+            )) {
                 businessLogic(request, projectAuthorization);
                 projectAuthorizationList.remove(projectAuthorization);
                 return;
@@ -77,7 +81,10 @@ public class AuthorizationStoreImpl implements AuthorizationStore {
             PostProjectAuthorization.MemberAuthorization request,
             ProjectAuthorization projectAuthorization
     ) {
+        log.info("businessLogic start : {}", request.getMemberId());
         if(request.getProjectAuthorization().equals(projectAuthorization.getAuthorizationCode())) {
+            log.info("businessLogic end : {}", request.getMemberId());
+
             return;
         }
 

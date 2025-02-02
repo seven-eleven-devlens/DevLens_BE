@@ -1,5 +1,6 @@
 package com.seveneleven.project.service.dashboard;
 
+import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.constant.ProjectStatusCode;
 import com.seveneleven.exception.BusinessException;
@@ -44,7 +45,7 @@ public class ProjectReaderImpl implements ProjectReader {
     public GetProjectDetail.Response getProjectDetail(Long projectId) {
         return GetProjectDetail.Response.toDto(
                 projectRepository.getProjectDetail(projectId).orElseThrow(() -> new BusinessException(ErrorCode.PROJECT_NOT_FOUND)),
-                projectStepRepository.findStepProcessRate(projectId),
+                projectStepRepository.findStepProcessRate(projectId, YesNo.YES),
                 checkRequestRepository.findAllApplicationLists(projectId)
         );
     }

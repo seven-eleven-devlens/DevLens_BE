@@ -73,7 +73,7 @@ public interface ProjectStepDocs {
             @RequestBody PutProjectStep.Request requestDto
     );
 
-    @DeleteMapping("/steps")
+    @DeleteMapping("/{projectId}/steps/{stepId}")
     @Operation(
             summary = "프로젝트 단계 삭제",
             description = "특정 프로젝트 단계를 삭제합니다.",
@@ -89,11 +89,12 @@ public interface ProjectStepDocs {
             }
     )
     ResponseEntity<APIResponse<DeleteProjectStep.Response>> deleteProjectStep(
-            @RequestBody DeleteProjectStep.Request requestDto
+            @PathVariable Long projectId,
+            @PathVariable Long stepId
     );
 
 
-    @PostMapping("/{stepId}/authorizations")
+    @PostMapping("/steps/{stepId}/authorizations")
     @Operation(
             summary = "프로젝트 권한 생성",
             description = "특정 단계의 프로젝트 권한을 생성합니다.",
@@ -121,7 +122,7 @@ public interface ProjectStepDocs {
             @RequestBody PostProjectAuthorization.Request requestDto
     );
 
-    @GetMapping("/{stepId}/authorizations")
+    @GetMapping("/steps/{stepId}/authorizations")
     @Operation(
             summary = "프로젝트 권한 조회",
             description = "특정 단계의 프로젝트 권한을 조회합니다.",

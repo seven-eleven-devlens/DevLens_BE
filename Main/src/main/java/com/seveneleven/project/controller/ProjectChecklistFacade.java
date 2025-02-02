@@ -81,12 +81,14 @@ public class ProjectChecklistFacade {
      */
     public PostProjectChecklistApplication.Response postProjectChecklistApplication(
             Long checklistId,
+            Long userId,
             PostProjectChecklistApplication.Request requestDto,
             HttpServletRequest request
     ) {
         Checklist checklist = projectChecklistService.getChecklist(checklistId);
+        Member member = memberService.getMember(userId);
         String ip = getIpUtil.getIpAddress(request);
-        return projectChecklistService.postProjectChecklistApplication(checklist, requestDto, ip);
+        return projectChecklistService.postProjectChecklistApplication(checklist, member, requestDto, ip);
     }
 
     /**
