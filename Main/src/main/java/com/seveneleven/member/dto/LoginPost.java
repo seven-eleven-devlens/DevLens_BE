@@ -1,5 +1,6 @@
 package com.seveneleven.member.dto;
 
+import com.seveneleven.util.security.dto.TokenResponse;
 import lombok.*;
 
 /*
@@ -18,7 +19,10 @@ public class LoginPost {
     @Setter
     @AllArgsConstructor
     public static class Response{
-        private String token;
+        private String accessToken;
+        private Long expiredAccess;
+        private String refreshToken;
+        private Long expiredRefresh;
         private LoginResponse companyInfo;
     }
 }

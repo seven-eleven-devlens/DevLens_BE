@@ -1,10 +1,9 @@
-package com.seveneleven.util.security;
+package com.seveneleven.util.security.dto;
 
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.constant.Role;
 import lombok.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Component;
 
 /*
  * security, jwt 테스트 확인을 위해 임시로 만든 dto

@@ -6,7 +6,7 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.CheckMailPostRequest;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.security.CustomUserDetails;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import com.seveneleven.util.security.SHA256Util;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

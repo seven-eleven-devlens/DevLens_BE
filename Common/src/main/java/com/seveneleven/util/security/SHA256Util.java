@@ -1,5 +1,8 @@
 package com.seveneleven.util.security;
 
+import com.seveneleven.exception.BusinessException;
+import com.seveneleven.response.ErrorCode;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
@@ -46,7 +49,7 @@ public class SHA256Util {
 
             result = sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            throw new BusinessException(ErrorCode.NO_SUCH_ENCRYPT_ERROR);
         }
 
         return result;
