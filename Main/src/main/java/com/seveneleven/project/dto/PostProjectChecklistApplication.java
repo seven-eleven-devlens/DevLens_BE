@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.File;
 import java.util.List;
 
 public class PostProjectChecklistApplication {
@@ -21,7 +20,6 @@ public class PostProjectChecklistApplication {
         private String title;
         private String description;
         private Long requesterId;
-        private List<File> files;
         private List<String> links;
 
         public CheckRequest createCheckRequest(Checklist checklist, Member requester, String requestIp) {
