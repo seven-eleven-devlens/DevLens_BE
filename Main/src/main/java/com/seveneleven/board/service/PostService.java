@@ -12,8 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 public interface PostService {
 
     PaginatedResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType);
-    PostResponse selectPost(Long postId) throws Exception;
-    void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request) throws Exception;
-    void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request) throws Exception;
-    void deletePost(Long postId, Long registerId, HttpServletRequest request) throws Exception;
+    PostResponse selectPost(Long postId);
+    void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request);
+    void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request);
+    void deletePost(Long postId, Long registerId, HttpServletRequest request);
 }

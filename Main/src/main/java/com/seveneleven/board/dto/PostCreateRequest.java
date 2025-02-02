@@ -4,7 +4,6 @@ import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.board.constant.TaskPriority;
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.util.file.dto.LinkInput;
-import com.seveneleven.validation.ValidEnum;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -29,14 +28,11 @@ public class PostCreateRequest {
     private Long parentPostId;  // 부모 게시물 ID
 
     @NotNull
-    @ValidEnum(enumClass = YesNo.class)
     private YesNo isPinnedPost;    // 상단고정여부
 
-    @ValidEnum(enumClass = TaskPriority.class, message = "유효하지 않은 우선순위 값입니다.")
     private TaskPriority priority;   // 우선순위
 
     @NotNull
-    @ValidEnum(enumClass = PostStatus.class, message = "유효하지 않은 상태값입니다.")
     private PostStatus status;  // 상태
 
     @NotBlank

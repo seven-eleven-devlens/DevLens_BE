@@ -72,7 +72,7 @@ public interface BoardDocs {
                                                                                  @RequestParam(required = false) String keyword,
                                                                                  @RequestParam(defaultValue = "ALL", required = false) PostFilter filter,
                                                                                  @RequestParam(defaultValue = "NEWEST", required = false) PostSort sortType
-    ) throws Exception;
+    );
 
     // 조회
     @Operation(
@@ -98,7 +98,7 @@ public interface BoardDocs {
             }
     )
     @GetMapping("/{postId}")
-    ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) throws Exception;
+    ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId);
 
     // 생성
     @Operation(
@@ -119,7 +119,7 @@ public interface BoardDocs {
     ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestBody PostCreateRequest postCreateRequest,
                                                         HttpServletRequest request
 
-    ) throws Exception;
+    );
 
     // 수정
     @Operation(
@@ -148,7 +148,7 @@ public interface BoardDocs {
     ResponseEntity<APIResponse<SuccessCode>> updatePost(@PathVariable Long postId,
                                                         @RequestBody PostUpdateRequest postUpdateRequest,
                                                         HttpServletRequest request
-    ) throws Exception;
+    );
 
     // 삭제
     @Operation(
@@ -169,5 +169,5 @@ public interface BoardDocs {
     ResponseEntity<APIResponse<SuccessCode>> deletePost(@PathVariable Long postId,
                                                         @PathVariable Long registerId,
                                                         HttpServletRequest request
-    ) throws Exception;
+    );
 }
