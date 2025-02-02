@@ -124,7 +124,7 @@ public class TokenProvider implements InitializingBean {
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
         return Jwts.builder()
-                .claim("memberId", userDetails.getId()) // 회원 ID(PK)를 Subject로 설정
+                .claim("memberId", userDetails.getId()) // 회원 ID(PK) 추가
                 .claim("loginId", userDetails.getLoginId()) // 로그인 ID 추가
                 .signWith(key, SignatureAlgorithm.HS512) // 동일한 키 사용
                 .setIssuedAt(Date.from(now))              // 발급 시간
