@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.io.File;
 import java.util.List;
 
 public class PostProjectChecklistApplication {

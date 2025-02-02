@@ -11,11 +11,15 @@ import com.seveneleven.project.dto.*;
 import com.seveneleven.project.service.checklist.*;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.GetIpUtil;
+import com.seveneleven.util.file.dto.FileMetadataDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -24,9 +28,10 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
     private final ChecklistReader checklistReader;
     private final ChecklistStore checklistStore;
     private final CheckRequestReader checkRequestReader;
+    private final CheckRequestFileReader checkRequestFileReader;
     private final CheckRequestStore checkRequestStore;
     private final CheckResultStore checkResultStore;
-
+    private final CheckRequestFileStore checkRequestFileStore;
     private final MemberRepository memberRepository;
 
     private final GetIpUtil getIpUtil;
@@ -51,6 +56,16 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<FileMetadataDto> getApplicationFiles(Long applicationId){
+        CheckRequest checkRequest = checkRequestReader.read(applicationId);
+
+        List<FileMetadataDto> fileDtoList = checkRequestFileReader.readCheckRequestFiles(checkRequest);
+
+        return fileDtoList;
+    }
+
+    @Override
     @Transactional
     public PostProjectChecklistApplication.Response postProjectChecklistApplication(
             Checklist checklist,
@@ -62,6 +77,27 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
         checkRequestStore.checkRequestHistoryStore(checkRequest);
 
         return PostProjectChecklistApplication.Response.toDto(checkRequest);
+    }
+
+    @Override
+    @Transactional
+    public void postProjectChecklistApplicationFiles(
+            Long checklistId,
+            Long applicationId,
+            Long uploaderId,
+            List<MultipartFile>files){
+
+        //1. 체크리스트 아이디 판별
+        Checklist checklist = getChecklist(checklistId);
+
+        //2. 요청 아이디 판별
+        CheckRequest checkRequest = checkRequestReader.read(applicationId);
+
+        //3. 업로더 판별
+        Member member = getMember(uploaderId);
+
+        //4. 파일 업로드
+        checkRequestFileStore.checkRequestFileStore(files, checkRequest, member);
     }
 
     @Override
@@ -110,6 +146,33 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
         return checkResultStore.postApplicationReject(
                 checkRequest, member, ip, requestDto.getRejectReason()
         );
+    }
+
+    @Override
+    @Transactional
+    public void postCheckRejectFiles(
+            Long applicationId,
+            Long uploaderId,
+            List<MultipartFile>files
+    ) {
+        //1. 요청 아이디 판별
+        CheckRequest checkRequest = checkRequestReader.read(applicationId);
+
+        //2. 업로더 판별
+        Member member = getMember(uploaderId);
+
+        //3. 파일 업로드
+        checkRequestFileStore.checkRequestRejectFileStore(files, checkRequest, member);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<FileMetadataDto> getChecklistRejectFiles(Long applicationId) {
+        CheckRequest checkRequest = checkRequestReader.read(applicationId);
+
+        List<FileMetadataDto> fileDtoList = checkRequestFileReader.readCheckRequestRejectFiles(checkRequest);
+
+        return fileDtoList;
     }
 
     // TODO - 회원 쪽 서비스 코드 교체 필요

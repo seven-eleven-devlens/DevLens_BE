@@ -54,8 +54,6 @@ public class PostFileService {
         for(MultipartFile file : files){
             fileService.uploadFile(file, FileCategory.POST_ATTACHMENT, postId);
         }
-
-        //TODO) 4. 파일 업로드 이력 추가
     }
 
     /**
