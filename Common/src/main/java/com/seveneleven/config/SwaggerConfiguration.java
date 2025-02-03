@@ -41,29 +41,37 @@ public class SwaggerConfiguration {
                 .addConverter(new ModelResolver(objectMapper, innerClassAwareTypeNameResolver));
     }
 
-//    @Bean
-//    public OpenAPI accessApi() {
-//        // Access Token (Authorization 헤더)
-//        SecurityScheme accessTokenScheme = new SecurityScheme()
-//                .type(SecurityScheme.Type.APIKEY)
-//                .in(SecurityScheme.In.HEADER)
-//                .name("Authorization");
-//
-//        // Refresh Token (X-Refresh-Token 헤더)
-//        SecurityScheme refreshTokenScheme = new SecurityScheme()
-//                .type(SecurityScheme.Type.APIKEY)
-//                .in(SecurityScheme.In.HEADER)
-//                .name("X-Refresh-Token");
-//
-//        // Security 요구사항 설정 (Bearer Token과 Refresh Token 추가)
-//        SecurityRequirement securityRequirement = new SecurityRequirement()
-//                .addList("Bearer Token")
-//                .addList("Refresh Token");
-//
-//        return new OpenAPI()
-//                .components(new Components()
-//                        .addSecuritySchemes("Bearer Token", accessTokenScheme)
-//                        .addSecuritySchemes("Refresh Token", refreshTokenScheme))
-//                .addSecurityItem(securityRequirement);
-//    }
+    @Bean
+    public OpenAPI accessApi() {
+        // Access Token (Authorization 헤더)
+        SecurityScheme accessTokenScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.APIKEY)
+                .in(SecurityScheme.In.HEADER)
+                .name("Authorization");
+
+        // Refresh Token (X-Refresh-Token 헤더)
+        SecurityScheme refreshTokenScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.APIKEY)
+                .in(SecurityScheme.In.HEADER)
+                .name("X-Refresh-Token");
+
+        // 쿠키 기반 인증 (Session Cookie)
+        SecurityScheme cookieAuthScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.APIKEY)
+                .in(SecurityScheme.In.COOKIE)
+                .name("SESSIONID");
+
+        // Security 요구사항 설정 (Bearer Token, Refresh Token, Cookie Auth)
+        SecurityRequirement securityRequirement = new SecurityRequirement()
+                .addList("Bearer Token")
+                .addList("Refresh Token")
+                .addList("CookieAuth");
+
+        return new OpenAPI()
+                .components(new Components()
+                        .addSecuritySchemes("Bearer Token", accessTokenScheme)
+                        .addSecuritySchemes("Refresh Token", refreshTokenScheme)
+                        .addSecuritySchemes("CookieAuth", cookieAuthScheme)) // 쿠키 인증 추가
+                .addSecurityItem(securityRequirement);
+    }
 }
