@@ -29,8 +29,8 @@ public class MemberController implements MemberDocs{
 
     private final MemberService memberService;
     private final MailService mailService;
-    @Value("${spring.profiles.active}")
-    private String mod;
+//    @Value("${spring.profiles.active}")
+//    private String mod;
 
     /**
      * 함수명 : login

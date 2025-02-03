@@ -32,8 +32,8 @@ import java.util.List;
 public class MemberMgmtController implements AdminMemberDocs {
 
     private final MemberMgmtService memberMgmtService;
-    @Value("${spring.profiles.active}")
-    private String mod;
+//    @Value("${spring.profiles.active}")
+//    private String mod;
 
     /**
      * 함수명 : login
