@@ -1,6 +1,5 @@
 package com.seveneleven.board.service;
 
-import com.seveneleven.board.dto.DeleteCommentRequest;
 import com.seveneleven.board.dto.GetCommentResponse;
 import com.seveneleven.board.dto.PatchCommentRequest;
 import com.seveneleven.board.dto.PostCommentRequest;
@@ -11,6 +10,8 @@ import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.repository.MemberRepository;
+import com.seveneleven.util.GetIpUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +27,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
+    private final GetIpUtil getIpUtil;
 
     /**
      * 함수명 : selectCommentList()
@@ -39,12 +41,7 @@ public class CommentServiceImpl implements CommentService {
 
         return commentRepository.getCommentList(post.getId())
                 .stream()
-                .map(comment -> {
-                    String writer = memberRepository.findById(comment.getCreatedBy())
-                            .map(Member::getName)
-                            .orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
-                    return GetCommentResponse.toDto(comment, writer);
-                        })
+                .map(GetCommentResponse::toDto)
                 .toList();
     }
 
@@ -54,18 +51,22 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public void createComment(Long postId, PostCommentRequest postCommentRequest) {
+    public void createComment(Long postId, PostCommentRequest postCommentRequest, HttpServletRequest request, Long registerId) {
         Post post = getPost(postId);
+        Member member = memberRepository.findById(registerId)
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
+
+        String registerIp = getIpUtil.getIpAddress(request);
 
         // 댓글인 경우
         if(postCommentRequest.getParentCommentId() == null) {
-            saveComment(post, null, commentRepository.findMaxRef() + 1, 0, postCommentRequest);
+            saveComment(post, null, commentRepository.findMaxRef() + 1, 0, postCommentRequest.getContent(), member.getName(), registerIp);
         }
 
         // 대댓글인 경우
         if(postCommentRequest.getParentCommentId() != null) {
             Comment parentComment = getComment(postCommentRequest.getParentCommentId());
-            saveComment(post, parentComment, parentComment.getRef(), parentComment.getChildCommentNum() + 1, postCommentRequest);
+            saveComment(post, parentComment, parentComment.getRef(), parentComment.getChildCommentNum() + 1, postCommentRequest.getContent(), member.getName(), registerIp);
             // 부모 댓글의 child_comment_num 값 1 증가
             increaseChildCommentNum(postCommentRequest.getParentCommentId());
         }
@@ -77,15 +78,15 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public void updateComment(Long postId, Long commentId, PatchCommentRequest patchCommentRequest) {
+    public void updateComment(Long postId, Long commentId, PatchCommentRequest patchCommentRequest, HttpServletRequest request, Long modifierId) {
         existPost(postId);
         Comment comment = getComment(commentId);
 
         // 작성자 일치 여부 확인
-        matchCommentWriter(comment.getCreatedBy(), patchCommentRequest.getModifierId());
+        matchCommentWriter(comment.getCreatedBy(), modifierId);
 
         // 기존 댓글 수정
-        comment.updateComment(patchCommentRequest.getContent(), patchCommentRequest.getModifierIp());
+        comment.updateComment(patchCommentRequest.getContent(), getIpUtil.getIpAddress(request));
         commentRepository.save(comment);
     }
 
@@ -95,12 +96,12 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public void deleteComment(Long postId, Long commentId, DeleteCommentRequest deleteCommentRequest) {
+    public void deleteComment(Long postId, Long commentId, HttpServletRequest request, Long deleterId) {
         existPost(postId);
         Comment comment = getComment(commentId);
 
         // 작성자 일치 여부 확인
-        matchCommentWriter(comment.getCreatedBy(), deleteCommentRequest.getModifierId());
+        matchCommentWriter(comment.getCreatedBy(), deleterId);
 
         // 댓글인 경우
         if(comment.getParentCommentId() == null) {
@@ -115,7 +116,7 @@ public class CommentServiceImpl implements CommentService {
             // 댓글의 child_comment_num - 1 감소
             decreaseChildCommentNum(comment.getParentCommentId().getId());
         }
-        comment.deleteComment(deleteCommentRequest.getModifierIp());
+        comment.deleteComment(getIpUtil.getIpAddress(request));
         commentRepository.save(comment);
     }
 
@@ -123,7 +124,7 @@ public class CommentServiceImpl implements CommentService {
      * 함수명 : saveComment()
      * 함수 목적 : 댓글 또는 대댓글 구분값으로 댓글을 생성하는 메서드
      */
-    private void saveComment(Post post, Comment parentComment, Long ref, Integer refOrder, PostCommentRequest postCommentRequest) {
+    private void saveComment(Post post, Comment parentComment, Long ref, Integer refOrder, String content, String writer, String ip) {
         commentRepository.save(
                 Comment.createComment(
                         post,
@@ -131,8 +132,9 @@ public class CommentServiceImpl implements CommentService {
                         ref,
                         refOrder,
                         0,
-                        postCommentRequest.getContent(),
-                        postCommentRequest.getRegisterIp()
+                        content,
+                        writer,
+                        ip
                 )
         );
     }

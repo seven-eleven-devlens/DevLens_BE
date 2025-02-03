@@ -62,8 +62,11 @@ public class PostServiceImpl implements PostService {
         if(filter != null) {
             repoFilter = filter.name();
         }
+        if(keyword != null) {
+            keyword = keyword.trim();
+        }
 
-        Page<Post> repoPostList = postRepository.findAllByProjectStepId2(projectStepId, keyword.trim(), repoFilter, pageable);
+        Page<Post> repoPostList = postRepository.findAllByProjectStepId2(projectStepId, keyword, repoFilter, pageable);
 
         Page<PostListResponse> postListResponsePage = repoPostList.map(post -> {
             Member member = memberRepository.findById(post.getCreatedBy())
@@ -104,13 +107,13 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request) {
-        // todo : 작성권한 확인 로직 추가 예정
+    public void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, Long registerId) {
         String registerIp = getIpUtil.getIpAddress(request);
 
         // 원글인 경우
         if (postCreateRequest.getParentPostId() == null) {
             Post post = getCreatePost(
+                    registerId,
                     postCreateRequest,
                     registerIp,
                     postRepository.findMaxRef() + 1,
@@ -126,6 +129,7 @@ public class PostServiceImpl implements PostService {
                 throw new BusinessException(NOT_MATCH_PROJECTSTEPID);
             }
             Post post = getCreatePost(
+                    registerId,
                     postCreateRequest,
                     registerIp,
                     getRef(postCreateRequest.getParentPostId()),
@@ -145,15 +149,14 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request) {
+    public void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request, Long modifierId) {
         // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = getPost(postUpdateRequest.getPostId());
-        matchPostWriter(post.getCreatedBy(), postUpdateRequest.getModifierId());
+        matchPostWriter(post.getCreatedBy(), modifierId);
 
         String modifierIp = getIpUtil.getIpAddress(request);
         // Post 테이블에서 기존 게시글 수정
         post.updatePost(
-                postUpdateRequest.getIsPinnedPost(),
                 postUpdateRequest.getPriority(),
                 postUpdateRequest.getStatus(),
                 postUpdateRequest.getTitle(),
@@ -172,10 +175,11 @@ public class PostServiceImpl implements PostService {
      * param : 게시글 ID, 등록자 ID
      */
     @Transactional
-    public void deletePost(Long postId, Long registeredId, HttpServletRequest request) {
+    public void deletePost(Long postId, HttpServletRequest request, Long deleterId) {
+
         // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = getPost(postId);
-        matchPostWriter(post.getCreatedBy(), registeredId);
+        matchPostWriter(post.getCreatedBy(), deleterId);
 
         String modifierIp = getIpUtil.getIpAddress(request);
 
@@ -195,7 +199,7 @@ public class PostServiceImpl implements PostService {
         postLinkService.deleteAllPostLinks(postId);
 
         //게시물 파일 일괄 삭제
-        postFileService.deleteAllPostFiles(post.getId(), registeredId);
+        postFileService.deleteAllPostFiles(post.getId(), deleterId);
 
         postHistoryRepository.save(PostHistory.createPostHistory(post, PostAction.DELETE, modifierIp));
         postRepository.delete(post);
@@ -268,7 +272,7 @@ public class PostServiceImpl implements PostService {
      * 함수명 : getCreatePost()
      * 함수 목적 : (원글,답글) 게시글 생성 메서드
      */
-    private Post getCreatePost(PostCreateRequest postCreateRequest, String registerIp, Long ref, Integer refOrder) {
+    private Post getCreatePost(Long registerId, PostCreateRequest postCreateRequest, String registerIp, Long ref, Integer refOrder) {
         // 프로젝트 단계 확인
         ProjectStep projectStep = projectStepRepository.findById(postCreateRequest.getProjectStepId())
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_PROJECT_STEP));
@@ -279,7 +283,7 @@ public class PostServiceImpl implements PostService {
                     .orElseThrow(() -> new BusinessException(NOT_FOUND_PROJECT_STEP));
         }
         // 작성자 확인
-        Member member = memberRepository.findById(postCreateRequest.getRegisterId())
+        Member member = memberRepository.findById(registerId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_MEMBER));
 
         return Post.createPost(
@@ -288,7 +292,6 @@ public class PostServiceImpl implements PostService {
                 ref,
                 refOrder,
                 0,                      // CHILD_POST_NUM = 0
-                postCreateRequest.getIsPinnedPost(),
                 postCreateRequest.getPriority(),
                 postCreateRequest.getStatus(),
                 postCreateRequest.getTitle(),
