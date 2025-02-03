@@ -1,5 +1,6 @@
 package com.seveneleven.project.service.checklist;
 
+import com.seveneleven.entity.file.constant.LinkCategory;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.CheckRequest;
 import com.seveneleven.entity.project.CheckRequestHistory;
@@ -7,10 +8,16 @@ import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.project.dto.PostProjectChecklistApplication;
 import com.seveneleven.project.repository.CheckRequestRepository;
 import com.seveneleven.util.GetIpUtil;
+import com.seveneleven.util.file.Service.LinkService;
+import com.seveneleven.util.file.dto.LinkInput;
+import com.seveneleven.util.file.dto.LinkPayload;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -19,6 +26,7 @@ public class CheckRequestStoreImpl implements CheckRequestStore {
 
     private final CheckRequestRepository checkRequestRepository;
     private final GetIpUtil getIpUtil;
+    private final LinkService linkService;
 
     @Override
     @Transactional
@@ -29,7 +37,24 @@ public class CheckRequestStoreImpl implements CheckRequestStore {
             String ipAddress
     ) {
         CheckRequest checkRequest = requestDto.createCheckRequest(checklist, member, ipAddress);
-        return checkRequestRepository.save(checkRequest);
+        //저장한 엔티티 추출
+        CheckRequest savedRequest = checkRequestRepository.save(checkRequest);
+
+        //링크 추출
+        List<LinkPayload> linkPayloads = requestDto.getLinkInputs().stream()
+                .map(linkInput -> LinkPayload.toLinkPayload(
+                        LinkCategory.CHECK_APPROVE_REQUEST_LINK,
+                        savedRequest.getId(),
+                        linkInput.getLinkTitle(),
+                        linkInput.getLink()
+                )).collect(Collectors.toList());
+
+        //링크 리스트 업로드
+        for(LinkPayload linkPayload : linkPayloads) {
+            linkService.uploadLink(linkPayload);
+        }
+
+        return checkRequest;
     }
 
     @Override

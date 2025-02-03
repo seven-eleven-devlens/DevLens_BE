@@ -3,10 +3,12 @@ package com.seveneleven.project.dto;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.CheckRequest;
 import com.seveneleven.entity.project.Checklist;
+import com.seveneleven.util.file.dto.LinkInput;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PostProjectChecklistApplication {
@@ -19,7 +21,8 @@ public class PostProjectChecklistApplication {
     public static class Request {
         private String title;
         private String description;
-        private List<String> links;
+        private Long requesterId;
+        private List<LinkInput> linkInputs = new ArrayList<>();
 
         public CheckRequest createCheckRequest(Checklist checklist, Member requester, String requestIp) {
             return CheckRequest.create(checklist, title, description, requester, requestIp);
