@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/api/auth")
 @Tag(name = "Authentication API", description = "Access Token & Refresh Token 관련 API")
-public interface AuthDocs {
+public interface AdminAuthDocs {
 
     @Operation(
             summary = "Access Token 재발급",
