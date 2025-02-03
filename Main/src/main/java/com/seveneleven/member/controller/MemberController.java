@@ -8,6 +8,7 @@ import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,8 @@ public class MemberController implements MemberDocs{
 
     private final MemberService memberService;
     private final MailService mailService;
+//    @Value("${spring.profiles.active}")
+//    private String mod;
 
     /**
      * 함수명 : login
@@ -146,12 +149,18 @@ public class MemberController implements MemberDocs{
      * @return 생성된 ResponseCookie
      */
     private ResponseCookie createCookie(String name, String value, Long maxAge) {
-        return ResponseCookie.from(name, value)
-                .httpOnly(false) // 클라이언트 측 스크립트에서 쿠키 접근 가능
-                .secure(true) // HTTPS 환경에서만 전송
-                .path("/") // 쿠키가 모든 경로에서 유효하도록 설정
-                .maxAge(maxAge) // 쿠키 만료 시간 설정
-                .sameSite("None")
-                .build();
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(maxAge)
+                .sameSite("None");
+
+        // 배포 환경에서만 도메인 적용
+//        if ("prod".equals(mod)) {
+//            cookieBuilder.domain("devlens.work");
+//        }
+
+        return cookieBuilder.build();
     }
 }

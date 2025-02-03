@@ -56,15 +56,20 @@ public class JwtFilter extends OncePerRequestFilter {
         // 쿠키에서 토큰 가져오기
         Token token = new Token();
 
-        if (Objects.nonNull(request.getCookies())) {
-            for (Cookie cookie : request.getCookies()) {
-                if (ACCESS_HEADER.equals(cookie.getName())) {
-                    token.setAccessToken(cookie.getValue());
-                } else if (REFRESH_HEADER.equals(cookie.getName())) {
-                    token.setRefreshToken(cookie.getValue());
-                }
-            }
-        }
+        // 관리자 토큰 하드 코딩
+        token.setAccessToken("eyJhbGciOiJIUzUxMiJ9.eyJtZW1iZXJJZCI6IjExIiwibG9naW5JZCI6ImFzZGYxMjMiLCJhdXRoIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczODU0OTcxMCwiZXhwIjoxNzM5NDA5NzEwfQ.DI-8SgdNtCFWofcjDB9aGHBszhkZvEBoreFoT2UXUk0XqM-TJavyq9Dp6YiWJY3uXr12-J0irp8jyJ-0dBitUw");
+        token.setRefreshToken("eyJhbGciOiJIUzUxMiJ9.eyJtZW1iZXJJZCI6IjExIiwibG9naW5JZCI6ImFzZGYxMjMiLCJpYXQiOjE3Mzg1NDk3MTAsImV4cCI6MTczOTQwOTcxMH0.ca8DVWhzsVfiQDgtMoXHz2SlRVECJdz0ClOvjt3os1non9jHLTGltbMB2O8q0fjYkpQ9VteMqWM78OzAxf4o3Q");
+
+
+//        if (Objects.nonNull(request.getCookies())) {
+//            for (Cookie cookie : request.getCookies()) {
+//                if (ACCESS_HEADER.equals(cookie.getName())) {
+//                    token.setAccessToken(cookie.getValue());
+//                } else if (REFRESH_HEADER.equals(cookie.getName())) {
+//                    token.setRefreshToken(cookie.getValue());
+//                }
+//            }
+//        }
 
 
         if(Objects.nonNull(token) && Objects.nonNull(token.getAccessToken())) {
