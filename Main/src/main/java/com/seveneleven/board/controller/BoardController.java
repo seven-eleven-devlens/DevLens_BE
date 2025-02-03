@@ -15,7 +15,6 @@ import com.seveneleven.util.file.dto.LinkInput;
 import com.seveneleven.util.file.dto.LinkResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import jdk.dynalink.linker.LinkRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -97,7 +96,10 @@ public class BoardController implements BoardDocs {
     public ResponseEntity<APIResponse<SuccessCode>> createPost(@Valid @RequestBody PostCreateRequest postCreateRequest,
                                                                HttpServletRequest request
     ) {
-        postService.createPost(postCreateRequest, request);
+        // todo : 토큰값으로 작성권한 확인 추가
+        Long registerId = 1L;
+
+        postService.createPost(postCreateRequest, request, registerId);
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED));
@@ -133,7 +135,10 @@ public class BoardController implements BoardDocs {
                                                                @Valid @RequestBody PostUpdateRequest postUpdateRequest,
                                                                HttpServletRequest request
     ) {
-        postService.updatePost(postUpdateRequest, request);
+        // todo : 토큰값으로 작성권한 확인 추가
+        Long modifierId = 1L;
+
+        postService.updatePost(postUpdateRequest, request, modifierId);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED));
@@ -144,13 +149,15 @@ public class BoardController implements BoardDocs {
      * 함수명 : deletePost()
      * 게시글을 삭제하는 메서드
      */
-    @DeleteMapping("/{postId}/{registerId}")
+    @DeleteMapping("/{postId}")
     @Override
     public ResponseEntity<APIResponse<SuccessCode>> deletePost(@PathVariable Long postId,
-                                                               @PathVariable Long registerId,
                                                                HttpServletRequest request
     ) {
-        postService.deletePost(postId, registerId, request);
+        // todo : 토큰값으로 작성권한 확인 추가
+        Long deleterId = 1L;
+
+        postService.deletePost(postId, request, deleterId);
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }

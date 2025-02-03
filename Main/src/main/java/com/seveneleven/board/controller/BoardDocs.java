@@ -6,7 +6,6 @@ import com.seveneleven.entity.board.constant.PostSort;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.file.dto.LinkInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -16,7 +15,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Post API", description = "게시글 관련 API")
 public interface BoardDocs {
@@ -168,7 +166,6 @@ public interface BoardDocs {
     )
     @DeleteMapping("/{postId}/{registerId}")
     ResponseEntity<APIResponse<SuccessCode>> deletePost(@PathVariable Long postId,
-                                                        @PathVariable Long registerId,
                                                         HttpServletRequest request
     );
 }
