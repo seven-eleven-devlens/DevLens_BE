@@ -7,6 +7,7 @@ import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.AdminMemberService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,6 +28,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
+@Slf4j
 public class AdminMemberController implements AdminMemberDocs {
 
     private final AdminMemberService memberMgmtService;
@@ -211,6 +213,7 @@ public class AdminMemberController implements AdminMemberDocs {
                 .maxAge(maxAge)
                 .sameSite("Lax");
 
+        log.info(mod+" 환경 모드입니다. [Admin] ");
         // 배포 환경에서만 도메인 적용
         if ("prod".equals(mod)) {
             cookieBuilder.domain("devlens.work");
