@@ -29,8 +29,8 @@ public class MemberController implements MemberDocs{
 
     private final MemberService memberService;
     private final MailService mailService;
-//    @Value("${spring.profiles.active}")
-//    private String mod;
+    @Value("${spring.profiles.active}")
+    private String mod;
 
     /**
      * 함수명 : login
@@ -157,9 +157,9 @@ public class MemberController implements MemberDocs{
                 .sameSite("None");
 
         // 배포 환경에서만 도메인 적용
-//        if ("prod".equals(mod)) {
-//            cookieBuilder.domain("devlens.work");
-//        }
+        if ("prod".equals(mod)) {
+            cookieBuilder.domain("devlens.work");
+        }
 
         return cookieBuilder.build();
     }
