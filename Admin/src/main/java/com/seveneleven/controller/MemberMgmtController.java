@@ -10,6 +10,7 @@ import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.MemberMgmtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,6 +32,8 @@ import java.util.List;
 public class MemberMgmtController implements AdminMemberDocs {
 
     private final MemberMgmtService memberMgmtService;
+    @Value("${spring.profiles.active}")
+    private String mod;
 
     /**
      * 함수명 : login
@@ -213,13 +216,20 @@ public class MemberMgmtController implements AdminMemberDocs {
      * @return 생성된 ResponseCookie
      */
     private ResponseCookie createCookie(String name, String value, Long maxAge) {
-        return ResponseCookie.from(name, value)
-                .httpOnly(false) // 클라이언트 측 스크립트에서 쿠키 접근 가능
-                .secure(true) // HTTPS 환경에서만 전송
-                .path("/") // 쿠키가 모든 경로에서 유효하도록 설정
-                .maxAge(maxAge) // 쿠키 만료 시간 설정
-                .sameSite("None")
-                .build();
+
+        ResponseCookie.ResponseCookieBuilder cookie = ResponseCookie.from(name, value)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .maxAge(maxAge)
+                .sameSite("None");
+
+        // 배포 환경에서만 도메인 적용
+//        if ("prod".equals(mod)) {
+//            cookie.domain("devlens.work");
+//        }
+
+        return cookie.build();
     }
 
 }
