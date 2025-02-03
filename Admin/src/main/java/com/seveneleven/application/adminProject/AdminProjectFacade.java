@@ -7,6 +7,7 @@ import com.seveneleven.entity.project.Project;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.service.AdminProjectHistoryService;
 import com.seveneleven.service.AdminProjectService;
+import com.seveneleven.service.AdminProjectStepService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +16,11 @@ import org.springframework.stereotype.Service;
 public class AdminProjectFacade {
     private final AdminProjectService adminProjectService;
     private final AdminProjectHistoryService adminProjectHistoryService;
+    private final AdminProjectStepService adminProjectStepService;
 
     public PostProject.Response registerProject(PostProject.Request request){
         Project project = adminProjectService.createProject(request);
+        adminProjectStepService.createBasicStep(project);
         adminProjectHistoryService.saveProjectHistory(project);
         return PostProject.Response.of(project);
     }
