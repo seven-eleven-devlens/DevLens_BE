@@ -157,7 +157,11 @@ public class MemberController implements MemberDocs{
                 .maxAge(maxAge)
                 .sameSite("Lax");
 
-        log.info(mod+" 환경 모드입니다. [Main] ");
+        log.info(mod+" 환경 모드입니다. [Main] ==================================================================================");
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        System.out.println();
         // 배포 환경에서만 도메인 적용
         if ("prod".equals(mod)) {
             cookieBuilder.domain("devlens.work");
