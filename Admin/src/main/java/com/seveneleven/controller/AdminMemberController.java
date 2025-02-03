@@ -81,16 +81,7 @@ public class AdminMemberController implements AdminMemberDocs {
     @GetMapping("/admin/members")
     public ResponseEntity<APIResponse<Page<MemberDto.Response>>> getFilteredMembers( GetMemberList memberList ) {
 
-//            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
-
-        // 정렬 정보 생성
-        Sort sort = Sort.by(Sort.Direction.fromString(memberList.getDirection()), memberList.getSort());
-
-        // PageRequest 생성
-        PageRequest pageRequest = PageRequest.of(memberList.getPage(), memberList.getSize(), sort);
-
-
-        Page<MemberDto.Response> members = memberMgmtService.getFilteredMembers(memberList, pageRequest);
+        Page<MemberDto.Response> members = memberMgmtService.getFilteredMembers(memberList);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, members));

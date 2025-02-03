@@ -38,16 +38,6 @@ public interface AdminMemberDocs {
                                     schema = @Schema(implementation = APIResponse.class)
                             )
                     )
-            },
-            parameters = {
-
-
-
-
-
-
-
-
             }
     )
     @GetMapping("/members")

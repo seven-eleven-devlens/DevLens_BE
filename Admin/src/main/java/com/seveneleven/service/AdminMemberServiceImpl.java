@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 회원 관리 서비스 클래스.
@@ -80,15 +81,23 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      * 함수명 : getFilteredMembers
      * 필터 조건에 따라 회원 목록을 조회합니다.
      *
-     * @param memberList    회원 검색 옵션.
-     * @param pageRequest   회원 페이징 옵션.
+     * @param memberList    회원 검색/페이징 옵션.
      * @return 필터 조건에 맞는 회원 목록.
      */
     @Transactional(readOnly = true)
-    public Page<MemberDto.Response> getFilteredMembers( GetMemberList memberList,
-                                                        PageRequest pageRequest) {
+    public Page<MemberDto.Response> getFilteredMembers( GetMemberList memberList) {
 
-//        @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable;
+        int page = Objects.nonNull(memberList.getPage())? memberList.getPage() : 0;
+        int size = Objects.nonNull(memberList.getSize())? memberList.getSize() : 10;
+        String sortName = Objects.nonNull(memberList.getSort())? memberList.getSort() : "id";
+        String direction = Objects.nonNull(memberList.getDirection())? memberList.getDirection() : "asc";
+
+        // 정렬 정보 생성
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortName);
+
+        // pageable 생성
+        Pageable pageable = PageRequest.of(page, size, sort);
+
 
         Specification<Member> spec = Specification
                 .where(MemberSpecification.hasName(memberList.getName()))
@@ -96,7 +105,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
                 .and(MemberSpecification.hasRole(memberList.getRole()))
                 .and(MemberSpecification.hasLoginId(memberList.getLoginId()));
 
-        Page<Member> members = memberRepository.findAll(spec, pageRequest);
+        Page<Member> members = memberRepository.findAll(spec, pageable);
 
         // 엔티티 -> DTO 변환
         return members.map(MemberDto::fromEntity);
