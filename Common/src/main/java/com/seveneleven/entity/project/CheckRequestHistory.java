@@ -22,9 +22,6 @@ public class CheckRequestHistory extends BaseEntity {
     @Column(nullable = false)
     private Long checklistId; // 체크 리스트 ID
 
-    @Column(nullable = false)
-    private LocalDateTime requestDate; // 체크 요청 일시
-
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus; // 승인 여부(결과)
 
@@ -39,7 +36,6 @@ public class CheckRequestHistory extends BaseEntity {
 
     public CheckRequestHistory(CheckRequest checkRequest) {
         this.checklistId = checkRequest.getChecklist().getId();
-        this.requestDate = checkRequest.getRequestDate();
         this.approvalStatus = checkRequest.getApprovalStatus();
         this.requesterName = checkRequest.getRequester().getName();
         this.requestIp = checkRequest.getRequestIp();

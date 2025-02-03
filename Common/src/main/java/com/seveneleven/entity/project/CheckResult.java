@@ -35,7 +35,7 @@ public class CheckResult extends BaseEntity {
     private String rejectionReason; // 거부 사유
 
     private CheckResult(CheckRequest checkRequest, Member processor, String processorIp) {
-        // 승락 생성사
+        // 승락 시 사용
         this.checkRequest = checkRequest;
         this.processorMember = processor;
         this.processorIp = processorIp;
@@ -43,7 +43,7 @@ public class CheckResult extends BaseEntity {
     }
 
     private CheckResult(CheckRequest checkRequest, Member processor, String processorIp, String rejectionReason) {
-        // 승락 생성사
+        // 거절 시 사용
         this.checkRequest = checkRequest;
         this.processorMember = processor;
         this.processorIp = processorIp;

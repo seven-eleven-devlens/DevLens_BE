@@ -7,13 +7,6 @@ public class DeleteProjectStep {
 
     @Getter
     @NoArgsConstructor
-    public static class Request {
-        private Long projectId;
-        private Long stepId;
-    }
-
-    @Getter
-    @NoArgsConstructor
     public static class Response {
         private Long projectId;
         private Long stepId;

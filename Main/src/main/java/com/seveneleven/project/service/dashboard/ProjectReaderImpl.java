@@ -1,6 +1,8 @@
 package com.seveneleven.project.service.dashboard;
 
+import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.project.Project;
+import com.seveneleven.entity.project.constant.ProjectStatusCode;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.project.dto.GetProjectDetail;
 import com.seveneleven.project.repository.CheckRequestRepository;
@@ -25,7 +27,7 @@ public class ProjectReaderImpl implements ProjectReader {
     @Override
     @Transactional(readOnly = true)
     public Project read(Long projectId) {
-        return projectRepository.findById(projectId)
+        return projectRepository.findByIdAndProjectStatusCodeNot(projectId, ProjectStatusCode.DELETED)
                 .orElseThrow(() -> new BusinessException(ErrorCode.PROJECT_NOT_FOUND));
     }
 
@@ -43,7 +45,7 @@ public class ProjectReaderImpl implements ProjectReader {
     public GetProjectDetail.Response getProjectDetail(Long projectId) {
         return GetProjectDetail.Response.toDto(
                 projectRepository.getProjectDetail(projectId).orElseThrow(() -> new BusinessException(ErrorCode.PROJECT_NOT_FOUND)),
-                projectStepRepository.findStepProcessRate(projectId),
+                projectStepRepository.findStepProcessRate(projectId, YesNo.YES),
                 checkRequestRepository.findAllApplicationLists(projectId)
         );
     }

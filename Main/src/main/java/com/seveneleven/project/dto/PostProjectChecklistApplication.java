@@ -19,7 +19,6 @@ public class PostProjectChecklistApplication {
     public static class Request {
         private String title;
         private String description;
-        private Long requesterId;
         private List<String> links;
 
         public CheckRequest createCheckRequest(Checklist checklist, Member requester, String requestIp) {

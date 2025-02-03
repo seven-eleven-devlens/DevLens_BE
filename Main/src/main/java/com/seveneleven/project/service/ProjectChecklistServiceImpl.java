@@ -69,10 +69,10 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
     @Transactional
     public PostProjectChecklistApplication.Response postProjectChecklistApplication(
             Checklist checklist,
+            Member member,
             PostProjectChecklistApplication.Request requestDto,
-            String ip) {
-        Member member = getMember(requestDto.getRequesterId());
-
+            String ip
+    ) {
         CheckRequest checkRequest = checkRequestStore.checkRequestStore(checklist, requestDto, member, ip);
         checkRequestStore.checkRequestHistoryStore(checkRequest);
 

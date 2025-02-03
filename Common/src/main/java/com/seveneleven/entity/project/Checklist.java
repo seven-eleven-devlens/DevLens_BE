@@ -86,8 +86,9 @@ public class Checklist extends BaseEntity {
     }
 
     public void acceptChecklist() {
-        if(isChecked != YesNo.NO) {
+        if(isChecked == YesNo.NO) {
             isChecked = YesNo.YES;
+            return;
         }
         throw new BusinessException(ErrorCode.CHECKLIST_ALREADY_CHECKED);
     }

@@ -22,12 +22,12 @@ public class ChecklistStoreImpl implements ChecklistStore {
     private final ProjectStepRepository projectStepRepository;
 
     @Override
+    @Transactional
     public Checklist storeChecklist(ProjectStep projectStep, PostProjectChecklist.Request request) {
         return checklistRepository.save(request.toEntity(projectStep));
     }
 
     @Override
-    @Transactional
     public Checklist updateChecklist(Checklist checklist, PutProjectChecklist.Request request) {
         return checklist.updateChecklist(request.getTitle(), request.getDescription());
     }
