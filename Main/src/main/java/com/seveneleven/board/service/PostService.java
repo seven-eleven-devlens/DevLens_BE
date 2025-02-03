@@ -13,7 +13,7 @@ public interface PostService {
 
     PaginatedResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType);
     PostResponse selectPost(Long postId);
-    void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request);
-    void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request);
-    void deletePost(Long postId, Long registerId, HttpServletRequest request);
+    void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, Long registerId);
+    void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request, Long modifierId);
+    void deletePost(Long postId, HttpServletRequest request, Long deleterId);
 }

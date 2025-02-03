@@ -1,6 +1,5 @@
 package com.seveneleven.board.controller;
 
-import com.seveneleven.board.dto.DeleteCommentRequest;
 import com.seveneleven.board.dto.PatchCommentRequest;
 import com.seveneleven.board.dto.PostCommentRequest;
 import com.seveneleven.response.APIResponse;
@@ -111,7 +110,6 @@ public interface CommentDocs {
     @DeleteMapping("{commentId}")
     ResponseEntity<APIResponse<SuccessCode>> deleteComment(@PathVariable Long postId,
                                                            @PathVariable Long commentId,
-                                                           @RequestBody DeleteCommentRequest deleteCommentRequest,
                                                            HttpServletRequest request
     ) throws Exception;
 }

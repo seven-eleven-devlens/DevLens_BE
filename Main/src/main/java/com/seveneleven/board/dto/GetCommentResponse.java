@@ -18,19 +18,19 @@ public class GetCommentResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    private GetCommentResponse(Comment comment, String writer) {
+    private GetCommentResponse(Comment comment) {
         this.commentId = comment.getId();
         this.parentCommentId = getParentCommentId(comment.getParentCommentId());
         this.registerId = comment.getCreatedBy();
-        this.writer = writer;
+        this.writer = comment.getWriter();
         this.content = comment.getContent();
         this.createdAt = comment.getCreatedAt();
         this.updatedAt = comment.getUpdatedAt();
     }
 
     // Comment 를 GetCommentResponse 로 변환
-    public static GetCommentResponse toDto(Comment comment, String writer) {
-        return new GetCommentResponse(comment, writer);
+    public static GetCommentResponse toDto(Comment comment) {
+        return new GetCommentResponse(comment);
     }
 
     private static Long getParentCommentId(Comment parentCommentId) {

@@ -23,6 +23,7 @@ public class Comment extends BaseEntity {
         childCommentNum : 자식 댓글의 수
         isActive : 사용 유무 (Y, N)
         content : 내용
+        writer : 작성자 이름
         registerIp : 등록자 IP
         modifierIp : 수정자 IP
      */
@@ -57,6 +58,9 @@ public class Comment extends BaseEntity {
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
 
+    @Column(name = "writer", nullable = false)
+    private String writer;
+
     @Column(name = "register_ip", length = 50)
     private String registerIp;
 
@@ -71,6 +75,7 @@ public class Comment extends BaseEntity {
                     Integer childCommentNum,
                     YesNo isActive,
                     String content,
+                    String writer,
                     String registerIp,
                     String modifierIp) {
         this.id = id;
@@ -81,6 +86,7 @@ public class Comment extends BaseEntity {
         this.childCommentNum = childCommentNum;
         this.isActive = isActive;
         this.content = content;
+        this.writer = writer;
         this.registerIp = registerIp;
         this.modifierIp = modifierIp;
     }
@@ -93,6 +99,7 @@ public class Comment extends BaseEntity {
             Integer refOrder,
             Integer childCommentNum,
             String content,
+            String writer,
             String registerIp
     ) {
         Comment comment = new Comment();
@@ -103,6 +110,7 @@ public class Comment extends BaseEntity {
         comment.childCommentNum = childCommentNum;
         comment.isActive = YesNo.YES;
         comment.content = content;
+        comment.writer = writer;
         comment.registerIp = registerIp;
     return comment;
     }

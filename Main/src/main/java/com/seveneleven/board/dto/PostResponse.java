@@ -3,7 +3,6 @@ package com.seveneleven.board.dto;
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.board.constant.TaskPriority;
-import com.seveneleven.entity.global.YesNo;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +18,6 @@ public class PostResponse {
     private Long postId;
     private Long projectStepId;
     private Long parentPostId;
-    private YesNo isPinnedPost;
     private TaskPriority priority;
     private PostStatus status;
     private String title;
@@ -40,7 +38,6 @@ public class PostResponse {
         this.postId = post.getId();
         this.projectStepId = post.getProjectStep().getId();
         this.parentPostId = parentPostId;
-        this.isPinnedPost = post.getIsPinnedPost();
         this.priority = post.getPriority();
         this.status = post.getStatus();
         this.title = post.getTitle();

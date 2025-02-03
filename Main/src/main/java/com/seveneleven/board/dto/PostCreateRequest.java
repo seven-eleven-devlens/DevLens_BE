@@ -2,7 +2,6 @@ package com.seveneleven.board.dto;
 
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.board.constant.TaskPriority;
-import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.util.file.dto.LinkInput;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
@@ -13,7 +12,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,9 +24,6 @@ public class PostCreateRequest {
 
     @Nullable
     private Long parentPostId;  // 부모 게시물 ID
-
-    @NotNull
-    private YesNo isPinnedPost;    // 상단고정여부
 
     private TaskPriority priority;   // 우선순위
 
@@ -45,12 +40,6 @@ public class PostCreateRequest {
 
     @Nullable
     private LocalDate deadline; // 마감일자
-
-    @NotNull
-    private Long registerId;    // 등록자 ID
-
-    @NotNull
-    private LocalDateTime registerDate; // 등록일시
 
     @Size(min = 0)
     private List<LinkInput> linkInputList = new ArrayList<>(); //링크 목록

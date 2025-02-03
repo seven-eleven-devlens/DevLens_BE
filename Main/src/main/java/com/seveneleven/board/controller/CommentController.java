@@ -1,6 +1,5 @@
 package com.seveneleven.board.controller;
 
-import com.seveneleven.board.dto.DeleteCommentRequest;
 import com.seveneleven.board.dto.PatchCommentRequest;
 import com.seveneleven.board.dto.PostCommentRequest;
 import com.seveneleven.board.service.CommentService;
@@ -25,7 +24,10 @@ public class CommentController implements CommentDocs {
                                                                   @Valid @RequestBody PostCommentRequest postCommentRequest,
                                                                   HttpServletRequest request
     ) throws Exception {
-        commentService.createComment(postId, postCommentRequest);
+        // todo : 토큰값으로 작성권한 확인 추가
+        Long registerId = 1L;
+
+        commentService.createComment(postId, postCommentRequest, request, registerId);
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED));
     }
@@ -37,7 +39,10 @@ public class CommentController implements CommentDocs {
                                                                   @RequestBody PatchCommentRequest patchCommentRequest,
                                                                   HttpServletRequest request
     ) throws Exception {
-        commentService.updateComment(postId, commentId, patchCommentRequest);
+        // todo : 토큰값으로 작성권한 확인 추가
+        Long modifierId = 1L;
+
+        commentService.updateComment(postId, commentId, patchCommentRequest, request, modifierId);
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED));
     }
@@ -46,10 +51,12 @@ public class CommentController implements CommentDocs {
     @Override
     public ResponseEntity<APIResponse<SuccessCode>> deleteComment(@PathVariable Long postId,
                                                                   @PathVariable Long commentId,
-                                                                  @RequestBody DeleteCommentRequest deleteCommentRequest,
                                                                   HttpServletRequest request
     ) throws Exception {
-        commentService.deleteComment(postId, commentId, deleteCommentRequest);
+        // todo : 토큰값으로 작성권한 확인 추가
+        Long deleterId = 1L;
+
+        commentService.deleteComment(postId, commentId, request, deleterId);
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
