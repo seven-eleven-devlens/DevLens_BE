@@ -16,8 +16,11 @@ import com.seveneleven.util.security.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -77,24 +80,23 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      * 함수명 : getFilteredMembers
      * 필터 조건에 따라 회원 목록을 조회합니다.
      *
-     * @param name     회원 이름 필터 (옵션).
-     * @param status   회원 상태 필터 (옵션).
-     * @param role     회원 역할 필터 (옵션).
-     * @param loginId  로그인 ID 필터 (옵션).
-     * @param pageable 페이징 정보.
+     * @param memberList    회원 검색 옵션.
+     * @param pageRequest   회원 페이징 옵션.
      * @return 필터 조건에 맞는 회원 목록.
      */
     @Transactional(readOnly = true)
-    public Page<MemberDto.Response> getFilteredMembers(
-            String name, MemberStatus status, Role role, String loginId, Pageable pageable) {
+    public Page<MemberDto.Response> getFilteredMembers( GetMemberList memberList,
+                                                        PageRequest pageRequest) {
+
+//        @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable;
 
         Specification<Member> spec = Specification
-                .where(MemberSpecification.hasName(name))
-                .and(MemberSpecification.hasStatus(status))
-                .and(MemberSpecification.hasRole(role))
-                .and(MemberSpecification.hasLoginId(loginId));
+                .where(MemberSpecification.hasName(memberList.getName()))
+                .and(MemberSpecification.hasStatus(memberList.getStatus()))
+                .and(MemberSpecification.hasRole(memberList.getRole()))
+                .and(MemberSpecification.hasLoginId(memberList.getLoginId()));
 
-        Page<Member> members = memberRepository.findAll(spec, pageable);
+        Page<Member> members = memberRepository.findAll(spec, pageRequest);
 
         // 엔티티 -> DTO 변환
         return members.map(MemberDto::fromEntity);
@@ -111,7 +113,15 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     public MemberDto.Response getMemberDetail(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        return MemberDto.fromEntity(member);
+
+        Company company = companyRepository.findByIdAndIsActive( member.getCompany().getId(), YN.Y)
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+
+        MemberDto.Response response = MemberDto.fromEntity(member);
+                           response.setCompanyId(company.getId());
+                           response.setCompany(company.getCompanyName());
+
+        return response;
     }
 
     /**

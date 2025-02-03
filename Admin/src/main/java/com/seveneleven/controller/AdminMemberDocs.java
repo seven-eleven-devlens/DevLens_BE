@@ -1,6 +1,7 @@
 package com.seveneleven.controller;
 
 
+import com.seveneleven.dto.GetMemberList;
 import com.seveneleven.dto.MemberDto;
 import com.seveneleven.dto.MemberUpdate;
 import com.seveneleven.entity.member.constant.MemberStatus;
@@ -39,19 +40,18 @@ public interface AdminMemberDocs {
                     )
             },
             parameters = {
-                    @Parameter(name = "name", description = "회원 이름"),
-                    @Parameter(name = "status", description = "회원 상태"),
-                    @Parameter(name = "role", description = "회원 역할"),
-                    @Parameter(name = "loginId", description = "로그인 ID"),
-                    @Parameter(name = "pageable", description = "페이징 정보")
+
+
+
+
+
+
+
+
             }
     )
     @GetMapping("/members")
-    ResponseEntity<APIResponse<Page<MemberDto.Response>>> getFilteredMembers(@RequestParam(required = false) String name,
-                                                                            @RequestParam(required = false) MemberStatus status,
-                                                                            @RequestParam(required = false) Role role,
-                                                                            @RequestParam(required = false) String loginId,
-                                                                            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable);
+    ResponseEntity<APIResponse<Page<MemberDto.Response>>> getFilteredMembers( GetMemberList memberList );
 
 
     @Operation(

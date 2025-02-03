@@ -1,11 +1,13 @@
 package com.seveneleven.service;
 
+import com.seveneleven.dto.GetMemberList;
 import com.seveneleven.dto.LoginPost;
 import com.seveneleven.dto.MemberDto;
 import com.seveneleven.dto.MemberUpdate;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.Role;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.List;
 public interface AdminMemberService {
     LoginPost.Response login(LoginPost.Request request);
 
-    Page<MemberDto.Response> getFilteredMembers(String name, MemberStatus status, Role role, String loginId, Pageable pageable);
+    Page<MemberDto.Response> getFilteredMembers( GetMemberList memberList, PageRequest pageRequest);
 
     MemberDto.Response getMemberDetail(Long memberId);
 
