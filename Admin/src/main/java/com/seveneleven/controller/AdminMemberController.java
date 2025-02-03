@@ -151,16 +151,16 @@ public class AdminMemberController implements AdminMemberDocs {
      * 함수명 : updateMember
      * 회원 정보를 수정합니다.
      *
-     * @param loginId  수정할 회원의 고유 식별자 (필수).
+     * @param memberId  수정할 회원의 고유 식별자 (필수).
      * @param memberDto 수정할 회원 정보를 담은 요청 객체 (MemberDto.PutRequest).
      * @return 수정된 회원 정보를 포함한 응답 객체 (APIResponse<MemberDto.Response>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
-    @PatchMapping("/admin/members/{loginId}")
-    public ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@PathVariable String loginId,
+    @PatchMapping("/admin/members/{memberId}")
+    public ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@PathVariable Long memberId,
                                                                         @RequestBody MemberUpdate.PatchRequest memberDto) {
 
-        MemberDto.Response updatedMember = memberMgmtService.updateMember(loginId, memberDto);
+        MemberDto.Response updatedMember = memberMgmtService.updateMember(memberId, memberDto);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED, updatedMember));
@@ -170,14 +170,14 @@ public class AdminMemberController implements AdminMemberDocs {
      * 함수명 : deleteMember
      * 회원 계정 삭제합니다.
      *
-     * @param loginId 수정할 회원의 고유 식별자 (필수).
+     * @param memberId 수정할 회원의 고유 식별자 (필수).
      * @return 삭제된 회원에 대한 응답 객체 (APIResponse<SuccessCode>).
      *         HTTP 상태 코드는 200 DELETED로 반환됩니다.
      */
-    @DeleteMapping("/admin/members/{loginId}")
-    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String loginId) {
+    @DeleteMapping("/admin/members/{memberId}")
+    public ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable Long memberId) {
 
-        memberMgmtService.deleteMember(loginId);
+        memberMgmtService.deleteMember(memberId);
 
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
@@ -187,15 +187,15 @@ public class AdminMemberController implements AdminMemberDocs {
      * 함수명 : resetPwd
      * 회원 비밀번호를 초기화합니다.
      *
-     * @param loginId 초기화할 회원의 고유 식별자 (PathVariable).
+     * @param memberId 초기화할 회원의 고유 식별자 (PathVariable).
      * @return 초기화된 임시 비밀번호를 포함한 응답 객체 (APIResponse<String>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
-    @PatchMapping("/admin/members/{loginId}/reset-password")
-    public ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(@PathVariable String loginId) {
+    @PatchMapping("/admin/members/{memberId}/reset-password")
+    public ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(@PathVariable Long memberId) {
 
         // 비밀번호 초기화
-        MemberUpdate.PatchResponse response = memberMgmtService.resetPassword(loginId);
+        MemberUpdate.PatchResponse response = memberMgmtService.resetPassword(memberId);
 
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())

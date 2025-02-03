@@ -207,14 +207,14 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      * 함수명 : updateMember
      * 회원 정보를 수정합니다.
      *
-     * @param loginId       수정할 회원의 ID.
+     * @param memberId       수정할 회원의 ID.
      * @param memberDto 수정할 회원의 요청 데이터.
      * @return 수정된 회원의 응답 DTO.
      */
     @Transactional
-    public MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto){
+    public MemberDto.Response updateMember(Long memberId, MemberUpdate.PatchRequest memberDto){
 
-        Member member = memberRepository.findByLoginId(loginId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Company company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
@@ -230,12 +230,12 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      * 함수명 : deleteMember
      * 회원을 삭제(상태 변경)합니다.
      *
-     * @param loginId 삭제할 회원의 ID.
+     * @param memberId 삭제할 회원의 ID.
      */
     @Transactional
-    public void deleteMember(String loginId) {
+    public void deleteMember(Long memberId) {
         // 회원 조회
-        Member member = memberRepository.findByLoginId(loginId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 상태 확인 및 예외 처리
@@ -258,13 +258,13 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      * 함수명 : resetPassword
      * 회원 비밀번호를 초기화합니다.
      *
-     * @param loginId 비밀번호를 초기화할 회원의 로그인 ID.
+     * @param memberId 비밀번호를 초기화할 회원의 로그인 ID.
      * @return 초기화된 임시 비밀번호.
      */
     @Transactional
-    public MemberUpdate.PatchResponse resetPassword(String loginId) {
+    public MemberUpdate.PatchResponse resetPassword(Long memberId) {
         // 1. 회원 조회
-        Member member = memberRepository.findByLoginId(loginId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 임시 비밀번호 생성
@@ -274,7 +274,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         member.resetPassword(passwordEncoder.encode(temporaryPassword));
 
         // 4. 생성된 비밀번호 반환
-        return new MemberUpdate.PatchResponse(loginId, temporaryPassword);
+        return new MemberUpdate.PatchResponse(memberId, temporaryPassword);
     }
 
 

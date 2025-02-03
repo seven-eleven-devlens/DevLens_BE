@@ -3,7 +3,6 @@ package com.seveneleven.dto;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.Role;
 import lombok.Getter;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Getter
 public class GetMemberList {

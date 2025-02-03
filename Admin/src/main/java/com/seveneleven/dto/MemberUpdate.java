@@ -41,7 +41,7 @@ public class MemberUpdate {
     @Setter
     @AllArgsConstructor
     public static class PatchResponse{
-        private String loginId;
+        private Long memberId;
         private String password;
     }
 }

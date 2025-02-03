@@ -122,11 +122,11 @@ public interface AdminMemberDocs {
                     )
             },
             parameters = {
-                    @Parameter(name = "loginId", description = "수정할 회원의 ID", required = true, example = "john123")
+                    @Parameter(name = "memberId", description = "수정할 회원의 ID", required = true, example = "1")
             }
     )
-    @PatchMapping("/members/{loginId}")
-    ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@PathVariable String loginId,
+    @PatchMapping("/members/{memberId}")
+    ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@PathVariable Long memberId,
                                                                  @RequestBody MemberUpdate.PatchRequest memberDto);
 
 
@@ -144,11 +144,11 @@ public interface AdminMemberDocs {
                     )
             },
             parameters = {
-                    @Parameter(name = "loginId", description = "삭제할 회원의 ID", required = true, example = "john123")
+                    @Parameter(name = "memberId", description = "삭제할 회원의 ID", required = true, example = "1")
             }
     )
     @DeleteMapping("/members/{loginId}")
-    ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String loginId);
+    ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable Long memberId);
 
     @Operation(
             summary = "비밀번호 초기화",
@@ -164,9 +164,9 @@ public interface AdminMemberDocs {
                     )
             },
             parameters = {
-                    @Parameter(name = "loginId", description = "비밀번호를 초기화할 회원의 ID", required = true, example = "john123")
+                    @Parameter(name = "memberId", description = "비밀번호를 초기화할 회원의 ID", required = true, example = "1")
             }
     )
-    @PatchMapping("/members/{loginId}/reset-password")
-    ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(@PathVariable String loginId);
+    @PatchMapping("/members/{memberId}/reset-password")
+    ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(@PathVariable Long memberId);
 }

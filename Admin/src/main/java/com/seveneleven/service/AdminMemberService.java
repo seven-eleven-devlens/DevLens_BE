@@ -23,9 +23,9 @@ public interface AdminMemberService {
 
     List<MemberDto.Response> createMembers(List<MemberDto.Request> memberDtos);
 
-    MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto);
+    MemberDto.Response updateMember(Long memberId, MemberUpdate.PatchRequest memberDto);
 
-    void deleteMember(String loginId);
+    void deleteMember(Long memberId);
 
-    MemberUpdate.PatchResponse resetPassword(String loginId);
+    MemberUpdate.PatchResponse resetPassword(Long memberId);
 }
