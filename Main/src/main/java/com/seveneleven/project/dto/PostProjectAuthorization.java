@@ -6,6 +6,7 @@ import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.entity.project.constant.MemberType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -15,12 +16,14 @@ public class PostProjectAuthorization {
 
     @Getter
     @NoArgsConstructor
+    @ToString
     public static class Request {
         List<MemberAuthorization> authorizations;
     }
 
     @Getter
     @NoArgsConstructor
+    @ToString
     public static class MemberAuthorization {
         private Long memberId;
         private String projectAuthorization;

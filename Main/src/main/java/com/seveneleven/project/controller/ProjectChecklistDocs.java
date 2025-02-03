@@ -116,7 +116,7 @@ public interface ProjectChecklistDocs {
             @PathVariable Long checklistId
     );
 
-    @PostMapping(value = "/checklists/{checklistId}/applications")
+    @PostMapping("/checklists/{checklistId}/applications")
     @Operation(
             summary = "체크리스트 신청 생성",
             description = "체크리스트에 새로운 신청을 생성합니다.",
@@ -132,6 +132,7 @@ public interface ProjectChecklistDocs {
             }
     )
     ResponseEntity<APIResponse<PostProjectChecklistApplication.Response>> postProjectChecklistApplication(
+            @AuthenticationPrincipal CustomUserDetails user,
             @PathVariable Long checklistId,
             @RequestBody PostProjectChecklistApplication.Request requestDto,
             HttpServletRequest request
@@ -191,7 +192,7 @@ public interface ProjectChecklistDocs {
     )
     ResponseEntity<APIResponse<PostProjectChecklistReject.Response>> postProjectChecklistReject(
             @PathVariable Long applicationId,
-            @RequestPart PostProjectChecklistReject.Request requestDto,
+            @RequestBody PostProjectChecklistReject.Request requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             HttpServletRequest request
     );

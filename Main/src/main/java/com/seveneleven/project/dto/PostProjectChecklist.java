@@ -13,10 +13,14 @@ public class PostProjectChecklist {
      */
     @Getter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class Request {
         private String checklistTitle;
         private String checklistDescription;
+
+        public Request(String checklistTitle, String checklistDescription) {
+            this.checklistTitle = checklistTitle;
+            this.checklistDescription = checklistDescription;
+        }
 
         public Checklist toEntity(ProjectStep projectStep) {
             return Checklist.create(checklistTitle, checklistDescription, projectStep);
@@ -25,21 +29,28 @@ public class PostProjectChecklist {
 
     @Getter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class Response {
         private Long projectChecklistId;
         private String checklistTitle;
         private String checklistDescription;
-        private YesNo isActive;
-        private YesNo isChecked;
+        private Boolean isActive;
+        private Boolean isChecked;
+
+        public Response(Long projectChecklistId, String checklistTitle, String checklistDescription, Boolean isActive, Boolean isChecked) {
+            this.projectChecklistId = projectChecklistId;
+            this.checklistTitle = checklistTitle;
+            this.checklistDescription = checklistDescription;
+            this.isActive = isActive;
+            this.isChecked = isChecked;
+        }
 
         public static Response toDto(Checklist checklist) {
             return new Response(
                     checklist.getId(),
                     checklist.getTitle(),
                     checklist.getDescription(),
-                    checklist.getIsActive(),
-                    checklist.getIsChecked()
+                    checklist.getIsActive() == YesNo.YES,
+                    checklist.getIsChecked() == YesNo.YES
             );
         }
     }

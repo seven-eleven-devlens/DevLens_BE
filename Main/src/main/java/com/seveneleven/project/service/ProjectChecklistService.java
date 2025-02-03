@@ -22,6 +22,7 @@ public interface ProjectChecklistService {
 
     PostProjectChecklistApplication.Response postProjectChecklistApplication(
             Checklist checklist,
+            Member member,
             PostProjectChecklistApplication.Request requestDto,
             String ip
     );

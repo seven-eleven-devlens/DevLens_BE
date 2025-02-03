@@ -21,7 +21,7 @@ public interface CheckRequestRepository extends JpaRepository<CheckRequest, Long
         c.title,
         c_r.title,
         c_r.requester.name,
-        c_r.requestDate
+        c_r.createdAt
         )
     FROM CheckRequest c_r
     JOIN c_r.checklist c

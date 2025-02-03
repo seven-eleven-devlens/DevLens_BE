@@ -82,6 +82,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      */
     @PostMapping("/checklists/{checklistId}/applications")
     public ResponseEntity<APIResponse<PostProjectChecklistApplication.Response>> postProjectChecklistApplication(
+            @AuthenticationPrincipal CustomUserDetails user,
             @PathVariable Long checklistId,
             @RequestBody PostProjectChecklistApplication.Request requestDto,
             HttpServletRequest request
@@ -89,7 +90,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(APIResponse.success(
                         SuccessCode.CREATED,
-                        projectChecklistFacade.postProjectChecklistApplication(checklistId, requestDto, request))
+                        projectChecklistFacade.postProjectChecklistApplication(checklistId, user.getMember().getId(), requestDto, request))
                 );
     }
 
@@ -166,10 +167,10 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 함수명 : postProjectChecklistReject
      * 해당 체크리스트 승인 요청을 반려 처리하는 함수
      */
-    @PostMapping("/reject/{applicationId}")
+    @PostMapping("/applications/{applicationId}/reject")
     public ResponseEntity<APIResponse<PostProjectChecklistReject.Response>> postProjectChecklistReject(
             @PathVariable Long applicationId,
-            @RequestPart PostProjectChecklistReject.Request requestDto,
+            @RequestBody PostProjectChecklistReject.Request requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             HttpServletRequest request
     ) {
