@@ -7,6 +7,7 @@ import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.AdminMemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,8 +30,8 @@ import java.util.List;
 public class AdminMemberController implements AdminMemberDocs {
 
     private final AdminMemberService memberMgmtService;
-//    @Value("${spring.profiles.active}")
-//    private String mod;
+    @Value("${spring.profiles.active}")
+    private String mod;
 
     /**
      * 함수명 : login
@@ -211,9 +212,9 @@ public class AdminMemberController implements AdminMemberDocs {
                 .sameSite("None");
 
         // 배포 환경에서만 도메인 적용
-//        if ("prod".equals(mod)) {
-//            cookie.domain("devlens.work");
-//        }
+        if ("prod".equals(mod)) {
+            cookie.domain("devlens.work");
+        }
 
         return cookie.build();
     }
