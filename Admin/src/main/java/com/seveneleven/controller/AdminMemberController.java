@@ -79,9 +79,9 @@ public class AdminMemberController implements AdminMemberDocs {
      *         ResponseEntity로 래핑하여 HTTP 응답으로 전달합니다.
      */
     @GetMapping("/admin/members")
-    public ResponseEntity<APIResponse<Page<MemberDto.Response>>> getFilteredMembers( GetMemberList memberList ) {
+    public ResponseEntity<APIResponse<GetMemberList.Response>> getFilteredMembers( GetMemberList.Request memberList ) {
 
-        Page<MemberDto.Response> members = memberMgmtService.getFilteredMembers(memberList);
+        GetMemberList.Response members = memberMgmtService.getFilteredMembers(memberList);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, members));

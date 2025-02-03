@@ -41,7 +41,7 @@ public interface AdminMemberDocs {
             }
     )
     @GetMapping("/members")
-    ResponseEntity<APIResponse<Page<MemberDto.Response>>> getFilteredMembers( GetMemberList memberList );
+    ResponseEntity<APIResponse<GetMemberList.Response>> getFilteredMembers( GetMemberList.Request memberList );
 
 
     @Operation(

@@ -4,8 +4,6 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.dto.*;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
-import com.seveneleven.entity.member.constant.MemberStatus;
-import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.MemberValidator;
@@ -20,7 +18,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -30,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 회원 관리 서비스 클래스.
@@ -54,7 +52,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      * @param request 로그인 요청 정보 (로그인 ID와 비밀번호 포함)
      * @return 생성된 JWT 토큰
      */
-    @jakarta.transaction.Transactional
+    @Transactional
     public LoginPost.Response login(LoginPost.Request request) {
 
         Member member = memberRepository.findByLoginId(request.getLoginId())
@@ -85,7 +83,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      * @return 필터 조건에 맞는 회원 목록.
      */
     @Transactional(readOnly = true)
-    public Page<MemberDto.Response> getFilteredMembers( GetMemberList memberList) {
+    public GetMemberList.Response getFilteredMembers( GetMemberList.Request memberList) {
 
         int page = Objects.nonNull(memberList.getPage())? memberList.getPage() : 0;
         int size = Objects.nonNull(memberList.getSize())? memberList.getSize() : 10;
@@ -107,8 +105,15 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
         Page<Member> members = memberRepository.findAll(spec, pageable);
 
-        // 엔티티 -> DTO 변환
-        return members.map(MemberDto::fromEntity);
+        // Page 객체에서 필요한 데이터만 추출하여 GetMemberList.Response로 변환
+        return new GetMemberList.Response(
+                members.getContent().stream().map(MemberDto::fromEntity).toList(),
+                members.getNumber(),
+                members.getSize(),
+                members.getTotalElements(),
+                members.getTotalPages(),
+                members.isLast()
+        );
     }
 
     /**

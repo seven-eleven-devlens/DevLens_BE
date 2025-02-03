@@ -15,7 +15,7 @@ import java.util.List;
 public interface AdminMemberService {
     LoginPost.Response login(LoginPost.Request request);
 
-    Page<MemberDto.Response> getFilteredMembers(GetMemberList memberList);
+    GetMemberList.Response getFilteredMembers(GetMemberList.Request memberList);
 
     MemberDto.Response getMemberDetail(Long memberId);
 
