@@ -152,19 +152,16 @@ public class MemberController implements MemberDocs{
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(false)
-                //.secure("prod".equals(mod))
                 .path("/")
-                .maxAge(maxAge)
-                .sameSite("Lax");
+                .sameSite("Lax")
+                .maxAge(maxAge);
 
-        log.info(mod+" 환경 모드입니다. [Main] ==================================================================================");
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
+        log.info(mod+" 환경 모드입니다. [Main] ");
+
         // 배포 환경에서만 도메인 적용
         if ("prod".equals(mod)) {
             cookieBuilder.domain("devlens.work");
+            cookieBuilder.secure(true);
         }
 
         return cookieBuilder.build();
