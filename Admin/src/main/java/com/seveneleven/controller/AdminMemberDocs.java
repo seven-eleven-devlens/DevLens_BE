@@ -68,11 +68,11 @@ public interface AdminMemberDocs {
                     )
             },
             parameters = {
-                    @Parameter(name = "loginId", description = "조회할 회원의 ID", required = true, example = "john123")
+                    @Parameter(name = "memberId", description = "조회할 회원의 ID", required = true, example = "1")
             }
     )
     @GetMapping("/members/{loginId}")
-    ResponseEntity<APIResponse<MemberDto.Response>> memberDetail(@PathVariable String loginId);
+    ResponseEntity<APIResponse<MemberDto.Response>> memberDetail(@PathVariable Long memberId) ;
 
     @Operation(
             summary = "회원 생성",

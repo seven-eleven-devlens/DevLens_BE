@@ -15,7 +15,7 @@ public interface MemberMgmtService {
 
     Page<MemberDto.Response> getFilteredMembers(String name, MemberStatus status, Role role, String loginId, Pageable pageable);
 
-    MemberDto.Response getMemberDetail(String loginId);
+    MemberDto.Response getMemberDetail(Long memberId);
 
     MemberDto.Response createMember(MemberDto.Request memberDto);
 

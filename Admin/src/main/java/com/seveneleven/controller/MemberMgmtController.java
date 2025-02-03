@@ -102,14 +102,14 @@ public class MemberMgmtController implements AdminMemberDocs {
      * 함수명 : memberDetail
      * 회원 상세 정보를 조회합니다.
      *
-     * @param loginId 회원 ID (필수). 조회할 회원의 고유 식별자.
+     * @param memberId 회원 ID (필수). 조회할 회원의 고유 식별자.
      * @return 회원 상세 정보를 포함한 응답 객체(APIResponse<MemberDto>).
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
-    @GetMapping("/admin/members/{loginId}")
-    public ResponseEntity<APIResponse<MemberDto.Response>> memberDetail(@PathVariable String loginId) {
+    @GetMapping("/admin/members/{memberId}")
+    public ResponseEntity<APIResponse<MemberDto.Response>> memberDetail(@PathVariable Long memberId) {
         // 회원 상세 정보 조회
-        MemberDto.Response memberDto = memberMgmtService.getMemberDetail(loginId);
+        MemberDto.Response memberDto = memberMgmtService.getMemberDetail(memberId);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, memberDto));

@@ -104,12 +104,12 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
      * 함수명 : getMemberDetail
      * 회원 상세 정보를 조회합니다.
      *
-     * @param loginId 회원 ID.
+     * @param memberId 회원 ID.
      * @return 회원 상세 정보 DTO.
      */
     @Transactional(readOnly = true)
-    public MemberDto.Response getMemberDetail(String loginId) {
-        Member member = memberRepository.findByLoginId(loginId)
+    public MemberDto.Response getMemberDetail(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         return MemberDto.fromEntity(member);
     }
