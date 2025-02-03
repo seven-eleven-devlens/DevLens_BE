@@ -208,6 +208,7 @@ public class AdminMemberController implements AdminMemberDocs {
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
                 .httpOnly(true)
                 .secure(false)
+                .domain("devlens.work")
                 //.secure("prod".equals(mod))
                 .path("/")
                 .maxAge(maxAge)
