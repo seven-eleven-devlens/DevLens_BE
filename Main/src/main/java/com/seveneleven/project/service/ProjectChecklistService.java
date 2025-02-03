@@ -2,6 +2,7 @@ package com.seveneleven.project.service;
 
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.CheckRequest;
+import com.seveneleven.entity.project.CheckResult;
 import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.project.dto.*;
@@ -43,6 +44,9 @@ public interface ProjectChecklistService {
             Member member,
             String ip
     );
+
+    CheckRequest getCheckRequest(Long checklistId);
+    CheckResult getCheckResult(Long checklistId);
 
     void postCheckRejectFiles(
             Long applicationId,

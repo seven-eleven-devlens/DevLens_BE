@@ -186,6 +186,14 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 .body(APIResponse.success(SuccessCode.OK, response));
     }
 
+    @GetMapping("/application/{applicationId}/result")
+    public ResponseEntity<APIResponse<GetApplicationResult.Response>> getProjectApplicationResult(
+            @PathVariable Long applicationId
+    ) {
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.getApplicationResult(applicationId)));
+    }
+
     /**
      * 함수명 : postProjectChecklistRejectFiles
      * 체크리스트 승인 요청 반려 사유에 파일을 등록하는 함수

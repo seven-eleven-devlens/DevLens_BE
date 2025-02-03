@@ -3,6 +3,7 @@ package com.seveneleven.project.service;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.project.CheckRequest;
+import com.seveneleven.entity.project.CheckResult;
 import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
@@ -28,6 +29,7 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
     private final ChecklistReader checklistReader;
     private final ChecklistStore checklistStore;
     private final CheckRequestReader checkRequestReader;
+    private final CheckResultReader checkResultReader;
     private final CheckRequestFileReader checkRequestFileReader;
     private final CheckRequestStore checkRequestStore;
     private final CheckResultStore checkResultStore;
@@ -146,6 +148,16 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
         return checkResultStore.postApplicationReject(
                 checkRequest, member, ip, requestDto.getRejectReason()
         );
+    }
+
+    @Override
+    public CheckRequest getCheckRequest(Long checklistId) {
+        return checkRequestReader.read(checklistId);
+    }
+
+    @Override
+    public CheckResult getCheckResult(Long checklistId) {
+        return checkResultReader.read(checklistId);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.seveneleven.project.dto;
 
 import com.seveneleven.entity.project.CheckRequest;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class GetProjectChecklistApplication {
 
+    @Getter
     @NoArgsConstructor
     public static class Response {
         Long id;
