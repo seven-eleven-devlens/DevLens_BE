@@ -147,7 +147,7 @@ public class MemberController implements MemberDocs{
      */
     private ResponseCookie createCookie(String name, String value, Long maxAge) {
         return ResponseCookie.from(name, value)
-                .httpOnly(true) // 클라이언트 측 스크립트에서 쿠키 접근 방지
+                .httpOnly(false) // 클라이언트 측 스크립트에서 쿠키 접근 가능
                 .secure(true) // HTTPS 환경에서만 전송
                 .path("/") // 쿠키가 모든 경로에서 유효하도록 설정
                 .maxAge(maxAge) // 쿠키 만료 시간 설정
