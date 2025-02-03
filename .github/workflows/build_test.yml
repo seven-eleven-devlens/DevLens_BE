@@ -31,6 +31,7 @@ jobs:
       SPRING_MAIL_PASSWORD: ${{ secrets.SPRING_MAIL_PASSWORD }}
       SPRING_REDIS_HOST: ${{ secrets.SPRING_REDIS_HOST }}
       SPRING_REDIS_PORT: ${{ secrets.SPRING_REDIS_PORT }}
+      SPRING_PROFILES_ACTIVE: ${{ secrets.SPRING_PROFILES_ACTIVE }}
 
     permissions:
       pull-requests: write
