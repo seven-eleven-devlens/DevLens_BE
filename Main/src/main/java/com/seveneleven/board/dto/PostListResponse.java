@@ -2,9 +2,9 @@ package com.seveneleven.board.dto;
 
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.PostStatus;
+import com.seveneleven.entity.board.constant.TaskPriority;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,7 +17,7 @@ public class PostListResponse {
     private Long parentPostId;
     private Long postId;
     private PostStatus status;
-    private Integer priority;
+    private TaskPriority priority;
     private String title;
     private String writer;              // 작성자
     private LocalDateTime createDate;   // 작성일자

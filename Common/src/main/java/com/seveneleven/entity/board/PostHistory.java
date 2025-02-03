@@ -2,6 +2,7 @@ package com.seveneleven.entity.board;
 
 import com.seveneleven.entity.board.constant.PostAction;
 import com.seveneleven.entity.board.constant.PostStatus;
+import com.seveneleven.entity.board.constant.TaskPriority;
 import com.seveneleven.entity.global.BaseEntity;
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.global.converter.YesNoConverter;
@@ -28,6 +29,7 @@ public class PostHistory extends BaseEntity {
         status : 상태 (DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD)
         title : 제목
         content : 내용
+        writer : 작성자 이름
         deadline : 마감일자
         action : 작업 종류 (CREATE, UPDATE, DELETE)
         registerIp : 등록자 IP
@@ -54,7 +56,7 @@ public class PostHistory extends BaseEntity {
     private YesNo isPinnedPost;
 
     @Column(name = "priority")
-    private Integer priority;
+    private TaskPriority priority;
 
     @Column(name = "status", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
@@ -65,6 +67,9 @@ public class PostHistory extends BaseEntity {
 
     @Column(name = "content", columnDefinition = "TEXT")
     private String content;
+
+    @Column(name = "writer", nullable = false)
+    private String writer;
 
     @Column(name = "deadline")
     private LocalDate deadline;
@@ -80,7 +85,7 @@ public class PostHistory extends BaseEntity {
     private String modifierIp; // 수정자 IP
 
     // 게시글 이력 생성
-    public static PostHistory createPostHistory(Post post, PostAction action) {
+    public static PostHistory createPostHistory(Post post, PostAction action, String ip) {
         PostHistory postHistory = new PostHistory();
         postHistory.projectStepId = post.getProjectStep().getId();
         postHistory.parentPostId = postHistory.getParentPostId();
@@ -90,9 +95,11 @@ public class PostHistory extends BaseEntity {
         postHistory.status = post.getStatus();
         postHistory.title = post.getTitle();
         postHistory.content = post.getContent();
+        postHistory.writer = post.getWriter();
         postHistory.deadline = post.getDeadline();
         postHistory.action = action;
-        postHistory.registeredIp = post.getModifierIp();
+        postHistory.registeredIp = ip;
+        postHistory.modifierIp = ip;
 
         return postHistory;
     }
