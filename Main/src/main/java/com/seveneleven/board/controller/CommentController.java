@@ -3,9 +3,11 @@ package com.seveneleven.board.controller;
 import com.seveneleven.board.dto.DeleteCommentRequest;
 import com.seveneleven.board.dto.PatchCommentRequest;
 import com.seveneleven.board.dto.PostCommentRequest;
-import com.seveneleven.board.service.CommentServiceImpl;
+import com.seveneleven.board.service.CommentService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +17,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/posts/{postId}/comments")
 public class CommentController implements CommentDocs {
 
-    private final CommentServiceImpl commentService;
+    private final CommentService commentService;
 
     @PostMapping()
     @Override
     public ResponseEntity<APIResponse<SuccessCode>> createComment(@PathVariable Long postId,
-                                                                  @RequestBody PostCommentRequest postCommentRequest
+                                                                  @Valid @RequestBody PostCommentRequest postCommentRequest,
+                                                                  HttpServletRequest request
     ) throws Exception {
         commentService.createComment(postId, postCommentRequest);
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
@@ -31,8 +34,9 @@ public class CommentController implements CommentDocs {
     @Override
     public ResponseEntity<APIResponse<SuccessCode>> updateComment(@PathVariable Long postId,
                                                                   @PathVariable Long commentId,
-                                                                  @RequestBody PatchCommentRequest patchCommentRequest
-    ) {
+                                                                  @RequestBody PatchCommentRequest patchCommentRequest,
+                                                                  HttpServletRequest request
+    ) throws Exception {
         commentService.updateComment(postId, commentId, patchCommentRequest);
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED));
@@ -42,7 +46,8 @@ public class CommentController implements CommentDocs {
     @Override
     public ResponseEntity<APIResponse<SuccessCode>> deleteComment(@PathVariable Long postId,
                                                                   @PathVariable Long commentId,
-                                                                  @RequestBody DeleteCommentRequest deleteCommentRequest
+                                                                  @RequestBody DeleteCommentRequest deleteCommentRequest,
+                                                                  HttpServletRequest request
     ) throws Exception {
         commentService.deleteComment(postId, commentId, deleteCommentRequest);
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())

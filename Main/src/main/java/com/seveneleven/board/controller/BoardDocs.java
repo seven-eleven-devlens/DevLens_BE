@@ -2,8 +2,9 @@ package com.seveneleven.board.controller;
 
 import com.seveneleven.board.dto.*;
 import com.seveneleven.entity.board.constant.PostFilter;
+import com.seveneleven.entity.board.constant.PostSort;
 import com.seveneleven.response.APIResponse;
-import com.seveneleven.response.PageResponse;
+import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.dto.LinkInput;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,11 +13,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Tag(name = "Post API", description = "게시글 관련 API")
 public interface BoardDocs {
@@ -51,22 +51,29 @@ public interface BoardDocs {
                             name = "keyword",
                             description = "검색 키워드",
                             required = false,
-                            example = "디자인 시안"
+                            example = "기능정의서"
                     ),
                     @Parameter(
                             name = "filter",
-                            description = "필터 조건 (TITLE, CONTENT, WRITER)",
+                            description = "필터 조건 (ALL, TITLE, CONTENT, WRITER)",
                             required = false,
-                            example = "TITLE"
+                            example = "ALL"
+                    ),
+                    @Parameter(
+                            name = "sortType",
+                            description = "정렬 조건 (NEWEST, OLDEST)",
+                            required = false,
+                            example = "NEWEST"
                     )
             }
     )
     @GetMapping("/steps/{projectStepId}")
-    public ResponseEntity<APIResponse<PageResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
-                                                                                   @RequestParam(defaultValue = "0") Integer page,
-                                                                                   @RequestParam(required = false) String keyword,
-                                                                                   @RequestParam(required = false) PostFilter filter
-    ) throws Exception;
+    ResponseEntity<APIResponse<PaginatedResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
+                                                                                 @RequestParam(defaultValue = "0") Integer page,
+                                                                                 @RequestParam(required = false) String keyword,
+                                                                                 @RequestParam(defaultValue = "ALL", required = false) PostFilter filter,
+                                                                                 @RequestParam(defaultValue = "NEWEST", required = false) PostSort sortType
+    );
 
     // 조회
     @Operation(
@@ -92,7 +99,7 @@ public interface BoardDocs {
             }
     )
     @GetMapping("/{postId}")
-    ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) throws Exception;
+    ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId);
 
     // 생성
     @Operation(
@@ -110,9 +117,10 @@ public interface BoardDocs {
             }
     )
     @PostMapping()
-    ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestBody PostCreateRequest postCreateRequest
+    ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestBody PostCreateRequest postCreateRequest,
+                                                        HttpServletRequest request
 
-    ) throws Exception;
+    );
 
     // 수정
     @Operation(
@@ -139,8 +147,9 @@ public interface BoardDocs {
     )
     @PutMapping("/{postId}")
     ResponseEntity<APIResponse<SuccessCode>> updatePost(@PathVariable Long postId,
-                                                        @RequestBody PostUpdateRequest postUpdateRequest
-    ) throws Exception;
+                                                        @RequestBody PostUpdateRequest postUpdateRequest,
+                                                        HttpServletRequest request
+    );
 
     // 삭제
     @Operation(
@@ -159,6 +168,7 @@ public interface BoardDocs {
     )
     @DeleteMapping("/{postId}/{registerId}")
     ResponseEntity<APIResponse<SuccessCode>> deletePost(@PathVariable Long postId,
-                                                        @PathVariable Long registerId
-    ) throws Exception;
+                                                        @PathVariable Long registerId,
+                                                        HttpServletRequest request
+    );
 }

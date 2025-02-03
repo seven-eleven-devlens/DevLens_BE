@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,7 +41,8 @@ public interface CommentDocs {
     )
     @PostMapping()
     ResponseEntity<APIResponse<SuccessCode>> createComment(@PathVariable Long postId,
-                                                           @RequestBody PostCommentRequest postCommentRequest
+                                                           @RequestBody PostCommentRequest postCommentRequest,
+                                                           HttpServletRequest request
     ) throws Exception;
 
     @Operation(
@@ -74,7 +76,8 @@ public interface CommentDocs {
     @PatchMapping("/{commentId}")
     ResponseEntity<APIResponse<SuccessCode>> updateComment(@PathVariable Long postId,
                                                            @PathVariable Long commentId,
-                                                           @RequestBody PatchCommentRequest patchCommentRequest
+                                                           @RequestBody PatchCommentRequest patchCommentRequest,
+                                                           HttpServletRequest request
     ) throws Exception;
 
     @Operation(
@@ -108,6 +111,7 @@ public interface CommentDocs {
     @DeleteMapping("{commentId}")
     ResponseEntity<APIResponse<SuccessCode>> deleteComment(@PathVariable Long postId,
                                                            @PathVariable Long commentId,
-                                                           @RequestBody DeleteCommentRequest deleteCommentRequest
+                                                           @RequestBody DeleteCommentRequest deleteCommentRequest,
+                                                           HttpServletRequest request
     ) throws Exception;
 }

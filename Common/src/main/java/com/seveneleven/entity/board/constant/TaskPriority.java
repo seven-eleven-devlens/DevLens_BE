@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum PostFilter {
-    ALL("모두"),
-    TITLE("제목"),
-    CONTENT("내용"),
-    WRITER("작성자");
+public enum TaskPriority {
+    DEFAULT("기본"),
+    LOW("낮음"),
+    MEDIUM("중간"),
+    HIGH("높음");
 
     private final String description;
 }
