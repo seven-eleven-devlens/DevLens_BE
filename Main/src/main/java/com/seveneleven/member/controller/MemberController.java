@@ -149,23 +149,25 @@ public class MemberController implements MemberDocs{
      * @return 생성된 ResponseCookie
      */
     private ResponseCookie createCookie(String name, String value, Long maxAge) {
-        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value);
-//                .httpOnly(false)
-//                .secure(false)
-//                .path("/")
-//                .sameSite("Lax")
-//                .maxAge(maxAge);
-
-        // 배포 환경에서만 도메인 적용
-        if (true) { //"prod".equals(mod))
-            cookieBuilder.domain(".devlens.work");
-            cookieBuilder.secure(true);
-            cookieBuilder.httpOnly(true);
-            cookieBuilder.sameSite("None");
-            cookieBuilder.maxAge(maxAge);
-            cookieBuilder.path("/");
-        }
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
+                .domain(".devlens.work")
+                .secure(true)
+                .httpOnly(true)
+                .sameSite("None")
+                .maxAge(maxAge)
+                .path("/");
 
         return cookieBuilder.build();
+
+//        // 배포 환경에서만 도메인 적용
+//        if (true) { //"prod".equals(mod))
+//            cookieBuilder.domain(".devlens.work");
+//            cookieBuilder.secure(true);
+//            cookieBuilder.httpOnly(true);
+//            cookieBuilder.sameSite("None");
+//            cookieBuilder.maxAge(maxAge);
+//            cookieBuilder.path("/");
+//        }
+
     }
 }
