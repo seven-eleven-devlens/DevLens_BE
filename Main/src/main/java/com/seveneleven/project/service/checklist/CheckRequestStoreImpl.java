@@ -5,8 +5,10 @@ import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.CheckRequest;
 import com.seveneleven.entity.project.CheckRequestHistory;
 import com.seveneleven.entity.project.Checklist;
+import com.seveneleven.exception.BusinessException;
 import com.seveneleven.project.dto.PostProjectChecklistApplication;
 import com.seveneleven.project.repository.CheckRequestRepository;
+import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.file.Service.LinkService;
 import com.seveneleven.util.file.dto.LinkInput;
@@ -48,6 +50,11 @@ public class CheckRequestStoreImpl implements CheckRequestStore {
                         linkInput.getLinkTitle(),
                         linkInput.getLink()
                 )).collect(Collectors.toList());
+
+        //링크 갯수 판별
+        if(linkPayloads.size() + linkService.countLinks(LinkCategory.CHECK_APPROVE_REQUEST_LINK, savedRequest.getId()) > 10){
+            throw new BusinessException(ErrorCode.LINK_QUANTITY_EXCEED_ERROR);
+        }
 
         //링크 리스트 업로드
         for(LinkPayload linkPayload : linkPayloads) {

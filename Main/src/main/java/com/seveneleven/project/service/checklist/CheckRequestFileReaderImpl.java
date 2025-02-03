@@ -47,7 +47,7 @@ public class CheckRequestFileReaderImpl implements CheckRequestFileReader {
     }
 
     /**
-     * 2. 체크 요청 파일 목록 조회
+     * 2. 체크 요청 반려 파일 목록 조회
      * 함수명 : readCheckRequestRejectFiles
      * @param checkRequest 체크 요청
      */
