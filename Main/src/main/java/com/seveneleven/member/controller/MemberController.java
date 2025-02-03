@@ -150,10 +150,10 @@ public class MemberController implements MemberDocs{
      */
     private ResponseCookie createCookie(String name, String value, Long maxAge) {
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
-                .httpOnly(true)
+                .httpOnly(false)
                 .secure(false)
                 .path("/")
-                .sameSite("Lax")
+//                .sameSite("Lax")
                 .maxAge(maxAge);
 
         log.info(mod+" 환경 모드입니다. [Main] ");
@@ -161,7 +161,8 @@ public class MemberController implements MemberDocs{
         // 배포 환경에서만 도메인 적용
         if ("prod".equals(mod)) {
             cookieBuilder.domain("devlens.work");
-            cookieBuilder.secure(true);
+//            cookieBuilder.secure(true);
+//            cookieBuilder..sameSite("None");
         }
 
         return cookieBuilder.build();
