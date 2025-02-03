@@ -8,9 +8,8 @@ import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.service.MemberMgmtService;
+import com.seveneleven.service.AdminMemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,9 +28,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
-public class MemberMgmtController implements AdminMemberDocs {
+public class AdminMemberController implements AdminMemberDocs {
 
-    private final MemberMgmtService memberMgmtService;
+    private final AdminMemberService memberMgmtService;
 //    @Value("${spring.profiles.active}")
 //    private String mod;
 

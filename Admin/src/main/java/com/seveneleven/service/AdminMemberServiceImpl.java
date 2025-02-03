@@ -34,7 +34,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class MemberMgmtServiceImpl implements MemberMgmtService{
+public class AdminMemberServiceImpl implements AdminMemberService {
 
 
     private final AuthenticationManagerBuilder authenticationMngrBuilder;

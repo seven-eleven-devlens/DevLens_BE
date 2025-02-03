@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
-public interface MemberMgmtService {
+public interface AdminMemberService {
     LoginPost.Response login(LoginPost.Request request);
 
     Page<MemberDto.Response> getFilteredMembers(String name, MemberStatus status, Role role, String loginId, Pageable pageable);
