@@ -203,20 +203,20 @@ public class AdminMemberController implements AdminMemberDocs {
      * @return 생성된 ResponseCookie
      */
     private ResponseCookie createCookie(String name, String value, Long maxAge) {
-
-        ResponseCookie.ResponseCookieBuilder cookie = ResponseCookie.from(name, value)
+        ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
+                //.secure("prod".equals(mod))
                 .path("/")
                 .maxAge(maxAge)
-                .sameSite("None");
+                .sameSite("Lax");
 
         // 배포 환경에서만 도메인 적용
         if ("prod".equals(mod)) {
-            cookie.domain("devlens.work");
+            cookieBuilder.domain("devlens.work");
         }
 
-        return cookie.build();
+        return cookieBuilder.build();
     }
 
 }
