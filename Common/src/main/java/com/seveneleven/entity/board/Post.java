@@ -60,6 +60,7 @@ public class Post extends BaseEntity {
     private Integer childPostNum;
 
     @Column(name = "priority")
+    @Enumerated(EnumType.STRING)
     private TaskPriority priority; // 우선순위 (DEFAULT, LOW, MEDIUM, HIGH)
 
     @Column(name = "status", nullable = false, length = 50)
