@@ -12,8 +12,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOriginPatterns(
                         "http://localhost:3000",
-                        "https://www.devlens.work",
                         "https://devlens.work",
+                        "https://www.devlens.work",
                         "https://api.devlens.work",
                         "https://local.devlens.work")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")

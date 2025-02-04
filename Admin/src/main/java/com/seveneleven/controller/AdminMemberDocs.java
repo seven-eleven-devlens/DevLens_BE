@@ -1,6 +1,7 @@
 package com.seveneleven.controller;
 
 
+import com.seveneleven.dto.GetMemberList;
 import com.seveneleven.dto.MemberDto;
 import com.seveneleven.dto.MemberUpdate;
 import com.seveneleven.entity.member.constant.MemberStatus;
@@ -37,21 +38,10 @@ public interface AdminMemberDocs {
                                     schema = @Schema(implementation = APIResponse.class)
                             )
                     )
-            },
-            parameters = {
-                    @Parameter(name = "name", description = "회원 이름"),
-                    @Parameter(name = "status", description = "회원 상태"),
-                    @Parameter(name = "role", description = "회원 역할"),
-                    @Parameter(name = "loginId", description = "로그인 ID"),
-                    @Parameter(name = "pageable", description = "페이징 정보")
             }
     )
     @GetMapping("/members")
-    ResponseEntity<APIResponse<Page<MemberDto.Response>>> getFilteredMembers(@RequestParam(required = false) String name,
-                                                                            @RequestParam(required = false) MemberStatus status,
-                                                                            @RequestParam(required = false) Role role,
-                                                                            @RequestParam(required = false) String loginId,
-                                                                            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable);
+    ResponseEntity<APIResponse<GetMemberList.Response>> getFilteredMembers( GetMemberList.Request memberList );
 
 
     @Operation(
@@ -122,11 +112,11 @@ public interface AdminMemberDocs {
                     )
             },
             parameters = {
-                    @Parameter(name = "loginId", description = "수정할 회원의 ID", required = true, example = "john123")
+                    @Parameter(name = "memberId", description = "수정할 회원의 ID", required = true, example = "1")
             }
     )
-    @PatchMapping("/members/{loginId}")
-    ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@PathVariable String loginId,
+    @PatchMapping("/members/{memberId}")
+    ResponseEntity<APIResponse<MemberDto.Response>> updateMember(@PathVariable Long memberId,
                                                                  @RequestBody MemberUpdate.PatchRequest memberDto);
 
 
@@ -144,11 +134,11 @@ public interface AdminMemberDocs {
                     )
             },
             parameters = {
-                    @Parameter(name = "loginId", description = "삭제할 회원의 ID", required = true, example = "john123")
+                    @Parameter(name = "memberId", description = "삭제할 회원의 ID", required = true, example = "1")
             }
     )
     @DeleteMapping("/members/{loginId}")
-    ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable String loginId);
+    ResponseEntity<APIResponse<SuccessCode>> deleteMember(@PathVariable Long memberId);
 
     @Operation(
             summary = "비밀번호 초기화",
@@ -164,9 +154,9 @@ public interface AdminMemberDocs {
                     )
             },
             parameters = {
-                    @Parameter(name = "loginId", description = "비밀번호를 초기화할 회원의 ID", required = true, example = "john123")
+                    @Parameter(name = "memberId", description = "비밀번호를 초기화할 회원의 ID", required = true, example = "1")
             }
     )
-    @PatchMapping("/members/{loginId}/reset-password")
-    ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(@PathVariable String loginId);
+    @PatchMapping("/members/{memberId}/reset-password")
+    ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(@PathVariable Long memberId);
 }

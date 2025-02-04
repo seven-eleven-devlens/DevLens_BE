@@ -6,7 +6,7 @@ import com.seveneleven.entity.board.constant.PostSort;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.file.dto.LinkInput;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,8 +15,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @Tag(name = "Post API", description = "게시글 관련 API")
 public interface BoardDocs {
@@ -117,7 +117,8 @@ public interface BoardDocs {
             }
     )
     @PostMapping()
-    ResponseEntity<APIResponse<SuccessCode>> createPost(@RequestBody PostCreateRequest postCreateRequest,
+    ResponseEntity<APIResponse<SuccessCode>> createPost(@AuthenticationPrincipal CustomUserDetails user,
+                                                        @RequestBody PostCreateRequest postCreateRequest,
                                                         HttpServletRequest request
 
     );
@@ -146,7 +147,8 @@ public interface BoardDocs {
             }
     )
     @PutMapping("/{postId}")
-    ResponseEntity<APIResponse<SuccessCode>> updatePost(@PathVariable Long postId,
+    ResponseEntity<APIResponse<SuccessCode>> updatePost(@AuthenticationPrincipal CustomUserDetails user,
+                                                        @PathVariable Long postId,
                                                         @RequestBody PostUpdateRequest postUpdateRequest,
                                                         HttpServletRequest request
     );
@@ -167,8 +169,8 @@ public interface BoardDocs {
             }
     )
     @DeleteMapping("/{postId}/{registerId}")
-    ResponseEntity<APIResponse<SuccessCode>> deletePost(@PathVariable Long postId,
-                                                        @PathVariable Long registerId,
+    ResponseEntity<APIResponse<SuccessCode>> deletePost(@AuthenticationPrincipal CustomUserDetails user,
+                                                        @PathVariable Long postId,
                                                         HttpServletRequest request
     );
 }

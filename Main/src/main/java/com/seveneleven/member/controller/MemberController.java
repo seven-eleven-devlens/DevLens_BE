@@ -29,8 +29,8 @@ public class MemberController implements MemberDocs{
 
     private final MemberService memberService;
     private final MailService mailService;
-//    @Value("${spring.profiles.active}")
-//    private String mod;
+    @Value("${spring.profiles.active}")
+    private String mod;
 
     /**
      * 함수명 : login
@@ -59,6 +59,9 @@ public class MemberController implements MemberDocs{
                 response.getRefreshToken(),
                 response.getExpiredRefresh()/ 1000
         );
+
+        log.info("[Main] 액세스 토큰 발급 : "+accessTokenCookie.toString());
+        log.info("[Main] 리프레시 토큰 발급 : "+refreshTokenCookie.toString());
 
         // HTTP 응답에 쿠키 추가
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -149,17 +152,21 @@ public class MemberController implements MemberDocs{
      * @return 생성된 ResponseCookie
      */
     private ResponseCookie createCookie(String name, String value, Long maxAge) {
+
+        log.info("[Main] "+mod+" 환경에서 토큰 발급 중 ...");
+
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
-                .httpOnly(true)
                 .secure(true)
-                .path("/")
+                .httpOnly(true)
+                .sameSite("None")
                 .maxAge(maxAge)
-                .sameSite("None");
+                .path("/");
+
 
         // 배포 환경에서만 도메인 적용
-//        if ("prod".equals(mod)) {
-//            cookieBuilder.domain("devlens.work");
-//        }
+        if ("prod".equals(mod)) {
+            cookieBuilder.domain(".devlens.work");
+        }
 
         return cookieBuilder.build();
     }

@@ -17,7 +17,4 @@ public class PostCommentRequest {
     @NotBlank
     @Size(min = 1, max = 300)
     private String content;
-
-    @NotBlank
-    private String registerIp;
 }

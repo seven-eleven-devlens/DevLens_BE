@@ -2,7 +2,6 @@ package com.seveneleven.board.dto;
 
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.board.constant.TaskPriority;
-import com.seveneleven.entity.global.YesNo;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,9 +26,6 @@ public class PostUpdateRequest {
     @NotNull
     private Long postId;            // 게시물 ID
 
-    @NotNull
-    private YesNo isPinnedPost;     // 상단고정여부
-
     private TaskPriority priority;  // 우선순위
 
     @NotNull
@@ -45,7 +41,4 @@ public class PostUpdateRequest {
 
     @Nullable
     private LocalDate deadline;     // 마감일자
-
-    @NotNull
-    private Long modifierId;        // 수정자 ID
 }

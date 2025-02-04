@@ -4,8 +4,6 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.dto.*;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
-import com.seveneleven.entity.member.constant.MemberStatus;
-import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.MemberValidator;
@@ -16,7 +14,9 @@ import com.seveneleven.util.security.dto.TokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -26,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 회원 관리 서비스 클래스.
@@ -34,7 +36,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor
-public class MemberMgmtServiceImpl implements MemberMgmtService{
+public class AdminMemberServiceImpl implements AdminMemberService {
 
 
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
@@ -50,7 +52,7 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
      * @param request 로그인 요청 정보 (로그인 ID와 비밀번호 포함)
      * @return 생성된 JWT 토큰
      */
-    @jakarta.transaction.Transactional
+    @Transactional
     public LoginPost.Response login(LoginPost.Request request) {
 
         Member member = memberRepository.findByLoginId(request.getLoginId())
@@ -77,27 +79,41 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
      * 함수명 : getFilteredMembers
      * 필터 조건에 따라 회원 목록을 조회합니다.
      *
-     * @param name     회원 이름 필터 (옵션).
-     * @param status   회원 상태 필터 (옵션).
-     * @param role     회원 역할 필터 (옵션).
-     * @param loginId  로그인 ID 필터 (옵션).
-     * @param pageable 페이징 정보.
+     * @param memberList    회원 검색/페이징 옵션.
      * @return 필터 조건에 맞는 회원 목록.
      */
     @Transactional(readOnly = true)
-    public Page<MemberDto.Response> getFilteredMembers(
-            String name, MemberStatus status, Role role, String loginId, Pageable pageable) {
+    public GetMemberList.Response getFilteredMembers( GetMemberList.Request memberList) {
+
+        int page = Objects.nonNull(memberList.getPage())? memberList.getPage() : 0;
+        int size = Objects.nonNull(memberList.getSize())? memberList.getSize() : 10;
+        String sortName = Objects.nonNull(memberList.getSort())? memberList.getSort() : "id";
+        String direction = Objects.nonNull(memberList.getDirection())? memberList.getDirection() : "asc";
+
+        // 정렬 정보 생성
+        Sort sort = Sort.by(Sort.Direction.fromString(direction), sortName);
+
+        // pageable 생성
+        Pageable pageable = PageRequest.of(page, size, sort);
+
 
         Specification<Member> spec = Specification
-                .where(MemberSpecification.hasName(name))
-                .and(MemberSpecification.hasStatus(status))
-                .and(MemberSpecification.hasRole(role))
-                .and(MemberSpecification.hasLoginId(loginId));
+                .where(MemberSpecification.hasName(memberList.getName()))
+                .and(MemberSpecification.hasStatus(memberList.getStatus()))
+                .and(MemberSpecification.hasRole(memberList.getRole()))
+                .and(MemberSpecification.hasLoginId(memberList.getLoginId()));
 
         Page<Member> members = memberRepository.findAll(spec, pageable);
 
-        // 엔티티 -> DTO 변환
-        return members.map(MemberDto::fromEntity);
+        // Page 객체에서 필요한 데이터만 추출하여 GetMemberList.Response로 변환
+        return new GetMemberList.Response(
+                members.getContent().stream().map(MemberDto::fromEntity).toList(),
+                members.getNumber(),
+                members.getSize(),
+                members.getTotalElements(),
+                members.getTotalPages(),
+                members.isLast()
+        );
     }
 
     /**
@@ -111,7 +127,15 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
     public MemberDto.Response getMemberDetail(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-        return MemberDto.fromEntity(member);
+
+        Company company = companyRepository.findByIdAndIsActive( member.getCompany().getId(), YN.Y)
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+
+        MemberDto.Response response = MemberDto.fromEntity(member);
+                           response.setCompanyId(company.getId());
+                           response.setCompany(company.getCompanyName());
+
+        return response;
     }
 
     /**
@@ -197,14 +221,14 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
      * 함수명 : updateMember
      * 회원 정보를 수정합니다.
      *
-     * @param loginId       수정할 회원의 ID.
+     * @param memberId       수정할 회원의 ID.
      * @param memberDto 수정할 회원의 요청 데이터.
      * @return 수정된 회원의 응답 DTO.
      */
     @Transactional
-    public MemberDto.Response updateMember(String loginId, MemberUpdate.PatchRequest memberDto){
+    public MemberDto.Response updateMember(Long memberId, MemberUpdate.PatchRequest memberDto){
 
-        Member member = memberRepository.findByLoginId(loginId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         Company company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
@@ -220,12 +244,12 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
      * 함수명 : deleteMember
      * 회원을 삭제(상태 변경)합니다.
      *
-     * @param loginId 삭제할 회원의 ID.
+     * @param memberId 삭제할 회원의 ID.
      */
     @Transactional
-    public void deleteMember(String loginId) {
+    public void deleteMember(Long memberId) {
         // 회원 조회
-        Member member = memberRepository.findByLoginId(loginId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 상태 확인 및 예외 처리
@@ -248,13 +272,13 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
      * 함수명 : resetPassword
      * 회원 비밀번호를 초기화합니다.
      *
-     * @param loginId 비밀번호를 초기화할 회원의 로그인 ID.
+     * @param memberId 비밀번호를 초기화할 회원의 로그인 ID.
      * @return 초기화된 임시 비밀번호.
      */
     @Transactional
-    public MemberUpdate.PatchResponse resetPassword(String loginId) {
+    public MemberUpdate.PatchResponse resetPassword(Long memberId) {
         // 1. 회원 조회
-        Member member = memberRepository.findByLoginId(loginId)
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 임시 비밀번호 생성
@@ -264,7 +288,7 @@ public class MemberMgmtServiceImpl implements MemberMgmtService{
         member.resetPassword(passwordEncoder.encode(temporaryPassword));
 
         // 4. 생성된 비밀번호 반환
-        return new MemberUpdate.PatchResponse(loginId, temporaryPassword);
+        return new MemberUpdate.PatchResponse(memberId, temporaryPassword);
     }
 
 

@@ -3,7 +3,6 @@ package com.seveneleven.entity.board;
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.board.constant.TaskPriority;
 import com.seveneleven.entity.global.BaseEntity;
-import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.project.ProjectStep;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,8 +26,7 @@ public class Post extends BaseEntity {
         ref : 게시글 그룹 구분
         refOrder : 게시글 그룹 순서
         childPostNum : 자식 게시물 개수
-        isPinnedPost : 상단고정 여부 (Y, N)
-        priority : 우선순위 (1,2,3)
+        priority : 우선순위 (DEFAULT, LOW, MEDIUM, HIGH)
         status : 상태 (DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD)
         title : 제목
         content : 내용
@@ -61,11 +59,9 @@ public class Post extends BaseEntity {
     @Column(name = "child_post_num")
     private Integer childPostNum;
 
-    @Column(name = "is_pinned_post")
-    private YesNo isPinnedPost;
-
     @Column(name = "priority")
-    private TaskPriority priority;
+    @Enumerated(EnumType.STRING)
+    private TaskPriority priority; // 우선순위 (DEFAULT, LOW, MEDIUM, HIGH)
 
     @Column(name = "status", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
@@ -96,7 +92,6 @@ public class Post extends BaseEntity {
             Long ref,
             Integer refOrder,
             Integer childPostNum,
-            YesNo isPinnedPost,
             TaskPriority priority,
             PostStatus status,
             String title,
@@ -112,7 +107,6 @@ public class Post extends BaseEntity {
         post.ref = ref;
         post.refOrder = refOrder;
         post.childPostNum = childPostNum;
-        post.isPinnedPost = isPinnedPost;
         post.priority = priority;
         post.status = status;
         post.title = title;
@@ -126,7 +120,6 @@ public class Post extends BaseEntity {
 
     // 게시글 수정
     public void updatePost(
-            YesNo isPinnedPost,
             TaskPriority priority,
             PostStatus status,
             String title,
@@ -134,7 +127,6 @@ public class Post extends BaseEntity {
             LocalDate deadline,
             String modifierIp
     ) {
-        this.isPinnedPost = isPinnedPost;
         this.priority = priority;
         this.status = status;
         this.title = title;

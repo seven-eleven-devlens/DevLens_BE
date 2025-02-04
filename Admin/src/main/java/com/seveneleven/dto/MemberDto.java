@@ -37,6 +37,8 @@ public class MemberDto {
         private MemberStatus status;
         private String phoneNumber;
         private LocalDate birthDate;
+        private Long companyId;
+        private String company;
         private String department;
         private String position;
 

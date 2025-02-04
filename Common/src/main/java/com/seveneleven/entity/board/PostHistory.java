@@ -4,8 +4,6 @@ import com.seveneleven.entity.board.constant.PostAction;
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.board.constant.TaskPriority;
 import com.seveneleven.entity.global.BaseEntity;
-import com.seveneleven.entity.global.YesNo;
-import com.seveneleven.entity.global.converter.YesNoConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,8 +22,7 @@ public class PostHistory extends BaseEntity {
         projectStepId : 프로젝트 단계 ID
         parentPostId : 부모 게시물 ID
         postId : 게시물 ID
-        isPinnedPost : 상단고정 여부 (Y, N)
-        priority : 우선순위 (1,2,3)
+        priority : 우선순위 (DEFAULT, LOW, MEDIUM, HIGH)
         status : 상태 (DEFAULT, IN_PROGRESS, ADDITION, COMPLETED, ON_HOLD)
         title : 제목
         content : 내용
@@ -50,13 +47,8 @@ public class PostHistory extends BaseEntity {
     @Column(name = "post_id", nullable = false)
     private Long postId;
 
-    @Column(name = "is_pinned_post")
-    @Convert(converter = YesNoConverter.class)
-    @Enumerated(EnumType.STRING)
-    private YesNo isPinnedPost;
-
     @Column(name = "priority")
-    private TaskPriority priority;
+    private TaskPriority priority; // 우선순위 (DEFAULT, LOW, MEDIUM, HIGH)
 
     @Column(name = "status", nullable = false, length = 50)
     @Enumerated(EnumType.STRING)
@@ -90,7 +82,6 @@ public class PostHistory extends BaseEntity {
         postHistory.projectStepId = post.getProjectStep().getId();
         postHistory.parentPostId = postHistory.getParentPostId();
         postHistory.postId = post.getId();
-        postHistory.isPinnedPost = post.getIsPinnedPost();
         postHistory.priority = post.getPriority();
         postHistory.status = post.getStatus();
         postHistory.title = post.getTitle();
