@@ -28,5 +28,5 @@ public interface AdminMemberService {
 
     void deleteMember(Long memberId);
 
-    MemberUpdate.PatchResponse resetPassword(HttpServletRequest reqIp, Long memberId);
+    MemberUpdate.PatchResponse resetPassword(HttpServletRequest request, Long memberId);
 }

@@ -10,7 +10,7 @@ public interface MemberService {
 
     LoginPost.Response login(LoginPost.Request request);
     void logout(String token);
-    MemberPatch.Response resetPassword(HttpServletRequest reqIp, CustomUserDetails userDetails, MemberPatch.Request request);
+    MemberPatch.Response resetPassword(HttpServletRequest request, CustomUserDetails userDetails, MemberPatch.Request requestDto);
 
     Long getCompanyIdById(Long memberId);
     Member getMember(Long memberId);

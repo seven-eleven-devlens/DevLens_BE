@@ -159,5 +159,5 @@ public interface AdminMemberDocs {
             }
     )
     @PatchMapping("/members/{memberId}/reset-password")
-    ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(HttpServletRequest reqIp, @PathVariable Long memberId);
+    ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(HttpServletRequest request, @PathVariable Long memberId);
 }

@@ -283,7 +283,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      * @return 초기화된 임시 비밀번호.
      */
     @Transactional
-    public MemberUpdate.PatchResponse resetPassword(HttpServletRequest reqIp, Long memberId) {
+    public MemberUpdate.PatchResponse resetPassword(HttpServletRequest request, Long memberId) {
         // 1. 회원 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -295,7 +295,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         member.resetPassword(passwordEncoder.encode(temporaryPassword));
 
         // 4. 비밀번호 재설정 암호화
-        String modifierIp = getIpUtil.getIpAddress(reqIp);
+        String modifierIp = getIpUtil.getIpAddress(request);
         MemberPasswordResetHistory m = MemberPasswordResetHistory.createPwdHistory(
                 member.getId(), member.getPassword(), member.getLoginId(), modifierIp
         );

@@ -136,9 +136,9 @@ public interface MemberDocs {
     )
     @PatchMapping("/members/reset-password")
     ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(
-            HttpServletRequest reqIp,
+            HttpServletRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestBody MemberPatch.Request request
+            @RequestBody MemberPatch.Request requestDto
     );
 
 }

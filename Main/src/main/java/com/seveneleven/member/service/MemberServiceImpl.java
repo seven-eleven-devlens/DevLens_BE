@@ -107,11 +107,11 @@ public class MemberServiceImpl implements MemberService{
      * 함수명 : resetPassword
      * 회원 비밀번호를 초기화합니다.
      *
-     * @param request 비밀번호를 재설정할 회원의 정보.
+     * @param requestDto 비밀번호를 재설정할 회원의 정보.
      * @return 비밀번호 재설정한 회원 LoginId
      */
     @Transactional
-    public MemberPatch.Response resetPassword(HttpServletRequest reqIp, CustomUserDetails userDetails, MemberPatch.Request request) {
+    public MemberPatch.Response resetPassword(HttpServletRequest request, CustomUserDetails userDetails, MemberPatch.Request requestDto) {
 
         if(Objects.isNull(userDetails)) {
             throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
@@ -122,15 +122,15 @@ public class MemberServiceImpl implements MemberService{
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 현재 비밀번호 확인
-        if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+        if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
         }
 
         // 3. 비밀번호 암호화 후 저장
-        member.resetPassword(passwordEncoder.encode(request.getNewPassword()));
+        member.resetPassword(passwordEncoder.encode(requestDto.getNewPassword()));
 
         // 4. 비밀번호 변경 이력 추가
-        String modifierIp = getIpUtil.getIpAddress(reqIp);
+        String modifierIp = getIpUtil.getIpAddress(request);
         MemberPasswordResetHistory m = MemberPasswordResetHistory.createPwdHistory(
                 member.getId(), member.getPassword(), member.getLoginId(), modifierIp
         );

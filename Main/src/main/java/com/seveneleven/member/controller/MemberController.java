@@ -135,12 +135,12 @@ public class MemberController implements MemberDocs{
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
     @PatchMapping("/members/reset-password")
-    public ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(  HttpServletRequest reqIp,
+    public ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(  HttpServletRequest request,
                                                                         @AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                        @RequestBody MemberPatch.Request request) {
+                                                                        @RequestBody MemberPatch.Request requestDto) {
 
         // 비밀번호 초기화
-        MemberPatch.Response response = memberService.resetPassword(reqIp, userDetails, request);
+        MemberPatch.Response response = memberService.resetPassword(request, userDetails, requestDto);
 
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())

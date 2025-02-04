@@ -190,10 +190,10 @@ public class AdminMemberController implements AdminMemberDocs {
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
     @PatchMapping("/admin/members/{memberId}/reset-password")
-    public ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(HttpServletRequest reqIp, @PathVariable Long memberId) {
+    public ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(HttpServletRequest request, @PathVariable Long memberId) {
 
         // 비밀번호 초기화
-        MemberUpdate.PatchResponse response = memberMgmtService.resetPassword(reqIp, memberId);
+        MemberUpdate.PatchResponse response = memberMgmtService.resetPassword(request, memberId);
 
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
