@@ -96,7 +96,7 @@ public class MemberServiceImpl implements MemberService{
         }
 
         // 2. Refresh Token 삭제
-        String memberId = tokenProvider.getMemberId(token); // Access Token에서 사용자 ID 추출
+        Long memberId = tokenProvider.getMemberId(token); // Access Token에서 사용자 ID 추출
         if (memberId != null) {
             refreshTokenRepository.delete(memberId); // 사용자와 연관된 Refresh Token 삭제
         }

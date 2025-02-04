@@ -165,8 +165,10 @@ public class TokenProvider implements InitializingBean {
      * @param token
      * @return Member ID
      */
-    public String getMemberId(String token) {
-        return parseClaims(token).get("memberId", String.class);
+    public Long getMemberId(String token) {
+        // 클레임에서 Integer로 가져온 후 Long으로 변환
+        Long memberId = parseClaims(token).get("memberId", Long.class);
+        return memberId;
     }
 
     /**
