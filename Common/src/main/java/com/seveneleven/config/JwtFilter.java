@@ -45,6 +45,9 @@ public class JwtFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
+        log.info("Request Come : {} {}", request.getMethod(), request.getRequestURI());
+        log.info("Request ContentType: {}", request.getContentType());
+
         String requestURI = request.getRequestURI(); // 요청 경로 확인
 
         // Refresh 요청은 필터를 통과시키도록 설정
