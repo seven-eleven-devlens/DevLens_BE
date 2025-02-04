@@ -61,6 +61,9 @@ public class MemberController implements MemberDocs{
                 response.getExpiredRefresh()/ 1000
         );
 
+        log.info("[Main] 액세스 토큰 발급 : "+accessTokenCookie.toString());
+        log.info("[Main] 리프레시 토큰 발급 : "+refreshTokenCookie.toString());
+
         // HTTP 응답에 쿠키 추가
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
@@ -153,25 +156,22 @@ public class MemberController implements MemberDocs{
      * @return 생성된 ResponseCookie
      */
     private ResponseCookie createCookie(String name, String value, Long maxAge) {
+
+        log.info("[Main] "+mod+" 환경에서 토큰 발급 중 ...");
+
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
-                //.domain(".devlens.work")
                 .secure(true)
                 .httpOnly(true)
                 .sameSite("None")
                 .maxAge(maxAge)
                 .path("/");
 
+
+        // 배포 환경에서만 도메인 적용
+        if ("prod".equals(mod)) {
+            cookieBuilder.domain(".devlens.work");
+        }
+
         return cookieBuilder.build();
-
-//        // 배포 환경에서만 도메인 적용
-//        if (true) { //"prod".equals(mod))
-//            cookieBuilder.domain(".devlens.work");
-//            cookieBuilder.secure(true);
-//            cookieBuilder.httpOnly(true);
-//            cookieBuilder.sameSite("None");
-//            cookieBuilder.maxAge(maxAge);
-//            cookieBuilder.path("/");
-//        }
-
     }
 }
