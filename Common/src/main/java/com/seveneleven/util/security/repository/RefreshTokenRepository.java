@@ -28,11 +28,11 @@ public class RefreshTokenRepository {
                         );
     }
 
-    public String findByUsername(String userId) {
-        return (String) redisTemplate.opsForValue().get(userId);
+    public String findByUsername(Long userId) {
+        return (String) redisTemplate.opsForValue().get(userId.toString());
     }
 
-    public void delete(String username) {
-        redisTemplate.delete(username);
+    public void delete(Long memberId) {
+        redisTemplate.delete(memberId.toString());
     }
 }

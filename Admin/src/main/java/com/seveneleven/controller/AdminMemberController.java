@@ -6,6 +6,7 @@ import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.service.AdminMemberService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -189,10 +190,10 @@ public class AdminMemberController implements AdminMemberDocs {
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
     @PatchMapping("/admin/members/{memberId}/reset-password")
-    public ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(@PathVariable Long memberId) {
+    public ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(HttpServletRequest request, @PathVariable Long memberId) {
 
         // 비밀번호 초기화
-        MemberUpdate.PatchResponse response = memberMgmtService.resetPassword(memberId);
+        MemberUpdate.PatchResponse response = memberMgmtService.resetPassword(request, memberId);
 
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
