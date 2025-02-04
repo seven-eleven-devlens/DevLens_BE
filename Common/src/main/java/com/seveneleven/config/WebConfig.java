@@ -13,6 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOriginPatterns(
                         "http://localhost:3000",
                         "https://devlens.work",
+                        "https://www.devlens.work",
                         "https://api.devlens.work",
                         "https://local.devlens.work")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
