@@ -6,6 +6,7 @@ import com.seveneleven.member.service.MemberService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.security.dto.CustomUserDetails;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -129,11 +130,12 @@ public class MemberController implements MemberDocs{
      *         HTTP 상태 코드는 200 OK로 반환됩니다.
      */
     @PatchMapping("/members/reset-password")
-    public ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                                      @RequestBody MemberPatch.Request request) {
+    public ResponseEntity<APIResponse<MemberPatch.Response>> resetPwd(  HttpServletRequest reqIp,
+                                                                        @AuthenticationPrincipal CustomUserDetails userDetails,
+                                                                        @RequestBody MemberPatch.Request request) {
 
         // 비밀번호 초기화
-        MemberPatch.Response response = memberService.resetPassword(userDetails, request);
+        MemberPatch.Response response = memberService.resetPassword(reqIp, userDetails, request);
 
         // 응답으로 임시 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
@@ -150,7 +152,7 @@ public class MemberController implements MemberDocs{
      */
     private ResponseCookie createCookie(String name, String value, Long maxAge) {
         ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
-                .domain(".devlens.work")
+                //.domain(".devlens.work")
                 .secure(true)
                 .httpOnly(true)
                 .sameSite("None")

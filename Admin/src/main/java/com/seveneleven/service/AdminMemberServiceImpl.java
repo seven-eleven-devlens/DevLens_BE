@@ -4,13 +4,18 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.dto.*;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
+import com.seveneleven.entity.member.MemberPasswordResetHistory;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.MemberValidator;
 import com.seveneleven.repository.AdminMemberRepository;
 import com.seveneleven.repository.CompanyRepository;
+import com.seveneleven.repository.PasswordHistoryRepository;
+import com.seveneleven.repository.ProfileHistoryRepository;
 import com.seveneleven.response.ErrorCode;
+import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.security.dto.TokenResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.domain.Page;
@@ -38,7 +43,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AdminMemberServiceImpl implements AdminMemberService {
 
-
+    private final GetIpUtil getIpUtil;
+    private final PasswordHistoryRepository passwordResetHistory;
+    private final ProfileHistoryRepository profileHistory;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
@@ -276,7 +283,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      * @return 초기화된 임시 비밀번호.
      */
     @Transactional
-    public MemberUpdate.PatchResponse resetPassword(Long memberId) {
+    public MemberUpdate.PatchResponse resetPassword(HttpServletRequest reqIp, Long memberId) {
         // 1. 회원 조회
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -286,6 +293,13 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
         // 3. 비밀번호 암호화 후 저장
         member.resetPassword(passwordEncoder.encode(temporaryPassword));
+
+        // 4. 비밀번호 재설정 암호화
+        String modifierIp = getIpUtil.getIpAddress(reqIp);
+        MemberPasswordResetHistory m = MemberPasswordResetHistory.createPwdHistory(
+                member.getId(), member.getPassword(), member.getLoginId(), modifierIp
+        );
+        passwordResetHistory.save(m);
 
         // 4. 생성된 비밀번호 반환
         return new MemberUpdate.PatchResponse(memberId, temporaryPassword);

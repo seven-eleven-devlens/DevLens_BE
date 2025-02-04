@@ -6,6 +6,7 @@ import com.seveneleven.dto.MemberDto;
 import com.seveneleven.dto.MemberUpdate;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.Role;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,5 +28,5 @@ public interface AdminMemberService {
 
     void deleteMember(Long memberId);
 
-    MemberUpdate.PatchResponse resetPassword(Long memberId);
+    MemberUpdate.PatchResponse resetPassword(HttpServletRequest reqIp, Long memberId);
 }

@@ -4,6 +4,8 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Member;
+import com.seveneleven.entity.member.MemberPasswordResetHistory;
+import com.seveneleven.entity.member.MemberProfileHistory;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
@@ -12,11 +14,15 @@ import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.CompanyRepository;
 import com.seveneleven.member.repository.MemberRepository;
+import com.seveneleven.member.repository.PasswordHistoryRepository;
+import com.seveneleven.member.repository.ProfileHistoryRepository;
+import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.security.repository.RefreshTokenRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,10 +38,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
 
+    private final GetIpUtil getIpUtil;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final PasswordHistoryRepository passwordResetHistory;
     private final FileMetadataRepository fileMetadataRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
@@ -103,7 +111,7 @@ public class MemberServiceImpl implements MemberService{
      * @return 비밀번호 재설정한 회원 LoginId
      */
     @Transactional
-    public MemberPatch.Response resetPassword(CustomUserDetails userDetails, MemberPatch.Request request) {
+    public MemberPatch.Response resetPassword(HttpServletRequest reqIp, CustomUserDetails userDetails, MemberPatch.Request request) {
 
         if(Objects.isNull(userDetails)) {
             throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
@@ -121,7 +129,15 @@ public class MemberServiceImpl implements MemberService{
         // 3. 비밀번호 암호화 후 저장
         member.resetPassword(passwordEncoder.encode(request.getNewPassword()));
 
-        // 4. 생성된 비밀번호 반환
+        // 4. 비밀번호 변경 이력 추가
+        String modifierIp = getIpUtil.getIpAddress(reqIp);
+        MemberPasswordResetHistory m = MemberPasswordResetHistory.createPwdHistory(
+                member.getId(), member.getPassword(), member.getLoginId(), modifierIp
+        );
+        passwordResetHistory.save(m);
+
+
+        // 5. 생성된 비밀번호 반환
         return new MemberPatch.Response(userDetails.getLoginId());
     }
 

@@ -53,7 +53,7 @@ public class MemberProfileHistory extends BaseEntity {
 
 
 
-    public static MemberProfileHistory createProfileHistory(Member member, String department, String position) {
+    public static MemberProfileHistory createProfileHistory(Member member) {
         MemberProfileHistory history = new MemberProfileHistory();
         history.memberId    = member.getId();
         history.memberEmail = member.getEmail();
@@ -63,8 +63,8 @@ public class MemberProfileHistory extends BaseEntity {
         history.email       = member.getEmail();
         history.birthDate   = member.getBirthDate();
         history.phoneNumber = member.getPhoneNumber();
-        history.department  = department;
-        history.position    = position;
+        history.department  = member.getDepartment();
+        history.position    = member.getPosition();
         return history;
     }
 

@@ -2,6 +2,7 @@ package com.seveneleven.member.service;
 
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
+import com.seveneleven.entity.member.MemberProfileHistory;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
@@ -9,6 +10,8 @@ import com.seveneleven.member.dto.MyPageGetMember;
 import com.seveneleven.member.dto.PatchMember;
 import com.seveneleven.member.repository.CompanyRepository;
 import com.seveneleven.member.repository.MemberRepository;
+import com.seveneleven.member.repository.PasswordHistoryRepository;
+import com.seveneleven.member.repository.ProfileHistoryRepository;
 import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ public class MyPageServiceImpl implements MyPageService{
 
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final ProfileHistoryRepository profileHistory;
 
     /**
      * 함수명 : getMember
@@ -75,6 +79,10 @@ public class MyPageServiceImpl implements MyPageService{
                              response.setCompanyId(company.getId());
                              response.setDepartment(memberDto.getDepartment());
                              response.setPosition(memberDto.getPosition());
+
+        // 회원 프로필 수정 이력 생성
+        profileHistory.save(MemberProfileHistory.createProfileHistory(updatedMember));
+
         return response;
     }
 

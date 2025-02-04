@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -158,5 +159,5 @@ public interface AdminMemberDocs {
             }
     )
     @PatchMapping("/members/{memberId}/reset-password")
-    ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(@PathVariable Long memberId);
+    ResponseEntity<APIResponse<MemberUpdate.PatchResponse>> resetPwd(HttpServletRequest reqIp, @PathVariable Long memberId);
 }
