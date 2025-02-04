@@ -83,7 +83,7 @@ public class MemberServiceImpl implements MemberService{
 
     /**
      * 함수명 : logout
-     * 로그아웃 처리 메서드. 주어진 토큰을 DB에서 찾아 상태를 BLACKLISTED로 변경하여 로그아웃 처리합니다.
+     * 로그아웃 처리 메서드. 주어진 토큰을 검증한 후, Refresh Token을 삭제 합니다.
      *
      * @param token 로그아웃할 사용자 토큰. "Bearer " 접두어가 포함될 수 있습니다.
      */

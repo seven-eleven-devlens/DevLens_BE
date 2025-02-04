@@ -82,6 +82,8 @@ public class MemberController implements MemberDocs{
     @PostMapping("/logout")
     public ResponseEntity<APIResponse<SuccessCode>> logout(@CookieValue("X-Access-Token") String accessToken) {
 
+        log.info("로그 아웃 액세스 토큰 : "+accessToken);
+
          memberService.logout(accessToken);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())

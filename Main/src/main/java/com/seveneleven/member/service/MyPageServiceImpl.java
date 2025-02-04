@@ -17,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class MyPageServiceImpl implements MyPageService{
@@ -66,8 +68,12 @@ public class MyPageServiceImpl implements MyPageService{
         Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
-        Company company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
-                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+        Company company = member.getCompany();
+
+        if(Objects.nonNull(memberDto.getCompanyId()) && memberDto.getCompanyId() != 0 ) {
+             company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
+                    .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+        }
 
         member.updateMember(member.getName(), memberDto.getEmail(), memberDto.getPhoneNumber(), member.getRole(), company,
                 memberDto.getDepartment(), memberDto.getPosition());
