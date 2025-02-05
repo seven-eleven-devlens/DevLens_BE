@@ -303,25 +303,6 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
 
     /**
-     * 함수명 : deleteCompanyMember
-     * 소속 회사 멤버를 모두 삭제합니다.
-     *
-     * @param company 삭제할 회사
-     */
-    @Override
-    @Transactional
-    public void deleteCompanyMember(Company company) {
-        // 1. 회원 조회
-        List<Member> members = memberRepository.findAllByCompany(company);
-
-        // 2. 회원 삭제
-        for (Member member : members) {
-            deleteMember(member.getId());
-        }
-    }
-
-
-    /**
      * 함수명 : generateTemporaryPassword
      * 대문자, 소문자, 숫자, 특수문자를 포함한 12자리 임시 비밀번호를 생성합니다.
      *
@@ -350,6 +331,24 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         TokenResponse tokens = tokenProvider.createTokens(authentication);
 
         return tokens;
+    }
+
+    /**
+     * 함수명 : deleteCompanyMember
+     * 소속 회사 멤버를 모두 삭제합니다.
+     *
+     * @param company 삭제할 회사
+     */
+    @Override
+    @Transactional
+    public void deleteCompanyMember(Company company) {
+        // 1. 회원 조회
+        List<Member> members = memberRepository.findAllByCompany(company);
+
+        // 2. 회원 삭제
+        for (Member member : members) {
+            deleteMember(member.getId());
+        }
     }
 
 }
