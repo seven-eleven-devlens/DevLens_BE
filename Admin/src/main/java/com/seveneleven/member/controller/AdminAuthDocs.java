@@ -34,20 +34,6 @@ public interface AdminAuthDocs {
                             responseCode = "401",
                             description = "인증 실패 또는 토큰 유효성 검증 실패"
                     )
-            },
-            parameters = {
-                    @Parameter(
-                            name = "X-Access-Token",
-                            description = "기존 Access Token",
-                            in = ParameterIn.COOKIE,
-                            required = true
-                    ),
-                    @Parameter(
-                            name = "X-Refresh-Token",
-                            description = "Refresh Token",
-                            in = ParameterIn.COOKIE,
-                            required = true
-                    )
             }
     )
     @PostMapping("/refresh")
