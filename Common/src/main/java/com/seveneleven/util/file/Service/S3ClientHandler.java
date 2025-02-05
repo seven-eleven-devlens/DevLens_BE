@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class S3ClientService {
+public class S3ClientHandler {
 
     private final AmazonS3 amazonS3;
 

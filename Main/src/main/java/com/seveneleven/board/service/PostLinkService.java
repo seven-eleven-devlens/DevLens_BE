@@ -6,7 +6,7 @@ import com.seveneleven.entity.file.Link;
 import com.seveneleven.entity.file.constant.LinkCategory;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.LinkService;
+import com.seveneleven.util.file.Service.LinkHandler;
 import com.seveneleven.util.file.dto.LinkInput;
 import com.seveneleven.util.file.dto.LinkPayload;
 import com.seveneleven.util.file.dto.LinkResponse;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostLinkService {
-    private final LinkService linkService;
+    private final LinkHandler linkHandler;
 
     private static final int MAX_LINK_COUNT = 10; //게시물별 최대 링크 수(10개)
     private final PostRepository postRepository;
@@ -43,7 +43,7 @@ public class PostLinkService {
         //TODO) 2. 수행자 판별 - admin 해당 게시글 작성자
 
         //3. 현재 저장된 링크 갯수 확인(저장할 링크 갯수 + 현재 저장 갯수 > 10인지 판별)
-        Integer currentLinkCnt = linkService.countLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId());
+        Integer currentLinkCnt = linkHandler.countLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId());
         if(currentLinkCnt + linkInputs.size() >= MAX_LINK_COUNT){
             throw new BusinessException(ErrorCode.LINK_QUANTITY_EXCEED_ERROR);
         }
@@ -59,7 +59,7 @@ public class PostLinkService {
 
         //4. 링크 리스트 업로드
         for(LinkPayload linkPayload : linkPayloads){
-            linkService.uploadLink(linkPayload);
+            linkHandler.uploadLink(linkPayload);
         }
     }
 
@@ -77,7 +77,7 @@ public class PostLinkService {
 
         //2. 게시물의 링크 엔티티 가져오기
         //페이지네이션 없음
-        List<Link> linkEntities = linkService.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId());
+        List<Link> linkEntities = linkHandler.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId());
 
         //3. 게시물의 링크 엔티티를 dto로 변환하기
         List<LinkResponse> linkResponses = new ArrayList<>();
@@ -106,7 +106,7 @@ public class PostLinkService {
 
         //3. 해당 게시물의 링크인지 판별
         //파일 메타데이터 테이블에서 해당 카테고리와 첨부 id로 메타데이터 id 목록 생성
-        List<Link> linkEntities = linkService.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postId);
+        List<Link> linkEntities = linkHandler.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postId);
         List<Long> linkIds = linkEntities.stream().map(Link::getId).collect(Collectors.toList());
         //id 목록에 linkId가 있는지 판별
         if(!linkIds.contains(linkId)){
@@ -114,7 +114,7 @@ public class PostLinkService {
         }
 
         //3. 게시물 링크 삭제
-        linkService.deleteLinkById(linkId);
+        linkHandler.deleteLinkById(linkId);
     }
 
     /**
@@ -131,8 +131,8 @@ public class PostLinkService {
         //TODO) 2. 수행자 권한 판별
 
         //3. 해당 게시물의 링크를 모두 삭제한다.
-        for(Link linkEntity : linkService.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId())){
-            linkService.deleteLinkById(linkEntity.getId());
+        for(Link linkEntity : linkHandler.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId())){
+            linkHandler.deleteLinkById(linkEntity.getId());
         }
     }
 

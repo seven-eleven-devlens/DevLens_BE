@@ -16,9 +16,9 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class FileService {
+public class FileHandler {
     private final FileMetadataRepository fileMetadataRepository;
-    private final S3ClientService s3ClientService;
+    private final S3ClientHandler s3ClientHandler;
 
     private static final double KILOBYTE_CONVERSION_CONSTANT = 1024.0;
 
@@ -40,15 +40,15 @@ public class FileService {
         String originalFilename = StringUtils.isEmpty(file.getOriginalFilename()) ? "UNKNOWN-FILE" : file.getOriginalFilename();
 
         //UUID 생성
-        String uniqueFileName = s3ClientService.generateUniqueFileName(originalFilename);
+        String uniqueFileName = s3ClientHandler.generateUniqueFileName(originalFilename);
         //S3 키 생성
-        String s3Key = s3ClientService.generateS3Key(fileCategory.name(), referenceId, uniqueFileName);
+        String s3Key = s3ClientHandler.generateS3Key(fileCategory.name(), referenceId, uniqueFileName);
 
         //3. S3 업로드 및 FileMetadata 데이터 생성
         String filePath = null;
         try {
             //S3 업로드
-            filePath = s3ClientService.uploadFile(file, s3Key);
+            filePath = s3ClientHandler.uploadFile(file, s3Key);
 
             //entity 생성자 호출
             FileMetadata fileMetadata = FileMetadata.registerFile(fileCategory, referenceId,
@@ -66,7 +66,7 @@ public class FileService {
 
         } catch (Exception e) {
             //저장 실패시 S3에서 삭제
-            s3ClientService.deleteFile(s3Key);
+            s3ClientHandler.deleteFile(s3Key);
             throw new BusinessException(e.getMessage(), ErrorCode.FILE_UPLOAD_FAIL_ERROR);
         }
     }

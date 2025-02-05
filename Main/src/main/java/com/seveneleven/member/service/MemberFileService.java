@@ -6,7 +6,7 @@ import com.seveneleven.entity.member.Member;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.FileService;
+import com.seveneleven.util.file.Service.FileHandler;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class MemberFileService {
-    private final FileService fileService;
+    private final FileHandler fileHandler;
     private final MemberRepository memberRepository;
     private final FileMetadataRepository fileMetadataRepository;
 
@@ -27,7 +27,7 @@ public class MemberFileService {
      * @auth admin, user(해당 회원)
      * @param file 업로드할 프로필 이미지 파일
      * @param memberId 해당 회원 id
-     * @param userDetails 현재 수행자 정보
+     * @param uploaderId 현재 수행자 정보
      */
     @Transactional
     public void uploadProfileImage(MultipartFile file, Long memberId, Long uploaderId) {
@@ -43,7 +43,7 @@ public class MemberFileService {
         }
 
         //4. S3 파일 업로드, 메타데이터 테이블 저장
-        fileService.uploadFile(file, FileCategory.USER_PROFILE_IMAGE, memberId);
+        fileHandler.uploadFile(file, FileCategory.USER_PROFILE_IMAGE, memberId);
     }
 
     /**
@@ -60,7 +60,7 @@ public class MemberFileService {
         }
 
         //카테고리와 참조id로 filemetadata 검색
-        FileMetadata fileEntity = fileService.getFile(FileCategory.USER_PROFILE_IMAGE, memberId);
+        FileMetadata fileEntity = fileHandler.getFile(FileCategory.USER_PROFILE_IMAGE, memberId);
 
         return FileMetadataDto.toDto(fileEntity);
     }
@@ -70,6 +70,7 @@ public class MemberFileService {
      * 3. 계정 프로필 이미지 삭제
      * @auth admin, 해당 user
      * @param memberId 해당 회원 id
+     * @param uploaderId 삭제 수행자 id
      */
     @Transactional
     public void deleteProfileImage(Long memberId, Long uploaderId) {
@@ -80,9 +81,6 @@ public class MemberFileService {
         //TODO)2. 수행자 ID 정보 판별
 
         //3. 삭제 수행
-        fileService.deleteFile(FileCategory.USER_PROFILE_IMAGE, memberId);
-
-        //TODO) 4. 삭제 이력 추가
-
+        fileHandler.deleteFile(FileCategory.USER_PROFILE_IMAGE, memberId);
     }
 }

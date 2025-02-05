@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class LinkService {
+public class LinkHandler {
     private final LinkRepository linkRepository;
 
     /**

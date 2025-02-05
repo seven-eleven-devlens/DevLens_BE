@@ -3,10 +3,9 @@ package com.seveneleven.project.service.checklist;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.CheckRequest;
-import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.FileService;
+import com.seveneleven.util.file.Service.FileHandler;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +19,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class CheckRequestFileStoreImpl implements CheckRequestFileStore {
-    private final FileService fileService;
+    private final FileHandler fileHandler;
     private final FileMetadataRepository fileMetadataRepository;
 
     private static final int MAX_FILE_COUNT = 10; //게시물별 최대 파일 수(10개)
@@ -50,7 +49,7 @@ public class CheckRequestFileStoreImpl implements CheckRequestFileStore {
 
         //3. 파일 업로드
         for(MultipartFile file : files){
-            fileService.uploadFile(file, FileCategory.CHECK_REQUEST_ATTACHMENT, checkRequest.getId());
+            fileHandler.uploadFile(file, FileCategory.CHECK_REQUEST_ATTACHMENT, checkRequest.getId());
         }
     }
 
@@ -79,7 +78,7 @@ public class CheckRequestFileStoreImpl implements CheckRequestFileStore {
 
         //3. 파일 업로드
         for(MultipartFile file : files){
-            fileService.uploadFile(file, FileCategory.CHECK_REJECTION_ATTACHMENT, checkRequest.getId());
+            fileHandler.uploadFile(file, FileCategory.CHECK_REJECTION_ATTACHMENT, checkRequest.getId());
         }
     }
 }

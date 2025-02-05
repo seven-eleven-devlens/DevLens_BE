@@ -2,18 +2,14 @@ package com.seveneleven.project.service.checklist;
 
 import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
-import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.CheckRequest;
-import com.seveneleven.exception.BusinessException;
-import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.FileService;
+import com.seveneleven.util.file.Service.FileHandler;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 public class CheckRequestFileReaderImpl implements CheckRequestFileReader {
-    private final FileService fileService;
+    private final FileHandler fileHandler;
     private final FileMetadataRepository fileMetadataRepository;
 
     /**
@@ -34,7 +30,7 @@ public class CheckRequestFileReaderImpl implements CheckRequestFileReader {
     @Transactional(readOnly = true)
     public List<FileMetadataDto> readCheckRequestFiles(CheckRequest checkRequest){
         //카테고리와 체크요청id로 모든 파일을 가져온다.(페이지네이션 없음)
-        List<FileMetadata> fileEntities = fileService.getFiles(FileCategory.CHECK_REQUEST_ATTACHMENT, checkRequest.getId());
+        List<FileMetadata> fileEntities = fileHandler.getFiles(FileCategory.CHECK_REQUEST_ATTACHMENT, checkRequest.getId());
 
         //entity를 dto에 담는다.
         List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
@@ -55,7 +51,7 @@ public class CheckRequestFileReaderImpl implements CheckRequestFileReader {
     @Transactional(readOnly = true)
     public List<FileMetadataDto> readCheckRequestRejectFiles(CheckRequest checkRequest){
         //카테고리와 체크요청id로 거절사유의 모든 파일을 가져온다.(페이지네이션 없음)
-        List<FileMetadata> fileEntities = fileService.getFiles(FileCategory.CHECK_REJECTION_ATTACHMENT, checkRequest.getId());
+        List<FileMetadata> fileEntities = fileHandler.getFiles(FileCategory.CHECK_REJECTION_ATTACHMENT, checkRequest.getId());
 
         //entity를 dto에 담는다.
         List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
