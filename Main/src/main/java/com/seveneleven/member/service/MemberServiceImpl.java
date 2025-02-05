@@ -4,6 +4,8 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Member;
+import com.seveneleven.entity.member.MemberPasswordResetHistory;
+import com.seveneleven.entity.member.MemberProfileHistory;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
@@ -12,11 +14,15 @@ import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.CompanyRepository;
 import com.seveneleven.member.repository.MemberRepository;
+import com.seveneleven.member.repository.PasswordHistoryRepository;
+import com.seveneleven.member.repository.ProfileHistoryRepository;
+import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.security.repository.RefreshTokenRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,10 +38,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService{
 
+    private final GetIpUtil getIpUtil;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
+    private final PasswordHistoryRepository passwordResetHistory;
     private final FileMetadataRepository fileMetadataRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
@@ -75,7 +83,7 @@ public class MemberServiceImpl implements MemberService{
 
     /**
      * 함수명 : logout
-     * 로그아웃 처리 메서드. 주어진 토큰을 DB에서 찾아 상태를 BLACKLISTED로 변경하여 로그아웃 처리합니다.
+     * 로그아웃 처리 메서드. 주어진 토큰을 검증한 후, Refresh Token을 삭제 합니다.
      *
      * @param token 로그아웃할 사용자 토큰. "Bearer " 접두어가 포함될 수 있습니다.
      */
@@ -88,7 +96,7 @@ public class MemberServiceImpl implements MemberService{
         }
 
         // 2. Refresh Token 삭제
-        String memberId = tokenProvider.getMemberId(token); // Access Token에서 사용자 ID 추출
+        Long memberId = tokenProvider.getMemberId(token); // Access Token에서 사용자 ID 추출
         if (memberId != null) {
             refreshTokenRepository.delete(memberId); // 사용자와 연관된 Refresh Token 삭제
         }
@@ -99,11 +107,11 @@ public class MemberServiceImpl implements MemberService{
      * 함수명 : resetPassword
      * 회원 비밀번호를 초기화합니다.
      *
-     * @param request 비밀번호를 재설정할 회원의 정보.
+     * @param requestDto 비밀번호를 재설정할 회원의 정보.
      * @return 비밀번호 재설정한 회원 LoginId
      */
     @Transactional
-    public MemberPatch.Response resetPassword(CustomUserDetails userDetails, MemberPatch.Request request) {
+    public MemberPatch.Response resetPassword(HttpServletRequest request, CustomUserDetails userDetails, MemberPatch.Request requestDto) {
 
         if(Objects.isNull(userDetails)) {
             throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
@@ -114,14 +122,22 @@ public class MemberServiceImpl implements MemberService{
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 현재 비밀번호 확인
-        if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
+        if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
         }
 
         // 3. 비밀번호 암호화 후 저장
-        member.resetPassword(passwordEncoder.encode(request.getNewPassword()));
+        member.resetPassword(passwordEncoder.encode(requestDto.getNewPassword()));
 
-        // 4. 생성된 비밀번호 반환
+        // 4. 비밀번호 변경 이력 추가
+        String modifierIp = getIpUtil.getIpAddress(request);
+        MemberPasswordResetHistory m = MemberPasswordResetHistory.createPwdHistory(
+                member.getId(), member.getPassword(), member.getLoginId(), modifierIp
+        );
+        passwordResetHistory.save(m);
+
+
+        // 5. 생성된 비밀번호 반환
         return new MemberPatch.Response(userDetails.getLoginId());
     }
 

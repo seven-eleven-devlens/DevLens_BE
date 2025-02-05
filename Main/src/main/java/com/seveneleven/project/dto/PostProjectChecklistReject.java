@@ -2,6 +2,7 @@ package com.seveneleven.project.dto;
 
 import com.seveneleven.entity.project.CheckResult;
 import com.seveneleven.entity.project.constant.ApprovalStatus;
+import com.seveneleven.util.file.dto.LinkInput;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,7 @@ public class PostProjectChecklistReject {
     @NoArgsConstructor
     public static class Request {
         private String rejectReason;
-        private List<String> links;
+        private List<LinkInput> linkInputs;
     }
 
     /**

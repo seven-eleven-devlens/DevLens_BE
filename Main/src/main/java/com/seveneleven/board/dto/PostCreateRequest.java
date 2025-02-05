@@ -40,8 +40,7 @@ public class PostCreateRequest {
 
     @Nullable
     private LocalDate deadline; // 마감일자
-
-    @Size(min = 0)
+    
     private List<LinkInput> linkInputList = new ArrayList<>(); //링크 목록
 
     public Long getParentPostId() {

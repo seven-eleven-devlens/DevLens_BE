@@ -42,7 +42,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
         }
 
         // 3. Refresh Token의 사용자 ID 확인
-        String memberId = tokenProvider.getMemberId(refreshToken);
+        Long memberId = tokenProvider.getMemberId(refreshToken);
         String loginId = tokenProvider.getLoginId(refreshToken);
 
         // 4. Redis 또는 DB에서 Refresh Token 확인
