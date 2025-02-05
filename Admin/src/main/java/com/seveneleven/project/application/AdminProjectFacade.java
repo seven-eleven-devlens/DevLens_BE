@@ -6,10 +6,8 @@ import com.seveneleven.project.dto.PostProject;
 import com.seveneleven.project.dto.PutProject;
 import com.seveneleven.project.service.AdminProjectHistoryService;
 import com.seveneleven.project.service.AdminProjectService;
+import com.seveneleven.project.service.AdminProjectStepService;
 import com.seveneleven.response.PaginatedResponse;
-import com.seveneleven.service.AdminProjectHistoryService;
-import com.seveneleven.service.AdminProjectService;
-import com.seveneleven.service.AdminProjectStepService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
