@@ -3,7 +3,7 @@ package com.seveneleven.project.service.checklist;
 import com.seveneleven.entity.file.Link;
 import com.seveneleven.entity.file.constant.LinkCategory;
 import com.seveneleven.entity.project.CheckRequest;
-import com.seveneleven.util.file.Service.LinkHandler;
+import com.seveneleven.util.file.handler.LinkHandler;
 import com.seveneleven.util.file.dto.LinkResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

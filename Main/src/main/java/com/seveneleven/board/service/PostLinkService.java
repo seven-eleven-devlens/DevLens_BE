@@ -6,7 +6,7 @@ import com.seveneleven.entity.file.Link;
 import com.seveneleven.entity.file.constant.LinkCategory;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.LinkHandler;
+import com.seveneleven.util.file.handler.LinkHandler;
 import com.seveneleven.util.file.dto.LinkInput;
 import com.seveneleven.util.file.dto.LinkPayload;
 import com.seveneleven.util.file.dto.LinkResponse;

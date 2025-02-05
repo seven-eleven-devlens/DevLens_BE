@@ -3,7 +3,7 @@ package com.seveneleven.project.service.checklist;
 import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.project.CheckRequest;
-import com.seveneleven.util.file.Service.FileHandler;
+import com.seveneleven.util.file.handler.FileHandler;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;

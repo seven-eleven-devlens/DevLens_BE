@@ -6,7 +6,7 @@ import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.FileHandler;
+import com.seveneleven.util.file.handler.FileHandler;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;

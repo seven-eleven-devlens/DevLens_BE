@@ -9,7 +9,7 @@ import com.seveneleven.project.dto.PostProjectChecklistAccept;
 import com.seveneleven.project.dto.PostProjectChecklistReject;
 import com.seveneleven.project.repository.CheckResultRepository;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.LinkHandler;
+import com.seveneleven.util.file.handler.LinkHandler;
 import com.seveneleven.util.file.dto.LinkPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -10,7 +10,7 @@ import com.seveneleven.project.dto.PostProjectChecklistApplication;
 import com.seveneleven.project.repository.CheckRequestRepository;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.GetIpUtil;
-import com.seveneleven.util.file.Service.LinkHandler;
+import com.seveneleven.util.file.handler.LinkHandler;
 import com.seveneleven.util.file.dto.LinkPayload;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
