@@ -37,6 +37,9 @@ public class ProjectStep extends BaseEntity {
     private YesNo isActive; // 사용 유무
 
     private ProjectStep(Project project, String stepName, String stepDescription, Integer stepOrder) {
+        if(stepName == null) { throw new BusinessException(ErrorCode.PROJECT_STEP_NAME_NOT_NULL); }
+        if(stepDescription == null) { throw new BusinessException(ErrorCode.PROJECT_STEP_DESCRIPTION_NOT_NULL); }
+
         this.project = project;
         this.stepName = stepName;
         this.stepDescription = stepDescription;

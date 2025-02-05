@@ -28,7 +28,7 @@ public class StepReaderImpl implements StepReader {
 
     @Override
     public GetProjectStep.Response getProjectStep(Long projectId) {
-        List<ProjectStep> stepInfos = projectStepRepository.findByProjectIdAndIsActive(projectId, YesNo.YES);
+        List<ProjectStep> stepInfos = projectStepRepository.findByProjectIdAndIsActiveOrderByStepOrder(projectId, YesNo.YES);
 
         List<GetProjectStep.ProjectStepInfo> projectStepInfos = new ArrayList<>();
 
@@ -40,5 +40,10 @@ public class StepReaderImpl implements StepReader {
         }
 
         return new GetProjectStep.Response(projectId, projectStepInfos);
+    }
+
+    @Override
+    public List<Integer> getStepOrderList(Long projectId) {
+        return projectStepRepository.findAllProjectStepStepOrder(projectId, YesNo.YES);
     }
 }

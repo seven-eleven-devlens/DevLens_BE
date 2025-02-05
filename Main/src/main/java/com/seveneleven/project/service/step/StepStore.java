@@ -9,12 +9,14 @@ public interface StepStore {
 
     PostProjectStep.Response store(
             PostProjectStep.Request requestDto,
-            Project project
+            Project project,
+            Integer order
     );
 
     PutProjectStep.Response edit(
             PutProjectStep.Request requestDto,
-            ProjectStep projectStep
+            ProjectStep projectStep,
+            Integer order
     );
 
     void delete(

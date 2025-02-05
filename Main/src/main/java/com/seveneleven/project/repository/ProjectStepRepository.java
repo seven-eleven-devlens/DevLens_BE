@@ -15,10 +15,21 @@ import java.util.Optional;
 @Repository
 public interface ProjectStepRepository extends JpaRepository<ProjectStep, Long> {
 
+    @Query("""
+        SELECT
+            p_s.stepOrder
+        FROM ProjectStep p_s
+        WHERE p_s.project.id = :projectId
+            AND
+              p_s.isActive = :isActive
+        order by p_s.stepOrder
+    """)
+    List<Integer> findAllProjectStepStepOrder(Long projectId, YesNo isActive);
+
     Optional<ProjectStep> findByIdAndIsActive(Long id, YesNo isActive);
 
     // TODO - 한번의 쿼리문으로 합칠 수 있을까?
-    List<ProjectStep> findByProjectIdAndIsActive(Long projectId, YesNo isActive);
+    List<ProjectStep> findByProjectIdAndIsActiveOrderByStepOrder(Long projectId, YesNo isActive);
 
     @Query("""
         SELECT new com.seveneleven.project.dto.GetProjectDetail$ProjectStepInfo(

@@ -56,14 +56,6 @@ public interface MemberDocs {
                                     schema = @Schema(implementation = APIResponse.class)
                             )
                     )
-            },
-            parameters = {
-                    @Parameter(
-                            name = "X-Access-Token",
-                            description = "JWT Access Token",
-                            in = ParameterIn.COOKIE,
-                            required = true
-                    )
             }
     )
     @PostMapping("/logout")
