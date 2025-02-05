@@ -10,13 +10,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @Tag(name = "Project Checklist API", description = "프로젝트 체크리스트 관련 API")
 @RequestMapping("/api/projects")
@@ -195,5 +191,32 @@ public interface ProjectChecklistDocs {
             @RequestBody PostProjectChecklistReject.Request requestDto,
             @AuthenticationPrincipal CustomUserDetails userDetails,
             HttpServletRequest request
+    );
+
+    @GetMapping("/application/{applicationId}/result")
+    @Operation(
+            summary = "프로젝트 신청 결과 조회",
+            description = "특정 프로젝트 신청의 결과를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "성공적으로 프로젝트 신청 결과를 반환했습니다.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = GetApplicationResult.Response.class)
+                            )
+                    )
+            },
+            parameters = {
+                    @Parameter(
+                            name = "applicationId",
+                            description = "결과를 조회할 프로젝트 신청의 ID",
+                            required = true,
+                            example = "1"
+                    )
+            }
+    )
+    ResponseEntity<APIResponse<GetApplicationResult.Response>> getProjectApplicationResult(
+            @PathVariable Long applicationId
     );
 }

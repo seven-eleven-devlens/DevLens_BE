@@ -3,12 +3,13 @@ package com.seveneleven.project.service;
 import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectStep;
+import com.seveneleven.exception.BusinessException;
 import com.seveneleven.project.dto.*;
 import com.seveneleven.project.service.checklist.ChecklistReader;
 import com.seveneleven.project.service.checklist.ChecklistStore;
-import com.seveneleven.project.service.dashboard.ProjectReader;
 import com.seveneleven.project.service.step.StepReader;
 import com.seveneleven.project.service.step.StepStore;
+import com.seveneleven.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +22,6 @@ public class ProjectStepServiceImpl implements ProjectStepService {
 
     private final StepReader stepReader;
     private final StepStore stepStore;
-    private final ProjectReader projectReader;
     private final ChecklistReader checklistReader;
     private final ChecklistStore checklistStore;
 
@@ -43,13 +43,23 @@ public class ProjectStepServiceImpl implements ProjectStepService {
     @Override
     @Transactional
     public PostProjectStep.Response postProjectStep(Project project, PostProjectStep.Request requestDto) {
-        return stepStore.store(requestDto, project);
+        List<Integer> orderList = stepReader.getStepOrderList(project.getId());
+
+        if(orderList.size() >= 10) {
+            throw new BusinessException(ErrorCode.PROJECT_STEP_MAX_SIZE);
+        }
+
+        Integer order = getStepOrder(orderList, requestDto.getStepOrderNumber());
+
+        return stepStore.store(requestDto, project, order);
     }
 
     @Override
     @Transactional
     public PutProjectStep.Response putProjectStep(ProjectStep projectStep, PutProjectStep.Request requestDto) {
-        return stepStore.edit(requestDto, projectStep);
+        List<Integer> orderList = stepReader.getStepOrderList(projectStep.getProject().getId());
+        Integer order = getStepOrder(orderList, requestDto.getStepOrder());
+        return stepStore.edit(requestDto, projectStep, order);
     }
 
     @Override
@@ -60,5 +70,22 @@ public class ProjectStepServiceImpl implements ProjectStepService {
         checklistStore.deleteAll(checklists);
         stepStore.delete(projectStep);
         return DeleteProjectStep.Response.toDto(projectId, stepId);
+    }
+
+    private Integer getStepOrder(List<Integer> orderList, Integer target) {
+        if(target == null || target < 1) {
+            throw new BusinessException(ErrorCode.PROJECT_STEP_ORDER_MORE_THAN_ZERO);
+        }
+        if(orderList == null || orderList.isEmpty()) {
+            return 100;
+        }
+        if(target == 1) {
+            Integer find = orderList.get(0);
+            return find / 2;
+        }
+        if(target >= orderList.size()) {
+            return orderList.get(orderList.size() - 1) + 100;
+        }
+        return (orderList.get(target) + orderList.get(target - 1)) / 2;
     }
 }
