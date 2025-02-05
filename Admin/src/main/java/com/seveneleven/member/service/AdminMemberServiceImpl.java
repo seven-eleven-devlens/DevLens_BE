@@ -347,7 +347,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
         // 2. 회원 삭제
         for (Member member : members) {
-            deleteMember(member.getId());
+            member.deleteMember();
         }
     }
 }
