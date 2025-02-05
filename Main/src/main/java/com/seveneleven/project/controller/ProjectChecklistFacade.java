@@ -2,6 +2,7 @@ package com.seveneleven.project.controller;
 
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.CheckRequest;
+import com.seveneleven.entity.project.CheckResult;
 import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.member.service.MemberService;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
@@ -101,6 +103,17 @@ public class ProjectChecklistFacade {
             HttpServletRequest request
     ) {
         return projectChecklistService.postProjectAccept(applicationId, memberId, request);
+    }
+
+    /**
+     * 함수명 : getApplicationResult
+     * 체크리스트 승인 요청 결과를 조회하는 함수
+     */
+    @Transactional(readOnly = true)
+    public GetApplicationResult.Response getApplicationResult(Long applicationId) {
+        CheckRequest checkRequest = projectChecklistService.getCheckRequest(applicationId);
+        CheckResult checkResult = projectChecklistService.getCheckResult(applicationId);
+        return GetApplicationResult.Response.toDto(checkRequest, checkResult);
     }
 
     /**

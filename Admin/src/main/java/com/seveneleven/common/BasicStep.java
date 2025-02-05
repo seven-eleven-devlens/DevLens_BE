@@ -11,11 +11,11 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public enum BasicStep {
-    STEP_ONE("기획", "기획 단계입니다.", 1),
-    STEP_TWO("디자인", "디자인 단계입니다.", 2),
-    STEP_THREE("개발", "개발 단계입니다.", 3),
-    STEP_FOUR("QA", "QA 단계입니다.", 4),
-    STEP_FIVE("유지보수", "유지보수 단계입니다.", 5);
+    STEP_ONE("기획", "기획 단계입니다.", 100),
+    STEP_TWO("디자인", "디자인 단계입니다.", 200),
+    STEP_THREE("개발", "개발 단계입니다.", 300),
+    STEP_FOUR("QA", "QA 단계입니다.", 400),
+    STEP_FIVE("유지보수", "유지보수 단계입니다.", 500);
 
     private final String stepName;
     private final String description;

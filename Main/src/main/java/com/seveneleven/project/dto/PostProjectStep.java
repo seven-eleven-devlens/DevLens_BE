@@ -22,8 +22,8 @@ public class PostProjectStep {
         @JsonProperty
         List<PostChecklist> checklists;
 
-        public ProjectStep toEntity(Project project) {
-            return ProjectStep.create(project, stepName, stepDescription, stepOrderNumber);
+        public ProjectStep toEntity(Project project, Integer order) {
+            return ProjectStep.create(project, stepName, stepDescription, order);
         }
     }
 
