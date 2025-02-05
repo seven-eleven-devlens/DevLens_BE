@@ -350,5 +350,4 @@ public class AdminMemberServiceImpl implements AdminMemberService {
             deleteMember(member.getId());
         }
     }
-
 }
