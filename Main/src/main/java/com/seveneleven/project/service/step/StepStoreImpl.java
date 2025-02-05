@@ -21,9 +21,10 @@ public class StepStoreImpl implements StepStore {
     @Override
     public PostProjectStep.Response store(
             PostProjectStep.Request requestDto,
-            Project project
+            Project project,
+            Integer order
     ) {
-        ProjectStep projectStep = requestDto.toEntity(project);
+        ProjectStep projectStep = requestDto.toEntity(project, order);
         projectStepRepository.save(projectStep);
 
         for(PostProjectStep.PostChecklist checklist : requestDto.getChecklists()) {
@@ -36,9 +37,10 @@ public class StepStoreImpl implements StepStore {
     @Override
     public PutProjectStep.Response edit(
             PutProjectStep.Request requestDto,
-            ProjectStep projectStep
+            ProjectStep projectStep,
+            Integer order
     ) {
-        projectStep.edit(requestDto.getStepName(), requestDto.getStepDescription(), requestDto.getStepOrder());
+        projectStep.edit(requestDto.getStepName(), requestDto.getStepDescription(), order);
 
         return PutProjectStep.Response.toDto(projectStep);
     }

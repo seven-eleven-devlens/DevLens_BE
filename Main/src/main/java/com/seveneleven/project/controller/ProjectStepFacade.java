@@ -23,7 +23,8 @@ public class ProjectStepFacade {
      * 프로젝트 단계와 체크리스트를 반환하는 함수
      */
     public GetProjectStep.Response getProjectStepAndChecklist(Long projectId) {
-        return projectStepService.getProjectStep(projectId);
+        Project project = projectService.getProject(projectId);
+        return projectStepService.getProjectStep(project.getId());
     }
 
     /**
