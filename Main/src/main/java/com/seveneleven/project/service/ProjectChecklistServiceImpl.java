@@ -12,6 +12,7 @@ import com.seveneleven.project.service.checklist.*;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.LinkResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
     private final ChecklistStore checklistStore;
     private final CheckRequestReader checkRequestReader;
     private final CheckRequestFileReader checkRequestFileReader;
+    private final CheckRequestLinkReader checkRequestLinkReader;
     private final CheckRequestStore checkRequestStore;
     private final CheckResultStore checkResultStore;
     private final CheckRequestFileStore checkRequestFileStore;
@@ -63,6 +65,16 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
         List<FileMetadataDto> fileDtoList = checkRequestFileReader.readCheckRequestFiles(checkRequest);
 
         return fileDtoList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LinkResponse> getApplicationLinks(Long applicationId) {
+        CheckRequest checkRequest = checkRequestReader.read(applicationId);
+
+        List<LinkResponse> linkResponses =  checkRequestLinkReader.readCheckRequestLinks(checkRequest);
+
+        return linkResponses;
     }
 
     @Override
@@ -144,7 +156,7 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
         checkRequestStore.rejectCheckRequest(checkRequest);
 
         return checkResultStore.postApplicationReject(
-                checkRequest, member, ip, requestDto.getRejectReason()
+                checkRequest, member, ip, requestDto
         );
     }
 
@@ -173,6 +185,16 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
         List<FileMetadataDto> fileDtoList = checkRequestFileReader.readCheckRequestRejectFiles(checkRequest);
 
         return fileDtoList;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<LinkResponse> getChecklistRejectLinks(Long applicationId) {
+        CheckRequest checkRequest = checkRequestReader.read(applicationId);
+
+        List<LinkResponse> linkResponses =  checkRequestLinkReader.readCheckRequestRejectLinks(checkRequest);
+
+        return linkResponses;
     }
 
     // TODO - 회원 쪽 서비스 코드 교체 필요

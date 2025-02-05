@@ -1,11 +1,8 @@
 package com.seveneleven.util.file.dto;
 
-import com.seveneleven.entity.file.Link;
 import com.seveneleven.entity.file.constant.LinkCategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor

@@ -165,7 +165,7 @@ public class BoardController implements BoardDocs {
      */
     @PostMapping("/{postId}/links")
     public ResponseEntity<APIResponse<SuccessCode>> uploadLinks(@PathVariable Long postId,
-                                                                @RequestBody List<LinkInput> linkInputs){
+                                                                @RequestBody List<@Valid LinkInput> linkInputs){
 
         //TODO)토큰으로 업로더 정보 가져오기
         Long uploaderId = 1L;

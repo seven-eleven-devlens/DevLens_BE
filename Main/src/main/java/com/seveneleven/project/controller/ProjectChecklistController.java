@@ -4,6 +4,7 @@ import com.seveneleven.project.dto.*;
 import com.seveneleven.project.service.ProjectChecklistService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
+import com.seveneleven.util.file.dto.LinkResponse;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import jakarta.servlet.http.HttpServletRequest;
@@ -144,6 +145,22 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
     }
 
     /**
+     * 함수명 : getProjectChecklistApplicationLinks
+     * 프로젝트 체크리스트 승인 요청의 링크들을 확인하는 함수
+     */
+    @GetMapping("/checklists/applications/{applicationId}/links")
+    public ResponseEntity<APIResponse<List<LinkResponse>>> getProjectChecklistApplicationLinks(
+            @PathVariable Long applicationId
+    ) {
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(
+                        SuccessCode.OK,
+                        projectChecklistService.getApplicationLinks(applicationId)
+                ));
+    }
+
+
+    /**
      * 함수명 : postProjectChecklistAccept
      * 해당 체크리스트 승인 요청을 승인 처리하는 함수
      */
@@ -216,6 +233,21 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 .body(APIResponse.success(
                         SuccessCode.OK,
                         projectChecklistService.getChecklistRejectFiles(applicationId)
+                ));
+    }
+
+    /**
+     * 함수명 : getProjectChecklistRejectFiles
+     * 체크리스트 승인 요청 반려 사유의 링크 목록을 조회하는 함수
+     */
+    @GetMapping("/reject/{applicationId}/links")
+    public ResponseEntity<APIResponse<List<LinkResponse>>> getProjectChecklistRejectLinks(
+            @PathVariable Long applicationId
+    ){
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(
+                        SuccessCode.OK,
+                        projectChecklistService.getChecklistRejectLinks(applicationId)
                 ));
     }
 
