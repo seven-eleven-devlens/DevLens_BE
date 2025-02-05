@@ -5,6 +5,7 @@ import com.seveneleven.dto.*;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.MemberPasswordResetHistory;
+import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.MemberValidator;
@@ -62,7 +63,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     @Transactional
     public LoginPost.Response login(LoginPost.Request request) {
 
-        Member member = memberRepository.findByLoginId(request.getLoginId())
+        Member member = memberRepository.findByLoginIdAndStatus(request.getLoginId(), MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {

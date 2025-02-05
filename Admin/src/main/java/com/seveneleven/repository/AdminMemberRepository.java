@@ -1,6 +1,7 @@
 package com.seveneleven.repository;
 
 import com.seveneleven.entity.member.Member;
+import com.seveneleven.entity.member.constant.MemberStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,7 +14,7 @@ public interface AdminMemberRepository extends JpaRepository<Member, Long>, JpaS
 
     Boolean existsByEmail(String email);
 
-    Optional<Member> findByLoginId(String loginId);
+    Optional<Member> findByLoginIdAndStatus(String loginId, MemberStatus statusCode);
 
     Page<Member> findAll(Pageable pageable);
 }
