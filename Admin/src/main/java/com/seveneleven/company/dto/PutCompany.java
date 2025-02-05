@@ -48,6 +48,18 @@ public class PutCompany {
                     businessRegistrationNumber
             );
         }
+
+        public Company updateCompany(Company company) {
+            return company.updateCompany(
+                    companyName,
+                    representativeName,
+                    representativeContact,
+                    representativeEmail,
+                    address,
+                    businessType,
+                    businessRegistrationNumber
+            );
+        }
     }
 
     @Getter

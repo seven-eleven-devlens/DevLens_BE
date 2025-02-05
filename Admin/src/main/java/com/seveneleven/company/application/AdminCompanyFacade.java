@@ -17,8 +17,9 @@ public class AdminCompanyFacade {
     private final AdminCompanyHistoryService adminCompanyHistoryService;
 
     public PostCompany.Response registerCompany(PostCompany.Request request) {
+        PostCompany.Response response = adminCompanyService.createCompany(request);
         adminCompanyHistoryService.saveHistory(request.toEntity());
-        return adminCompanyService.createCompany(request);
+        return response;
     }
 
     public GetCompanyDetail.Response getCompanyDetail(Long id) {
@@ -34,8 +35,9 @@ public class AdminCompanyFacade {
     }
 
     public PutCompany.Response updateCompany(Long id, PutCompany.Request request) {
+        PutCompany.Response response = adminCompanyService.updateCompany(id, request);
         adminCompanyHistoryService.saveHistory(request.toEntity());
-        return adminCompanyService.updateCompany(id, request);
+        return response;
     }
 
     public void deleteCompany(Long id) {
