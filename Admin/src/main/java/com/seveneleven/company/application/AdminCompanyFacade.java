@@ -4,6 +4,7 @@ import com.seveneleven.company.dto.*;
 import com.seveneleven.company.service.AdminCompanyHistoryService;
 import com.seveneleven.company.service.AdminCompanyService;
 import com.seveneleven.entity.member.Company;
+import com.seveneleven.member.service.AdminMemberService;
 import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 public class AdminCompanyFacade {
     private final AdminCompanyService adminCompanyService;
     private final AdminCompanyHistoryService adminCompanyHistoryService;
+    private final AdminMemberService adminMemberService;
 
     public PostCompany.Response registerCompany(PostCompany.Request request) {
         PostCompany.Response response = adminCompanyService.createCompany(request);
@@ -42,6 +44,7 @@ public class AdminCompanyFacade {
 
     public void deleteCompany(Long id) {
         Company deletedCompany = adminCompanyService.deleteCompany(id);
+        adminMemberService.deleteCompanyMember(deletedCompany);
         adminCompanyHistoryService.saveHistory(deletedCompany);
     }
 

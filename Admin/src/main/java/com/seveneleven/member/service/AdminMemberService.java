@@ -1,5 +1,6 @@
 package com.seveneleven.member.service;
 
+import com.seveneleven.entity.member.Company;
 import com.seveneleven.member.dto.GetMemberList;
 import com.seveneleven.member.dto.LoginPost;
 import com.seveneleven.member.dto.MemberDto;
@@ -24,4 +25,6 @@ public interface AdminMemberService {
     void deleteMember(Long memberId);
 
     MemberUpdate.PatchResponse resetPassword(HttpServletRequest request, Long memberId);
+
+    void deleteCompanyMember(Company id);
 }

@@ -11,7 +11,6 @@ import com.seveneleven.member.MemberValidator;
 import com.seveneleven.member.dto.*;
 import com.seveneleven.member.repository.AdminMemberRepository;
 import com.seveneleven.member.repository.PasswordHistoryRepository;
-import com.seveneleven.member.repository.ProfileHistoryRepository;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.security.dto.TokenResponse;
@@ -35,7 +34,6 @@ import java.util.Objects;
 
 /**
  * 회원 관리 서비스 클래스.
- *
  * 회원의 생성, 조회, 수정, 삭제 및 기타 관련 비즈니스 로직을 처리합니다.
  */
 @Service
@@ -44,7 +42,6 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     private final GetIpUtil getIpUtil;
     private final PasswordHistoryRepository passwordResetHistory;
-    private final ProfileHistoryRepository profileHistory;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
@@ -302,6 +299,25 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
         // 4. 생성된 비밀번호 반환
         return new MemberUpdate.PatchResponse(memberId, temporaryPassword);
+    }
+
+
+    /**
+     * 함수명 : deleteCompanyMember
+     * 소속 회사 멤버를 모두 삭제합니다.
+     *
+     * @param company 삭제할 회사
+     */
+    @Override
+    @Transactional
+    public void deleteCompanyMember(Company company) {
+        // 1. 회원 조회
+        List<Member> members = memberRepository.findAllByCompany(company);
+
+        // 2. 회원 삭제
+        for (Member member : members) {
+            deleteMember(member.getId());
+        }
     }
 
 
