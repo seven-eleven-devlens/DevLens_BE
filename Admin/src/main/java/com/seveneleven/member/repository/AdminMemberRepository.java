@@ -14,8 +14,6 @@ public interface AdminMemberRepository extends JpaRepository<Member, Long>, JpaS
 
     Boolean existsByEmail(String email);
 
-    Optional<Member> findByLoginIdAndStatus(String loginId, MemberStatus statusCode);
-
     Page<Member> findAll(Pageable pageable);
 
     Optional<Member> findByLoginIdAndStatus(String loginId, MemberStatus statusCode);
