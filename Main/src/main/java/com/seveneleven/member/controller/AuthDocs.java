@@ -1,6 +1,7 @@
 package com.seveneleven.member.controller;
 
 import com.seveneleven.response.APIResponse;
+import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.security.dto.TokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -37,8 +38,6 @@ public interface AuthDocs {
             }
     )
     @PostMapping("/refresh")
-    ResponseEntity<APIResponse<TokenResponse>> refreshAccessToken(
-            @CookieValue("X-Access-Token") String accessToken,
-            @CookieValue("X-Refresh-Token") String refreshToken
-    );
+    public ResponseEntity<APIResponse<SuccessCode>> refreshAccessToken (@CookieValue(value = "X-Access-Token", required = false)  String accessToken,
+                                                                        @CookieValue("X-Refresh-Token") String refreshToken);
 }

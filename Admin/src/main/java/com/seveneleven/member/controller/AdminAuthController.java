@@ -32,7 +32,7 @@ public class AdminAuthController implements AdminAuthDocs {
      *
      */
     @PostMapping("/refresh")
-    public ResponseEntity<APIResponse<TokenResponse>> refreshAccessToken (@CookieValue("X-Access-Token") String accessToken,
+    public ResponseEntity<APIResponse<SuccessCode>> refreshAccessToken (@CookieValue(value = "X-Access-Token", required = false) String accessToken,
                                                                           @CookieValue("X-Refresh-Token") String refreshToken) {
 
         TokenResponse tokens = refreshTokenService.refreshAccessToken(accessToken, refreshToken);
@@ -52,8 +52,8 @@ public class AdminAuthController implements AdminAuthDocs {
                 tokenProvider.getRefreshTokenExpireTime()/ 1000
         );
 
-        log.info("[Admin] 액세스 토큰 재발급 : "+accessTokenCookie.toString());
-        log.info("[Admin] 리프레시 토큰 재발급 : "+refreshTokenCookie.toString());
+        log.info("[Admin] 액세스 토큰 재발급 : "+tokens.accessToken());
+        log.info("[Admin] 리프레시 토큰 재발급 : "+tokens.refreshToken());
 
         // HTTP 응답에 쿠키 추가
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -62,7 +62,7 @@ public class AdminAuthController implements AdminAuthDocs {
 
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, tokens));
+                .body(APIResponse.success(SuccessCode.OK));
     }
 
     /**

@@ -54,7 +54,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if ("/api/auth/refresh".equals(requestURI)) {
             log.info("[재발급 요청] jwt filter에서 다음 filter로 넘어가는 중 ... ");
             filterChain.doFilter(request, response); // Refresh 요청은 그대로 통과
-            return;
+            return ;
         }
 
         // 쿠키에서 토큰 가져오기
