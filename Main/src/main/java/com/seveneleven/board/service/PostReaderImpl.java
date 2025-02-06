@@ -32,12 +32,23 @@ public class PostReaderImpl implements PostReader {
     }
 
     @Override
-    public Post getParentPost(Post post) {
-        if(post.getParentPost() != null) {
-            return postRepository.findById(post.getParentPost().getId())
-                    .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
+    public Long getRef(Long postId) {
+        return postRepository.findRefById(postId)
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
+    }
+
+    @Override
+    public Long getMaxRef() {
+        return postRepository.findMaxRef();
+    }
+
+    @Override
+    public Integer getRefOrder(Post parentPost) {
+        if(parentPost.getChildPostNum().equals(0)) {
+            return 0;
         }
-        return null;
+        return postRepository.findMaxRefOrderByParentPostId(parentPost.getId())
+                .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
     }
 
     @Override
@@ -50,27 +61,6 @@ public class PostReaderImpl implements PostReader {
     public String getWriter(Long memberId) {
         return memberRepository.findNameById(memberId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_WRITER));
-    }
-
-    @Override
-    public Long getRef(Long postId) {
-        return postRepository.findRefById(postId)
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
-    }
-
-    @Override
-    public Long getMaxRef() {
-        return postRepository.findMaxRef();
-    }
-
-    @Override
-    public Integer getRefOrder(Long postId) {
-        if(postRepository.findById(postId)
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_POST)).getChildPostNum().equals(0)) {
-            return 0;
-        }
-        return postRepository.findMaxRefOrderByParentPostId(postId)
-                .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
     }
 
 

@@ -10,8 +10,6 @@ public interface PostReader {
 
     Page<Post> getPosts(Long projectStepId, String keyword, String repoFilter, Pageable pageable);
 
-    Post getParentPost(Post post);
-
     ProjectStep getProjectStep(Long projectStepId);
 
     String getWriter(Long memberId);
@@ -20,5 +18,5 @@ public interface PostReader {
 
     Long getMaxRef();
 
-    Integer getRefOrder(Long postId);
+    Integer getRefOrder(Post parentPost);
 }

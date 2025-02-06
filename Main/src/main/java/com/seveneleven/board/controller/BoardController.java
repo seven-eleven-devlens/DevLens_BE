@@ -30,7 +30,6 @@ import java.util.List;
 public class BoardController implements BoardDocs {
 
     private final PostService postService;
-    private final CommentService commentService;
     private final PostFileService postFileService;
     private final PostLinkService postLinkService;
 
@@ -59,7 +58,6 @@ public class BoardController implements BoardDocs {
     @Override
     public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) {
         PostResponse postResponse = postService.selectPost(postId);
-        postResponse.setComments(commentService.selectCommentList(postId));
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                         .body(APIResponse.success(SuccessCode.OK, postResponse));
@@ -99,7 +97,7 @@ public class BoardController implements BoardDocs {
                                                                @Valid @RequestBody PostCreateRequest postCreateRequest,
                                                                HttpServletRequest request
     ) {
-        postService.createPost(postCreateRequest, request, user.getMember().getId());
+        postService.createPost(postCreateRequest, request, user.getUsername());
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED));

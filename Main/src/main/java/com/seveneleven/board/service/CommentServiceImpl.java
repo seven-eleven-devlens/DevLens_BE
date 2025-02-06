@@ -35,10 +35,7 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<GetCommentResponse> selectCommentList(Long postId){
-        // todo: 댓글 페이징 기능 고려
-        Post post = getPost(postId);
-
+    public List<GetCommentResponse> selectCommentList(Post post){
         return commentRepository.getCommentList(post.getId())
                 .stream()
                 .map(GetCommentResponse::toDto)

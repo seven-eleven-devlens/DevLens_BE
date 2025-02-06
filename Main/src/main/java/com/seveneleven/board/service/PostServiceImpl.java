@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
         }
 
         // 댓글 목록 조회
-        List<GetCommentResponse> comments = commentService.selectCommentList(postId);
+        List<GetCommentResponse> comments = commentService.selectCommentList(post);
 
         return getPostResponse(post, parentPostId, postReader.getWriter(post.getCreatedBy()), comments);
     }
@@ -91,40 +91,43 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, Long registerId) {
+    public void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName) {
         String registerIp = getIpUtil.getIpAddress(request);
+        Post post;
 
         // 원글인 경우
         if (postCreateRequest.getParentPostId() == null) {
-            Post post = getCreatePost(
-                    registerId,
+            post = getCreatePost(
+                    registerName,
                     postCreateRequest,
+                    null,
                     registerIp,
                     postReader.getMaxRef() + 1,
                     0
             );
             savePostAndPostHistory(post, registerIp, PostAction.CREATE);
-
-            // 요청 dto 에서 링크 리스트를 가져와서 게시물 링크 업로드
-            uploadLink(postCreateRequest, post);
         } else {
             // 답글인 경우
             if(!matchesProjectStepParentAndChild(postCreateRequest.getProjectStepId(), postCreateRequest.getParentPostId())) {
                 throw new BusinessException(NOT_MATCH_PROJECTSTEPID);
             }
-            Post post = getCreatePost(
-                    registerId,
+
+            Post parentPost = postReader.getPost(postCreateRequest.getParentPostId());
+
+            post = getCreatePost(
+                    registerName,
                     postCreateRequest,
+                    parentPost,
                     registerIp,
-                    postReader.getRef(postCreateRequest.getParentPostId()),
-                    postReader.getRefOrder(postCreateRequest.getParentPostId()) + 1
+                    parentPost.getRef(),
+                    postReader.getRefOrder(parentPost) + 1
             );
             savePostAndPostHistory(post, registerIp, PostAction.CREATE);
-            increaseChildPostNum(postCreateRequest.getParentPostId());
-
-            // 요청 dto 에서 링크 리스트를 가져와서 게시물 링크 업로드
-            uploadLink(postCreateRequest, post);
+            parentPost.increaseChildPostNum();
         }
+
+        // 요청 dto 에서 링크 리스트를 가져와서 게시물 링크 업로드
+        uploadLink(postCreateRequest, post);
     }
 
     /**
@@ -159,7 +162,6 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     public void deletePost(Long postId, HttpServletRequest request, Long deleterId) {
-
         // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = postReader.getPost(postId);
         matchPostWriter(post.getCreatedBy(), deleterId);
@@ -167,15 +169,14 @@ public class PostServiceImpl implements PostService {
         String deleterIp = getIpUtil.getIpAddress(request);
 
         // 원글인 경우
-        if(postReader.getParentPost(post) == null) {
+        if(post.getParentPost() == null) {
             if(post.getChildPostNum() >= 1) {
                 // 답글이 한 개 이상 존재하는 경우, 삭제 실패
                 throw new BusinessException(NOT_DELETE_PARENT_POST);
             }
         } else {
             // 답글인 경우
-            Post parentPost = postReader.getParentPost(post);
-            decreaseChildPostNum(parentPost.getId());
+            post.getParentPost().decreaseChildPostNum();
         }
 
         //해당 게시물의 링크 일괄 삭제
@@ -234,31 +235,22 @@ public class PostServiceImpl implements PostService {
      * 함수명 : getCreatePost()
      * 함수 목적 : (원글,답글) 게시글 생성 메서드
      */
-    private Post getCreatePost(Long registerId, PostCreateRequest postCreateRequest, String registerIp, Long ref, Integer refOrder) {
+    private Post getCreatePost(String registerName, PostCreateRequest postCreateRequest, Post parentPost, String registerIp, Long ref, Integer refOrder) {
         // 프로젝트 단계 확인
         ProjectStep projectStep = postReader.getProjectStep(postCreateRequest.getProjectStepId());
-        // 부모게시글 확인
-        Post parentPost = null;
-        if(postCreateRequest.getParentPostId() != null) {
-            parentPost = postReader.getPost(postCreateRequest.getParentPostId());
-        }
-        // 작성자 확인
-        String writer = postReader.getWriter(registerId);
 
         return Post.createPost(
                 projectStep,
                 parentPost,
                 ref,
                 refOrder,
-                0,                      // CHILD_POST_NUM = 0
                 postCreateRequest.getPriority(),
                 postCreateRequest.getStatus(),
                 postCreateRequest.getTitle(),
                 postCreateRequest.getContent(),
-                writer,
+                registerName,
                 postCreateRequest.getDeadline(),
-                registerIp,
-                null
+                registerIp
         );
     }
 
@@ -270,23 +262,5 @@ public class PostServiceImpl implements PostService {
         // 부모게시글의 프로젝트 단계 값 받기
         Post post = postReader.getPost(childParentPostId);
         return post.getProjectStep().getId().equals(childProjectStepId);
-    }
-
-    /**
-     * 함수명 : increaseChildPostNum()
-     * 함수 목적 : 답글 생성 시 child_post_num 증가
-     */
-    private void increaseChildPostNum(Long parentPostId) {
-        Post post = postReader.getPost(parentPostId);
-        post.increaseChildPostNum();
-    }
-
-    /**
-     * 함수명 : decreaseChildPostNum()
-     * 함수 목적 : 답글 삭제 시 child_post_num 감소
-     */
-    private void decreaseChildPostNum(Long parentPostId) {
-        Post post = postReader.getPost(parentPostId);
-        post.decreaseChildPostNum();
     }
 }
