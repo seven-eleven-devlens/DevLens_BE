@@ -187,12 +187,12 @@ public interface CompanyDocs {
 
     @PatchMapping("/{id}")
     @Operation(
-            summary = "회사 삭제",
-            description = "회사 삭제",
+            summary = "회사 상태 변경",
+            description = "회사 상태 변경",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "성공적으로 회사를 삭제했습니다."
+                            description = "수정 완료."
                     )
             },
             parameters = {
