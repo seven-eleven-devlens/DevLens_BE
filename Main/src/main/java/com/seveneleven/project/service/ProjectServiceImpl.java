@@ -2,6 +2,7 @@ package com.seveneleven.project.service;
 
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.member.service.MemberService;
+import com.seveneleven.project.dto.GetCompanyProject;
 import com.seveneleven.project.dto.GetProjectDetail;
 import com.seveneleven.project.dto.GetProjectList;
 import com.seveneleven.project.service.dashboard.ProjectReader;
@@ -15,9 +16,14 @@ public class ProjectServiceImpl implements ProjectService {
     private final MemberService memberService;
 
     @Override
-    public GetProjectList.Response getProjectList(Long memberId) {
+    public GetProjectList.Response getMyProjectList(Long memberId) {
         // TODO - memberService -> Reader로 변경 필요
-        return projectReader.getProjectList(memberId, memberService.getCompanyIdById(memberId));
+        return projectReader.getMyProjectList(memberId);
+    }
+
+    @Override
+    public GetCompanyProject.Response getCompanyProject(Long companyId) {
+        return getCompanyProject(companyId);
     }
 
     @Override

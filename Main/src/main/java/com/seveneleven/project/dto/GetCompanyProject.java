@@ -1,33 +1,35 @@
 package com.seveneleven.project.dto;
 
 import com.seveneleven.entity.project.Project;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class GetProjectList {
-    /**
-     * AllArgsContructor는 개발 시 삭제 예정
-     */
+public class GetCompanyProject {
+
     @Getter
     @NoArgsConstructor
     public static class Response {
-        List<GetMyProjectResponseInfo> myProjects;
+        Long companyId;
+        List<CompanyProject> companyProjects;
 
-        private Response(List<GetMyProjectResponseInfo> myProjects) {
-            this.myProjects = myProjects;
+        private Response(Long companyId, List<CompanyProject> companyProjects) {
+            this.companyId = companyId;
+            this.companyProjects = companyProjects;
         }
 
-        public static GetProjectList.Response toDto(List<GetMyProjectResponseInfo> myProjects) {
-            return new GetProjectList.Response(myProjects);
+        public static Response toDto(Long companyId, List<CompanyProject> projects) {
+            return new Response(companyId, projects);
         }
     }
 
     @Getter
     @NoArgsConstructor
-    public static class GetMyProjectResponseInfo {
+    @AllArgsConstructor
+    public static class CompanyProject {
         private Long id;
         private String projectName;
         private LocalDate startDate;
@@ -35,7 +37,7 @@ public class GetProjectList {
         private Long customerId;
         private String customerName;
 
-        private GetMyProjectResponseInfo(Project project) {
+        private CompanyProject(Project project) {
             this.id = project.getId();
             this.projectName = project.getProjectName();
             this.startDate = project.getStartDate();
@@ -44,9 +46,9 @@ public class GetProjectList {
             this.customerName = project.getCustomer().getCompanyName();
         }
 
-        public static List<GetMyProjectResponseInfo> toDto(List<Project> project) {
+        public static List<CompanyProject> toDto(List<Project> project) {
             return project.stream()
-                    .map(GetMyProjectResponseInfo::new)
+                    .map(CompanyProject::new)
                     .toList();
         }
     }
