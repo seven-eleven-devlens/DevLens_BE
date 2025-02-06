@@ -112,15 +112,15 @@ public class CompanyController implements CompanyDocs {
         함수명 : deleteCompany
         목적 : 회사 상세 정보 삭제
      */
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}")
     @Override
-    public ResponseEntity<APIResponse<Object>> deleteCompany(
+    public ResponseEntity<APIResponse<Object>> changeCompanyIsActive(
             @PathVariable Long id
     ) {
-        adminCompanyFacade.deleteCompany(id);
+        adminCompanyFacade.changeCompanyIsActive(id);
         return ResponseEntity
-                .status(SuccessCode.DELETED.getStatus())
-                .body(APIResponse.success(SuccessCode.DELETED));
+                .status(SuccessCode.UPDATED.getStatus())
+                .body(APIResponse.success(SuccessCode.UPDATED));
     }
 
     /*

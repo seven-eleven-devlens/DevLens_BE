@@ -93,7 +93,7 @@ public class AdminCompanyServiceImpl implements AdminCompanyService {
             Long id, PutCompany.Request request
     ) {
         //비활성화 및 존재 여부 확인
-        Company company = adminCompanyReader.getCompany(id);
+        Company company = adminCompanyReader.getActiveCompany(id);
 
         //중복 회사 등록 번호 확인
         if(!request.getBusinessRegistrationNumber().equals(company.getBusinessRegistrationNumber())) {
@@ -111,11 +111,11 @@ public class AdminCompanyServiceImpl implements AdminCompanyService {
      */
     @Transactional
     @Override
-    public Company deleteCompany(Long id) {
-        //비활성화 및 존재 여부 확인
-        Company company = adminCompanyReader.getActiveCompany(id);
+    public Company changeCompanyIsActive(Long id) {
+        //회사 조회
+        Company company = adminCompanyReader.getCompany(id);
         //회사 isActive N으로 변경
-        return adminCompanyStore.store(company.deleteCompany());
+        return adminCompanyStore.store(company.changeCompanyIsActive());
     }
 
     /*

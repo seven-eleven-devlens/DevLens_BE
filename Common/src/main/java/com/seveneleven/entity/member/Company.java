@@ -76,8 +76,11 @@ public class Company extends BaseEntity {
     }
 
     // 삭제 메서드
-    public Company deleteCompany() {
-        this.isActive = YN.N;
+    public Company changeCompanyIsActive() {
+        if(this.isActive.equals(YN.Y))
+            this.isActive = YN.N;
+        else
+            this.isActive = YN.Y;
         return this;
     }
 

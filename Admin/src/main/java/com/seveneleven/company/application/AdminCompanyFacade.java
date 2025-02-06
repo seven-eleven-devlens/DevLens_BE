@@ -4,6 +4,7 @@ import com.seveneleven.company.dto.*;
 import com.seveneleven.company.service.AdminCompanyHistoryService;
 import com.seveneleven.company.service.AdminCompanyService;
 import com.seveneleven.entity.member.Company;
+import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.member.service.AdminMemberService;
 import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
@@ -42,9 +43,11 @@ public class AdminCompanyFacade {
         return response;
     }
 
-    public void deleteCompany(Long id) {
-        Company deletedCompany = adminCompanyService.deleteCompany(id);
-        adminMemberService.deleteCompanyMember(deletedCompany);
+    public void changeCompanyIsActive(Long id) {
+        Company deletedCompany = adminCompanyService.changeCompanyIsActive(id);
+        if(deletedCompany.getIsActive().equals(YN.N)) {
+            adminMemberService.deleteCompanyMember(deletedCompany);
+        }
         adminCompanyHistoryService.saveHistory(deletedCompany);
     }
 
