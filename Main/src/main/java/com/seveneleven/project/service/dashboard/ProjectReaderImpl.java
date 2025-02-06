@@ -4,6 +4,7 @@ import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.constant.ProjectStatusCode;
 import com.seveneleven.exception.BusinessException;
+import com.seveneleven.project.dto.GetCompanyProject;
 import com.seveneleven.project.dto.GetProjectDetail;
 import com.seveneleven.project.repository.CheckRequestRepository;
 import com.seveneleven.project.repository.ProjectRepository;
@@ -33,11 +34,13 @@ public class ProjectReaderImpl implements ProjectReader {
 
     @Override
     @Transactional(readOnly = true)
-    public Response getProjectList(Long memberId, Long companyId) {
-        List<GetMyProjectResponseInfo> myProject = getMyProjects(memberId);
-        List<GetCompanyProjectResponseInfo> companyProject = getCompanyProjects(companyId);
+    public Response getMyProjectList(Long memberId) {
+        return Response.toDto(getMyProjects(memberId));
+    }
 
-        return Response.toDto(myProject, companyProject);
+    @Override
+    public GetCompanyProject.Response getCompanyProject(Long companyId) {
+        return GetCompanyProject.Response.toDto(companyId, getCompanyProjects(companyId));
     }
 
     @Override
@@ -50,8 +53,8 @@ public class ProjectReaderImpl implements ProjectReader {
         );
     }
 
-    private List<GetCompanyProjectResponseInfo> getCompanyProjects(Long companyId) {
-        return GetCompanyProjectResponseInfo
+    private List<GetCompanyProject.CompanyProject> getCompanyProjects(Long companyId) {
+        return GetCompanyProject.CompanyProject
                 .toDto(projectRepository.findAllCompanyProgressingProjects(companyId));
     }
 

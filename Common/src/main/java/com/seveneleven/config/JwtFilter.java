@@ -52,30 +52,30 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Refresh 요청은 필터를 통과시키도록 설정
         if ("/api/auth/refresh".equals(requestURI)) {
+            log.info("[재발급 요청] jwt filter에서 다음 filter로 넘어가는 중 ... ");
             filterChain.doFilter(request, response); // Refresh 요청은 그대로 통과
-            return;
+            return ;
         }
 
         // 쿠키에서 토큰 가져오기
         Token token = new Token();
 
-        // 관리자 토큰 하드 코딩
-//        token.setAccessToken("eyJhbGciOiJIUzUxMiJ9.eyJtZW1iZXJJZCI6IjExIiwibG9naW5JZCI6ImFzZGYxMjMiLCJhdXRoIjoiUk9MRV9BRE1JTiIsImlhdCI6MTczODU0OTcxMCwiZXhwIjoxNzM5NDA5NzEwfQ.DI-8SgdNtCFWofcjDB9aGHBszhkZvEBoreFoT2UXUk0XqM-TJavyq9Dp6YiWJY3uXr12-J0irp8jyJ-0dBitUw");
-//        token.setRefreshToken("eyJhbGciOiJIUzUxMiJ9.eyJtZW1iZXJJZCI6IjExIiwibG9naW5JZCI6ImFzZGYxMjMiLCJpYXQiOjE3Mzg1NDk3MTAsImV4cCI6MTczOTQwOTcxMH0.ca8DVWhzsVfiQDgtMoXHz2SlRVECJdz0ClOvjt3os1non9jHLTGltbMB2O8q0fjYkpQ9VteMqWM78OzAxf4o3Q");
-
-
         if (Objects.nonNull(request.getCookies())) {
             for (Cookie cookie : request.getCookies()) {
                 if (ACCESS_HEADER.equals(cookie.getName())) {
                     token.setAccessToken(cookie.getValue());
+                    log.info("[JWT Filter] Access Token : {}", cookie.getValue());
                 } else if (REFRESH_HEADER.equals(cookie.getName())) {
                     token.setRefreshToken(cookie.getValue());
+                    log.info("[JWT Filter] Refresh Token : {}", cookie.getValue());
                 }
             }
+        } else {
+            log.warn("Request Cookie is null");
         }
 
 
-        if(Objects.nonNull(token) && Objects.nonNull(token.getAccessToken())) {
+        if(Objects.nonNull(token.getAccessToken())) {
 
             // Access Token이 유효할 때
             if(tokenProvider.validateToken(token.getAccessToken())) {

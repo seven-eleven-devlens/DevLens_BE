@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.config.Configuration;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class MemberDto {
 
@@ -41,7 +42,8 @@ public class MemberDto {
         private String company;
         private String department;
         private String position;
-
+        private LocalDateTime createdAt;
+        private LocalDateTime updatedAt;
     }
 
     @Getter

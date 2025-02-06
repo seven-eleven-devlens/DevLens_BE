@@ -1,6 +1,7 @@
 package com.seveneleven.member.controller;
 
 import com.seveneleven.response.APIResponse;
+import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.security.dto.TokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,25 +35,9 @@ public interface AuthDocs {
                             responseCode = "401",
                             description = "인증 실패 또는 토큰 유효성 검증 실패"
                     )
-            },
-            parameters = {
-                    @Parameter(
-                            name = "X-Access-Token",
-                            description = "기존 Access Token",
-                            in = ParameterIn.COOKIE,
-                            required = true
-                    ),
-                    @Parameter(
-                            name = "X-Refresh-Token",
-                            description = "Refresh Token",
-                            in = ParameterIn.COOKIE,
-                            required = true
-                    )
             }
     )
     @PostMapping("/refresh")
-    ResponseEntity<APIResponse<TokenResponse>> refreshAccessToken(
-            @CookieValue("X-Access-Token") String accessToken,
-            @CookieValue("X-Refresh-Token") String refreshToken
-    );
+    public ResponseEntity<APIResponse<SuccessCode>> refreshAccessToken (@CookieValue(value = "X-Access-Token", required = false)  String accessToken,
+                                                                        @CookieValue("X-Refresh-Token") String refreshToken);
 }

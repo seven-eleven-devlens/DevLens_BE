@@ -5,6 +5,7 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.MemberPasswordResetHistory;
+import com.seveneleven.entity.member.MemberProfileHistory;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
@@ -12,6 +13,7 @@ import com.seveneleven.member.MemberValidator;
 import com.seveneleven.member.dto.*;
 import com.seveneleven.member.repository.AdminMemberRepository;
 import com.seveneleven.member.repository.PasswordHistoryRepository;
+import com.seveneleven.member.repository.ProfileHistoryRepository;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.security.dto.TokenResponse;
@@ -35,6 +37,7 @@ import java.util.Objects;
 
 /**
  * 회원 관리 서비스 클래스.
+ *
  * 회원의 생성, 조회, 수정, 삭제 및 기타 관련 비즈니스 로직을 처리합니다.
  */
 @Service
@@ -43,6 +46,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
     private final GetIpUtil getIpUtil;
     private final PasswordHistoryRepository passwordResetHistory;
+    private final ProfileHistoryRepository profileHistory;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
     private final AdminMemberRepository memberRepository;
     private final CompanyRepository companyRepository;
@@ -59,7 +63,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     @Transactional
     public LoginPost.Response login(LoginPost.Request request) {
 
-        Member member = memberRepository.findByLoginId(request.getLoginId())
+        Member member = memberRepository.findByLoginIdAndStatus(request.getLoginId(), MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
@@ -240,6 +244,8 @@ public class AdminMemberServiceImpl implements AdminMemberService {
 
         member.updateMember(memberDto.getName(), member.getEmail(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
                 memberDto.getDepartment(), memberDto.getPosition());
+
+        profileHistory.save(MemberProfileHistory.createProfileHistory(member));
 
         return MemberDto.fromEntity(member);
     }

@@ -3,6 +3,7 @@ package com.seveneleven.board.service;
 import com.seveneleven.board.dto.GetCommentResponse;
 import com.seveneleven.board.dto.PatchCommentRequest;
 import com.seveneleven.board.dto.PostCommentRequest;
+import com.seveneleven.entity.board.Post;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,7 +12,7 @@ import java.util.List;
 public interface CommentService {
 
     @Transactional(readOnly = true)
-    List<GetCommentResponse> selectCommentList(Long postId);
+    List<GetCommentResponse> selectCommentList(Post post);
 
     @Transactional
     void createComment(Long postId, PostCommentRequest postCommentRequest, HttpServletRequest request, Long registerId);
