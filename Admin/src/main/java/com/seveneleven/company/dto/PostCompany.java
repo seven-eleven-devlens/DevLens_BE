@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 public class PostCompany {
-    @NotBlank
     @Getter
     public static class Request {
+        @NotBlank
         private String companyName;
         private String representativeName;
         private String representativeContact;
