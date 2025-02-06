@@ -8,7 +8,7 @@ import com.seveneleven.project.dto.PatchProjectCurrentStep;
 
 public interface ProjectService {
     Project getProject(Long projectId);
-    GetProjectList.Response getMyProjectList(Long memberId, String step);
+    GetProjectList.Response getMyProjectList(Long memberId, String projectStatusCode);
     GetCompanyProject.Response getCompanyProject(Long companyId);
     GetProjectDetail.Response getProjectDetail(Long projectId);
     PatchProjectCurrentStep.Response patchProjectCurrentStep(Long projectId, Long stepId);

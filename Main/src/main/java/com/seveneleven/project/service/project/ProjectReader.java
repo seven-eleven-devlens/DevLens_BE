@@ -7,7 +7,7 @@ import com.seveneleven.project.dto.GetProjectList;
 
 public interface ProjectReader {
     Project read(Long projectId);
-    GetProjectList.Response getMyProjectList(Long memberId);
+    GetProjectList.Response getMyProjectList(Long memberId, String projectStatusCode);
     GetCompanyProject.Response getCompanyProject(Long companyId);
     GetProjectDetail.Response getProjectDetail(Long projectId);
 }

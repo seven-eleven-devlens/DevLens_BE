@@ -26,7 +26,7 @@ public class MyProjectController implements MyProjectDocs {
     @GetMapping("/projects")
     public ResponseEntity<APIResponse<GetProjectList.Response>> getMyProject(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam("step") String step
+            @RequestParam("status") String projectStatusCode
     ) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatusCode())
@@ -34,7 +34,7 @@ public class MyProjectController implements MyProjectDocs {
                         SuccessCode.OK,
                         projectService.getMyProjectList(
                                 userDetails.getMember().getId(),
-                                step
+                                projectStatusCode
                         )));
     }
 

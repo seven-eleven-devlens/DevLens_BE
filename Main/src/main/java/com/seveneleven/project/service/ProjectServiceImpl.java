@@ -25,9 +25,8 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public GetProjectList.Response getMyProjectList(Long memberId, String step) {
-        // TODO - memberService -> Reader로 변경 필요
-        return projectReader.getMyProjectList(memberId);
+    public GetProjectList.Response getMyProjectList(Long memberId, String projectStatusCode) {
+        return projectReader.getMyProjectList(memberId, projectStatusCode);
     }
 
     @Override
