@@ -104,7 +104,7 @@ public class TokenProvider implements InitializingBean {
         // Refresh Token은 Redis에 저장
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         refreshTokenRepository.save(
-                new RefreshToken(refreshToken, userDetails.getId().toString()),
+                new RefreshToken(refreshToken, userDetails.getId().toString(), getRefreshTokenExpireTime()),
                 REFRESH_TOKEN_EXPIRE_TIME
         );
 
