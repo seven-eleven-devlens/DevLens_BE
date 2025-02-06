@@ -1,10 +1,13 @@
 package com.seveneleven.project.controller;
 
+import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
+import com.seveneleven.member.service.MemberService;
+import com.seveneleven.project.dto.GetMemberAuthorization;
 import com.seveneleven.project.dto.GetProjectAuthorization;
 import com.seveneleven.project.dto.PostProjectAuthorization;
 import com.seveneleven.project.service.ProjectAuthorizationService;
-import com.seveneleven.project.service.dashboard.ProjectReader;
+import com.seveneleven.project.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -14,7 +17,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class ProjectAuthorizationFacade {
 
-    private final ProjectReader projectReader;
+    private final ProjectService projectService;
+    private final MemberService memberService;
     private final ProjectAuthorizationService projectAuthorizationService;
 
     /**
@@ -25,7 +29,7 @@ public class ProjectAuthorizationFacade {
             PostProjectAuthorization.Request requestDto,
             Long projectId
     ) {
-        Project project = projectReader.read(projectId);
+        Project project = projectService.getProject(projectId);
         return projectAuthorizationService.createProjectAuthorization(project, requestDto);
     }
 
@@ -34,7 +38,14 @@ public class ProjectAuthorizationFacade {
      * 해당 단계에 접근할 수 있는 인원을 반환하는 함수
      */
     public GetProjectAuthorization.Response getProjectAuthorization(Long projectId) {
-        Project project = projectReader.read(projectId);
+        Project project = projectService.getProject(projectId);
         return projectAuthorizationService.getProjectAuthorization(project);
+    }
+
+    public GetMemberAuthorization.Response getMemberAuthorization(Long projectId, Long memberId) {
+        Project project = projectService.getProject(projectId);
+        Member member = memberService.getMember(memberId);
+
+        return projectAuthorizationService.getMemberAuthorization(project, member);
     }
 }

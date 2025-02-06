@@ -1,7 +1,9 @@
 package com.seveneleven.project.service;
 
+import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectAuthorization;
+import com.seveneleven.project.dto.GetMemberAuthorization;
 import com.seveneleven.project.dto.GetProjectAuthorization;
 import com.seveneleven.project.dto.PostProjectAuthorization;
 import com.seveneleven.project.service.authorization.AuthorizationReader;
@@ -32,6 +34,14 @@ public class ProjectAuthorizationServiceImpl implements ProjectAuthorizationServ
     public GetProjectAuthorization.Response getProjectAuthorization(Project project) {
         List<ProjectAuthorization> authorizations = authorizationReader.readByProjectId(project.getId());
         return GetProjectAuthorization.Response.toDto(project.getId(), authorizations);
+    }
+
+    @Override
+    public GetMemberAuthorization.Response getMemberAuthorization(Project project, Member member) {
+        ProjectAuthorization authorization =
+                authorizationReader.readByProjectIdAndUserId(project.getId(), member.getId());
+
+        return GetMemberAuthorization.Response.toDto(authorization);
     }
 
     /**
