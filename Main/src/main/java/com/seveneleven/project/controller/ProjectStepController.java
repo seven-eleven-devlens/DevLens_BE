@@ -68,35 +68,4 @@ public class ProjectStepController implements ProjectStepDocs {
         return ResponseEntity.status(SuccessCode.OK.getStatusCode())
                 .body(APIResponse.success(SuccessCode.OK, projectStepFacade.deleteProjectStep(projectId, stepId)));
     }
-
-    /**
-     * 함수명 : postProjectAuthorization
-     * 프로젝트 접근 권한을 편집하는 함수
-     */
-    @PostMapping("/steps/{stepId}/authorizations")
-    public ResponseEntity<APIResponse<PostProjectAuthorization.Response>> postProjectAuthorization(
-            @PathVariable Long stepId,
-            @RequestBody PostProjectAuthorization.Request requestDto
-    ) {
-        PostProjectAuthorization.Response responseDto = projectStepFacade.postProjectAuthorization(requestDto, stepId);
-
-        if(responseDto.getFailList().isEmpty()) {
-            return ResponseEntity.status(SuccessCode.CREATED.getStatusCode())
-                    .body(APIResponse.success(SuccessCode.OK, responseDto));
-        }
-        return ResponseEntity.status(SuccessCode.MULTISTATUS.getStatusCode())
-                .body(APIResponse.success(SuccessCode.MULTISTATUS, responseDto));
-    }
-
-    /**
-     * 함수명 : getProjectAuthorization
-     * 접근 권한자 목록을 반환하는 함수
-     */
-    @GetMapping("/steps/{stepId}/authorizations")
-    public ResponseEntity<APIResponse<GetProjectAuthorization.Response>> getProjectAuthorization(
-            @PathVariable Long stepId
-    ) {
-        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
-                .body(APIResponse.success(SuccessCode.OK, projectStepFacade.getProjectAuthorization(stepId)));
-    }
 }

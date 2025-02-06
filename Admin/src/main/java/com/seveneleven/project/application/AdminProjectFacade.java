@@ -19,6 +19,7 @@ public class AdminProjectFacade {
     private final AdminProjectStepService adminProjectStepService;
 
     public PostProject.Response registerProject(PostProject.Request request){
+        // TODO - Project 권한 설정 로직 추가 - LSY
         Project project = adminProjectService.createProject(request);
         adminProjectStepService.createBasicStep(project);
         adminProjectHistoryService.saveProjectHistory(project);
@@ -26,12 +27,14 @@ public class AdminProjectFacade {
     }
 
     public PutProject.Response updateProject(Long id,PutProject.Request request){
+        // TODO - Project 권한 설정 로직 추가 고민 중 - LSY
         Project project = adminProjectService.updateProject(id, request);
         adminProjectHistoryService.saveProjectHistory(project);
         return PutProject.Response.of(project);
     }
 
     public GetProject.Response getProject(Long id){
+        // TODO - Project 권한 목록 추가 로직 - LSY
         return adminProjectService.getProject(id);
     }
 
@@ -40,6 +43,7 @@ public class AdminProjectFacade {
     }
 
     public void deleteProject(Long id){
+        // TODO - 프로젝트 권한 목록 비활성화 로직 추가 - LSY
         Project project = adminProjectService.deleteProject(id);
         adminProjectHistoryService.saveProjectHistory(project);
     }
