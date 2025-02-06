@@ -1,11 +1,14 @@
 package com.seveneleven.project.service;
 
 import com.seveneleven.entity.project.Project;
-import com.seveneleven.member.service.MemberService;
+import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.project.dto.GetCompanyProject;
 import com.seveneleven.project.dto.GetProjectDetail;
 import com.seveneleven.project.dto.GetProjectList;
-import com.seveneleven.project.service.dashboard.ProjectReader;
+import com.seveneleven.project.dto.PatchProjectCurrentStep;
+import com.seveneleven.project.service.project.ProjectReader;
+import com.seveneleven.project.service.project.ProjectStore;
+import com.seveneleven.project.service.step.StepReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +16,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService {
     private final ProjectReader projectReader;
-    private final MemberService memberService;
+    private final ProjectStore projectStore;
+    private final StepReader stepReader;
 
     @Override
-    public GetProjectList.Response getMyProjectList(Long memberId) {
+    public Project getProject(Long projectId) {
+        return projectReader.read(projectId);
+    }
+
+    @Override
+    public GetProjectList.Response getMyProjectList(Long memberId, String step) {
         // TODO - memberService -> Reader로 변경 필요
         return projectReader.getMyProjectList(memberId);
     }
@@ -32,7 +41,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project getProject(Long projectId) {
-        return projectReader.read(projectId);
+    public PatchProjectCurrentStep.Response patchProjectCurrentStep(Long projectId, Long stepId) {
+        Project project = getProject(projectId);
+        ProjectStep projectStep = stepReader.read(stepId);
+
+        return PatchProjectCurrentStep.Response.toDto(
+                projectStore.modifyProjectCurrentStep(project, projectStep)
+        );
     }
 }

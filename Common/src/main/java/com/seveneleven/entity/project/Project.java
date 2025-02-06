@@ -42,6 +42,8 @@ public class Project extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ProjectStatusCode projectStatusCode; // 프로젝트 상태 코드 (준비, 진행, 완료, 보류, 취소)
 
+    private String currentProjectStep;
+
     private String bnsManager; // BNS 담당자
 
     private String contractNumber; // 계약서 번호
@@ -57,7 +59,6 @@ public class Project extends BaseEntity {
     private Long finalApproverId; // 최종 결재자
 
     private LocalDateTime finalApprovalDate; // 최종 결재일시
-
 
     // Dto를 받는 생성자
     private Project(
@@ -148,5 +149,9 @@ public class Project extends BaseEntity {
     public Project delete(){
         this.projectStatusCode = ProjectStatusCode.DELETED;
         return this;
+    }
+
+    public void modifyCurrentProjectStep(String currentProjectStep) {
+        this.currentProjectStep = currentProjectStep;
     }
 }

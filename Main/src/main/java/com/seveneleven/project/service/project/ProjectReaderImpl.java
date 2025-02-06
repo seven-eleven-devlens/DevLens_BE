@@ -1,4 +1,4 @@
-package com.seveneleven.project.service.dashboard;
+package com.seveneleven.project.service.project;
 
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.project.Project;
