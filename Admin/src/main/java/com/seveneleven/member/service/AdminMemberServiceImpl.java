@@ -5,6 +5,7 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.MemberPasswordResetHistory;
+import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.MemberValidator;
@@ -346,8 +347,11 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         List<Member> members = memberRepository.findAllByCompany(company);
 
         // 2. 회원 삭제
-        for (Member member : members) {
-            member.deleteMember();
-        }
+        members.stream()
+                .filter(member -> member.getStatus().equals(MemberStatus.ACTIVE))
+                .forEach(member -> {
+                    member.deleteMember();
+                    memberRepository.save(member);
+                });
     }
 }
