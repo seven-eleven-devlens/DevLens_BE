@@ -40,7 +40,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
         )
     )
     """)
-    Page<Post> findAllByProjectStepId2(@Param("projectStepId") Long projectStepId,
+    Page<Post> findAllByProjectStepId(@Param("projectStepId") Long projectStepId,
                                       @Param("keyword") String keyword,
                                       @Param("filter") String filter,
                                       Pageable pageable);
