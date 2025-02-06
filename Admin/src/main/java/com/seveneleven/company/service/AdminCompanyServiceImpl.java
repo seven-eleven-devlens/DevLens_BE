@@ -47,7 +47,7 @@ public class AdminCompanyServiceImpl implements AdminCompanyService {
     @Override
     public GetCompanyDetail.Response getCompanyDetail(Long id) {
         //참여 프로젝트 조회를 위한 회사 조회
-        Company company = adminCompanyReader.getActiveCompany(id);
+        Company company = adminCompanyReader.getCompany(id);
         return GetCompanyDetail.Response.of(company);
     }
 
