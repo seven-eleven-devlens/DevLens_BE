@@ -23,4 +23,9 @@ public class PostStoreImpl implements PostStore {
     public PostHistory storePostHistory(Post post, PostAction postAction, String ip) {
         return postHistoryRepository.save(PostHistory.createPostHistory(post, postAction, ip));
     }
+
+    @Override
+    public void deletePost(Post post) {
+        postRepository.delete(post);
+    }
 }

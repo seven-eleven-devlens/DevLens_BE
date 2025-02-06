@@ -59,9 +59,7 @@ public class PostServiceImpl implements PostService {
 
         Page<Post> repoPostList = postReader.getPosts(projectStepId, keyword, repoFilter, pageable);
 
-        Page<PostListResponse> postListResponsePage = repoPostList.map(post -> {
-            return PostListResponse.toDto(post, postReader.getWriter(post.getCreatedBy()));
-        });
+        Page<PostListResponse> postListResponsePage = repoPostList.map(post -> PostListResponse.toDto(post, postReader.getWriter(post.getCreatedBy())));
 
         return PaginatedResponse.createPaginatedResponse(postListResponsePage);
     }
@@ -166,7 +164,7 @@ public class PostServiceImpl implements PostService {
         Post post = postReader.getPost(postId);
         matchPostWriter(post.getCreatedBy(), deleterId);
 
-        String modifierIp = getIpUtil.getIpAddress(request);
+        String deleterIp = getIpUtil.getIpAddress(request);
 
         // 원글인 경우
         if(postReader.getParentPost(post) == null) {
@@ -186,7 +184,8 @@ public class PostServiceImpl implements PostService {
         //게시물 파일 일괄 삭제
         postFileService.deleteAllPostFiles(post.getId(), deleterId);
 
-        savePostAndPostHistory(post, modifierIp, PostAction.DELETE);
+        postStore.storePostHistory(post, PostAction.DELETE, deleterIp);
+        postStore.deletePost(post);
     }
 
     /**

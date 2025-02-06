@@ -8,4 +8,6 @@ public interface PostStore {
     Post storePost(Post post);
 
     PostHistory storePostHistory(Post post, PostAction postAction, String ip);
+
+    void deletePost(Post post);
 }
