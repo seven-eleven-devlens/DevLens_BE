@@ -11,6 +11,7 @@ import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.ErrorCode;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -33,5 +34,14 @@ public class AdminExceptionHandler {
         return ResponseEntity
                 .status(ErrorCode.ENTITY_NOT_FOUND.getStatus())
                 .body(APIResponse.fail(ErrorCode.ENTITY_NOT_FOUND, e.getMessage()));
+    }
+
+    @ExceptionHandler(value = {MethodArgumentNotValidException.class})
+    public ResponseEntity<APIResponse<Exception>> handleValidException(
+            MethodArgumentNotValidException e
+    ){
+        return ResponseEntity
+                .status(e.getStatusCode())
+                .body(APIResponse.fail(ErrorCode.BAD_REQUEST, ErrorCode.BAD_REQUEST.getMessage()));
     }
 }

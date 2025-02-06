@@ -3,6 +3,7 @@ package com.seveneleven.company.dto;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.BusinessType;
 import com.seveneleven.entity.member.constant.YN;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class PutCompany {
     @Getter
     public static class Request {
+        @NotBlank
         private String companyName;
         private String representativeName;
         private String representativeContact;
