@@ -34,6 +34,7 @@ public class AdminCompanyFacade {
     }
 
     public void deleteCompany(Long id) {
+        // TODO - 프로젝트 삭제 로직 추가
         adminCompanyService.deleteCompany(id);
     }
 
