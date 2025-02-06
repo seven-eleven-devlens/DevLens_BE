@@ -54,6 +54,7 @@ public enum ErrorCode {
     PROJECT_STEP_NAME_NOT_NULL(2304, HttpStatus.BAD_REQUEST, "프로젝트 단계명은 빈칸일 수 없습니다."),
     PROJECT_STEP_DESCRIPTION_NOT_NULL(2305, HttpStatus.BAD_REQUEST, "프로젝트 단계 설명은 빈칸일 수 없습니다."),
     CHECK_RESULT_NOT_FOUND(2400, HttpStatus.BAD_REQUEST, "처리 결과를 찾을 수 없습니다."),
+    NOT_HAVE_PROJECT_AUTHORIZATION(2500, HttpStatus.BAD_REQUEST, "프로젝트 접근 권한이 없습니다."),
 
     NOT_FOUND_PROJECT_STEP(2501, HttpStatus.NOT_FOUND, "해당 프로젝트 단계를 찾을 수 없습니다."),
     NOT_FOUND_MEMBER(2502, HttpStatus.NOT_FOUND, "해당 회원을 찾을 수 없습니다."),

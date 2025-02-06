@@ -59,7 +59,11 @@ public class ProjectAuthorizationController {
             @PathVariable Long projectId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        // TODO - 구현
-        return null;
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(
+                        SuccessCode.OK,
+                        projectAuthorizationFacade.getMemberAuthorization(
+                                projectId, customUserDetails.getId()
+                        )));
     }
 }
