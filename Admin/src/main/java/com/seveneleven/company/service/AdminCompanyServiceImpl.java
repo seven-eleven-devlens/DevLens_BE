@@ -115,7 +115,7 @@ public class AdminCompanyServiceImpl implements AdminCompanyService {
         //비활성화 및 존재 여부 확인
         Company company = adminCompanyReader.getActiveCompany(id);
         //회사 isActive N으로 변경
-        return company.deleteCompany();
+        return adminCompanyStore.store(company.deleteCompany());
     }
 
     /*
