@@ -58,23 +58,4 @@ public class ProjectStepFacade {
     public DeleteProjectStep.Response deleteProjectStep(Long projectId, Long stepId) {
         return projectStepService.deleteProjectStep(projectId, stepId);
     }
-
-    /**
-     * 함수명 : postProjectAuthorization
-     * 프로젝트 접근 권한을 편힙하는 함수
-     */
-    public PostProjectAuthorization.Response postProjectAuthorization(
-            PostProjectAuthorization.Request requestDto,
-            Long stepId
-    ) {
-        return projectAuthorizationService.createProjectAuthorization(stepId, requestDto);
-    }
-
-    /**
-     * 함수명 : getProjectAuthorization
-     * 해당 단계에 접근할 수 있는 인원을 반환하는 함수
-     */
-    public GetProjectAuthorization.Response getProjectAuthorization(Long stepId) {
-        return projectAuthorizationService.getProjectAuthorization(stepId);
-    }
 }

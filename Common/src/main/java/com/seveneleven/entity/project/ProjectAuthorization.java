@@ -32,6 +32,7 @@ public class ProjectAuthorization extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberType memberType; // 회원 구분 (client, developer)
 
+    // Question - Enum으로 뺄까?
     private String authorizationCode; // 권한 코드
 
     @Convert(converter = YesNoConverter.class)
