@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService{
     @Transactional
     public LoginPost.Response login(LoginPost.Request request) {
 
-        Member member = memberRepository.findByLoginId(request.getLoginId())
+        Member member = memberRepository.findByLoginIdAndStatus(request.getLoginId(),MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
