@@ -1,5 +1,6 @@
 package com.seveneleven.member.repository;
 
+import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,8 @@ public interface AdminMemberRepository extends JpaRepository<Member, Long>, JpaS
     Optional<Member> findByLoginId(String loginId);
 
     Page<Member> findAll(Pageable pageable);
+
+    List<Member> findAllByCompany(Company company);
 
     Optional<Member> findByLoginIdAndStatus(String loginId, MemberStatus statusCode);
 

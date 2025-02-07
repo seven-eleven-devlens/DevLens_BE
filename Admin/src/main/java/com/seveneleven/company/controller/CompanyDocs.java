@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public interface CompanyDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<PostCompany.Response>> createCompany(@RequestBody PostCompany.Request companyRequest);
+    ResponseEntity<APIResponse<PostCompany.Response>> createCompany(@RequestBody @Valid PostCompany.Request companyRequest);
 
     @GetMapping("/{id}")
     @Operation(
@@ -181,17 +182,17 @@ public interface CompanyDocs {
     )
     ResponseEntity<APIResponse<PutCompany.Response>> updateCompany(
             @PathVariable Long id,
-            @RequestBody PutCompany.Request request
+            @RequestBody @Valid PutCompany.Request request
     );
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}")
     @Operation(
-            summary = "회사 삭제",
-            description = "회사 삭제",
+            summary = "회사 상태 변경",
+            description = "회사 상태 변경",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "성공적으로 회사를 삭제했습니다."
+                            description = "수정 완료."
                     )
             },
             parameters = {
@@ -203,7 +204,7 @@ public interface CompanyDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<Object>> deleteCompany(@PathVariable Long id);
+    ResponseEntity<APIResponse<Object>> changeCompanyIsActive(@PathVariable Long id);
 
     @GetMapping("/all")
     @Operation(

@@ -54,7 +54,7 @@ public class AdminCompanyServiceImpl implements AdminCompanyService {
     @Override
     public GetCompanyDetail.Response getCompanyDetail(Long id) {
         //참여 프로젝트 조회를 위한 회사 조회
-        Company company = adminCompanyReader.getActiveCompany(id);
+        Company company = adminCompanyReader.getCompany(id);
         return GetCompanyDetail.Response.of(company);
     }
 
@@ -100,14 +100,16 @@ public class AdminCompanyServiceImpl implements AdminCompanyService {
             Long id, PutCompany.Request request
     ) {
         //비활성화 및 존재 여부 확인
-        Company oldCompany = adminCompanyReader.getCompany(id);
-        //회사 isActive N으로 변경
-        oldCompany.deleteCompany();
+        Company company = adminCompanyReader.getActiveCompany(id);
+
         //중복 회사 등록 번호 확인
-        checkDuplicatedCompanyBusinessRegistrationNumber(request.getBusinessRegistrationNumber());
+        if(!request.getBusinessRegistrationNumber().equals(company.getBusinessRegistrationNumber())) {
+            checkDuplicatedCompanyBusinessRegistrationNumber(request.getBusinessRegistrationNumber());
+        }
         //신규 데이터로 회사 생성
-        Company company = request.toEntity();
-        return PutCompany.Response.of(adminCompanyStore.store(company));
+        Company newCompany = request.updateCompany(company);
+
+        return PutCompany.Response.of(adminCompanyStore.store(newCompany));
     }
 
     /*
@@ -116,11 +118,11 @@ public class AdminCompanyServiceImpl implements AdminCompanyService {
      */
     @Transactional
     @Override
-    public void deleteCompany(Long id) {
-        //비활성화 및 존재 여부 확인
-        Company company = adminCompanyReader.getActiveCompany(id);
+    public Company changeCompanyIsActive(Long id) {
+        //회사 조회
+        Company company = adminCompanyReader.getCompany(id);
         //회사 isActive N으로 변경
-        company.deleteCompany();
+        return adminCompanyStore.store(company.changeCompanyIsActive());
     }
 
     /*

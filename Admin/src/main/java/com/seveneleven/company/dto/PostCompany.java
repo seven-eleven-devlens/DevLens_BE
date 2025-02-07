@@ -2,11 +2,13 @@ package com.seveneleven.company.dto;
 
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.constant.BusinessType;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 public class PostCompany {
     @Getter
     public static class Request {
+        @NotBlank
         private String companyName;
         private String representativeName;
         private String representativeContact;

@@ -34,18 +34,18 @@ public class AdminCompanyReaderImpl implements AdminCompanyReader {
 
     @Override
     public Page<GetProject.Response> getCompanyProject(Pageable pageable, Long id) {
-        Company company = companyRepository.findByIdAndIsActive(id, YN.Y).orElseThrow(CompanyNotFoundException::new);
+        Company company = companyRepository.findById(id).orElseThrow(CompanyNotFoundException::new);
         return adminProjectRepository.findByCustomerOrDeveloper(pageable, company, company).map(GetProject.Response::of);
     }
 
     @Override
     public Page<GetCompanies.Response> getCompanies(Pageable pageable) {
-        return companyRepository.findByIsActive(pageable,YN.Y).map(GetCompanies.Response::getCompaniesResponse);
+        return companyRepository.findAll(pageable).map(GetCompanies.Response::getCompaniesResponse);
     }
 
     @Override
     public Page<GetCompanies.Response> getCompaniesBySearchTerm(String searchTerm, Pageable pageable) {
-        return companyRepository.findByIsActiveAndCompanyNameContainingIgnoreCase(YN.Y, searchTerm, pageable)
+        return companyRepository.findByCompanyNameContainingIgnoreCase(searchTerm, pageable)
                 .map(GetCompanies.Response::getCompaniesResponse);
     }
 

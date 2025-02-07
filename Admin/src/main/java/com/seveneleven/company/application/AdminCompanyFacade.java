@@ -1,8 +1,11 @@
 package com.seveneleven.company.application;
 
 import com.seveneleven.company.dto.*;
+import com.seveneleven.company.service.AdminCompanyHistoryService;
 import com.seveneleven.company.service.AdminCompanyService;
 import com.seveneleven.entity.member.Company;
+import com.seveneleven.entity.member.constant.YN;
+import com.seveneleven.member.service.AdminMemberService;
 import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,9 +16,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminCompanyFacade {
     private final AdminCompanyService adminCompanyService;
+    private final AdminCompanyHistoryService adminCompanyHistoryService;
+    private final AdminMemberService adminMemberService;
 
     public PostCompany.Response registerCompany(PostCompany.Request request) {
-        return adminCompanyService.createCompany(request);
+        PostCompany.Response response = adminCompanyService.createCompany(request);
+        adminCompanyHistoryService.saveHistory(request.toEntity());
+        return response;
     }
 
     public GetCompanyDetail.Response getCompanyDetail(Long id) {
@@ -31,11 +38,17 @@ public class AdminCompanyFacade {
     }
 
     public PutCompany.Response updateCompany(Long id, PutCompany.Request request) {
-        return adminCompanyService.updateCompany(id, request);
+        PutCompany.Response response = adminCompanyService.updateCompany(id, request);
+        adminCompanyHistoryService.saveHistory(request.toEntity());
+        return response;
     }
 
-    public void deleteCompany(Long id) {
-        adminCompanyService.deleteCompany(id);
+    public void changeCompanyIsActive(Long id) {
+        Company deletedCompany = adminCompanyService.changeCompanyIsActive(id);
+        if(deletedCompany.getIsActive().equals(YN.N)) {
+            adminMemberService.deleteCompanyMember(deletedCompany);
+        }
+        adminCompanyHistoryService.saveHistory(deletedCompany);
     }
 
     public List<GetAllCompanies> getAllCompanies() {

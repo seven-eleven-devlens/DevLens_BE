@@ -1,4 +1,4 @@
-package com.seveneleven.util.file.Service;
+package com.seveneleven.util.file.handler;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class S3ClientService {
+public class S3ClientHandler {
 
     private final AmazonS3 amazonS3;
 

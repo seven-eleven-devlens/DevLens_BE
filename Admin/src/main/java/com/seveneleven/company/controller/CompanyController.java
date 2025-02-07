@@ -7,6 +7,7 @@ import com.seveneleven.project.dto.GetProject;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class CompanyController implements CompanyDocs {
      */
     @PostMapping("")
     @Override
-    public ResponseEntity<APIResponse<PostCompany.Response>> createCompany(@RequestBody PostCompany.Request companyRequest) {
+    public ResponseEntity<APIResponse<PostCompany.Response>> createCompany(@RequestBody @Valid PostCompany.Request companyRequest) {
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED, adminCompanyFacade.registerCompany(companyRequest)));
@@ -100,7 +101,7 @@ public class CompanyController implements CompanyDocs {
     @Override
     public ResponseEntity<APIResponse<PutCompany.Response>> updateCompany(
             @PathVariable Long id,
-            @RequestBody PutCompany.Request request
+            @RequestBody @Valid PutCompany.Request request
     ) {
         return ResponseEntity
                 .status(SuccessCode.UPDATED.getStatus())
@@ -111,15 +112,15 @@ public class CompanyController implements CompanyDocs {
         함수명 : deleteCompany
         목적 : 회사 상세 정보 삭제
      */
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}")
     @Override
-    public ResponseEntity<APIResponse<Object>> deleteCompany(
+    public ResponseEntity<APIResponse<Object>> changeCompanyIsActive(
             @PathVariable Long id
     ) {
-        adminCompanyFacade.deleteCompany(id);
+        adminCompanyFacade.changeCompanyIsActive(id);
         return ResponseEntity
-                .status(SuccessCode.DELETED.getStatus())
-                .body(APIResponse.success(SuccessCode.DELETED));
+                .status(SuccessCode.UPDATED.getStatus())
+                .body(APIResponse.success(SuccessCode.UPDATED));
     }
 
     /*

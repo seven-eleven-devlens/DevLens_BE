@@ -9,7 +9,7 @@ import com.seveneleven.project.dto.PostProjectChecklistAccept;
 import com.seveneleven.project.dto.PostProjectChecklistReject;
 import com.seveneleven.project.repository.CheckResultRepository;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.LinkService;
+import com.seveneleven.util.file.handler.LinkHandler;
 import com.seveneleven.util.file.dto.LinkPayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class CheckResultStoreImpl implements CheckResultStore {
 
     private final CheckResultRepository checkResultRepository;
-    private final LinkService linkService;
+    private final LinkHandler linkHandler;
 
     @Override
     public PostProjectChecklistAccept.Response postApplicationAccept(
@@ -58,13 +58,13 @@ public class CheckResultStoreImpl implements CheckResultStore {
                 )).collect(Collectors.toList());
 
         //링크 갯수 판별
-        if(linkPayloads.size() + linkService.countLinks(LinkCategory.CHECK_REJECTION_REASON_LINK, savedResult.getId()) > 10){
+        if(linkPayloads.size() + linkHandler.countLinks(LinkCategory.CHECK_REJECTION_REASON_LINK, savedResult.getId()) > 10){
             throw new BusinessException(ErrorCode.LINK_QUANTITY_EXCEED_ERROR);
         }
 
         //링크 리스트 업로드
         for(LinkPayload linkPayload : linkPayloads) {
-            linkService.uploadLink(linkPayload);
+            linkHandler.uploadLink(linkPayload);
         }
 
         return PostProjectChecklistReject.Response.toDto(checkResult);
