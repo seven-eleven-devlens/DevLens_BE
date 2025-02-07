@@ -9,6 +9,7 @@ import com.seveneleven.project.dto.PutProject;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,7 @@ public class AdminProjectController implements AdminProjectDocs{
         함수 목적 : 프로젝트 생성
      */
     @PostMapping("")
-    public ResponseEntity<APIResponse<PostProject.Response>> newProject(@RequestBody PostProject.Request request) {
+    public ResponseEntity<APIResponse<PostProject.Response>> newProject(@RequestBody @Valid PostProject.Request request) {
         PostProject.Response project = adminProjectFacade.registerProject(request);
         return ResponseEntity
                 .status(SuccessCode.CREATED.getStatus())
@@ -98,7 +99,7 @@ public class AdminProjectController implements AdminProjectDocs{
     @PutMapping("/{id}")
     public ResponseEntity<APIResponse<PutProject.Response>> updateProject(
             @PathVariable Long id,
-            @RequestBody PutProject.Request request
+            @RequestBody @Valid PutProject.Request request
     ){
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())

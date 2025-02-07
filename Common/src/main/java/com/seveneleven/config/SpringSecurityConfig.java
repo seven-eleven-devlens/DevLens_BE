@@ -41,6 +41,10 @@ public class SpringSecurityConfig {
     }
 
     private static final String[] AUTH_WHITELIST = {
+            "admin/api-docs/**",
+            "admin/swagger-ui/**",
+            "main/api-docs/**",
+            "main/swagger-ui/**",
             "/api/v1/member/**", "/swagger-ui/**", "/api-docs", "/swagger-ui-custom.html",
             "/v3/api-docs/**", "/api-docs/**", "/swagger-ui.html", "/actuator/**"
     };
@@ -81,8 +85,9 @@ public class SpringSecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                             .requestMatchers(AUTH_WHITELIST).permitAll()
                             .requestMatchers("api/login/**").permitAll()
+                            .requestMatchers("api/auth/refresh").permitAll()
                             .requestMatchers("api/admin/**").hasRole("ADMIN") // 관리자 페이지 경로는 ADMIN 역할만 허용
-                            .requestMatchers("api/**").hasRole("USER") // 관리자 페이지 경로는 ADMIN 역할만 허용
+                            .requestMatchers("api/**").hasRole("USER") // 모든 요청은 회원만 허용
                             .anyRequest().authenticated() // 그 외의 모든 요청은 인증 필요
             );
 

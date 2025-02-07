@@ -86,9 +86,10 @@ public class MyPageController implements MyPageDocs{
      */
     @PostMapping(value="/{memberId}/profile-image", consumes = "multipart/form-data")
     public ResponseEntity<APIResponse<SuccessCode>> uploadProfileImage(@PathVariable("memberId") Long memberId,
-                                                                       @RequestParam("file") MultipartFile file) {
-        //TODO) userDetails에서 회원 정보 가져오기
-        Long uploaderId = 1L;
+                                                                       @RequestParam("file") MultipartFile file,
+                                                                       @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Long uploaderId = userDetails.getId();
 
         memberFileService.uploadProfileImage(file, memberId, uploaderId);
 
@@ -126,9 +127,10 @@ public class MyPageController implements MyPageDocs{
      * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체
      */
     @DeleteMapping(value="/{memberId}/profile-image")
-    public ResponseEntity<APIResponse<SuccessCode>> deleteProfileImage(@PathVariable("memberId") Long memberId) {
-        //TODO) UserDetails 확인
-        Long uploaderId = 1L;
+    public ResponseEntity<APIResponse<SuccessCode>> deleteProfileImage(@PathVariable("memberId") Long memberId,
+                                                                       @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Long uploaderId = userDetails.getId();
 
         memberFileService.deleteProfileImage(memberId, uploaderId);
 

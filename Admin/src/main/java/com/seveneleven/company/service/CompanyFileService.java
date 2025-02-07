@@ -6,7 +6,7 @@ import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.FileService;
+import com.seveneleven.util.file.handler.FileHandler;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @RequiredArgsConstructor
 public class CompanyFileService {
-    private final FileService fileService;
+    private final FileHandler fileHandler;
     private final CompanyRepository companyRepository;
     private final FileMetadataRepository fileMetadataRepository;
 
@@ -28,7 +28,6 @@ public class CompanyFileService {
      * @param companyId 해당 회사 id
      * @param uploaderId 업로드 수행자 id
      */
-
     @Transactional
     public void uploadLogoImage(MultipartFile file, Long companyId, Long uploaderId) {
         //1. 회사 id로 존재여부 판별
@@ -43,9 +42,7 @@ public class CompanyFileService {
         }
 
         //4. S3파일 업로드, 메타데이터 테이블 저장
-        fileService.uploadFile(file, FileCategory.COMPANY_LOGO_IMAGE, companyId);
-
-        //TODO) 5. 파일 업로드 이력 추가
+        fileHandler.uploadFile(file, FileCategory.COMPANY_LOGO_IMAGE, companyId);
     }
 
     /**
@@ -61,7 +58,7 @@ public class CompanyFileService {
         }
 
         //카테고리와 참조 id 로 FileMetadata 탐색
-        FileMetadata fileEntity = fileService.getFile(FileCategory.COMPANY_LOGO_IMAGE, companyId);
+        FileMetadata fileEntity = fileHandler.getFile(FileCategory.COMPANY_LOGO_IMAGE, companyId);
 
         //dto 변환 후 반환
         return FileMetadataDto.toDto(fileEntity);
@@ -78,13 +75,10 @@ public class CompanyFileService {
         Company companyEntity = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
-        //TODO) 2. 수행자 ID 정보 판별
+        //TODO) 2. 삭제 수행자 판별
 
         //3. 삭제수행
-        fileService.deleteFile(FileCategory.COMPANY_LOGO_IMAGE, companyId);
-
-        //TODO) 4. 삭제 이력 추가
-
+        fileHandler.deleteFile(FileCategory.COMPANY_LOGO_IMAGE, companyId);
     }
 }
 

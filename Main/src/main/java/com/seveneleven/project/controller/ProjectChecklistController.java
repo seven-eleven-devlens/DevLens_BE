@@ -103,10 +103,11 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
     public ResponseEntity<APIResponse<SuccessCode>> postProjectChecklistApplication(
             @PathVariable Long checklistId,
             @PathVariable Long applicationId,
-            @RequestParam("files") List<MultipartFile> files){
+            @RequestParam("files") List<MultipartFile> files,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
 
-        //TODO) 업로더 판별
-        Long uploaderId = 1L;
+        Long uploaderId = userDetails.getId();
 
         projectChecklistService.postProjectChecklistApplicationFiles(checklistId, applicationId, uploaderId, files);
 
@@ -218,10 +219,10 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
     @PostMapping("/reject/{applicationId}/files")
     public ResponseEntity<APIResponse<SuccessCode>> postProjectChecklistRejectFile(
             @PathVariable Long applicationId,
-            @RequestParam("files") List<MultipartFile> files){
-
-        //TODO) 업로더 판별
-        Long uploaderId = 1L;
+            @RequestParam("files") List<MultipartFile> files,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        Long uploaderId = userDetails.getId();
 
         projectChecklistService.postCheckRejectFiles(applicationId, uploaderId, files);
 

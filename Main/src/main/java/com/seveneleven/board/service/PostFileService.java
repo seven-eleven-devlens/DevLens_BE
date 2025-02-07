@@ -6,7 +6,7 @@ import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.Service.FileService;
+import com.seveneleven.util.file.handler.FileHandler;
 import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostFileService {
-    private final FileService fileService;
+    private final FileHandler fileHandler;
     private final PostRepository postRepository;
     private final FileMetadataRepository fileMetadataRepository;
 
@@ -52,7 +52,7 @@ public class PostFileService {
 
         //파일 리스트 업로드
         for(MultipartFile file : files){
-            fileService.uploadFile(file, FileCategory.POST_ATTACHMENT, postId);
+            fileHandler.uploadFile(file, FileCategory.POST_ATTACHMENT, postId);
         }
     }
 
@@ -70,7 +70,7 @@ public class PostFileService {
 
         //카테고리와 게시물 id로 찾은 모든 파일을 가져온다.
         //페이지네이션 없음
-        List<FileMetadata> fileEntities = fileService.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId());
+        List<FileMetadata> fileEntities = fileHandler.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId());
 
         //entity를 dto에 담는다.
         List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
@@ -97,7 +97,7 @@ public class PostFileService {
         //TODO) 2. 삭제 수행자 권한 판별
 
         //3. 해당 게시물 파일 목록에 해당 파일이 존재하는지 확인
-        List<FileMetadata> fileEntities = fileService.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId());
+        List<FileMetadata> fileEntities = fileHandler.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId());
         List<Long> fileIds = fileEntities.stream().map(FileMetadata::getId).collect(Collectors.toList());
 
         if(!fileIds.contains(fileId)){
@@ -105,7 +105,7 @@ public class PostFileService {
         }
 
         //4. 해당 파일을 삭제한다.
-        fileService.deleteFileById(fileId);
+        fileHandler.deleteFileById(fileId);
     }
 
     /**
@@ -123,8 +123,8 @@ public class PostFileService {
         //TODO) 2. 수행자 권한 판별
 
         //3. 해당 게시물의 파일들을 전체 삭제한다.
-        for(FileMetadata fileEntity : fileService.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId())) {
-            fileService.deleteFileById(fileEntity.getId());
+        for(FileMetadata fileEntity : fileHandler.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId())) {
+            fileHandler.deleteFileById(fileEntity.getId());
         }
     }
 
