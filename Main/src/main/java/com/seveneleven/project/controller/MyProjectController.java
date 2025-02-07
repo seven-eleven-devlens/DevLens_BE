@@ -2,7 +2,6 @@ package com.seveneleven.project.controller;
 
 import com.seveneleven.project.dto.GetCompanyProject;
 import com.seveneleven.project.dto.GetProjectList;
-import com.seveneleven.project.dto.PatchProjectCurrentStep;
 import com.seveneleven.project.service.ProjectService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
@@ -49,22 +48,5 @@ public class MyProjectController implements MyProjectDocs {
     ) {
         return ResponseEntity.status(SuccessCode.OK.getStatusCode())
                 .body(APIResponse.success(SuccessCode.OK, projectService.getCompanyProject(companyId)));
-    }
-
-    /**
-     * 함수명 : patchProjectCurrentStep()
-     * 프로젝트의 현재 단계를 수정하는 함수
-     */
-    @Override
-    @PatchMapping("/projects/{projectId}/current-steps/{stepId}")
-    public ResponseEntity<APIResponse<PatchProjectCurrentStep.Response>> patchProjectCurrentStep(
-            @PathVariable Long projectId,
-            @PathVariable Long stepId
-    ) {
-        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
-                .body(APIResponse.success(
-                        SuccessCode.OK,
-                        projectService.patchProjectCurrentStep(projectId, stepId))
-                );
     }
 }

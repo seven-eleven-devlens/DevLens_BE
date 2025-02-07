@@ -28,11 +28,13 @@ public class GetProjectAuthorization {
     @Getter
     public static class MemberAuthorization {
         private Long memberId;
+        private String memberName;
         private String projectAuthorization;
         private MemberType memberDivision;
 
         private MemberAuthorization(ProjectAuthorization projectAuthorization) {
             this.memberId = projectAuthorization.getMember().getId();
+            this.memberName = projectAuthorization.getMember().getName();
             this.projectAuthorization = projectAuthorization.getAuthorizationCode();
             this.memberDivision = projectAuthorization.getMemberType();
         }
