@@ -33,7 +33,7 @@ public class CustomUserDetails implements UserDetails {
         return member.getId();
     }
 
-     public String getLoginId() {
+    public String getLoginId() {
         return member.getLoginId();
      }
 

@@ -91,22 +91,20 @@ public class Post extends BaseEntity {
             Post parentPost,
             Long ref,
             Integer refOrder,
-            Integer childPostNum,
             TaskPriority priority,
             PostStatus status,
             String title,
             String content,
             String writer,
             LocalDate deadline,
-            String registerIp,
-            String modifierIp
+            String registerIp
     ) {
         Post post = new Post();
         post.projectStep = projectStep;
         post.parentPost = parentPost;
         post.ref = ref;
         post.refOrder = refOrder;
-        post.childPostNum = childPostNum;
+        post.childPostNum = 0;
         post.priority = priority;
         post.status = status;
         post.title = title;
@@ -114,7 +112,7 @@ public class Post extends BaseEntity {
         post.writer = writer;
         post.deadline = deadline;
         post.registerIp = registerIp;
-        post.modifierIp = modifierIp;
+        post.modifierIp = null;
         return post;
     }
 

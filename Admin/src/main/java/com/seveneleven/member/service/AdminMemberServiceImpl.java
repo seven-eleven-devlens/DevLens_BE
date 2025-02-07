@@ -5,6 +5,8 @@ import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.MemberPasswordResetHistory;
+import com.seveneleven.entity.member.MemberProfileHistory;
+import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.MemberValidator;
@@ -61,7 +63,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     @Transactional
     public LoginPost.Response login(LoginPost.Request request) {
 
-        Member member = memberRepository.findByLoginId(request.getLoginId())
+        Member member = memberRepository.findByLoginIdAndStatus(request.getLoginId(), MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
@@ -243,6 +245,8 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         member.updateMember(memberDto.getName(), member.getEmail(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
                 memberDto.getDepartment(), memberDto.getPosition());
 
+        profileHistory.save(MemberProfileHistory.createProfileHistory(member));
+
         return MemberDto.fromEntity(member);
     }
 
@@ -336,4 +340,24 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         return tokens;
     }
 
+    /**
+     * 함수명 : deleteCompanyMember
+     * 소속 회사 멤버를 모두 삭제합니다.
+     *
+     * @param company 삭제할 회사
+     */
+    @Override
+    @Transactional
+    public void deleteCompanyMember(Company company) {
+        // 1. 회원 조회
+        List<Member> members = memberRepository.findAllByCompany(company);
+
+        // 2. 회원 삭제
+        members.stream()
+                .filter(member -> member.getStatus().equals(MemberStatus.ACTIVE))
+                .forEach(member -> {
+                    member.deleteMember();
+                    memberRepository.save(member);
+                });
+    }
 }

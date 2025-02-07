@@ -8,6 +8,7 @@ import com.seveneleven.util.security.dto.TokenResponse;
 import com.seveneleven.util.security.repository.RefreshTokenRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RefreshTokenServiceImpl implements RefreshTokenService{
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -32,7 +34,8 @@ public class RefreshTokenServiceImpl implements RefreshTokenService{
     public TokenResponse refreshAccessToken(String accessToken, String refreshToken) {
 
         // 1. Access Token 검증 (Access Token이 있는지, 만료되었는지 check)
-        if (tokenProvider.validateToken(accessToken)) {
+        if (Objects.nonNull(accessToken) && tokenProvider.validateToken(accessToken)) {
+            log.error("Access Token이 만료되지 않았는데 재발급 요청되었습니다.");
             throw new BusinessException(ErrorCode.VALID_ACCESS_TOKEN);
         }
 
