@@ -103,26 +103,6 @@ public class BoardController implements BoardDocs {
                 .body(APIResponse.success(SuccessCode.CREATED));
     }
 
-    //게시글 생성,수정 - 파일
-    /**
-     * 함수명 : uploadPostFiles()
-     * 게시글 생성시 파일을 등록하는 메서드
-     */
-    @PostMapping(value = "/{postId}/files", consumes = "multipart/form-data")
-    public ResponseEntity<APIResponse<SuccessCode>> uploadPostFiles(
-            @PathVariable Long postId,
-            @RequestParam("files") List<MultipartFile> files) {
-
-        //TODO) 토큰에서 접속자 정보 가져오기
-        Long uploaderId = 1L;
-
-        //파일 업로드
-        postFileService.uploadPostFiles(files, postId, uploaderId);
-
-        return ResponseEntity.status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED));
-    }
-
     /**
      * 함수명 : updatePost()
      * 게시글을 수정하는 메서드
@@ -140,7 +120,6 @@ public class BoardController implements BoardDocs {
                 .body(APIResponse.success(SuccessCode.UPDATED));
     }
 
-    //게시물 수정 - 링크
     /**
      * 함수명 : deletePost()
      * 게시글을 삭제하는 메서드
@@ -156,17 +135,37 @@ public class BoardController implements BoardDocs {
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
 
-    //링크
+    //게시글 생성,수정 - 파일등록
+    /**
+     * 함수명 : uploadPostFiles()
+     * 게시글 생성시 파일을 등록하는 메서드
+     */
+    @PostMapping(value = "/{postId}/files", consumes = "multipart/form-data")
+    public ResponseEntity<APIResponse<SuccessCode>> uploadPostFiles(
+            @PathVariable Long postId,
+            @RequestParam("files") List<MultipartFile> files,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Long uploaderId = userDetails.getId();
+
+        //파일 업로드
+        postFileService.uploadPostFiles(files, postId, uploaderId);
+
+        return ResponseEntity.status(SuccessCode.CREATED.getStatus())
+                .body(APIResponse.success(SuccessCode.CREATED));
+    }
+
+    //게시물 수정 - 링크
     /**
      * 함수명 : uploadLinks()
      * 게시물에 링크를 등록하는 메서드(수정화면)
      */
     @PostMapping("/{postId}/links")
     public ResponseEntity<APIResponse<SuccessCode>> uploadLinks(@PathVariable Long postId,
-                                                                @RequestBody List<@Valid LinkInput> linkInputs){
-
-        //TODO)토큰으로 업로더 정보 가져오기
-        Long uploaderId = 1L;
+                                                                @RequestBody List<@Valid LinkInput> linkInputs,
+                                                                @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        Long uploaderId = userDetails.getId();
 
         postLinkService.uploadPostLinks(linkInputs, postId, uploaderId);
 
@@ -180,9 +179,10 @@ public class BoardController implements BoardDocs {
      */
     @DeleteMapping("/{postId}/links/{linkId}")
     public ResponseEntity<APIResponse<SuccessCode>> deleteLink(@PathVariable Long postId,
-                                                               @PathVariable Long linkId){
-        //TODO) 토큰으로 삭제수행자 정보 가져오기
-        Long deleterId = 1L;
+                                                               @PathVariable Long linkId,
+                                                               @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        Long deleterId = userDetails.getId();
 
         postLinkService.deletePostLink(postId, linkId, deleterId);
 
@@ -197,9 +197,10 @@ public class BoardController implements BoardDocs {
      */
     @DeleteMapping("/{postId}/files/{fileId}")
     public ResponseEntity<APIResponse<SuccessCode>> deletePostFiles(@PathVariable Long postId,
-                                                                    @PathVariable Long fileId){
-        //TODO) 토큰으로 삭제 수행자 정보 가져오기
-        Long deleterId = 1L;
+                                                                    @PathVariable Long fileId,
+                                                                    @AuthenticationPrincipal CustomUserDetails userDetails
+    ){
+        Long deleterId = userDetails.getId();
 
         postFileService.deletePostFile(postId, fileId, deleterId);
 

@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,7 @@ public interface AdminProjectDocs {
                             )
                     }
     )
-    ResponseEntity<APIResponse<PostProject.Response>> newProject(@RequestBody PostProject.Request request);
+    ResponseEntity<APIResponse<PostProject.Response>> newProject(@RequestBody @Valid PostProject.Request request);
 
     @GetMapping("/check")
     @Operation(
@@ -217,7 +218,7 @@ public interface AdminProjectDocs {
                     )
             }
     )
-    ResponseEntity<APIResponse<PutProject.Response>> updateProject(@PathVariable Long id, @RequestBody PutProject.Request request);
+    ResponseEntity<APIResponse<PutProject.Response>> updateProject(@PathVariable Long id, @RequestBody @Valid PutProject.Request request);
 
     @DeleteMapping("/{id}")
     @Operation(
