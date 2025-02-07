@@ -8,10 +8,12 @@ import java.util.List;
 
 public interface AdminCompanyService {
     PostCompany.Response createCompany(PostCompany.Request companyRequest);
+    Company getCompany(Long companyId);
     GetCompanyDetail.Response getCompanyDetail(Long id);
     PaginatedResponse<GetCompanies.Response> getListOfCompanies(Integer page);
     PaginatedResponse<GetCompanies.Response> searchCompaniesByName(String name, Integer page);
     PutCompany.Response updateCompany(Long id, PutCompany.Request request);
     Company changeCompanyIsActive(Long id);
     List<GetAllCompanies> getAllCompanies();
+    GetCompanyMember.Response getCompanyMember(Long companyId);
 }

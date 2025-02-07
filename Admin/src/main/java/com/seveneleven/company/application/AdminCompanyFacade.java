@@ -54,4 +54,9 @@ public class AdminCompanyFacade {
     public List<GetAllCompanies> getAllCompanies() {
         return adminCompanyService.getAllCompanies();
     }
+
+    public GetCompanyMember.Response getCompanyMember(Long companyId) {
+        Company company = adminCompanyService.getCompany(companyId);
+        return adminCompanyService.getCompanyMember(company.getId());
+    }
 }

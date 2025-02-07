@@ -23,4 +23,6 @@ public interface AdminMemberRepository extends JpaRepository<Member, Long>, JpaS
     List<Member> findAllByCompany(Company company);
 
     Optional<Member> findByLoginIdAndStatus(String loginId, MemberStatus statusCode);
+
+    List<Member> findMembersByCompanyIdAndStatus(Long companyId, MemberStatus statusCode);
 }
