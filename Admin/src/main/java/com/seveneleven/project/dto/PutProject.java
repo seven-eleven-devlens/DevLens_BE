@@ -4,6 +4,7 @@ import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectType;
 import com.seveneleven.entity.project.constant.ProjectStatusCode;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public class PutProject {
     @Getter
     public static class Request {
+        @NotBlank
         private String projectName; // 프로젝트명
         private Long customerId; // 고객사 ID (Company 엔티티의 ID)
         private Long developerId; // 개발사 ID (Company 엔티티의 ID)
