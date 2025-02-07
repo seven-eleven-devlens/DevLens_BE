@@ -52,7 +52,7 @@ public class ProjectAuthorizationController {
 
     /**
      * 함수명 : getMemberAuthorization
-     * 해당 멤버가 접근 권한을 확인하는 함수
+     * 로그인한 회원의 접근 권한을 확인하는 함수
      */
     @GetMapping("/{projectId}/authorizations/members")
     public ResponseEntity<APIResponse<GetMemberAuthorization.Response>> getMemberAuthorization(
@@ -64,6 +64,7 @@ public class ProjectAuthorizationController {
                         SuccessCode.OK,
                         projectAuthorizationFacade.getMemberAuthorization(
                                 projectId, customUserDetails.getId()
-                        )));
+                        ))
+                );
     }
 }

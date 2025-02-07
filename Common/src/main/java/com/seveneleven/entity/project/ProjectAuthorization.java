@@ -20,12 +20,12 @@ public class ProjectAuthorization extends BaseEntity {
     private MemberProjectStepId id; // 복합 키
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("memberId") // 복합 키의 memberId와 매핑
+    @MapsId("memberId")
     @JoinColumn(name = "member_id", nullable = false, referencedColumnName = "id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("projectId") // 복합 키의 projectStepId와 매핑
+    @MapsId("projectId")
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 

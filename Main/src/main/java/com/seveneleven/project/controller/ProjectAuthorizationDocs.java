@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/projects")
 public interface ProjectAuthorizationDocs {
 
-    @PostMapping("/steps/{stepId}/authorizations")
+    @PostMapping("/{projectId}/authorizations")
     @Operation(
-            summary = "프로젝트 권한 생성",
-            description = "특정 단계의 프로젝트 권한을 생성합니다.",
+            summary = "프로젝트 권한 편집",
+            description = "특정 단계의 프로젝트 권한을 편집합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -37,11 +37,11 @@ public interface ProjectAuthorizationDocs {
             }
     )
     ResponseEntity<APIResponse<PostProjectAuthorization.Response>> postProjectAuthorization(
-            @PathVariable Long stepId,
+            @PathVariable Long projectId,
             @RequestBody PostProjectAuthorization.Request requestDto
     );
 
-    @GetMapping("/steps/{stepId}/authorizations")
+    @GetMapping("/{projectId}/authorizations")
     @Operation(
             summary = "프로젝트 권한 조회",
             description = "특정 단계의 프로젝트 권한을 조회합니다.",
@@ -57,6 +57,6 @@ public interface ProjectAuthorizationDocs {
             }
     )
     ResponseEntity<APIResponse<GetProjectAuthorization.Response>> getProjectAuthorization(
-            @PathVariable Long stepId
+            @PathVariable Long projectId
     );
 }
