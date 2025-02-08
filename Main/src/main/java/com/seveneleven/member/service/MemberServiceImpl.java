@@ -99,6 +99,10 @@ public class MemberServiceImpl implements MemberService{
             refreshTokenRepository.delete(memberId); // 사용자와 연관된 Refresh Token 삭제
         }
 
+        // 3. 블랙리스트 등록
+        Long expiration = tokenProvider.getExpiration(token);
+        refreshTokenRepository.setBlackList(token, "access_token", expiration);
+
     }
 
     /**
