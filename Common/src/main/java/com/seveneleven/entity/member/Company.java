@@ -9,9 +9,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -49,27 +46,6 @@ public class Company extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private YN isActive = YN.Y; // 사용 여부
 
-    private Company(
-            Long id,
-            String companyName,
-            String representativeName,
-            String representativeContact,
-            String representativeEmail,
-            String address,
-            BusinessType businessType,
-            String businessRegistrationNumber,
-            YN isActive
-    ) {
-        this.id = id;
-        this.companyName = companyName;
-        this.representativeName = representativeName;
-        this.representativeContact = representativeContact;
-        this.representativeEmail = representativeEmail;
-        this.address = address;
-        this.businessType = businessType;
-        this.businessRegistrationNumber = businessRegistrationNumber;
-        this.isActive = isActive;
-    }
 
     // 생성 메서드
     public static Company createCompany(String companyName, String representativeName, String representativeContact, String representativeEmail,
@@ -87,17 +63,25 @@ public class Company extends BaseEntity {
     }
 
     // 수정 메서드
-    public void updateCompany(String representativeName, String representativeContact, String representativeEmail,
-                              String address, YN representativeImageExists) {
-        this.address = address;
+    public Company updateCompany(String companyName, String representativeName, String representativeContact, String representativeEmail,
+                                 String address, BusinessType businessType, String businessRegistrationNumber) {
+        this.companyName = companyName;
         this.representativeName = representativeName;
-        this.representativeEmail = representativeEmail;
         this.representativeContact = representativeContact;
+        this.representativeEmail = representativeEmail;
+        this.address = address;
+        this.businessType = businessType;
+        this.businessRegistrationNumber = businessRegistrationNumber;
+        return this;
     }
 
     // 삭제 메서드
-    public void deleteCompany() {
-        this.isActive = YN.N;
+    public Company changeCompanyIsActive() {
+        if(this.isActive.equals(YN.Y))
+            this.isActive = YN.N;
+        else
+            this.isActive = YN.Y;
+        return this;
     }
 
 }

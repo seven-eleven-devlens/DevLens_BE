@@ -4,9 +4,10 @@ import com.seveneleven.company.service.CompanyFileService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.dto.FileMetadataDto;
-import io.swagger.v3.oas.annotations.media.Schema;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,11 +24,10 @@ public class CompanyFileController {
      */
     @PostMapping(value = "/{companyId}/logo-image", consumes = "multipart/form-data")
     public ResponseEntity<APIResponse> uploadFile(@PathVariable("companyId") Long companyId,
-                                             @RequestParam("file")
-                                             @Schema(type = "string", format = "binary", description = "File to upload") MultipartFile file
-                                             ) {
-        //TODO) 토큰에서 uploader 정보 가져오기
-        Long uploaderId = 1L;
+                                                  @RequestParam("file") MultipartFile file,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Long uploaderId = userDetails.getId();
 
         companyFileService.uploadLogoImage(file, companyId, uploaderId);
 
@@ -57,9 +57,10 @@ public class CompanyFileController {
      * @return ResponseEntity<APIResponse<SuccessCode>>
      */
     @DeleteMapping(value = "/{companyId}/logo-image")
-    public ResponseEntity<APIResponse<SuccessCode>> deleteLogo(@PathVariable("companyId") Long companyId) {
-        //TODO) 토큰에서 uploader 정보 가져오기
-        Long uploaderId = 1L;
+    public ResponseEntity<APIResponse<SuccessCode>> deleteLogo(@PathVariable("companyId") Long companyId,
+                                                               @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Long uploaderId = userDetails.getId();
 
         companyFileService.deleteLogoImage(companyId, uploaderId);
 

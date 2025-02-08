@@ -3,7 +3,7 @@ package com.seveneleven.project.service.checklist;
 import com.seveneleven.entity.file.Link;
 import com.seveneleven.entity.file.constant.LinkCategory;
 import com.seveneleven.entity.project.CheckRequest;
-import com.seveneleven.util.file.Service.LinkService;
+import com.seveneleven.util.file.handler.LinkHandler;
 import com.seveneleven.util.file.dto.LinkResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CheckRequestLinkReaderImpl implements CheckRequestLinkReader {
 
-    private final LinkService linkService;
+    private final LinkHandler linkHandler;
 
     /**
      * 1. 체크 요청 링크 목록 조회
@@ -29,7 +29,7 @@ public class CheckRequestLinkReaderImpl implements CheckRequestLinkReader {
     @Transactional(readOnly = true)
     public List<LinkResponse> readCheckRequestLinks(CheckRequest checkRequest) {
         //카테고리와 체크요청 id로 모든 파일을 가져온다.
-        List<Link> linkEntities = linkService.getLinks(LinkCategory.CHECK_APPROVE_REQUEST_LINK, checkRequest.getId());
+        List<Link> linkEntities = linkHandler.getLinks(LinkCategory.CHECK_APPROVE_REQUEST_LINK, checkRequest.getId());
 
         //entity를 dto로 변환
         List<LinkResponse> linkResponses = new ArrayList<>();
@@ -50,7 +50,7 @@ public class CheckRequestLinkReaderImpl implements CheckRequestLinkReader {
     @Transactional(readOnly = true)
     public List<LinkResponse> readCheckRequestRejectLinks(CheckRequest checkRequest) {
         //카테고리와 체크요청 id로 모든 파일을 가져온다.
-        List<Link> linkEntities = linkService.getLinks(LinkCategory.CHECK_REJECTION_REASON_LINK, checkRequest.getId());
+        List<Link> linkEntities = linkHandler.getLinks(LinkCategory.CHECK_REJECTION_REASON_LINK, checkRequest.getId());
 
         //entity를 dto로 변환
         List<LinkResponse> linkResponses = new ArrayList<>();
