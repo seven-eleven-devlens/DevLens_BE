@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR; // 공통 에러 코드 정의 필요
         String detailedMessage = e.getMessage() != null ? e.getMessage() : "An unexpected error occurred";
         APIResponse<?> response = APIResponse.fail(errorCode, detailedMessage);
-        e.printStackTrace();
+
         return ResponseEntity
                 .status(errorCode.getStatusCode()) // HTTP 상태 코드 설정
                 .body(response); // APIResponse를 응답 본문으로 설정
