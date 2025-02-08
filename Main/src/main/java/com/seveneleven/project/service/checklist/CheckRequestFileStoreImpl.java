@@ -1,5 +1,6 @@
 package com.seveneleven.project.service.checklist;
 
+import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.project.CheckRequest;
@@ -21,6 +22,7 @@ import java.util.List;
 public class CheckRequestFileStoreImpl implements CheckRequestFileStore {
     private final FileHandler fileHandler;
     private final FileMetadataRepository fileMetadataRepository;
+    private final CheckRequestFileHistoryStore checkRequestFileHistoryStore;
 
     private static final int MAX_FILE_COUNT = 10; //게시물별 최대 파일 수(10개)
 
@@ -40,7 +42,7 @@ public class CheckRequestFileStoreImpl implements CheckRequestFileStore {
 
         //TODO) 1. 체크리스트 파일 업로드 권한 판별
 
-        //2. 저장할 파일 갯수 + 현재 저장 갯수 >= 11인지 판별
+        //2. 저장할 파일 갯수 + 현재 저장 갯수 > 10인지 판별
         //현재 저장된 파일 갯수 확인
         Integer currentFileCnt = fileMetadataRepository.countByCategoryAndReferenceId(FileCategory.CHECK_REQUEST_ATTACHMENT, checkRequest.getId());
         if(currentFileCnt + files.size() > MAX_FILE_COUNT){
@@ -49,7 +51,8 @@ public class CheckRequestFileStoreImpl implements CheckRequestFileStore {
 
         //3. 파일 업로드
         for(MultipartFile file : files){
-            fileHandler.uploadFile(file, FileCategory.CHECK_REQUEST_ATTACHMENT, checkRequest.getId());
+            FileMetadata uploadedFile = fileHandler.uploadFile(file, FileCategory.CHECK_REQUEST_ATTACHMENT, checkRequest.getId());
+            checkRequestFileHistoryStore.saveRequestFileUploadHistory(uploadedFile, member);
         }
     }
 
@@ -69,7 +72,7 @@ public class CheckRequestFileStoreImpl implements CheckRequestFileStore {
 
         //TODO) 1. 체크리스트 반려 파일 업로드 권한 판별
 
-        //2. 저장할 파일 갯수 + 현재 저장 갯수 >= 11인지 판별
+        //2. 저장할 파일 갯수 + 현재 저장 갯수 > 10인지 판별
         //현재 저장된 파일 갯수 확인
         Integer currentFileCnt = fileMetadataRepository.countByCategoryAndReferenceId(FileCategory.CHECK_REJECTION_ATTACHMENT, checkRequest.getId());
         if(currentFileCnt + files.size() > MAX_FILE_COUNT){
@@ -78,7 +81,8 @@ public class CheckRequestFileStoreImpl implements CheckRequestFileStore {
 
         //3. 파일 업로드
         for(MultipartFile file : files){
-            fileHandler.uploadFile(file, FileCategory.CHECK_REJECTION_ATTACHMENT, checkRequest.getId());
+            FileMetadata uploadedFile = fileHandler.uploadFile(file, FileCategory.CHECK_REJECTION_ATTACHMENT, checkRequest.getId());
+            checkRequestFileHistoryStore.saveRejectionFileUploadHistory(uploadedFile, member);
         }
     }
 }
