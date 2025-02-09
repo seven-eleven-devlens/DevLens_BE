@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Table(name = "post_history")
 public class PostHistory extends BaseEntity {
 
-        /*
+    /*
         id : 게시물 이력 ID
         projectStepId : 프로젝트 단계 ID
         parentPostId : 부모 게시물 ID

@@ -12,14 +12,17 @@ import java.util.List;
 public interface CommentService {
 
     @Transactional(readOnly = true)
-    List<GetCommentResponse> selectCommentList(Post post);
+    List<GetCommentResponse> selectCommentList(Long postId);
 
     @Transactional
-    void createComment(Long postId, PostCommentRequest postCommentRequest, HttpServletRequest request, Long registerId);
+    void createComment(Long postId, PostCommentRequest postCommentRequest, HttpServletRequest request, String registerName);
 
     @Transactional
     void updateComment(Long postId, Long commentId, PatchCommentRequest patchCommentRequest, HttpServletRequest request, Long modifierId);
 
     @Transactional
     void deleteComment(Long postId, Long commentId, HttpServletRequest request, Long deleterId);
+
+    @Transactional
+    void deleteAllComments(Post post, String deleterIp);
 }

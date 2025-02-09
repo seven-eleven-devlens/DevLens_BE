@@ -24,6 +24,7 @@ public class CommentHistory extends BaseEntity {
         writer : 작성자 이름
         action : 작업 종류 (CREATE, UPDATE, DELETE)
         registerIp : 등록자 IP
+        modifierIp : 수정자 IP
      */
 
     @Id
@@ -59,6 +60,9 @@ public class CommentHistory extends BaseEntity {
     @Column(name = "register_ip", length = 50)
     private String registerIp;
 
+    @Column(name = "modifier_ip", length = 50)
+    private String modifierIp;
+
     private CommentHistory(
             Long postId,
             Long parentCommentId,
@@ -68,7 +72,8 @@ public class CommentHistory extends BaseEntity {
             String content,
             String writer,
             HistoryAction action,
-            String registerIp
+            String registerIp,
+            String modifierIp
     ) {
         this.postId = postId;
         this.parentCommentId = parentCommentId;
@@ -79,10 +84,11 @@ public class CommentHistory extends BaseEntity {
         this.writer = writer;
         this.action = action;
         this.registerIp = registerIp;
+        this.modifierIp = modifierIp;
     }
 
     // 댓글 이력 생성
-    public static CommentHistory createCommentHistory(Comment comment, HistoryAction action, String ip) {
+    public static CommentHistory createCommentHistory(Comment comment, HistoryAction action, String registerIp, String modifierIp) {
         return new CommentHistory(
                 comment.getPost().getId(),
                 getParentCommentId(comment),
@@ -92,7 +98,8 @@ public class CommentHistory extends BaseEntity {
                 comment.getContent(),
                 comment.getWriter(),
                 action,
-                ip
+                registerIp,
+                modifierIp
         );
     }
 

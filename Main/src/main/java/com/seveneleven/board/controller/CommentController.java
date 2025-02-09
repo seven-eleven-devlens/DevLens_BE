@@ -27,7 +27,7 @@ public class CommentController implements CommentDocs {
                                                                   @Valid @RequestBody PostCommentRequest postCommentRequest,
                                                                   HttpServletRequest request
     ) {
-        commentService.createComment(postId, postCommentRequest, request, user.getMember().getId());
+        commentService.createComment(postId, postCommentRequest, request, user.getUsername());
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED));
     }

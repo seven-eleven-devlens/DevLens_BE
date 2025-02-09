@@ -22,6 +22,7 @@ public class Comment extends BaseEntity {
         content : 내용
         writer : 작성자 이름
         registerIp : 등록자 IP
+        modifierIp : 수정자 IP
      */
 
     @Id
@@ -55,6 +56,9 @@ public class Comment extends BaseEntity {
     @Column(name = "register_ip", length = 50)
     private String registerIp;
 
+    @Column(name = "modifier_ip", length = 50)
+    private String modifierIp;
+
     private Comment (Long id,
                      Post post,
                      Comment parentComment,
@@ -63,7 +67,8 @@ public class Comment extends BaseEntity {
                      Integer childCommentNum,
                      String content,
                      String writer,
-                     String registerIp
+                     String registerIp,
+                     String modifierIp
     ) {
         this.id = id;
         this.post = post;
@@ -74,6 +79,7 @@ public class Comment extends BaseEntity {
         this.content = content;
         this.writer = writer;
         this.registerIp = registerIp;
+        this.modifierIp = modifierIp;
     }
 
     // 생성 메서드
@@ -96,14 +102,17 @@ public class Comment extends BaseEntity {
         comment.content = content;
         comment.writer = writer;
         comment.registerIp = registerIp;
+        comment.modifierIp = null;
         return comment;
     }
 
     // 수정 메서드
     public void updateComment(
-            String content
+            String content,
+            String modifierIp
     ) {
         this.content = content;
+        this.modifierIp = modifierIp;
     }
 
     // 대댓글 생성 시 child_comment_num 증가

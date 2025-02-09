@@ -178,7 +178,7 @@ public class PostServiceImpl implements PostService {
             post.getParentPost().decreaseChildPostNum();
         }
         // 해당 게시물의 댓글 일괄 삭제
-        commentService.deleteAllComments(post);
+        commentService.deleteAllComments(post, deleterIp);
 
         // 해당 게시물의 링크 일괄 삭제
         postLinkService.deleteAllPostLinks(postId);
