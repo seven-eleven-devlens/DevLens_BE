@@ -64,7 +64,7 @@ public enum ErrorCode {
     NOT_DELETE_PARENT_POST(2506, HttpStatus.BAD_REQUEST, "관련된 게시글이 존재하는 경우 해당 게시글을 삭제할 수 없습니다."),
     NOT_DELETE_PARENT_COMMENT(2507, HttpStatus.BAD_REQUEST, "관련된 댓글이 존재하는 경우, 해당 댓글을 삭제할 수 없습니다."),
     NOT_MATCH_PROJECTSTEPID(2508, HttpStatus.BAD_REQUEST, "게시글의 프로젝트 단계가 일치하지 않습니다."),
-    NOT_FOUND_COMMENT(2509, HttpStatus.NOT_FOUND, "해당 댓글(부모 댓글)을 찾을 수 없습니다."),
+    NOT_FOUND_COMMENT(2509, HttpStatus.NOT_FOUND, "해당 댓글을 찾을 수 없습니다."),
     // 3000번대 코드 : DB 관련
     FILE_NOT_FOUND_ERROR(3000, HttpStatus.NOT_FOUND, "해당 파일을 찾을 수 없습니다."),
     LINK_NOT_FOUND_ERROR(3001, HttpStatus.NOT_FOUND, "해당 링크를 찾을 수 없습니다."),
