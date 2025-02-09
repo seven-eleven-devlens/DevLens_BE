@@ -3,7 +3,6 @@ package com.seveneleven.board.service;
 import com.seveneleven.board.dto.GetCommentResponse;
 import com.seveneleven.board.dto.PatchCommentRequest;
 import com.seveneleven.board.dto.PostCommentRequest;
-import com.seveneleven.board.repository.CommentHistoryRepository;
 import com.seveneleven.entity.board.Comment;
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.HistoryAction;

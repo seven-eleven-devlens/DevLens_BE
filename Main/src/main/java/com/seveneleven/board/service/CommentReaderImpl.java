@@ -2,12 +2,9 @@ package com.seveneleven.board.service;
 
 import com.seveneleven.board.dto.GetCommentResponse;
 import com.seveneleven.board.repository.CommentRepository;
-import com.seveneleven.board.repository.PostRepository;
 import com.seveneleven.entity.board.Comment;
-import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.exception.BusinessException;
-import com.seveneleven.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.seveneleven.response.ErrorCode.NOT_FOUND_COMMENT;
-import static com.seveneleven.response.ErrorCode.NOT_FOUND_POST;
 
 @Component
 @RequiredArgsConstructor
