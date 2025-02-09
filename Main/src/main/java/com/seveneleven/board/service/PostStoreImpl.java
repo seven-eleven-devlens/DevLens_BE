@@ -4,7 +4,7 @@ import com.seveneleven.board.repository.PostHistoryRepository;
 import com.seveneleven.board.repository.PostRepository;
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.PostHistory;
-import com.seveneleven.entity.board.constant.PostAction;
+import com.seveneleven.entity.board.constant.HistoryAction;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +20,7 @@ public class PostStoreImpl implements PostStore {
     }
 
     @Override
-    public PostHistory storePostHistory(Post post, PostAction postAction, String ip) {
+    public PostHistory storePostHistory(Post post, HistoryAction postAction, String ip) {
         return postHistoryRepository.save(PostHistory.createPostHistory(post, postAction, ip));
     }
 

@@ -6,6 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface PostReader {
+    void existPost(Long postId);
+
     Post getPost(Long postId);
 
     Page<Post> getPosts(Long projectStepId, String keyword, String repoFilter, Pageable pageable);
