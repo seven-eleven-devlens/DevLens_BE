@@ -45,8 +45,8 @@ public class FileMetadataHistory {
     @Column(name = "reference_id", nullable = false)
     private Long referenceId; //참조 ID
 
-    // 회사로고 - 회사명, 계정프로필 - 계정이메일, 프로젝트 이미지 - 프로젝트명, 게시물 파일 - 게시물 제목
-    // 체크승인요청파일 - 요청일시, 체크 승인요청 거절사유 - 처리일시
+    // 회사로고 - 회사명, 계정프로필 - 계정이메일, 게시물 파일 - 게시물 제목
+    // 체크승인요청파일 - 요청제목, 체크 승인요청 거절사유 - 요청제목
     @Column(name = "reference_identifier", length = MAX_REFERENCE_IDENTIFIER_LENGTH, nullable = false)
     private String referenceIdentifier; //참조 구분자
 
@@ -86,6 +86,15 @@ public class FileMetadataHistory {
     @Column(name = "created_by", nullable = false, updatable = false)
     private Long createdBy; // 이력 등록자 ID
 
+    @Column(name = "history_registrant_name", nullable = false, updatable = false)
+    private String historyRegistrantName; // 이력 등록자 이름
+
+    @Column(name = "history_registrant_email", nullable = false, updatable = false)
+    private String historyRegistrantEmail; // 이력 등록자 이메일
+
+    @Column(name = "history_registrant_Authority", nullable = false, updatable = false)
+    private Role historyRegistrantAuthority; // 이력 등록자 권한
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt; // 최초 등록 일시
@@ -104,7 +113,10 @@ public class FileMetadataHistory {
                                                      String contentType,
                                                      String fileFormat,
                                                      Double fileSize,
-                                                     String filePath) {
+                                                     String filePath,
+                                                     String historyRegistrantName,
+                                                     String historyRegistrantEmail,
+                                                     Role historyRegistrantAuthority) {
 
         FileMetadataHistory fileMetadataHistory = new FileMetadataHistory();
         fileMetadataHistory.type = type;
@@ -121,10 +133,12 @@ public class FileMetadataHistory {
         fileMetadataHistory.fileFormat = fileFormat;
         fileMetadataHistory.fileSize = fileSize;
         fileMetadataHistory.filePath = filePath;
+        fileMetadataHistory.historyRegistrantName = historyRegistrantName;
+        fileMetadataHistory.historyRegistrantEmail = historyRegistrantEmail;
+        fileMetadataHistory.historyRegistrantAuthority = historyRegistrantAuthority;
 
         return fileMetadataHistory;
     }
-
 
     // 파일 등록 이력 생성
     public static FileMetadataHistory createRegisterHistory(FileCategory fileCategory,
@@ -139,12 +153,16 @@ public class FileMetadataHistory {
                                                             String contentType,
                                                             String fileFormat,
                                                             Double fileSize,
-                                                            String filePath) {
-
+                                                            String filePath,
+                                                            String historyRegistrantName,
+                                                            String historyRegistrantEmail,
+                                                            Role historyRegistrantAuthority
+    ) {
         return createHistory(FileHistoryType.REGISTER,
                 fileCategory, referenceId, referenceIdentifier,
                 fileDisplayTitle, fileTitle, writerEmail, writerName,
-                writerAuthority, writtenAt, contentType, fileFormat, fileSize, filePath);
+                writerAuthority, writtenAt, contentType, fileFormat, fileSize, filePath,
+                historyRegistrantName, historyRegistrantEmail, historyRegistrantAuthority);
     }
 
     // 파일 삭제 이력 생성
@@ -160,12 +178,16 @@ public class FileMetadataHistory {
                                                           String contentType,
                                                           String fileFormat,
                                                           Double fileSize,
-                                                          String filePath) {
-
+                                                          String filePath,
+                                                          String historyRegistrantName,
+                                                          String historyRegistrantEmail,
+                                                          Role historyRegistrantAuthority
+    ) {
         return createHistory(FileHistoryType.DELETE,
                 fileCategory, referenceId, referenceIdentifier,
                 fileDisplayTitle, fileTitle, writerEmail, writerName,
-                writerAuthority, writtenAt, contentType, fileFormat, fileSize, filePath);
+                writerAuthority, writtenAt, contentType, fileFormat, fileSize, filePath,
+                historyRegistrantName, historyRegistrantEmail, historyRegistrantAuthority);
     }
 
 }

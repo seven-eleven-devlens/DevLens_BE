@@ -16,27 +16,27 @@ public class ProjectAuthorizationHistory extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 프로젝트 권한 목록 이력 ID
+    private Long id;
 
     @Column(nullable = false)
-    private String memberName; // 회원 이름
+    private String memberName;
 
     @Column(nullable = false)
-    private String projectStepName; // 프로젝트 단계 이름
+    private String projectName;
 
     @Column(nullable = false)
     private String memberType; // 회원 구분 (client, developer)
 
     @Column(nullable = false)
-    private String authorizationCode; // 권한 코드
+    private String authorizationCode;
 
     @Column(nullable = false)
     @Convert(converter = YesNoConverter.class)
-    private YesNo isActive; // 삭제 여부
+    private YesNo isActive;
 
     private ProjectAuthorizationHistory(ProjectAuthorization authorization) {
         this.memberName = authorization.getMember().getName();
-        this.projectStepName = authorization.getProjectStep().getStepName();
+        this.projectName = authorization.getProject().getProjectName();
         this.memberType = authorization.getMemberType().name();
         this.authorizationCode = authorization.getAuthorizationCode();
         this.isActive = authorization.getIsActive();

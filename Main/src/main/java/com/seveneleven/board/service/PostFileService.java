@@ -8,6 +8,7 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.file.handler.FileHandler;
 import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.repository.FileMetadataHistoryRepository;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class PostFileService {
     private final FileMetadataRepository fileMetadataRepository;
 
     private static final int MAX_FILE_COUNT = 10; //게시물별 최대 파일 수(10개)
+    private final FileMetadataHistoryRepository fileMetadataHistoryRepository;
+    private final PostFileHistoryService postFileHistoryService;
 
     /**
      * 1. 게시물 파일 업로드
@@ -52,7 +55,10 @@ public class PostFileService {
 
         //파일 리스트 업로드
         for(MultipartFile file : files){
-            fileHandler.uploadFile(file, FileCategory.POST_ATTACHMENT, postId);
+            FileMetadata uploadedFileMetadata = fileHandler.uploadFile(file, FileCategory.POST_ATTACHMENT, postId);
+
+            //이력 등록
+            postFileHistoryService.registerPostFileHistory(uploadedFileMetadata, uploaderId);
         }
     }
 
@@ -84,7 +90,7 @@ public class PostFileService {
     }
 
     /**
-     * 3-1. 게시물 파일 단일 삭제(수정시)
+     * 3-1. 게시물 파일 단일 삭제(게시물 수정시)
      * 함수명 : deletePostFile
      * @param
      */
@@ -105,11 +111,14 @@ public class PostFileService {
         }
 
         //4. 해당 파일을 삭제한다.
-        fileHandler.deleteFileById(fileId);
+        FileMetadata deletedFileMetadata = fileHandler.deleteFileById(fileId);
+
+        //5. 삭제 이력 등록
+        postFileHistoryService.deletePostFileHistory(deletedFileMetadata, deleterId);
     }
 
     /**
-     * 3-2. 게시물 파일 일괄 삭제(삭제시)
+     * 3-2. 게시물 파일 일괄 삭제(게시물 삭제시)
      * 함수명 : deleteAllPostFiles
      * @auth admin, 해당 게시물 작성자
      * @param postId 해당 게시물 id
@@ -124,7 +133,10 @@ public class PostFileService {
 
         //3. 해당 게시물의 파일들을 전체 삭제한다.
         for(FileMetadata fileEntity : fileHandler.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId())) {
-            fileHandler.deleteFileById(fileEntity.getId());
+            FileMetadata deletedFileMetadata = fileHandler.deleteFileById(fileEntity.getId());
+
+            //4. 이력 등록
+            postFileHistoryService.deletePostFileHistory(deletedFileMetadata, deleterId);
         }
     }
 

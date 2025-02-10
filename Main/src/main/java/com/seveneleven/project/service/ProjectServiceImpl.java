@@ -23,7 +23,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public GetCompanyProject.Response getCompanyProject(Long companyId) {
-        return getCompanyProject(companyId);
+        return projectReader.getCompanyProject(companyId);
     }
 
     @Override

@@ -84,13 +84,15 @@ public class JwtFilter extends OncePerRequestFilter {
             // Access Token이 만료되었지만, Refresh Token이 유효할 때
             else if(token.getRefreshToken() != null && tokenProvider.validateToken(token.getRefreshToken())) {
                 handleBusinessException(response, new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN));
-                eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(null, new UsernameNotFoundException("Access Token Expired")));
+                log.error("Access Token Expired : {}", token.getAccessToken());
+                // eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(null, new UsernameNotFoundException("Access Token Expired")));
                 return;
             }
             // Access Token과 Refresh Token 모두 만료되었을 때
             else {
                 handleBusinessException(response, new BusinessException(ErrorCode.UNAUTHORIZED));
-                eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(null, new UsernameNotFoundException("User Not Found")));
+                log.error("User Not Found");
+                // eventPublisher.publishEvent(new AuthenticationFailureBadCredentialsEvent(null, new UsernameNotFoundException("User Not Found")));
                 return;
             }
         }

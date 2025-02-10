@@ -104,7 +104,7 @@ public class TokenProvider implements InitializingBean {
         // Refresh Token은 Redis에 저장
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
         refreshTokenRepository.save(
-                new RefreshToken(refreshToken, userDetails.getId().toString()),
+                new RefreshToken(refreshToken, userDetails.getId().toString(), getRefreshTokenExpireTime()),
                 REFRESH_TOKEN_EXPIRE_TIME
         );
 
@@ -130,6 +130,22 @@ public class TokenProvider implements InitializingBean {
                 .setIssuedAt(Date.from(now))              // 발급 시간
                 .setExpiration(Date.from(expirationTime)) // 만료 시간
                 .compact();
+    }
+
+    public Long getExpiration(String accessToken) {
+        try {
+            // 1. 토큰에서 Claims(토큰의 정보)를 가져옵니다.
+            Claims claims = Jwts.parser()
+                    .setSigningKey(secret)  // 토큰을 서명할 때 사용한 비밀키
+                    .parseClaimsJws(accessToken)
+                    .getBody();
+
+            // 2. Claims에서 만료 시간(Expiration)을 가져옵니다.
+            return claims.getExpiration().getTime() - System.currentTimeMillis();
+        } catch (Exception e) {
+            // 3. 토큰이 잘못되었거나 만료된 경우 예외를 던집니다.
+            throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);
+        }
     }
 
     /**
@@ -193,6 +209,9 @@ public class TokenProvider implements InitializingBean {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            if(refreshTokenRepository.hasKeyBlackList(token)) {
+                logger.info("로그아웃된 JWT 토큰입니다.");
+                throw new BusinessException(ErrorCode.INVALID_ACCESS_TOKEN);            }
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             logger.info("잘못된 JWT 서명입니다.");

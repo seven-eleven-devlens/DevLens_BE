@@ -22,10 +22,10 @@ public class RefreshToken {
     private Long ttl;
 
     @Builder
-    public RefreshToken(String refreshToken, String userId) {
+    public RefreshToken(String refreshToken, String userId, Long ttl) {
         this.refreshToken = refreshToken;
         this.userId = userId;
-        this.ttl = 1000L * 60 * 60 * 24 * 14;
+        this.ttl = ttl;
     }
 
 }

@@ -42,7 +42,7 @@ public class AdminCompanyFacade {
         adminCompanyHistoryService.saveHistory(request.toEntity());
         return response;
     }
-
+  
     public void changeCompanyIsActive(Long id) {
         Company deletedCompany = adminCompanyService.changeCompanyIsActive(id);
         if(deletedCompany.getIsActive().equals(YN.N)) {
@@ -53,5 +53,10 @@ public class AdminCompanyFacade {
 
     public List<GetAllCompanies> getAllCompanies() {
         return adminCompanyService.getAllCompanies();
+    }
+
+    public GetCompanyMember.Response getCompanyMember(Long companyId) {
+        Company company = adminCompanyService.getCompany(companyId);
+        return adminCompanyService.getCompanyMember(company.getId());
     }
 }

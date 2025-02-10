@@ -1,7 +1,9 @@
 package com.seveneleven.project.service;
 
+import com.seveneleven.entity.member.Member;
+import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectAuthorization;
-import com.seveneleven.entity.project.ProjectStep;
+import com.seveneleven.project.dto.GetMemberAuthorization;
 import com.seveneleven.project.dto.GetProjectAuthorization;
 import com.seveneleven.project.dto.PostProjectAuthorization;
 import com.seveneleven.project.service.authorization.AuthorizationReader;
@@ -29,9 +31,17 @@ public class ProjectAuthorizationServiceImpl implements ProjectAuthorizationServ
      */
     @Override
     @Transactional(readOnly = true)
-    public GetProjectAuthorization.Response getProjectAuthorization(Long stepId) {
-        List<ProjectAuthorization> authorizations = authorizationReader.readByStepId(stepId);
-        return GetProjectAuthorization.Response.toDto(stepId, authorizations);
+    public GetProjectAuthorization.Response getProjectAuthorization(Project project) {
+        List<ProjectAuthorization> authorizations = authorizationReader.readByProjectId(project.getId());
+        return GetProjectAuthorization.Response.toDto(project.getId(), authorizations);
+    }
+
+    @Override
+    public GetMemberAuthorization.Response getMemberAuthorization(Project project, Member member) {
+        ProjectAuthorization authorization =
+                authorizationReader.readByProjectIdAndUserId(project.getId(), member.getId());
+
+        return GetMemberAuthorization.Response.toDto(authorization);
     }
 
     /**
@@ -41,11 +51,10 @@ public class ProjectAuthorizationServiceImpl implements ProjectAuthorizationServ
     @Override
     @Transactional
     public PostProjectAuthorization.Response createProjectAuthorization(
-            Long stepId,
+            Project project,
             PostProjectAuthorization.Request requestDto
     ) {
-        ProjectStep projectStep = stepReader.read(stepId);
-        List<ProjectAuthorization> authorizations = authorizationReader.readByStepId(stepId);
-        return authorizationStore.store(requestDto, authorizations, projectStep);
+        List<ProjectAuthorization> authorizations = authorizationReader.readByProjectId(project.getId());
+        return authorizationStore.store(requestDto, authorizations, project);
     }
 }
