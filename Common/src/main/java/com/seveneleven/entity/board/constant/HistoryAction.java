@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum PostAction {
+public enum HistoryAction {
 
     CREATE("생성"),
     UPDATE("수정"),

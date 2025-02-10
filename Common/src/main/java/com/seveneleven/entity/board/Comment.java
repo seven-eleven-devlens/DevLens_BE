@@ -1,8 +1,6 @@
 package com.seveneleven.entity.board;
 
 import com.seveneleven.entity.global.BaseEntity;
-import com.seveneleven.entity.global.YesNo;
-import com.seveneleven.entity.global.converter.YesNoConverter;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -21,7 +19,6 @@ public class Comment extends BaseEntity {
         ref : 댓글 그룹 구분
         refOrder : 댓글 그룹 순서
         childCommentNum : 자식 댓글의 수
-        isActive : 사용 유무 (Y, N)
         content : 내용
         writer : 작성자 이름
         registerIp : 등록자 IP
@@ -35,11 +32,11 @@ public class Comment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false, referencedColumnName = "id")
-    private Post postId;
+    private Post post;
 
     @JoinColumn(name = "parent_comment_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    private Comment parentCommentId;
+    private Comment parentComment;
 
     @Column(name = "ref")
     private Long ref;
@@ -49,11 +46,6 @@ public class Comment extends BaseEntity {
 
     @Column(name = "child_comment_num")
     private Integer childCommentNum;
-
-    @Column(name = "is_active", nullable = false)
-    @Convert(converter = YesNoConverter.class)
-    @Enumerated(EnumType.STRING)
-    private YesNo isActive;
 
     @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
@@ -68,23 +60,22 @@ public class Comment extends BaseEntity {
     private String modifierIp;
 
     private Comment (Long id,
-                    Post post,
-                    Comment parentComment,
-                    Long ref,
-                    Integer refOrder,
-                    Integer childCommentNum,
-                    YesNo isActive,
-                    String content,
-                    String writer,
-                    String registerIp,
-                    String modifierIp) {
+                     Post post,
+                     Comment parentComment,
+                     Long ref,
+                     Integer refOrder,
+                     Integer childCommentNum,
+                     String content,
+                     String writer,
+                     String registerIp,
+                     String modifierIp
+    ) {
         this.id = id;
-        this.postId = post;
-        this.parentCommentId = parentComment;
+        this.post = post;
+        this.parentComment = parentComment;
         this.ref = ref;
         this.refOrder = refOrder;
         this.childCommentNum = childCommentNum;
-        this.isActive = isActive;
         this.content = content;
         this.writer = writer;
         this.registerIp = registerIp;
@@ -103,32 +94,24 @@ public class Comment extends BaseEntity {
             String registerIp
     ) {
         Comment comment = new Comment();
-        comment.postId = post;
-        comment.parentCommentId = parentComment;
+        comment.post = post;
+        comment.parentComment = parentComment;
         comment.ref = ref;
         comment.refOrder = refOrder;
         comment.childCommentNum = childCommentNum;
-        comment.isActive = YesNo.YES;
         comment.content = content;
         comment.writer = writer;
         comment.registerIp = registerIp;
-    return comment;
+        comment.modifierIp = null;
+        return comment;
     }
 
     // 수정 메서드
     public void updateComment(
-        String content,
-        String modifierIp
-    ) {
-        this.content = content;
-        this.modifierIp = modifierIp;
-    }
-
-    // 삭제 메서드
-    public void deleteComment(
+            String content,
             String modifierIp
     ) {
-        this.isActive = YesNo.NO;
+        this.content = content;
         this.modifierIp = modifierIp;
     }
 

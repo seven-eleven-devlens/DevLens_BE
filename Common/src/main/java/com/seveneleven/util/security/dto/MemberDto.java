@@ -18,7 +18,7 @@ public class MemberDto {
 
     private Long id;
     private String loginId;
-    private String username;
+    private String name;
     private String email;
     private String password;
     private Role role;

@@ -1,7 +1,7 @@
 package com.seveneleven.board.service;
 
 import com.seveneleven.board.dto.*;
-import com.seveneleven.entity.board.constant.PostAction;
+import com.seveneleven.entity.board.constant.HistoryAction;
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.entity.board.constant.PostSort;
@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
         }
 
         // 댓글 목록 조회
-        List<GetCommentResponse> comments = commentService.selectCommentList(post);
+        List<GetCommentResponse> comments = commentService.selectCommentList(post.getId());
 
         return getPostResponse(post, parentPostId, postReader.getWriter(post.getCreatedBy()), comments);
     }
@@ -105,7 +105,7 @@ public class PostServiceImpl implements PostService {
                     postReader.getMaxRef() + 1,
                     0
             );
-            savePostAndPostHistory(post, registerIp, PostAction.CREATE);
+            savePostAndPostHistory(post, registerIp, HistoryAction.CREATE);
         } else {
             // 답글인 경우
             if(!matchesProjectStepParentAndChild(postCreateRequest.getProjectStepId(), postCreateRequest.getParentPostId())) {
@@ -122,7 +122,7 @@ public class PostServiceImpl implements PostService {
                     parentPost.getRef(),
                     postReader.getRefOrder(parentPost) + 1
             );
-            savePostAndPostHistory(post, registerIp, PostAction.CREATE);
+            savePostAndPostHistory(post, registerIp, HistoryAction.CREATE);
             parentPost.increaseChildPostNum();
         }
 
@@ -152,7 +152,7 @@ public class PostServiceImpl implements PostService {
                 modifierIp
         );
 
-        savePostAndPostHistory(post, modifierIp, PostAction.UPDATE);
+        savePostAndPostHistory(post, modifierIp, HistoryAction.UPDATE);
     }
 
     /**
@@ -162,7 +162,6 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     public void deletePost(Long postId, HttpServletRequest request, Long deleterId) {
-        // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = postReader.getPost(postId);
         matchPostWriter(post.getCreatedBy(), deleterId);
 
@@ -178,14 +177,16 @@ public class PostServiceImpl implements PostService {
             // 답글인 경우
             post.getParentPost().decreaseChildPostNum();
         }
+        // 해당 게시물의 댓글 일괄 삭제
+        commentService.deleteAllComments(post, deleterIp);
 
-        //해당 게시물의 링크 일괄 삭제
+        // 해당 게시물의 링크 일괄 삭제
         postLinkService.deleteAllPostLinks(postId);
 
-        //게시물 파일 일괄 삭제
+        // 게시물 파일 일괄 삭제
         postFileService.deleteAllPostFiles(post.getId(), deleterId);
 
-        postStore.storePostHistory(post, PostAction.DELETE, deleterIp);
+        postStore.storePostHistory(post, HistoryAction.DELETE, deleterIp);
         postStore.deletePost(post);
     }
 
@@ -205,7 +206,7 @@ public class PostServiceImpl implements PostService {
      * 함수명 : savePostAndPostHistory()
      * 함수 목적 : 게시글 및 게시글 이력 저장 메서드
      */
-    private void savePostAndPostHistory(Post post, String ip, PostAction postAction) {
+    private void savePostAndPostHistory(Post post, String ip, HistoryAction postAction) {
         postStore.storePost(post);
         postStore.storePostHistory(post, postAction, ip);
     }
@@ -227,7 +228,7 @@ public class PostServiceImpl implements PostService {
      */
     private void matchPostWriter(Long createdBy, Long modifierId) {
         if(!createdBy.equals(modifierId)) {
-            throw new BusinessException(NOT_MATCH_WRITER);
+            throw new BusinessException(NOT_HAVE_EDIT_PERMISSION);
         }
     }
 

@@ -21,6 +21,13 @@ public class PostReaderImpl implements PostReader {
     private final MemberRepository memberRepository;
 
     @Override
+    public void existPost(Long postId) {
+        if(!postRepository.existsById(postId)) {
+            throw new BusinessException(NOT_FOUND_POST);
+        }
+    }
+
+    @Override
     public Post getPost(Long postId) {
         return postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
@@ -50,6 +57,7 @@ public class PostReaderImpl implements PostReader {
         return postRepository.findMaxRefOrderByParentPostId(parentPost.getId())
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
     }
+
 
     @Override
     public ProjectStep getProjectStep(Long projectStepId) {

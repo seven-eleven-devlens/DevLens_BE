@@ -1,6 +1,6 @@
 package com.seveneleven.entity.board;
 
-import com.seveneleven.entity.board.constant.PostAction;
+import com.seveneleven.entity.board.constant.HistoryAction;
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.board.constant.TaskPriority;
 import com.seveneleven.entity.global.BaseEntity;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Table(name = "post_history")
 public class PostHistory extends BaseEntity {
 
-        /*
+    /*
         id : 게시물 이력 ID
         projectStepId : 프로젝트 단계 ID
         parentPostId : 부모 게시물 ID
@@ -68,7 +68,7 @@ public class PostHistory extends BaseEntity {
 
     @Column(name = "action", nullable = false)
     @Enumerated(EnumType.STRING)
-    private PostAction action; // 작업 종류 (CREATE, UPDATE, DELETE)
+    private HistoryAction action; // 작업 종류 (CREATE, UPDATE, DELETE)
 
     @Column(name = "registered_ip", length = 50)
     private String registeredIp; // 등록자 IP
@@ -77,7 +77,7 @@ public class PostHistory extends BaseEntity {
     private String modifierIp; // 수정자 IP
 
     // 게시글 이력 생성
-    public static PostHistory createPostHistory(Post post, PostAction action, String ip) {
+    public static PostHistory createPostHistory(Post post, HistoryAction action, String ip) {
         PostHistory postHistory = new PostHistory();
         postHistory.projectStepId = post.getProjectStep().getId();
         postHistory.parentPostId = postHistory.getParentPostId();

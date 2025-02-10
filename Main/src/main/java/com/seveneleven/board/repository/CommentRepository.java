@@ -17,8 +17,10 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("""
             SELECT c
             FROM Comment c
-            WHERE c.postId.id = :postId AND c.isActive = 'YES'
+            WHERE c.post.id = :postId
             ORDER BY c.ref ASC, c.refOrder ASC
             """)
     List<Comment> getCommentList(@Param("postId") Long postId);
+
+    Integer countCommentByRefAndRefOrder(Long ref, Integer refOrder);
 }
