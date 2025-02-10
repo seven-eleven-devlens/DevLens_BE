@@ -17,6 +17,13 @@ public class PostProjectChecklistReject {
     public static class Request {
         private String rejectReason;
         private List<LinkInput> linkInputs;
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "rejectReason='" + rejectReason + '\'' +
+                    '}';
+        }
     }
 
     /**
@@ -32,6 +39,13 @@ public class PostProjectChecklistReject {
         private String processorIp;
         private LocalDateTime processDate;
         private String rejectReason;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "applicationId=" + applicationId +
+                    '}';
+        }
 
         public Response(CheckResult checkResult) {
             this.applicationId = checkResult.getCheckRequest().getId();

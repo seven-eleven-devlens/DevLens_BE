@@ -16,6 +16,13 @@ public class GetCompanyProject {
         Long companyId;
         List<CompanyProject> companyProjects;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "companyId=" + companyId +
+                    '}';
+        }
+
         private Response(Long companyId, List<CompanyProject> companyProjects) {
             this.companyId = companyId;
             this.companyProjects = companyProjects;

@@ -13,6 +13,13 @@ public class GetProjectChecklistApplication {
         String title;
         String content;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
+
         private Response(Long id, String title, String content) {
             this.id = id;
             this.title = title;

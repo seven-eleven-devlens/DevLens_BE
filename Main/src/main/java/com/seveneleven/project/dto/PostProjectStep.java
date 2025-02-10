@@ -22,6 +22,13 @@ public class PostProjectStep {
         @JsonProperty
         List<PostChecklist> checklists;
 
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "stepName='" + stepName + '\'' +
+                    '}';
+        }
+
         public ProjectStep toEntity(Project project, Integer order) {
             return ProjectStep.create(project, stepName, stepDescription, order);
         }
@@ -33,6 +40,13 @@ public class PostProjectStep {
     public static class PostChecklist {
         String checklistTitle;
         String checklistDescription;
+
+        @Override
+        public String toString() {
+            return "PostChecklist{" +
+                    "checklistTitle='" + checklistTitle + '\'' +
+                    '}';
+        }
 
         private PostChecklist(Checklist checklist) {
             this.checklistTitle = checklist.getTitle();
@@ -55,6 +69,13 @@ public class PostProjectStep {
         String stepName;
         Integer stepOrderNumber;
         List<PostChecklist> checklists;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "projectId=" + projectId +
+                    '}';
+        }
 
         private Response(ProjectStep projectStep, List<PostChecklist> checklists) {
             this.projectId = projectStep.getProject().getId();

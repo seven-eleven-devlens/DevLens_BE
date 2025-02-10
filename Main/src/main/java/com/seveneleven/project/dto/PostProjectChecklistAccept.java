@@ -15,6 +15,13 @@ public class PostProjectChecklistAccept {
         private Long checklistId;
         private ApprovalStatus checklistStatus;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "checklistId=" + checklistId +
+                    '}';
+        }
+
         private Response(CheckResult checkResult) {
             checklistId = checkResult.getId();
             checklistStatus = checkResult.getApprovalStatus();

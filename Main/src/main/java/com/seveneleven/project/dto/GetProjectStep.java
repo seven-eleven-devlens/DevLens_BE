@@ -18,6 +18,13 @@ public class GetProjectStep {
         private Long projectId;
         private List<ProjectStepInfo> projectStepInfo;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "projectId=" + projectId +
+                    '}';
+        }
+
         public Response(Long projectId, List<ProjectStepInfo> projectStepInfo) {
             this.projectId = projectId;
             this.projectStepInfo = projectStepInfo;
@@ -31,6 +38,13 @@ public class GetProjectStep {
         private String stepName;
         private Integer stepOrder;
         private List<ProjectChecklist> projectChecklist;
+
+        @Override
+        public String toString() {
+            return "ProjectStepInfo{" +
+                    "stepId=" + stepId +
+                    '}';
+        }
 
         private ProjectStepInfo(ProjectStep projectStep, List<ProjectChecklist> projectChecklist) {
             stepId = projectStep.getId();
@@ -51,6 +65,13 @@ public class GetProjectStep {
         private String checklistName;
         private Boolean checklistStatus;
         private LocalDateTime approvalTime;
+
+        @Override
+        public String toString() {
+            return "ProjectChecklist{" +
+                    "checklistId=" + checklistId +
+                    '}';
+        }
 
         public ProjectChecklist(Long checklistId, String checklistName, YesNo checklistStatus, LocalDateTime approvalTime) {
             this.checklistId = checklistId;

@@ -16,6 +16,13 @@ public class GetProjectList {
     public static class Response {
         List<GetMyProjectResponseInfo> myProjects;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "myProjects=" + myProjects +
+                    '}';
+        }
+
         private Response(List<GetMyProjectResponseInfo> myProjects) {
             this.myProjects = myProjects;
         }
@@ -34,6 +41,13 @@ public class GetProjectList {
         private LocalDate endDate;
         private Long customerId;
         private String customerName;
+
+        @Override
+        public String toString() {
+            return "GetMyProjectResponseInfo{" +
+                    "id=" + id +
+                    '}';
+        }
 
         private GetMyProjectResponseInfo(Project project) {
             this.id = project.getId();

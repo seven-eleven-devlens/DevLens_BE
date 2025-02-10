@@ -15,6 +15,13 @@ public class DeleteProjectChecklist {
         private Long checklistId;
         private Boolean checklistStatus;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "checklistId=" + checklistId +
+                    '}';
+        }
+
         private Response(Checklist checklist) {
             this.checklistId = checklist.getId();
             this.checklistStatus = checklist.getIsActive() == YesNo.YES;

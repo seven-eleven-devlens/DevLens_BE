@@ -3,7 +3,6 @@ package com.seveneleven.project.dto;
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.entity.project.ProjectStep;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,6 +19,13 @@ public class PostProjectChecklist {
         public Request(String checklistTitle, String checklistDescription) {
             this.checklistTitle = checklistTitle;
             this.checklistDescription = checklistDescription;
+        }
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "checklistTitle='" + checklistTitle + '\'' +
+                    '}';
         }
 
         public Checklist toEntity(ProjectStep projectStep) {
@@ -42,6 +48,13 @@ public class PostProjectChecklist {
             this.checklistDescription = checklistDescription;
             this.isActive = isActive;
             this.isChecked = isChecked;
+        }
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "projectChecklistId=" + projectChecklistId +
+                    '}';
         }
 
         public static Response toDto(Checklist checklist) {

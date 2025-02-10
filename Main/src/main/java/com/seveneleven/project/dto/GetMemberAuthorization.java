@@ -14,6 +14,13 @@ public class GetMemberAuthorization {
         String authorization;
         MemberType memberType;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "memberId=" + memberId +
+                    '}';
+        }
+
         private Response(ProjectAuthorization authorization) {
             this.memberId = authorization.getMember().getId();
             this.authorization = authorization.getAuthorizationCode();

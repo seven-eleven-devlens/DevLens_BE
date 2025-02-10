@@ -15,6 +15,13 @@ public class GetProjectAuthorization {
         private Long projectId;
         private List<MemberAuthorization> memberAuthorization;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "projectId=" + projectId +
+                    '}';
+        }
+
         private Response(Long projectId, List<ProjectAuthorization> projectAuthorizations) {
             this.projectId = projectId;
             memberAuthorization = projectAuthorizations.stream().map(MemberAuthorization::toDto).toList();
@@ -30,6 +37,13 @@ public class GetProjectAuthorization {
         private Long memberId;
         private String projectAuthorization;
         private MemberType memberDivision;
+
+        @Override
+        public String toString() {
+            return "MemberAuthorization{" +
+                    "memberId=" + memberId +
+                    '}';
+        }
 
         private MemberAuthorization(ProjectAuthorization projectAuthorization) {
             this.memberId = projectAuthorization.getMember().getId();

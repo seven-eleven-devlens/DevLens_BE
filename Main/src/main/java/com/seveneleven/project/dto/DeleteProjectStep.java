@@ -11,6 +11,13 @@ public class DeleteProjectStep {
         private Long projectId;
         private Long stepId;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "projectId=" + projectId +
+                    '}';
+        }
+
         private Response(Long projectId, Long stepId) {
             this.projectId = projectId;
             this.stepId = stepId;
