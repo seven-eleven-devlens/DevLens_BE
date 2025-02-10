@@ -17,9 +17,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "https://api.devlens.work",
                         "https://local.devlens.work",
                         "http://localhost/admin",
-                        "http://localhost/main",
-                        "http://localhost:8443/admin",
-                        "http://localhost:8444/main")
+                        "http://localhost/main")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
