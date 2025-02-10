@@ -1,6 +1,5 @@
 package com.seveneleven.member.controller;
 
-import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.member.dto.MyPageGetMember;
 import com.seveneleven.member.dto.PatchMember;
 import com.seveneleven.member.service.MemberFileService;

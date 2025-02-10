@@ -30,8 +30,6 @@ public class LinkHandler {
         Link savedLinkEntity = linkRepository.save(linkEntity);
 
         return savedLinkEntity;
-
-        //TODO) 저장 이력 추가
     }
 
     /**
@@ -57,14 +55,14 @@ public class LinkHandler {
      * @param referenceId 링크 참조 ID
      */
     @Transactional
-    public void deleteLink(LinkCategory linkCategory, Long referenceId){
+    public Link deleteLink(LinkCategory linkCategory, Long referenceId){
         //카테고리와 참조 ID로 링크 유무 판별
         Link toDeleteLink = linkRepository.findByCategoryAndReferenceId(linkCategory, referenceId)
                         .orElseThrow(() -> new BusinessException(ErrorCode.LINK_NOT_FOUND_ERROR));
 
         linkRepository.delete(toDeleteLink);
 
-        //TODO) 삭제 이력 추가
+        return toDeleteLink;
     }
 
     /**
@@ -73,14 +71,14 @@ public class LinkHandler {
      * @param linkId 링크 Id
      */
     @Transactional
-    public void deleteLinkById(Long linkId){
+    public Link deleteLinkById(Long linkId){
         //해당 링크 존재 유무 판별
         Link toDeleteLink = linkRepository.findById(linkId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.LINK_NOT_FOUND_ERROR));
 
         linkRepository.delete(toDeleteLink);
 
-        //TODO) 삭제 이력 남기기
+        return toDeleteLink;
     }
 
     /**
