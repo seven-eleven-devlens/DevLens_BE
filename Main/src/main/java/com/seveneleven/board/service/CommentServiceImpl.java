@@ -6,6 +6,7 @@ import com.seveneleven.board.dto.PostCommentRequest;
 import com.seveneleven.entity.board.Comment;
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.HistoryAction;
+import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.util.GetIpUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,7 +74,6 @@ public class CommentServiceImpl implements CommentService {
 
             parentComment.increaseChildCommentNum();
         }
-        // todo : 이력 추가
         commentStore.storeCommentHistory(comment, HistoryAction.CREATE, registerIp, null);
     }
 
@@ -87,7 +87,7 @@ public class CommentServiceImpl implements CommentService {
         postReader.existPost(postId);
         Comment comment = commentReader.getComment(commentId);
 
-        matchCommentWriter(comment.getCreatedBy(), modifierId);
+        checkCommentEditPermission(comment.getCreatedBy(), modifierId);
 
         commentStore.storeCommentHistory(comment, HistoryAction.UPDATE, comment.getRegisterIp(), getIpUtil.getIpAddress(request));
         comment.updateComment(patchCommentRequest.getContent(), getIpUtil.getIpAddress(request));
@@ -103,7 +103,7 @@ public class CommentServiceImpl implements CommentService {
         postReader.existPost(postId);
         Comment comment = commentReader.getComment(commentId);
 
-        matchCommentWriter(comment.getCreatedBy(), deleterId);
+        checkCommentEditPermission(comment.getCreatedBy(), deleterId);
 
         commentStore.storeCommentHistory(comment, HistoryAction.DELETE, comment.getRegisterIp(), getIpUtil.getIpAddress(request));
 
@@ -155,11 +155,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     /**
-     * 함수명 : matchCommentWriter()
-     * 함수 목적 : 댓글 작성자 일치 여부 확인
+     * 함수명 : checkCommentEditPermission()
+     * 함수 목적 : 댓글 작성자 또는 관리자 일치 여부 확인
      */
-    private void matchCommentWriter(Long commentCreatedBy, Long modifierId) {
-        if(!commentCreatedBy.equals(modifierId)) {
+    private void checkCommentEditPermission(Long commentCreatedBy, Long modifierId) {
+        // 작성자 또는 관리자가 아닌 경우
+        if(!commentCreatedBy.equals(modifierId) || !commentReader.getMember(modifierId).getRole().equals(Role.ADMIN)) {
             throw new BusinessException(NOT_MATCH_WRITER);
         }
     }
