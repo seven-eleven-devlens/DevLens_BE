@@ -1,6 +1,9 @@
 package com.seveneleven.project.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,6 +17,13 @@ public class GetProjectDetail {
         private ProjectDetail projectDetail;
         private List<ProjectStepInfo> projectStep;
         private List<ChecklistApplicationList> checklistApplicationList;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "projectDetail=" + projectDetail +
+                    '}';
+        }
 
         private Response(ProjectDetail projectDetail, List<ProjectStepInfo> projectStep, List<ChecklistApplicationList> checklistApplicationList) {
             this.projectDetail = projectDetail;
@@ -38,6 +48,13 @@ public class GetProjectDetail {
         private String projectDescription;
         private String bnsManager;
 
+        @Override
+        public String toString() {
+            return "ProjectDetail{" +
+                    "id=" + id +
+                    '}';
+        }
+
         public ProjectDetail(
                 Long projectId,
                 String projectTypeName,
@@ -61,6 +78,13 @@ public class GetProjectDetail {
         private Long stepId;
         private String stepName;
         private Double stepProcessRate;
+
+        @Override
+        public String toString() {
+            return "ProjectStepInfo{" +
+                    "stepId=" + stepId +
+                    '}';
+        }
     }
 
     @Getter
@@ -74,5 +98,12 @@ public class GetProjectDetail {
         private String applicationTitle;
         private String applicationUserName;
         private LocalDateTime ApplicationDateTime;
+
+        @Override
+        public String toString() {
+            return "ChecklistApplicationList{" +
+                    "checklistApplicationId=" + checklistApplicationId +
+                    '}';
+        }
     }
 }

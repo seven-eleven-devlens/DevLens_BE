@@ -18,6 +18,13 @@ public class GetCommentResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    @Override
+    public String toString() {
+        return "GetCommentResponse{" +
+                "commentId=" + commentId +
+                '}';
+    }
+
     private GetCommentResponse(Comment comment) {
         this.commentId = comment.getId();
         this.parentCommentId = getParentCommentId(comment.getParentCommentId());

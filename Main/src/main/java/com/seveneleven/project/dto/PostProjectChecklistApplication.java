@@ -24,6 +24,13 @@ public class PostProjectChecklistApplication {
         private Long requesterId;
         private List<LinkInput> linkInputs = new ArrayList<>();
 
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "title='" + title + '\'' +
+                    '}';
+        }
+
         public CheckRequest createCheckRequest(Checklist checklist, Member requester, String requestIp) {
             return CheckRequest.create(checklist, title, description, requester, requestIp);
         }
@@ -38,6 +45,13 @@ public class PostProjectChecklistApplication {
         private String description;
         private Long requesterId;
         private String requesterIp;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
 
         public Response(CheckRequest checkRequest) {
             this.id = checkRequest.getId();

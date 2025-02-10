@@ -14,6 +14,13 @@ public class PutProjectStep {
         private String stepName;
         private String stepDescription;
         private Integer stepOrder;
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "stepName='" + stepName + '\'' +
+                    '}';
+        }
     }
 
     @Getter
@@ -23,6 +30,13 @@ public class PutProjectStep {
         private String stepName;
         private String stepDescription;
         private Integer stepOrder;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "stepId=" + stepId +
+                    '}';
+        }
 
         private Response(Long stepId, String stepName, String stepDescription, Integer stepOrder) {
             this.stepId = stepId;

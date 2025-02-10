@@ -21,6 +21,13 @@ public class PutCompany {
         private BusinessType businessType;
         private String businessRegistrationNumber;
 
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "companyName='" + companyName + '\'' +
+                    '}';
+        }
+
         private Request(
                 String companyName,
                 String representativeName,
@@ -75,6 +82,13 @@ public class PutCompany {
         private BusinessType businessType;
         private String businessRegistrationNumber;
         private YN isActive;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
 
         private Response(Company company) {
             id = company.getId();

@@ -16,6 +16,13 @@ public class PutProjectChecklist {
     public static class Request {
         private String title;
         private String description;
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "description='" + description + '\'' +
+                    '}';
+        }
     }
 
     @Getter
@@ -26,6 +33,13 @@ public class PutProjectChecklist {
         private String title;
         private String description;
         private YesNo isChecked;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
 
         public static PutProjectChecklist.Response toDto(Checklist checklist) {
             return new PutProjectChecklist.Response(

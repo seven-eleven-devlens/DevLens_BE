@@ -1,9 +1,9 @@
 package com.seveneleven.member.dto;
 
 import com.seveneleven.entity.member.constant.Role;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
@@ -18,4 +18,11 @@ public class LoginResponse {
     private String companyName;
     private String department;
     private String position;
+
+    @Override
+    public String toString() {
+        return "LoginResponse{" +
+                "loginId='" + loginId + '\'' +
+                '}';
+    }
 }

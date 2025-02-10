@@ -19,6 +19,13 @@ public class GetStepChecklist {
         private Long stepId;
         // List -> PageResponse로 변경 필요
         private List<projectChecklist> checklists;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "stepId=" + stepId +
+                    '}';
+        }
     }
 
     @Getter
@@ -28,6 +35,13 @@ public class GetStepChecklist {
         private String checklistName;
         private Boolean checklistStatus;
         private LocalDateTime checkAcceptTime;
+
+        @Override
+        public String toString() {
+            return "projectChecklist{" +
+                    "checklistId=" + checklistId +
+                    '}';
+        }
 
         public projectChecklist(Long checklistId, String checklistName, YesNo checklistStatus, LocalDateTime checkAcceptTime) {
             this.checklistId = checklistId;

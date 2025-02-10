@@ -35,6 +35,13 @@ public class MemberUpdate {
         private String phoneNumber;
         private String department;
         private String position;
+
+        @Override
+        public String toString() {
+            return "PatchRequest{" +
+                    "name='" + name + '\'' +
+                    '}';
+        }
     }
 
     @Getter
@@ -43,5 +50,12 @@ public class MemberUpdate {
     public static class PatchResponse{
         private Long memberId;
         private String password;
+
+        @Override
+        public String toString() {
+            return "PatchResponse{" +
+                    "memberId=" + memberId +
+                    '}';
+        }
     }
 }

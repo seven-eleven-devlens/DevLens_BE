@@ -26,6 +26,13 @@ public class PostProject {
         private LocalDate plannedStartDate; // 시작 예정일
         private LocalDate plannedEndDate; // 종료 예정일
 
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "projectName='" + projectName + '\'' +
+                    '}';
+        }
+
         public Project toEntity(
                 Company customer,
                 Company developer,
@@ -59,6 +66,13 @@ public class PostProject {
         private String contractNumber; // 계약서 번호
         private LocalDate plannedStartDate; // 시작 예정일
         private LocalDate plannedEndDate; // 종료 예정일
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
 
         private Response(
                 Project project

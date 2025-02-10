@@ -41,4 +41,11 @@ public class PostUpdateRequest {
 
     @Nullable
     private LocalDate deadline;     // 마감일자
+
+    @Override
+    public String toString() {
+        return "PostUpdateRequest{" +
+                "postId=" + postId +
+                '}';
+    }
 }

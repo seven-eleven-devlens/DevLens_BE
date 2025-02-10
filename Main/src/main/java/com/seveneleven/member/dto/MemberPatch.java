@@ -11,6 +11,13 @@ public class MemberPatch {
     public static class Request{
         private String password;
         private String newPassword;
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "newPassword='" + newPassword + '\'' +
+                    '}';
+        }
     }
 
     @Getter
@@ -18,5 +25,12 @@ public class MemberPatch {
     @AllArgsConstructor
     public static class Response{
         private String loginId;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "loginId='" + loginId + '\'' +
+                    '}';
+        }
     }
 }

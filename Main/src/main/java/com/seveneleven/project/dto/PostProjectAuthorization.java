@@ -6,7 +6,6 @@ import com.seveneleven.entity.project.ProjectAuthorization;
 import com.seveneleven.entity.project.constant.MemberType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -16,14 +15,19 @@ public class PostProjectAuthorization {
 
     @Getter
     @NoArgsConstructor
-    @ToString
     public static class Request {
         List<MemberAuthorization> authorizations;
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "authorizations=" + authorizations +
+                    '}';
+        }
     }
 
     @Getter
     @NoArgsConstructor
-    @ToString
     public static class MemberAuthorization {
         private Long memberId;
         private String projectAuthorization;
@@ -31,6 +35,13 @@ public class PostProjectAuthorization {
 
         public ProjectAuthorization toEntity(Project project, Member member) {
             return ProjectAuthorization.create(member, project, memberDivision, projectAuthorization);
+        }
+
+        @Override
+        public String toString() {
+            return "MemberAuthorization{" +
+                    "memberId=" + memberId +
+                    '}';
         }
     }
 
@@ -43,6 +54,13 @@ public class PostProjectAuthorization {
         private Response(Long stepId) {
             this.stepId = stepId;
             this.failList = new ArrayList<>();
+        }
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "stepId=" + stepId +
+                    '}';
         }
 
         public static Response create(Long stepId) {
@@ -65,6 +83,13 @@ public class PostProjectAuthorization {
             this.projectAuthorization = member.getProjectAuthorization();
             this.status = status;
             this.message = message;
+        }
+
+        @Override
+        public String toString() {
+            return "FailList{" +
+                    "memberId=" + memberId +
+                    '}';
         }
 
         public static FailList toDto(MemberAuthorization member, HttpStatus status, String message) {

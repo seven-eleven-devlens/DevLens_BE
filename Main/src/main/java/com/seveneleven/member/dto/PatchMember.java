@@ -2,7 +2,6 @@ package com.seveneleven.member.dto;
 
 import com.seveneleven.entity.member.Member;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.modelmapper.ModelMapper;
 
@@ -24,6 +23,13 @@ public class PatchMember {
         private Long companyId;
         private String department;
         private String position;
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "companyId=" + companyId +
+                    '}';
+        }
     }
 
     @Getter
@@ -36,5 +42,12 @@ public class PatchMember {
         private String company;
         private String department;
         private String position;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "name='" + name + '\'' +
+                    '}';
+        }
     }
 }

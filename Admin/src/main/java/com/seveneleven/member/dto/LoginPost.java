@@ -14,6 +14,13 @@ public class LoginPost {
     public static class Request{
         private String loginId;
         private String password;
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "loginId='" + loginId + '\'' +
+                    '}';
+        }
     }
 
     @Getter
@@ -25,5 +32,12 @@ public class LoginPost {
         private String refreshToken;
         private Long expiredRefresh;
         private LoginResponse companyInfo;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "accessToken='" + accessToken + '\'' +
+                    '}';
+        }
     }
 }

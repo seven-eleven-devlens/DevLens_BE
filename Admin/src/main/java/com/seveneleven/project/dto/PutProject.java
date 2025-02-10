@@ -31,6 +31,13 @@ public class PutProject {
         private LocalDate endDate; // 종료일
         private LocalDateTime finalApprovalDate; // 최종 결재일시
 
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "projectName='" + projectName + '\'' +
+                    '}';
+        }
+
         public Project updateProject(
                 Project project,
                 Company customer,
@@ -71,6 +78,13 @@ public class PutProject {
         private LocalDate startDate; // 시작일
         private LocalDate endDate; // 종료일
         private LocalDateTime finalApprovalDate; // 최종 결재일시
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
 
         private Response(Project project) {
             id = project.getId();

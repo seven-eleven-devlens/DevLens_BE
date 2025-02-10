@@ -17,4 +17,11 @@ public class PostCommentRequest {
     @NotBlank
     @Size(min = 1, max = 300)
     private String content;
+
+    @Override
+    public String toString() {
+        return "PostCommentRequest{" +
+                "content='" + content + '\'' +
+                '}';
+    }
 }

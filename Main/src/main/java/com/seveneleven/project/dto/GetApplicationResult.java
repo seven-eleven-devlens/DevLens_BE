@@ -22,6 +22,13 @@ public class GetApplicationResult {
         private String processIp;
         private String rejectReason;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "requestId=" + requestId +
+                    '}';
+        }
+
         public Response(CheckRequest checkRequest, CheckResult checkResult) {
             this.requestId = checkRequest.getId();
             this.requestTitle = checkRequest.getTitle();

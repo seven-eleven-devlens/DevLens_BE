@@ -29,6 +29,13 @@ public class PostResponse {
     @Setter
     private List<GetCommentResponse> comments;
 
+    @Override
+    public String toString() {
+        return "PostResponse{" +
+                "postId=" + postId +
+                '}';
+    }
+
     private PostResponse(
             Post post,
             Long parentPostId,
