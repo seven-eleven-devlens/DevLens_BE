@@ -22,7 +22,7 @@ public class ProjectAuthorizationController {
      * 함수명 : postProjectAuthorization
      * 프로젝트 접근 권한을 편집하는 함수
      */
-    @PostMapping("/{projectId}/authorizations")
+    @PutMapping("/{projectId}/authorizations")
     public ResponseEntity<APIResponse<PostProjectAuthorization.Response>> postProjectAuthorization(
             @PathVariable Long projectId,
             @RequestBody PostProjectAuthorization.Request requestDto
