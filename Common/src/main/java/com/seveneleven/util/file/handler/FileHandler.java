@@ -111,14 +111,14 @@ public class FileHandler {
      * @param referenceId 참조 ID
      */
     @Transactional
-    public void deleteFile(FileCategory fileCategory, Long referenceId) {
+    public FileMetadata deleteFile(FileCategory fileCategory, Long referenceId) {
         //카테고리와 참조 ID로 검색후 존재 유무 판별
         FileMetadata toDeleteData = fileMetadataRepository.findByCategoryAndReferenceId(fileCategory, referenceId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.FILE_NOT_FOUND_ERROR));
 
         fileMetadataRepository.delete(toDeleteData);
 
-        //TODO) 삭제 이력 남기기
+        return toDeleteData;
     }
 
     /**
@@ -127,13 +127,13 @@ public class FileHandler {
      * @param fileId 파일메타데이터 id
      */
     @Transactional
-    public void deleteFileById(Long fileId){
+    public FileMetadata deleteFileById(Long fileId){
         //해당 파일 존재 유무 판별
         FileMetadata toDeleteData = fileMetadataRepository.findById(fileId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.FILE_NOT_FOUND_ERROR));
 
         fileMetadataRepository.deleteById(toDeleteData.getId());
 
-        //TODO) 삭제 이력 남기기
+        return toDeleteData;
     }
 }

@@ -10,15 +10,16 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/projects")
 public interface ProjectAuthorizationDocs {
 
-    @PostMapping("/steps/{stepId}/authorizations")
+    @PutMapping("/{projectId}/authorizations/members")
     @Operation(
-            summary = "프로젝트 권한 생성",
-            description = "특정 단계의 프로젝트 권한을 생성합니다.",
+            summary = "프로젝트 권한 편집",
+            description = "특정 단계의 프로젝트 권한을 편집합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -39,11 +40,11 @@ public interface ProjectAuthorizationDocs {
             }
     )
     ResponseEntity<APIResponse<PostProjectAuthorization.Response>> postProjectAuthorization(
-            @PathVariable Long stepId,
+            @PathVariable Long projectId,
             @RequestBody PostProjectAuthorization.Request requestDto
     );
 
-    @GetMapping("/steps/{stepId}/authorizations")
+    @GetMapping("/{projectId}/authorizations")
     @Operation(
             summary = "프로젝트 권한 조회",
             description = "특정 단계의 프로젝트 권한을 조회합니다.",
@@ -59,17 +60,17 @@ public interface ProjectAuthorizationDocs {
             }
     )
     ResponseEntity<APIResponse<GetProjectAuthorization.Response>> getProjectAuthorization(
-            @PathVariable Long stepId
+            @PathVariable Long projectId
     );
 
     @GetMapping("/{projectId}/authorizations/members")
     @Operation(
-            summary = "멤버 권한 조회",
-            description = "특정 프로젝트의 멤버 권한을 조회합니다.",
+            summary = "로그인한 회원의 접근 권한 조회",
+            description = "로그인한 회원의 접근 권한을 확인합니다.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "멤버 권한이 성공적으로 조회되었습니다.",
+                            description = "회원의 접근 권한이 성공적으로 조회되었습니다.",
                             content = @Content(
                                     mediaType = "application/json",
                                     schema = @Schema(implementation = GetMemberAuthorization.Response.class)
@@ -79,6 +80,6 @@ public interface ProjectAuthorizationDocs {
     )
     ResponseEntity<APIResponse<GetMemberAuthorization.Response>> getMemberAuthorization(
             @PathVariable Long projectId,
-            CustomUserDetails customUserDetails
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
     );
 }

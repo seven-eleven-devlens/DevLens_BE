@@ -4,6 +4,7 @@ import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectAuthorization;
+import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.project.dto.PostProjectAuthorization;
@@ -45,6 +46,7 @@ public class AuthorizationStoreImpl implements AuthorizationStore {
     ) {
         for (PostProjectAuthorization.MemberAuthorization request : requestDto.getAuthorizations()) {
             try {
+                log.warn("request.getMember.getId : {}", request.getMemberId());
                 forProjectAuthorizationDto(request, projectAuthorizations, project);
             } catch (BusinessException e) {
                 responseDto.getFailList().add(

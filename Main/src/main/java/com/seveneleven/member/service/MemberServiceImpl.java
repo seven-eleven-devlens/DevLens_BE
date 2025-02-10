@@ -5,7 +5,6 @@ import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.MemberPasswordResetHistory;
-import com.seveneleven.entity.member.MemberProfileHistory;
 import com.seveneleven.entity.member.constant.MemberStatus;
 import com.seveneleven.entity.member.constant.YN;
 import com.seveneleven.exception.BusinessException;
@@ -15,7 +14,6 @@ import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.member.repository.CompanyRepository;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.member.repository.PasswordHistoryRepository;
-import com.seveneleven.member.repository.ProfileHistoryRepository;
 import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import com.seveneleven.util.security.dto.CustomUserDetails;
@@ -100,6 +98,10 @@ public class MemberServiceImpl implements MemberService{
         if (memberId != null) {
             refreshTokenRepository.delete(memberId); // 사용자와 연관된 Refresh Token 삭제
         }
+
+        // 3. 블랙리스트 등록
+        Long expiration = tokenProvider.getExpiration(token);
+        refreshTokenRepository.setBlackList(token, "access_token", expiration);
 
     }
 
