@@ -29,6 +29,13 @@ public class GetProject {
         private String finalApprover; // 최종 결재자
         private LocalDateTime finalApprovalDate; // 최종 결재일시
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
+
         private Response(
                 Project project
         ) {

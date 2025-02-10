@@ -30,6 +30,13 @@ public class GetProjectHistory {
         private String createdBy;
         private String updatedBy;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
+
         private Response(
                 ProjectHistory projectHistory,
                 String createdBy,
