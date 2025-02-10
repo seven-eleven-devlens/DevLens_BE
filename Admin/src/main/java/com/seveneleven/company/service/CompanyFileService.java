@@ -20,6 +20,7 @@ public class CompanyFileService {
     private final FileHandler fileHandler;
     private final CompanyRepository companyRepository;
     private final FileMetadataRepository fileMetadataRepository;
+    private final CompanyFileHistoryService companyFileHistoryService;
 
     /**
      * 1. 회사 로고 이미지 등록
@@ -37,12 +38,15 @@ public class CompanyFileService {
         //TODO) 2. 수행자 권한 판별 validation - admin판별, super의 회사 판별
 
         //3. 로고 이미 존재하는지 판별
-        if(fileMetadataRepository.existsByCategoryAndReferenceId(FileCategory.COMPANY_LOGO_IMAGE, companyId)){
+        if(fileMetadataRepository.existsByCategoryAndReferenceId(FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId())){
             throw new BusinessException(ErrorCode.LOGO_ALREADY_EXIST_ERROR);
         }
 
         //4. S3파일 업로드, 메타데이터 테이블 저장
-        fileHandler.uploadFile(file, FileCategory.COMPANY_LOGO_IMAGE, companyId);
+        FileMetadata uploadedFileEntity = fileHandler.uploadFile(file, FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId());
+
+        //5. 파일 이력 등록
+        companyFileHistoryService.registerLogoImageHistory(uploadedFileEntity, uploaderId);
     }
 
     /**
@@ -53,12 +57,11 @@ public class CompanyFileService {
     @Transactional(readOnly = true)
     public FileMetadataDto getLogoImage(Long companyId) {
         //회사 유효성 검사
-        if(!companyRepository.existsById(companyId)){
-            throw new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND);
-        }
+        Company companyEntity = companyRepository.findById(companyId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
 
         //카테고리와 참조 id 로 FileMetadata 탐색
-        FileMetadata fileEntity = fileHandler.getFile(FileCategory.COMPANY_LOGO_IMAGE, companyId);
+        FileMetadata fileEntity = fileHandler.getFile(FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId());
 
         //dto 변환 후 반환
         return FileMetadataDto.toDto(fileEntity);
@@ -70,7 +73,7 @@ public class CompanyFileService {
      * @param companyId 해당 회사 ID
      */
     @Transactional
-    public void deleteLogoImage(Long companyId, Long uploaderId) {
+    public void deleteLogoImage(Long companyId, Long deleterId) {
         //1.회사 유효성 검사
         Company companyEntity = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
@@ -78,7 +81,10 @@ public class CompanyFileService {
         //TODO) 2. 삭제 수행자 판별
 
         //3. 삭제수행
-        fileHandler.deleteFile(FileCategory.COMPANY_LOGO_IMAGE, companyId);
+        FileMetadata deletedEntity = fileHandler.deleteFile(FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId());
+
+        //4. 삭제 이력 등록
+        companyFileHistoryService.deleteLogoImageHistory(deletedEntity, deleterId);
     }
 }
 

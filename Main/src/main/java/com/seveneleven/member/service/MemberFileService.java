@@ -20,6 +20,7 @@ public class MemberFileService {
     private final FileHandler fileHandler;
     private final MemberRepository memberRepository;
     private final FileMetadataRepository fileMetadataRepository;
+    private final MemberFileHistoryService memberFileHistoryService;
 
     /**
      * 함수명 : uploadProfileImage
@@ -38,12 +39,15 @@ public class MemberFileService {
         //TODO) 2. 수행자 권한 판별
 
         //3. 프로필 이미지 존재하는지 판별
-        if(fileMetadataRepository.existsByCategoryAndReferenceId(FileCategory.USER_PROFILE_IMAGE, memberId)){
+        if(fileMetadataRepository.existsByCategoryAndReferenceId(FileCategory.USER_PROFILE_IMAGE, memberEntity.getId())){
             throw new BusinessException(ErrorCode.PROFILE_IMAGE_ALREADY_EXIST);
         }
 
         //4. S3 파일 업로드, 메타데이터 테이블 저장
-        fileHandler.uploadFile(file, FileCategory.USER_PROFILE_IMAGE, memberId);
+        FileMetadata uploadedFileEntity = fileHandler.uploadFile(file, FileCategory.USER_PROFILE_IMAGE, memberEntity.getId());
+
+        //5. 업로드 이력 등록
+        memberFileHistoryService.registerProfileImageHistory(uploadedFileEntity, uploaderId);
     }
 
     /**
@@ -54,13 +58,12 @@ public class MemberFileService {
      */
     @Transactional(readOnly = true)
     public FileMetadataDto getProfileImage(Long memberId) {
-        //회원 유효성 검사
-        if(!memberRepository.existsById(memberId)) {
-            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
-        }
+        //1. memberId로 존재 여부 판별
+        Member memberEntity = memberRepository.findById(memberId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         //카테고리와 참조id로 filemetadata 검색
-        FileMetadata fileEntity = fileHandler.getFile(FileCategory.USER_PROFILE_IMAGE, memberId);
+        FileMetadata fileEntity = fileHandler.getFile(FileCategory.USER_PROFILE_IMAGE, memberEntity.getId());
 
         return FileMetadataDto.toDto(fileEntity);
     }
@@ -70,10 +73,10 @@ public class MemberFileService {
      * 3. 계정 프로필 이미지 삭제
      * @auth admin, 해당 user
      * @param memberId 해당 회원 id
-     * @param uploaderId 삭제 수행자 id
+     * @param deleterId 삭제 수행자 id
      */
     @Transactional
-    public void deleteProfileImage(Long memberId, Long uploaderId) {
+    public void deleteProfileImage(Long memberId, Long deleterId) {
         //1. 회원 존재 유무 판별
         Member memberEntity = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -81,6 +84,9 @@ public class MemberFileService {
         //TODO)2. 수행자 ID 정보 판별
 
         //3. 삭제 수행
-        fileHandler.deleteFile(FileCategory.USER_PROFILE_IMAGE, memberId);
+        FileMetadata deletedFile = fileHandler.deleteFile(FileCategory.USER_PROFILE_IMAGE, memberEntity.getId());
+
+        //4. 삭제 이력 등록
+        memberFileHistoryService.deleteLogoImageHistory(deletedFile, deleterId);
     }
 }
