@@ -22,7 +22,7 @@ public class ProjectAuthorizationController {
      * 함수명 : postProjectAuthorization
      * 프로젝트 접근 권한을 편집하는 함수
      */
-    @PostMapping("/{projectId}/authorizations")
+    @PutMapping("/{projectId}/authorizations")
     public ResponseEntity<APIResponse<PostProjectAuthorization.Response>> postProjectAuthorization(
             @PathVariable Long projectId,
             @RequestBody PostProjectAuthorization.Request requestDto
@@ -52,14 +52,19 @@ public class ProjectAuthorizationController {
 
     /**
      * 함수명 : getMemberAuthorization
-     * 해당 멤버가 접근 권한을 확인하는 함수
+     * 로그인한 회원의 접근 권한을 확인하는 함수
      */
     @GetMapping("/{projectId}/authorizations/members")
     public ResponseEntity<APIResponse<GetMemberAuthorization.Response>> getMemberAuthorization(
             @PathVariable Long projectId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        // TODO - 구현
-        return null;
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(
+                        SuccessCode.OK,
+                        projectAuthorizationFacade.getMemberAuthorization(
+                                projectId, customUserDetails.getId()
+                        ))
+                );
     }
 }

@@ -7,5 +7,5 @@ import java.util.List;
 public interface AuthorizationReader {
     List<ProjectAuthorization> readByProjectId(Long projectId);
     List<ProjectAuthorization> readByUserId(Long userId);
-    ProjectAuthorization readByStepIdAndUserId(Long projectId, Long userId);
+    ProjectAuthorization readByProjectIdAndUserId(Long projectId, Long userId);
 }

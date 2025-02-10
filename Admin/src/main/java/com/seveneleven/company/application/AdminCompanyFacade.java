@@ -42,7 +42,7 @@ public class AdminCompanyFacade {
         adminCompanyHistoryService.saveHistory(request.toEntity());
         return response;
     }
-
+  
     public void changeCompanyIsActive(Long id) {
         Company deletedCompany = adminCompanyService.changeCompanyIsActive(id);
         if(deletedCompany.getIsActive().equals(YN.N)) {

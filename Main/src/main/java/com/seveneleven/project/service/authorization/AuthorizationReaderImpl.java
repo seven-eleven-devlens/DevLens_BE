@@ -29,8 +29,8 @@ public class AuthorizationReaderImpl implements AuthorizationReader {
     }
 
     @Override
-    public ProjectAuthorization readByStepIdAndUserId(Long projectId, Long userId) {
+    public ProjectAuthorization readByProjectIdAndUserId(Long projectId, Long userId) {
         return projectAuthorizationRepository.findByProjectIdAndMemberIdAndIsActive(projectId, userId, YesNo.YES)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_HAVE_PROJECT_AUTHORIZATION));
     }
 }
