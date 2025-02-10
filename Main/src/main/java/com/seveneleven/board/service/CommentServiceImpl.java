@@ -160,8 +160,8 @@ public class CommentServiceImpl implements CommentService {
      */
     private void checkCommentEditPermission(Long commentCreatedBy, Long modifierId) {
         // 작성자 또는 관리자가 아닌 경우
-        if(!commentCreatedBy.equals(modifierId) || !commentReader.getMember(modifierId).getRole().equals(Role.ADMIN)) {
-            throw new BusinessException(NOT_MATCH_WRITER);
+        if(!commentCreatedBy.equals(modifierId) && !commentReader.getMember(modifierId).getRole().equals(Role.ADMIN)) {
+            throw new BusinessException(NOT_HAVE_EDIT_PERMISSION);
         }
     }
 }
