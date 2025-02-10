@@ -1,4 +1,4 @@
-package com.seveneleven.project.service.dashboard;
+package com.seveneleven.project.service.project;
 
 import com.seveneleven.entity.global.YesNo;
 import com.seveneleven.entity.project.Project;
@@ -34,8 +34,8 @@ public class ProjectReaderImpl implements ProjectReader {
 
     @Override
     @Transactional(readOnly = true)
-    public Response getMyProjectList(Long memberId) {
-        return Response.toDto(getMyProjects(memberId));
+    public Response  getMyProjectList(Long memberId, String projectStatusCode) {
+        return Response.toDto(getMyProjects(memberId, projectStatusCode));
     }
 
     @Override
@@ -58,8 +58,8 @@ public class ProjectReaderImpl implements ProjectReader {
                 .toDto(projectRepository.findAllCompanyProgressingProjects(companyId));
     }
 
-    private List<GetMyProjectResponseInfo> getMyProjects(Long memberId) {
+    private List<GetMyProjectResponseInfo> getMyProjects(Long memberId, String projectStatusCode) {
         return GetMyProjectResponseInfo
-                .toDto(projectRepository.findAllProgressingProjects(memberId));
+                .toDto(projectRepository.findAllProgressingProjects(memberId, projectStatusCode));
     }
 }

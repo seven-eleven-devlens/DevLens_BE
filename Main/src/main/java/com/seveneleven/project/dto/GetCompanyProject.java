@@ -42,7 +42,8 @@ public class GetCompanyProject {
         private LocalDate startDate;
         private LocalDate endDate;
         private Long customerId;
-        private String customerName;
+        private String customerCompanyName;
+        private String currentStepName;
 
         private CompanyProject(Project project) {
             this.id = project.getId();
@@ -50,7 +51,8 @@ public class GetCompanyProject {
             this.startDate = project.getStartDate();
             this.endDate = project.getEndDate();
             this.customerId = project.getCustomer().getId();
-            this.customerName = project.getCustomer().getCompanyName();
+            this.customerCompanyName = project.getCustomer().getCompanyName();
+            this.currentStepName = project.getCurrentProjectStep();
         }
 
         public static List<CompanyProject> toDto(List<Project> project) {

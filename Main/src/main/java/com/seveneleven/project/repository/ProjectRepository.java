@@ -24,10 +24,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
                 p_a.member.id = :memberId AND
                 p_a.isActive = 'Y' AND
                 p_a.project.id = p.id
-        WHERE
-            p.projectStatusCode = 'IN_PROGRESS'
+        WHERE (:projectStatusCode IS NULL OR p.projectStatusCode = :projectStatusCode)
     """)
-    List<Project> findAllProgressingProjects(Long memberId);
+    List<Project> findAllProgressingProjects(Long memberId, String projectStatusCode);
 
     @Query("""
         SELECT p
