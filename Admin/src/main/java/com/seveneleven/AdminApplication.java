@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing
 @OpenAPIDefinition(
         servers = {
-                @Server(description = "local Admin", url = "http://localhost/admin"),
+                @Server(description = "local Port Admin", url = "http://localhost:8443"),
                 @Server(description = "server Admin", url = "https://api.devlens.work/admin")
         }
 )
