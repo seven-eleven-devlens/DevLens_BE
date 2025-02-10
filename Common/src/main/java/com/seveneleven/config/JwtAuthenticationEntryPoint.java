@@ -1,5 +1,6 @@
 package com.seveneleven.config;
 
+import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,7 +31,14 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
         // 401 Unauthorized 상태 코드 반환
-         response.sendError(ErrorCode.UNAUTHORIZED.getCode());
+        handleBusinessException(response, new BusinessException(ErrorCode.UNAUTHORIZED));
+    }
+
+    // BusinessException 응답 처리 메서드
+    private void handleBusinessException(HttpServletResponse response, BusinessException ex) throws IOException {
+        response.setStatus(ex.getErrorCode().getStatus().value()); // HTTP 상태 코드 설정
+        response.setContentType("application/json");
+        response.getWriter().write("{\"code\": \"" + ex.getErrorCode().getCode() + "\", \"message\": \"" +  ex.getMessage() + "\", \"data\": \"\" }");
     }
 }
 
