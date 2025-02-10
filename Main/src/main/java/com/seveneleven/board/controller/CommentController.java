@@ -40,7 +40,7 @@ public class CommentController implements CommentDocs {
                                                                   @RequestBody PatchCommentRequest patchCommentRequest,
                                                                   HttpServletRequest request
     ) {
-        commentService.updateComment(postId, commentId, patchCommentRequest, request, user.getMember().getId());
+        commentService.updateComment(postId, commentId, patchCommentRequest, request, user);
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED));
     }
@@ -52,7 +52,7 @@ public class CommentController implements CommentDocs {
                                                                   @PathVariable Long commentId,
                                                                   HttpServletRequest request
     ) {
-        commentService.deleteComment(postId, commentId, request, user.getMember().getId());
+        commentService.deleteComment(postId, commentId, request, user);
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }

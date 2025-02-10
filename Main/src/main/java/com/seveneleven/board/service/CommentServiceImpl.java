@@ -9,6 +9,7 @@ import com.seveneleven.entity.board.constant.HistoryAction;
 import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.util.GetIpUtil;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,11 +84,11 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public void updateComment(Long postId, Long commentId, PatchCommentRequest patchCommentRequest, HttpServletRequest request, Long modifierId) {
+    public void updateComment(Long postId, Long commentId, PatchCommentRequest patchCommentRequest, HttpServletRequest request, CustomUserDetails user) {
         postReader.existPost(postId);
         Comment comment = commentReader.getComment(commentId);
 
-        checkCommentEditPermission(comment.getCreatedBy(), modifierId);
+        checkCommentEditPermission(comment.getCreatedBy(), user);
 
         commentStore.storeCommentHistory(comment, HistoryAction.UPDATE, comment.getRegisterIp(), getIpUtil.getIpAddress(request));
         comment.updateComment(patchCommentRequest.getContent(), getIpUtil.getIpAddress(request));
@@ -99,11 +100,11 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional
     @Override
-    public void deleteComment(Long postId, Long commentId, HttpServletRequest request, Long deleterId) {
+    public void deleteComment(Long postId, Long commentId, HttpServletRequest request, CustomUserDetails user) {
         postReader.existPost(postId);
         Comment comment = commentReader.getComment(commentId);
 
-        checkCommentEditPermission(comment.getCreatedBy(), deleterId);
+        checkCommentEditPermission(comment.getCreatedBy(), user);
 
         commentStore.storeCommentHistory(comment, HistoryAction.DELETE, comment.getRegisterIp(), getIpUtil.getIpAddress(request));
 
@@ -158,9 +159,9 @@ public class CommentServiceImpl implements CommentService {
      * 함수명 : checkCommentEditPermission()
      * 함수 목적 : 댓글 작성자 또는 관리자 일치 여부 확인
      */
-    private void checkCommentEditPermission(Long commentCreatedBy, Long modifierId) {
+    private void checkCommentEditPermission(Long commentCreatedBy, CustomUserDetails user) {
         // 작성자 또는 관리자가 아닌 경우
-        if(!commentCreatedBy.equals(modifierId) && !commentReader.getMember(modifierId).getRole().equals(Role.ADMIN)) {
+        if(!commentCreatedBy.equals(user.getMember().getId()) && !(Role.ADMIN.equals(user.getMember().getRole()))) {
             throw new BusinessException(NOT_HAVE_EDIT_PERMISSION);
         }
     }

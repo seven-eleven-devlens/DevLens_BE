@@ -30,20 +30,17 @@ public class CommentReaderImpl implements CommentReader {
     @Override
     public List<GetCommentResponse> getIsActiveComments(Long postId) {
         List<Comment> comments = commentRepository.getCommentList(postId);
-        List<GetCommentResponse> responses = new ArrayList<>();
-        comments.stream()
+        return comments.stream()
                 .map(comment ->
                         {
                             if(comment.getModifierIp() == null) {
-                                responses.add(GetCommentResponse.toDto(comment, YesNo.NO));
+                                return GetCommentResponse.toDto(comment, YesNo.NO);
                             } else {
-                                responses.add(GetCommentResponse.toDto(comment, YesNo.YES));
+                                return GetCommentResponse.toDto(comment, YesNo.YES);
                             }
-                            return null;
                         }
                 )
                 .toList();
-        return responses;
     }
 
     @Override
