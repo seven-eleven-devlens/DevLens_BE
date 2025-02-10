@@ -34,8 +34,8 @@ public class ProjectReaderImpl implements ProjectReader {
 
     @Override
     @Transactional(readOnly = true)
-    public Response  getMyProjectList(Long memberId, String step) {
-        return Response.toDto(getMyProjects(memberId, step));
+    public Response  getMyProjectList(Long memberId, String projectStatusCode) {
+        return Response.toDto(getMyProjects(memberId, projectStatusCode));
     }
 
     @Override

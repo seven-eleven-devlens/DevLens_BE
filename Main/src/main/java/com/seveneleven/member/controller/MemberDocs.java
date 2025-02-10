@@ -1,12 +1,13 @@
 package com.seveneleven.member.controller;
 
-import com.seveneleven.member.dto.*;
+import com.seveneleven.member.dto.CheckMailPostRequest;
+import com.seveneleven.member.dto.LoginPost;
+import com.seveneleven.member.dto.LoginResponse;
+import com.seveneleven.member.dto.MemberPatch;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api")
+@RequestMapping("/main/api")
 @Tag(name = "Login Page API", description = "APIs Related to Login Page")
 public interface MemberDocs {
     @Operation(

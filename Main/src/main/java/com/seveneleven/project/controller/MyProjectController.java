@@ -25,7 +25,7 @@ public class MyProjectController implements MyProjectDocs {
     @GetMapping("/projects")
     public ResponseEntity<APIResponse<GetProjectList.Response>> getMyProject(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam("status") String projectStatusCode
+            @RequestParam(value = "status", required = false) String projectStatusCode
     ) {
         return ResponseEntity
                 .status(SuccessCode.OK.getStatusCode())

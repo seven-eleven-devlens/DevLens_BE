@@ -47,6 +47,4 @@ public class ProjectController implements ProjectDocs {
                         projectService.patchProjectCurrentStep(projectId, stepId))
                 );
     }
-
-    // TODO - 검색 api 추가 필요
 }

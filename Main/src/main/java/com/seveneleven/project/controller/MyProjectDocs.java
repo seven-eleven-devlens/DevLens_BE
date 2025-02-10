@@ -37,8 +37,8 @@ public interface MyProjectDocs {
     )
     ResponseEntity<APIResponse<GetProjectList.Response>> getMyProject(
             @AuthenticationPrincipal CustomUserDetails userDetails,
-            @RequestParam("step") String step
-            );
+            @RequestParam(value = "status", required = false) String projectStatusCode
+    );
 
     @GetMapping("/companies/{companyId}/projects")
     @Operation(
