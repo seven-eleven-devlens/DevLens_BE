@@ -1,5 +1,6 @@
 package com.seveneleven.config;
 
+import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,7 +30,14 @@ public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
             throws IOException {
         // 403 Forbidden 상태 코드 반환
-        response.sendError(ErrorCode.FORBIDDEN.getCode());
+        handleBusinessException(response, new BusinessException(ErrorCode.FORBIDDEN));
+    }
+
+    // BusinessException 응답 처리 메서드
+    private void handleBusinessException(HttpServletResponse response, BusinessException ex) throws IOException {
+        response.setStatus(ex.getErrorCode().getStatus().value()); // HTTP 상태 코드 설정
+        response.setContentType("application/json");
+        response.getWriter().write("{\"code\": \"" + ex.getErrorCode().getCode() + "\", \"message\": \"" +  ex.getMessage() + "\", \"data\": \"\" }");
     }
 }
 
