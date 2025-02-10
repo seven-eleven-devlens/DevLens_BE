@@ -44,6 +44,13 @@ public class MemberDto {
         private String position;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
     }
 
     @Getter
@@ -59,6 +66,13 @@ public class MemberDto {
         private LocalDate birthDate;
         private String department;
         private String position;
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "loginId='" + loginId + '\'' +
+                    '}';
+        }
     }
 
 

@@ -18,4 +18,11 @@ public class LoginResponse {
     private String companyName;
     private String department;
     private String position;
+
+    @Override
+    public String toString() {
+        return "LoginResponse{" +
+                "loginId='" + loginId + '\'' +
+                '}';
+    }
 }
