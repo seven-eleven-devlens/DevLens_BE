@@ -19,6 +19,13 @@ public class PaginatedResponse<T> {
     private int totalPages;
     private boolean last;
 
+    @Override
+    public String toString() {
+        return "PaginatedResponse{" +
+                "pageNumber=" + pageNumber +
+                '}';
+    }
+
     public PaginatedResponse(
             List<T> content,
             int pageNumber,
