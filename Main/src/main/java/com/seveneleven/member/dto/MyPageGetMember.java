@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class MyPageGetMember {
+    private Long memberId;
     private Long companyId;
     private String company;
     private YN companyStatus;
