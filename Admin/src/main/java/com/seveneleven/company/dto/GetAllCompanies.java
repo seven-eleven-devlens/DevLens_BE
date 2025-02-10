@@ -7,9 +7,18 @@ import lombok.Getter;
 public class GetAllCompanies {
     private Long id;
     private String companyName;
+
     private GetAllCompanies(Company company) {
         id = company.getId();
         companyName = company.getCompanyName();
+
+    }
+
+    @Override
+    public String toString() {
+        return "GetAllCompanies{" +
+                "id=" + id +
+                '}';
     }
 
     public static GetAllCompanies of(Company company) {

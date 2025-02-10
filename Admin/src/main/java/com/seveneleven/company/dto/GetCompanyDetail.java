@@ -19,6 +19,13 @@ public class GetCompanyDetail {
         private BusinessType businessType;
         private String businessRegistrationNumber;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
+
         private Response(
                 Company company
         ) {

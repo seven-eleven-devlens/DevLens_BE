@@ -17,6 +17,13 @@ public class GetCompanyProject {
     private String customerCompanyName;
     private String projectStatus;
 
+    @Override
+    public String toString() {
+        return "GetCompanyProject{" +
+                "id=" + id +
+                '}';
+    }
+
     private GetCompanyProject(Project project) {
         id = project.getId();
         projectName = project.getProjectName();

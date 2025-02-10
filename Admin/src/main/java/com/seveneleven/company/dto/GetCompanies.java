@@ -21,6 +21,13 @@ public class GetCompanies {
         private YN isActive;
         private LocalDateTime createdAt;
 
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
+
         private Response(
                 Company company
         ) {

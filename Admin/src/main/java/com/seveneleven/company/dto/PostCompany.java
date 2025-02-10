@@ -17,6 +17,13 @@ public class PostCompany {
         private BusinessType businessType;
         private String businessRegistrationNumber;
 
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "companyName='" + companyName + '\'' +
+                    '}';
+        }
+
         public Company toEntity(){
             return Company.createCompany(
                     companyName,
@@ -40,6 +47,13 @@ public class PostCompany {
         private String address;
         private BusinessType businessType;
         private String businessRegistrationNumber;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "id=" + id +
+                    '}';
+        }
 
         private Response(Company company) {
             id = company.getId();
