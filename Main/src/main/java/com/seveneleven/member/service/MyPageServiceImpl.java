@@ -1,5 +1,6 @@
 package com.seveneleven.member.service;
 
+import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.MemberProfileHistory;
@@ -13,6 +14,7 @@ import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.member.repository.PasswordHistoryRepository;
 import com.seveneleven.member.repository.ProfileHistoryRepository;
 import com.seveneleven.response.ErrorCode;
+import com.seveneleven.util.file.dto.FileMetadataDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ public class MyPageServiceImpl implements MyPageService{
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
     private final ProfileHistoryRepository profileHistory;
+    private final MemberFileService memberFileService;
 
     /**
      * 함수명 : getMember
@@ -42,12 +45,20 @@ public class MyPageServiceImpl implements MyPageService{
         Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
+        // 회원 프로필 링크 조회
+        FileMetadataDto imageMetadatadto = memberFileService.getProfileImage(member.getId());
+        String imageUrl = null;
+        if(imageMetadatadto != null) {
+            imageUrl = memberFileService.getProfileImage(member.getId()).getPath();
+        }
+
         // 응답 DTO 생성 및 회사 정보 설정
         MyPageGetMember response = MyPageGetMember.fromEntity(member);
                         response.setCompanyId(member.getCompany().getId());
                         response.setCompanyStatus(member.getCompany().getIsActive());
                         response.setDepartment(member.getDepartment());
                         response.setPosition(member.getPosition());
+                        response.setImageUrl(imageUrl);
 
         return response;
     }
