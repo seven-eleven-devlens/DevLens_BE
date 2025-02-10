@@ -30,8 +30,6 @@ public class LinkHandler {
         Link savedLinkEntity = linkRepository.save(linkEntity);
 
         return savedLinkEntity;
-
-        //TODO) 저장 이력 추가
     }
 
     /**

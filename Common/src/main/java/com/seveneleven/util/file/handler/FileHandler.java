@@ -59,8 +59,6 @@ public class FileHandler {
             //FileMetaData 저장
             FileMetadata savedMetadata = fileMetadataRepository.save(fileMetadata);
 
-            //TODO) 등록 이력 추가
-
             //DTO로 변환 후 반환
             return savedMetadata;
 
