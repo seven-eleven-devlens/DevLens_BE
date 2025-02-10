@@ -11,4 +11,11 @@ public class PatchCommentRequest {
 
     @NotBlank
     private String content;
+
+    @Override
+    public String toString() {
+        return "PatchCommentRequest{" +
+                "content='" + content + '\'' +
+                '}';
+    }
 }

@@ -43,6 +43,13 @@ public class PostCreateRequest {
 
     private List<LinkInput> linkInputList = new ArrayList<>(); //링크 목록
 
+    @Override
+    public String toString() {
+        return "PostCreateRequest{" +
+                "title='" + title + '\'' +
+                '}';
+    }
+
     public Long getParentPostId() {
         if(parentPostId == null) {
             return null;

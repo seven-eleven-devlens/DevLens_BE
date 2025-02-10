@@ -46,4 +46,10 @@ public class PostListResponse {
         return parentPostId;
     }
 
+    @Override
+    public String toString() {
+        return "PostListResponse{" +
+                "title='" + title + '\'' +
+                '}';
+    }
 }
