@@ -228,7 +228,7 @@ public class PostServiceImpl implements PostService {
      */
     private void matchPostWriter(Long createdBy, Long modifierId) {
         if(!createdBy.equals(modifierId)) {
-            throw new BusinessException(NOT_MATCH_WRITER);
+            throw new BusinessException(NOT_HAVE_EDIT_PERMISSION);
         }
     }
 
