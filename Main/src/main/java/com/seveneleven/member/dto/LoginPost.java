@@ -1,7 +1,8 @@
 package com.seveneleven.member.dto;
 
-import com.seveneleven.util.security.dto.TokenResponse;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 /*
  * 로그인 API DTO
@@ -13,6 +14,13 @@ public class LoginPost {
     public static class Request{
         private String loginId;
         private String password;
+
+        @Override
+        public String toString() {
+            return "Request{" +
+                    "loginId='" + loginId + '\'' +
+                    '}';
+        }
     }
 
     @Getter
@@ -24,5 +32,12 @@ public class LoginPost {
         private String refreshToken;
         private Long expiredRefresh;
         private LoginResponse companyInfo;
+
+        @Override
+        public String toString() {
+            return "Response{" +
+                    "accessToken='" + accessToken + '\'' +
+                    '}';
+        }
     }
 }

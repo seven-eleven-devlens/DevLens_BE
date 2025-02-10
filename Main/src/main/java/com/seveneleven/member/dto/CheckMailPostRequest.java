@@ -6,4 +6,11 @@ import lombok.Getter;
 public class CheckMailPostRequest {
     private String inputKey;
     private String key;
+
+    @Override
+    public String toString() {
+        return "CheckMailPostRequest{" +
+                "inputKey='" + inputKey + '\'' +
+                '}';
+    }
 }

@@ -22,6 +22,13 @@ public class MyPageGetMember {
     private String department;
     private String position;
 
+    @Override
+    public String toString() {
+        return "MyPageGetMember{" +
+                "companyId=" + companyId +
+                '}';
+    }
+
     // **Member로 변환하는 메서드**
     private static final ModelMapper modelMapper = new ModelMapper();
 
