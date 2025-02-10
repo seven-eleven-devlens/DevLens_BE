@@ -22,6 +22,7 @@ public class MyPageGetMember {
     private LocalDate birthDate;
     private String department;
     private String position;
+    private String imageUrl;
 
     @Override
     public String toString() {
