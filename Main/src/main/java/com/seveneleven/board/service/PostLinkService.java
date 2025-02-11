@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -83,14 +84,12 @@ public class PostLinkService {
         List<Link> linkEntities = linkHandler.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId());
 
         //3. 게시물의 링크 엔티티를 dto로 변환하기
-        List<LinkResponse> linkResponses = new ArrayList<>();
-        for(Link linkEntity : linkEntities){
-            LinkResponse linkResponse = LinkResponse.toDto(linkEntity);
-            linkResponses.add(linkResponse);
-        }
-
-        //4. dto 반환
-        return linkResponses;
+        return Optional.ofNullable(linkEntities)
+                .orElse(List.of())
+                .stream()
+                .map(LinkResponse::toDto)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
     }
 
     /**

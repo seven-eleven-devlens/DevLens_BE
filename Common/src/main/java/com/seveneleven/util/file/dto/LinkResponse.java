@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
@@ -19,20 +20,19 @@ public class LinkResponse {
     private LocalDateTime createdAt;    //등록일시
 
     //Entity -> DTO
-    public static LinkResponse toDto(Link link) {
-        if(link == null){
-            return null;
-        }
+    public static Optional<LinkResponse> toDto(Link link) {
+        return Optional.ofNullable(link)
+                .map(m -> {
+                    LinkResponse dto = new LinkResponse();
+                    dto.id = link.getId();
+                    dto.linkCategory = link.getCategory();
+                    dto.referenceId = link.getReferenceId();
+                    dto.linkTitle = link.getLinkTitle();
+                    dto.link = link.getLink();
+                    dto.createdBy = link.getCreatedBy();
+                    dto.createdAt = link.getCreatedAt();
 
-        LinkResponse dto = new LinkResponse();
-        dto.id = link.getId();
-        dto.linkCategory = link.getCategory();
-        dto.referenceId = link.getReferenceId();
-        dto.linkTitle = link.getLinkTitle();
-        dto.link = link.getLink();
-        dto.createdBy = link.getCreatedBy();
-        dto.createdAt = link.getCreatedAt();
-
-        return dto;
+                    return dto;
+                });
     }
 }
