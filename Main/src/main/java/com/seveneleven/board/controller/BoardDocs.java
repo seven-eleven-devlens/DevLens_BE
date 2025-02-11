@@ -18,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @Tag(name = "Post API", description = "게시글 관련 API")
 public interface BoardDocs {
     // 목록 조회
@@ -117,9 +119,9 @@ public interface BoardDocs {
             }
     )
     @PostMapping()
-    ResponseEntity<APIResponse<SuccessCode>> createPost(@AuthenticationPrincipal CustomUserDetails user,
-                                                        @RequestBody PostCreateRequest postCreateRequest,
-                                                        HttpServletRequest request
+    ResponseEntity<APIResponse<Map<String, Long>>> createPost(@AuthenticationPrincipal CustomUserDetails user,
+                                                              @RequestBody PostCreateRequest postCreateRequest,
+                                                              HttpServletRequest request
 
     );
 
