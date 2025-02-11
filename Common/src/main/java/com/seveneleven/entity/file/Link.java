@@ -18,8 +18,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "link")
 public class Link {
-    private static final int MAX_LINK_LENGTH = 1000;
-    private static final int MAX_LINK_TITLE_LENGTH = 100;
+    private static final int MAX_LINK_TITLE_LENGTH = 400;
+    private static final int MAX_LINK_LENGTH = 4000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

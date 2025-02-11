@@ -6,7 +6,7 @@ import com.seveneleven.member.service.MemberFileService;
 import com.seveneleven.member.service.MyPageService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -106,9 +106,9 @@ public class MyPageController implements MyPageDocs{
      * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체
      */
     @GetMapping(value = "/{memberId}/profile-image")
-    public ResponseEntity<APIResponse<FileMetadataDto>> getProfileImage(@PathVariable("memberId") Long memberId) {
+    public ResponseEntity<APIResponse<FileMetadataResponse>> getProfileImage(@PathVariable("memberId") Long memberId) {
         //memberId로 프로필 이미지 조회
-        FileMetadataDto profileImage = memberFileService.getProfileImage(memberId);
+        FileMetadataResponse profileImage = memberFileService.getProfileImage(memberId);
 
         //반환
         return ResponseEntity

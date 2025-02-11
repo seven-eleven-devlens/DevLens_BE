@@ -7,7 +7,7 @@ import com.seveneleven.entity.member.Company;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.file.handler.FileHandler;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -55,7 +55,7 @@ public class CompanyFileService {
      * @return fileMetadataDto S3에 저장된 파일의 메타데이터 DTO
      */
     @Transactional(readOnly = true)
-    public FileMetadataDto getLogoImage(Long companyId) {
+    public FileMetadataResponse getLogoImage(Long companyId) {
         //회사 유효성 검사
         Company companyEntity = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
@@ -63,8 +63,8 @@ public class CompanyFileService {
         //카테고리와 참조 id 로 FileMetadata 탐색
         FileMetadata fileEntity = fileHandler.getFile(FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId());
 
-        //dto 변환 후 반환
-        return FileMetadataDto.toDto(fileEntity);
+        //dto 변환 및 반환
+        return FileMetadataResponse.toDto(fileEntity).orElse(null);
     }
 
     /**

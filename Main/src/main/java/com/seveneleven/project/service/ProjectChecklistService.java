@@ -6,7 +6,7 @@ import com.seveneleven.entity.project.CheckResult;
 import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.project.dto.*;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.dto.LinkResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +16,7 @@ import java.util.List;
 public interface ProjectChecklistService {
     GetProjectChecklistApplication.Response getApplicationDetail(Long applicationId);
 
-    List<FileMetadataDto> getApplicationFiles(Long applicationId);
+    List<FileMetadataResponse> getApplicationFiles(Long applicationId);
 
     List<LinkResponse> getApplicationLinks(Long applicationId);
 
@@ -57,7 +57,7 @@ public interface ProjectChecklistService {
             List<MultipartFile>files
     );
 
-    List<FileMetadataDto> getChecklistRejectFiles(Long applicationId);
+    List<FileMetadataResponse> getChecklistRejectFiles(Long applicationId);
 
     List<LinkResponse> getChecklistRejectLinks(Long applicationId);
 

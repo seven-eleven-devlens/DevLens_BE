@@ -6,8 +6,8 @@ import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.handler.FileHandler;
-import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataHistoryRepository;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,7 +70,7 @@ public class PostFileService {
      * @return List<fileMetadataDto> 해당 게시물의 파일 리스트
      */
     @Transactional(readOnly = true)
-    public List<FileMetadataDto> getPostFiles(Long postId){
+    public List<FileMetadataResponse> getPostFiles(Long postId){
         //게시물 유효성 검사
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
@@ -78,15 +79,13 @@ public class PostFileService {
         //페이지네이션 없음
         List<FileMetadata> fileEntities = fileHandler.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId());
 
-        //entity를 dto에 담는다.
-        List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
-        for (FileMetadata fileMetadata : fileEntities) {
-            FileMetadataDto dto = FileMetadataDto.toDto(fileMetadata);
-            fileMetadataDtos.add(dto);
-        }
-
-        //반환
-        return fileMetadataDtos;
+        // 파일이 없으면 빈 리스트 반환, 있으면 DTO로 변환하여 반환
+        return Optional.ofNullable(fileEntities)
+                .orElse(List.of()) // fileEntities가 null이면 빈 리스트 반환
+                .stream()
+                .map(FileMetadataResponse::toDto) // Entity -> Optional<DTO> 변환
+                .flatMap(Optional::stream) // Optional을 풀어서 DTO만 리스트에 포함
+                .collect(Collectors.toList());
     }
 
     /**

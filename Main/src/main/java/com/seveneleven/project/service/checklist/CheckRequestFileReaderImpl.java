@@ -3,8 +3,8 @@ package com.seveneleven.project.service.checklist;
 import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
 import com.seveneleven.entity.project.CheckRequest;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.handler.FileHandler;
-import com.seveneleven.util.file.dto.FileMetadataDto;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -28,18 +30,16 @@ public class CheckRequestFileReaderImpl implements CheckRequestFileReader {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<FileMetadataDto> readCheckRequestFiles(CheckRequest checkRequest){
+    public List<FileMetadataResponse> readCheckRequestFiles(CheckRequest checkRequest){
         //카테고리와 체크요청id로 모든 파일을 가져온다.(페이지네이션 없음)
         List<FileMetadata> fileEntities = fileHandler.getFiles(FileCategory.CHECK_REQUEST_ATTACHMENT, checkRequest.getId());
 
-        //entity를 dto에 담는다.
-        List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
-        for (FileMetadata fileMetadata : fileEntities) {
-            FileMetadataDto fileMetadataDto = FileMetadataDto.toDto(fileMetadata);
-            fileMetadataDtos.add(fileMetadataDto);
-        }
-
-        return fileMetadataDtos;
+        return Optional.ofNullable(fileEntities)
+                .orElse(List.of())
+                .stream()
+                .map(FileMetadataResponse::toDto)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -49,18 +49,16 @@ public class CheckRequestFileReaderImpl implements CheckRequestFileReader {
      */
     @Override
     @Transactional(readOnly = true)
-    public List<FileMetadataDto> readCheckRequestRejectFiles(CheckRequest checkRequest){
+    public List<FileMetadataResponse> readCheckRequestRejectFiles(CheckRequest checkRequest){
         //카테고리와 체크요청id로 거절사유의 모든 파일을 가져온다.(페이지네이션 없음)
         List<FileMetadata> fileEntities = fileHandler.getFiles(FileCategory.CHECK_REJECTION_ATTACHMENT, checkRequest.getId());
 
         //entity를 dto에 담는다.
-        List<FileMetadataDto> fileMetadataDtos = new ArrayList<>();
-        for (FileMetadata fileMetadata : fileEntities) {
-            FileMetadataDto fileMetadataDto = FileMetadataDto.toDto(fileMetadata);
-            fileMetadataDtos.add(fileMetadataDto);
-        }
-
-        return fileMetadataDtos;
+        return Optional.ofNullable(fileEntities)
+                .orElse(List.of())
+                .stream()
+                .map(FileMetadataResponse::toDto)
+                .flatMap(Optional::stream)
+                .collect(Collectors.toList());
     }
-
 }

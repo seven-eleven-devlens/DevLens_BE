@@ -7,7 +7,7 @@ import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.repository.MemberRepository;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.file.handler.FileHandler;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -57,7 +57,7 @@ public class MemberFileService {
      * @return fileMetadataDto S3에 저장된 파일의 메타데이터 DTO
      */
     @Transactional(readOnly = true)
-    public FileMetadataDto getProfileImage(Long memberId) {
+    public FileMetadataResponse getProfileImage(Long memberId) {
         //1. memberId로 존재 여부 판별
         Member memberEntity = memberRepository.findById(memberId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
@@ -65,7 +65,7 @@ public class MemberFileService {
         //카테고리와 참조id로 filemetadata 검색
         FileMetadata fileEntity = fileHandler.getFile(FileCategory.USER_PROFILE_IMAGE, memberEntity.getId());
 
-        return FileMetadataDto.toDto(fileEntity);
+        return FileMetadataResponse.toDto(fileEntity).orElse(null);
     }
 
     /**
