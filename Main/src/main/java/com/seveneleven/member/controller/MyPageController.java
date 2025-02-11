@@ -78,7 +78,7 @@ public class MyPageController implements MyPageDocs{
 
     /**
      * 함수명 : uploadProfileImage
-     * 계정 프로필 이미지를 업로드합니다.
+     * 계정 프로필 이미지 업로드. 이미 등록되어 있는 경우 새 이미지로 교체된다.
      * @auth admin, 해당 계정주
      * @param memberId 해당 회원 Id
      * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체

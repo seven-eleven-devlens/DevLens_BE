@@ -25,6 +25,7 @@ public class MemberFileService {
     /**
      * 함수명 : uploadProfileImage
      * 1. 계정 프로필 이미지 등록
+     * 이미지를 다시 등록할 경우 해당 이미지로 교체된다.
      * @auth admin, user(해당 회원)
      * @param file 업로드할 프로필 이미지 파일
      * @param memberId 해당 회원 id
@@ -40,7 +41,20 @@ public class MemberFileService {
 
         //3. 프로필 이미지 존재하는지 판별
         if(fileMetadataRepository.existsByCategoryAndReferenceId(FileCategory.USER_PROFILE_IMAGE, memberEntity.getId())){
-            throw new BusinessException(ErrorCode.PROFILE_IMAGE_ALREADY_EXIST);
+//            throw new BusinessException(ErrorCode.PROFILE_IMAGE_ALREADY_EXIST);
+            //기존 프로필 이미지 파일을 삭제한다.
+            //3-1. 삭제 수행
+            FileMetadata deletedFile = fileHandler.deleteFile(FileCategory.USER_PROFILE_IMAGE, memberEntity.getId());
+            //3-2. 삭제 이력 등록
+            memberFileHistoryService.deleteLogoImageHistory(deletedFile, uploaderId);
+
+            //새 로고 이미지를 등록한다.
+            //3-3. S3 파일 업로드, 메타데이터 테이블 저장
+            FileMetadata uploadedFileEntity = fileHandler.uploadFile(file, FileCategory.USER_PROFILE_IMAGE, memberEntity.getId());
+            //3-4. 업로드 이력 등록
+            memberFileHistoryService.registerProfileImageHistory(uploadedFileEntity, uploaderId);
+
+            return;
         }
 
         //4. S3 파일 업로드, 메타데이터 테이블 저장
