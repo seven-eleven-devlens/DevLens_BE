@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -92,14 +93,14 @@ public class BoardController implements BoardDocs {
      */
     @PostMapping()
     @Override
-    public ResponseEntity<APIResponse<SuccessCode>> createPost(@AuthenticationPrincipal CustomUserDetails user,
+    public ResponseEntity<APIResponse<Map<String, Long>>> createPost(@AuthenticationPrincipal CustomUserDetails user,
                                                                @Valid @RequestBody PostCreateRequest postCreateRequest,
                                                                HttpServletRequest request
     ) {
-        postService.createPost(postCreateRequest, request, user.getUsername());
+        Map<String, Long> idMap = postService.createPost(postCreateRequest, request, user.getUsername());
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED));
+                .body(APIResponse.success(SuccessCode.CREATED, idMap) );
     }
 
     /**
