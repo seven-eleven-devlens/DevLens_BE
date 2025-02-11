@@ -6,7 +6,7 @@ import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.dto.LinkResponse;
 import com.seveneleven.util.security.dto.CustomUserDetails;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -135,7 +135,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 프로젝트 체크리스트 승인 요청의 파일을 확인하는 함수
      */
     @GetMapping("/checklists/applications/{applicationId}/files")
-    public ResponseEntity<APIResponse<List<FileMetadataDto>>> getProjectChecklistApplicationFiles(
+    public ResponseEntity<APIResponse<List<FileMetadataResponse>>> getProjectChecklistApplicationFiles(
             @PathVariable Long applicationId
     ) {
         return ResponseEntity.status(SuccessCode.OK.getStatusCode())
@@ -216,7 +216,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 함수명 : postProjectChecklistRejectFiles
      * 체크리스트 승인 요청 반려 사유에 파일을 등록하는 함수
      */
-    @PostMapping("/reject/{applicationId}/files")
+    @PostMapping(value = "/reject/{applicationId}/files", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<APIResponse<SuccessCode>> postProjectChecklistRejectFile(
             @PathVariable Long applicationId,
             @RequestParam("files") List<MultipartFile> files,
@@ -235,7 +235,7 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
      * 체크리스트 승인 요청 반려 사유의 파일 목록을 조회하는 함수
      */
     @GetMapping("/reject/{applicationId}/files")
-    public ResponseEntity<APIResponse<List<FileMetadataDto>>> getProjectChecklistRejectFiles(
+    public ResponseEntity<APIResponse<List<FileMetadataResponse>>> getProjectChecklistRejectFiles(
             @PathVariable Long applicationId){
 
         return ResponseEntity.status(SuccessCode.OK.getStatusCode())

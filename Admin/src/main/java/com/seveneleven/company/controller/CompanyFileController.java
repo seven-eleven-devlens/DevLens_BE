@@ -3,7 +3,7 @@ package com.seveneleven.company.controller;
 import com.seveneleven.company.service.CompanyFileService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +43,8 @@ public class CompanyFileController {
      */
     @GetMapping(value = "/{companyId}/logo-image")
     public ResponseEntity<APIResponse> getCompanyLogo(@PathVariable("companyId") Long companyId) {
-        FileMetadataDto logoImage = companyFileService.getLogoImage(companyId);
+
+        FileMetadataResponse logoImage = companyFileService.getLogoImage(companyId);
 
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())

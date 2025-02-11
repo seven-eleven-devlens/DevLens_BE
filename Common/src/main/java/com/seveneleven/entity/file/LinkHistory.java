@@ -22,8 +22,8 @@ public class LinkHistory {
     private static final int MAX_REFERENCE_IDENTIFIER_LENGTH = 300;
     private static final int MAX_WRITER_NAME_LENGTH = 200;
     private static final int MAX_WRITER_AUTHORITY_LENGTH = 50;
-    private static final int MAX_LINK_TITLE_LENGTH = 100;
-    private static final int MAX_LINK_LENGTH = 1000;
+    private static final int MAX_LINK_TITLE_LENGTH = 400;
+    private static final int MAX_LINK_LENGTH = 4000;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
