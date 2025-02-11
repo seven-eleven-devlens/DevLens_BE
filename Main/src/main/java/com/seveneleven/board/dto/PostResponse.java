@@ -3,6 +3,8 @@ package com.seveneleven.board.dto;
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.board.constant.TaskPriority;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
+import com.seveneleven.util.file.dto.LinkResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,6 +30,10 @@ public class PostResponse {
     private LocalDateTime updateDate;   // 최근수정일자
     @Setter
     private List<GetCommentResponse> comments;
+    @Setter
+    private List<LinkResponse> links;
+    @Setter
+    private List<FileMetadataResponse> files;
 
     @Override
     public String toString() {
@@ -40,7 +46,9 @@ public class PostResponse {
             Post post,
             Long parentPostId,
             String writer,
-            List<GetCommentResponse> comments
+            List<GetCommentResponse> comments,
+            List<LinkResponse> links,
+            List<FileMetadataResponse> files
     ) {
         this.postId = post.getId();
         this.projectStepId = post.getProjectStep().getId();
@@ -54,14 +62,19 @@ public class PostResponse {
         this.createDate = post.getCreatedAt();
         this.updateDate = post.getUpdatedAt();
         this.comments = comments;
+        this.links = links;
+        this.files = files;
     }
 
-    public static PostResponse getPostResponse(Post post, Long parentPostId, String writer, List<GetCommentResponse> comments) {
+    public static PostResponse getPostResponse(Post post, Long parentPostId, String writer, List<GetCommentResponse> comments,
+                                               List<LinkResponse> links, List<FileMetadataResponse> files) {
         return new PostResponse(
                 post,
                 parentPostId,
                 writer,
-                comments
+                comments,
+                links,
+                files
         );
     }
 

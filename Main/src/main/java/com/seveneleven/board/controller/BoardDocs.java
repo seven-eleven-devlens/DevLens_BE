@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -120,7 +121,7 @@ public interface BoardDocs {
     )
     @PostMapping()
     ResponseEntity<APIResponse<Map<String, Long>>> createPost(@AuthenticationPrincipal CustomUserDetails user,
-                                                              @RequestBody PostCreateRequest postCreateRequest,
+                                                              @Valid @RequestBody PostCreateRequest postCreateRequest,
                                                               HttpServletRequest request
 
     );
@@ -151,7 +152,7 @@ public interface BoardDocs {
     @PutMapping("/{postId}")
     ResponseEntity<APIResponse<SuccessCode>> updatePost(@AuthenticationPrincipal CustomUserDetails user,
                                                         @PathVariable Long postId,
-                                                        @RequestBody PostUpdateRequest postUpdateRequest,
+                                                        @Valid @RequestBody PostUpdateRequest postUpdateRequest,
                                                         HttpServletRequest request
     );
 
