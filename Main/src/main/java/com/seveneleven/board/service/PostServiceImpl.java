@@ -9,7 +9,9 @@ import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.util.GetIpUtil;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.dto.LinkInput;
+import com.seveneleven.util.file.dto.LinkResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,7 +86,13 @@ public class PostServiceImpl implements PostService {
         // 댓글 목록 조회
         List<GetCommentResponse> comments = commentService.selectCommentList(post.getId());
 
-        return getPostResponse(post, parentPostId, postReader.getWriter(post.getCreatedBy()), comments);
+        // 링크 목록 조회
+        List<LinkResponse> links = postLinkService.getPostLinks(post.getId());
+
+        // 파일 목록 조회
+        List<FileMetadataResponse> files = postFileService.getPostFiles(post.getId());
+
+        return getPostResponse(post, parentPostId, postReader.getWriter(post.getCreatedBy()), comments, links, files);
     }
 
     /**
