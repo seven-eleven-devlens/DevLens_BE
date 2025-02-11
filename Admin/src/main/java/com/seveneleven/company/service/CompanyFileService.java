@@ -39,7 +39,19 @@ public class CompanyFileService {
 
         //3. 로고 이미 존재하는지 판별
         if(fileMetadataRepository.existsByCategoryAndReferenceId(FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId())){
-            throw new BusinessException(ErrorCode.LOGO_ALREADY_EXIST_ERROR);
+            //기존 로고 이미지 파일을 삭제한다.
+            //3-1. 삭제수행
+            FileMetadata deletedEntity = fileHandler.deleteFile(FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId());
+            //3-2. 삭제 이력 등록
+            companyFileHistoryService.deleteLogoImageHistory(deletedEntity, uploaderId);
+
+            //새 로고 이미지를 등록한다.
+            //3-3. S3파일 업로드, 메타데이터 테이블 저장
+            FileMetadata uploadedFileEntity = fileHandler.uploadFile(file, FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId());
+            //3-4. 파일 이력 등록
+            companyFileHistoryService.registerLogoImageHistory(uploadedFileEntity, uploaderId);
+
+            return;
         }
 
         //4. S3파일 업로드, 메타데이터 테이블 저장
