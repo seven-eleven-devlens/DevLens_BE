@@ -24,6 +24,11 @@ public class MemberValidator {
             throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
 
+        // **이메일 형식 검증 추가**
+        if (!isValidEmailFormat(memberDto.getEmail())) {
+            throw new BusinessException(ErrorCode.INVALID_EMAIL_FORMAT);
+        }
+
         // 비밀번호 길이 검증
         if (memberDto.getPassword().length() < 8 || memberDto.getPassword().length() > 20) {
             throw new BusinessException(ErrorCode.INVALID_PASSWORD_LENGTH);
@@ -34,4 +39,11 @@ public class MemberValidator {
             throw new BusinessException(ErrorCode.INVALID_PASSWORD_FORMAT);
         }
     }
+
+    private static boolean isValidEmailFormat(String email) {
+        // 로컬 부분에 한글 허용, 도메인 부분에 한글 및 특수 문자 비허용
+        String emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,}$";
+        return email != null && email.matches(emailRegex);
+    }
+
 }
