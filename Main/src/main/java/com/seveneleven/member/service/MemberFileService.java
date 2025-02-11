@@ -41,7 +41,6 @@ public class MemberFileService {
 
         //3. 프로필 이미지 존재하는지 판별
         if(fileMetadataRepository.existsByCategoryAndReferenceId(FileCategory.USER_PROFILE_IMAGE, memberEntity.getId())){
-//            throw new BusinessException(ErrorCode.PROFILE_IMAGE_ALREADY_EXIST);
             //기존 프로필 이미지 파일을 삭제한다.
             //3-1. 삭제 수행
             FileMetadata deletedFile = fileHandler.deleteFile(FileCategory.USER_PROFILE_IMAGE, memberEntity.getId());
