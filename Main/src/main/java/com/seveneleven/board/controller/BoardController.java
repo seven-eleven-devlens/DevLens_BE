@@ -1,7 +1,6 @@
 package com.seveneleven.board.controller;
 
 import com.seveneleven.board.dto.*;
-import com.seveneleven.board.service.CommentService;
 import com.seveneleven.board.service.PostFileService;
 import com.seveneleven.board.service.PostLinkService;
 import com.seveneleven.board.service.PostService;
@@ -10,7 +9,7 @@ import com.seveneleven.entity.board.constant.PostSort;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.dto.LinkInput;
 import com.seveneleven.util.file.dto.LinkResponse;
 import com.seveneleven.util.security.dto.CustomUserDetails;
@@ -23,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -80,11 +80,11 @@ public class BoardController implements BoardDocs {
      * 게시글의 파일 목록을 불러오는 메서드
      */
     @GetMapping("/{postId}/files")
-    public ResponseEntity<APIResponse<List<FileMetadataDto>>> selectPostFiles(@PathVariable Long postId) {
-        List<FileMetadataDto> fileDataDtos = postFileService.getPostFiles(postId);
+    public ResponseEntity<APIResponse<List<FileMetadataResponse>>> selectPostFiles(@PathVariable Long postId) {
+        List<FileMetadataResponse> fileDataResponses = postFileService.getPostFiles(postId);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
-                .body(APIResponse.success(SuccessCode.OK, fileDataDtos));
+                .body(APIResponse.success(SuccessCode.OK, fileDataResponses));
     }
 
     /**
@@ -93,14 +93,14 @@ public class BoardController implements BoardDocs {
      */
     @PostMapping()
     @Override
-    public ResponseEntity<APIResponse<SuccessCode>> createPost(@AuthenticationPrincipal CustomUserDetails user,
+    public ResponseEntity<APIResponse<Map<String, Long>>> createPost(@AuthenticationPrincipal CustomUserDetails user,
                                                                @Valid @RequestBody PostCreateRequest postCreateRequest,
                                                                HttpServletRequest request
     ) {
-        postService.createPost(postCreateRequest, request, user.getUsername());
+        Map<String, Long> idMap = postService.createPost(postCreateRequest, request, user.getUsername());
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED));
+                .body(APIResponse.success(SuccessCode.CREATED, idMap) );
     }
 
     /**

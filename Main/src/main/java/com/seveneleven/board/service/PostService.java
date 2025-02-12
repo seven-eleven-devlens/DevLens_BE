@@ -9,11 +9,13 @@ import com.seveneleven.entity.board.constant.PostSort;
 import com.seveneleven.response.PaginatedResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.Map;
+
 public interface PostService {
 
     PaginatedResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType);
     PostResponse selectPost(Long postId);
-    void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName);
+    Map<String, Long> createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName);
     void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request, Long modifierId);
     void deletePost(Long postId, HttpServletRequest request, Long deleterId);
 }

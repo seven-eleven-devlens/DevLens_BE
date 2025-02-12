@@ -3,7 +3,7 @@ package com.seveneleven.company.controller;
 import com.seveneleven.company.service.CompanyFileService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,7 @@ public class CompanyFileController {
 
     /**
      * 1. 회사 로고 이미지 업로드
+     * 등록된 이미지가 있는 경우 새 이미지로 등록 된다.
      * @param file 업로드할 이미지 파일
      * @return 업로드된 파일 메타데이터, 성공 메시지
      */
@@ -43,7 +44,8 @@ public class CompanyFileController {
      */
     @GetMapping(value = "/{companyId}/logo-image")
     public ResponseEntity<APIResponse> getCompanyLogo(@PathVariable("companyId") Long companyId) {
-        FileMetadataDto logoImage = companyFileService.getLogoImage(companyId);
+
+        FileMetadataResponse logoImage = companyFileService.getLogoImage(companyId);
 
         return ResponseEntity
                 .status(SuccessCode.OK.getStatus())

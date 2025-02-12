@@ -13,10 +13,6 @@ public class LinkPayload {
     private String link;                //링크
 
     public static LinkPayload toLinkPayload(LinkCategory linkCategory, Long referenceId, String linkTitle, String link) {
-        if(link == null){
-            return null;
-        }
-
         LinkPayload dto = new LinkPayload();
         dto.linkCategory = linkCategory;
         dto.referenceId = referenceId;

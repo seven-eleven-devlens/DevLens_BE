@@ -9,7 +9,9 @@ import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.util.GetIpUtil;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.dto.LinkInput;
+import com.seveneleven.util.file.dto.LinkResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.seveneleven.board.dto.PostResponse.getPostResponse;
 import static com.seveneleven.response.ErrorCode.*;
@@ -82,7 +86,13 @@ public class PostServiceImpl implements PostService {
         // 댓글 목록 조회
         List<GetCommentResponse> comments = commentService.selectCommentList(post.getId());
 
-        return getPostResponse(post, parentPostId, postReader.getWriter(post.getCreatedBy()), comments);
+        // 링크 목록 조회
+        List<LinkResponse> links = postLinkService.getPostLinks(post.getId());
+
+        // 파일 목록 조회
+        List<FileMetadataResponse> files = postFileService.getPostFiles(post.getId());
+
+        return getPostResponse(post, parentPostId, postReader.getWriter(post.getCreatedBy()), comments, links, files);
     }
 
     /**
@@ -91,9 +101,10 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName) {
+    public Map<String, Long> createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName) {
         String registerIp = getIpUtil.getIpAddress(request);
         Post post;
+        Long postId = null;
 
         // 원글인 경우
         if (postCreateRequest.getParentPostId() == null) {
@@ -105,7 +116,7 @@ public class PostServiceImpl implements PostService {
                     postReader.getMaxRef() + 1,
                     0
             );
-            savePostAndPostHistory(post, registerIp, HistoryAction.CREATE);
+            postId = savePostAndPostHistory(post, registerIp, HistoryAction.CREATE);
         } else {
             // 답글인 경우
             if(!matchesProjectStepParentAndChild(postCreateRequest.getProjectStepId(), postCreateRequest.getParentPostId())) {
@@ -122,12 +133,17 @@ public class PostServiceImpl implements PostService {
                     parentPost.getRef(),
                     postReader.getRefOrder(parentPost) + 1
             );
-            savePostAndPostHistory(post, registerIp, HistoryAction.CREATE);
+            postId = savePostAndPostHistory(post, registerIp, HistoryAction.CREATE);
             parentPost.increaseChildPostNum();
         }
 
         // 요청 dto 에서 링크 리스트를 가져와서 게시물 링크 업로드
         uploadLink(postCreateRequest, post);
+
+        Map<String, Long> responseMap = new HashMap<>();
+        responseMap.put("postId", postId);
+
+        return responseMap;
     }
 
     /**
@@ -206,9 +222,11 @@ public class PostServiceImpl implements PostService {
      * 함수명 : savePostAndPostHistory()
      * 함수 목적 : 게시글 및 게시글 이력 저장 메서드
      */
-    private void savePostAndPostHistory(Post post, String ip, HistoryAction postAction) {
-        postStore.storePost(post);
+    private Long savePostAndPostHistory(Post post, String ip, HistoryAction postAction) {
+        Post savedPost = postStore.storePost(post);
         postStore.storePostHistory(post, postAction, ip);
+
+        return savedPost.getId();
     }
 
     /**

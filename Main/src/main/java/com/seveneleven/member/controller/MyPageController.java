@@ -6,7 +6,7 @@ import com.seveneleven.member.service.MemberFileService;
 import com.seveneleven.member.service.MyPageService;
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.SuccessCode;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -78,7 +78,7 @@ public class MyPageController implements MyPageDocs{
 
     /**
      * 함수명 : uploadProfileImage
-     * 계정 프로필 이미지를 업로드합니다.
+     * 계정 프로필 이미지 업로드. 이미 등록되어 있는 경우 새 이미지로 교체된다.
      * @auth admin, 해당 계정주
      * @param memberId 해당 회원 Id
      * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체
@@ -106,9 +106,9 @@ public class MyPageController implements MyPageDocs{
      * @return ResponseEntity<APIResponse<SuccessCode>> 성공 응답 객체
      */
     @GetMapping(value = "/{memberId}/profile-image")
-    public ResponseEntity<APIResponse<FileMetadataDto>> getProfileImage(@PathVariable("memberId") Long memberId) {
+    public ResponseEntity<APIResponse<FileMetadataResponse>> getProfileImage(@PathVariable("memberId") Long memberId) {
         //memberId로 프로필 이미지 조회
-        FileMetadataDto profileImage = memberFileService.getProfileImage(memberId);
+        FileMetadataResponse profileImage = memberFileService.getProfileImage(memberId);
 
         //반환
         return ResponseEntity

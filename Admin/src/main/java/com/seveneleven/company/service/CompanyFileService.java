@@ -7,7 +7,7 @@ import com.seveneleven.entity.member.Company;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.file.handler.FileHandler;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.repository.FileMetadataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,19 @@ public class CompanyFileService {
 
         //3. 로고 이미 존재하는지 판별
         if(fileMetadataRepository.existsByCategoryAndReferenceId(FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId())){
-            throw new BusinessException(ErrorCode.LOGO_ALREADY_EXIST_ERROR);
+            //기존 로고 이미지 파일을 삭제한다.
+            //3-1. 삭제수행
+            FileMetadata deletedEntity = fileHandler.deleteFile(FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId());
+            //3-2. 삭제 이력 등록
+            companyFileHistoryService.deleteLogoImageHistory(deletedEntity, uploaderId);
+
+            //새 로고 이미지를 등록한다.
+            //3-3. S3파일 업로드, 메타데이터 테이블 저장
+            FileMetadata uploadedFileEntity = fileHandler.uploadFile(file, FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId());
+            //3-4. 파일 이력 등록
+            companyFileHistoryService.registerLogoImageHistory(uploadedFileEntity, uploaderId);
+
+            return;
         }
 
         //4. S3파일 업로드, 메타데이터 테이블 저장
@@ -55,7 +67,7 @@ public class CompanyFileService {
      * @return fileMetadataDto S3에 저장된 파일의 메타데이터 DTO
      */
     @Transactional(readOnly = true)
-    public FileMetadataDto getLogoImage(Long companyId) {
+    public FileMetadataResponse getLogoImage(Long companyId) {
         //회사 유효성 검사
         Company companyEntity = companyRepository.findById(companyId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
@@ -63,8 +75,8 @@ public class CompanyFileService {
         //카테고리와 참조 id 로 FileMetadata 탐색
         FileMetadata fileEntity = fileHandler.getFile(FileCategory.COMPANY_LOGO_IMAGE, companyEntity.getId());
 
-        //dto 변환 후 반환
-        return FileMetadataDto.toDto(fileEntity);
+        //dto 변환 및 반환
+        return FileMetadataResponse.toDto(fileEntity).orElse(null);
     }
 
     /**

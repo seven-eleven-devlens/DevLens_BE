@@ -12,7 +12,7 @@ import com.seveneleven.project.dto.*;
 import com.seveneleven.project.service.checklist.*;
 import com.seveneleven.response.ErrorCode;
 import com.seveneleven.util.GetIpUtil;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.dto.LinkResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -54,17 +54,17 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
     }
 
     @Override
-    public GetProjectChecklistApplication.Response getApplicationDetail(Long applicationId) {
+    public GetApplication.Response getApplicationDetail(Long applicationId) {
         CheckRequest checkRequest = checkRequestReader.read(applicationId);
-        return GetProjectChecklistApplication.Response.toDto(checkRequest);
+        return GetApplication.Response.toDto(checkRequest);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<FileMetadataDto> getApplicationFiles(Long applicationId){
+    public List<FileMetadataResponse> getApplicationFiles(Long applicationId){
         CheckRequest checkRequest = checkRequestReader.read(applicationId);
 
-        List<FileMetadataDto> fileDtoList = checkRequestFileReader.readCheckRequestFiles(checkRequest);
+        List<FileMetadataResponse> fileDtoList = checkRequestFileReader.readCheckRequestFiles(checkRequest);
 
         return fileDtoList;
     }
@@ -191,10 +191,10 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<FileMetadataDto> getChecklistRejectFiles(Long applicationId) {
+    public List<FileMetadataResponse> getChecklistRejectFiles(Long applicationId) {
         CheckRequest checkRequest = checkRequestReader.read(applicationId);
 
-        List<FileMetadataDto> fileDtoList = checkRequestFileReader.readCheckRequestRejectFiles(checkRequest);
+        List<FileMetadataResponse> fileDtoList = checkRequestFileReader.readCheckRequestRejectFiles(checkRequest);
 
         return fileDtoList;
     }

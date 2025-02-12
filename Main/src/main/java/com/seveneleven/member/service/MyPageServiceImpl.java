@@ -1,6 +1,5 @@
 package com.seveneleven.member.service;
 
-import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.MemberProfileHistory;
@@ -11,15 +10,15 @@ import com.seveneleven.member.dto.MyPageGetMember;
 import com.seveneleven.member.dto.PatchMember;
 import com.seveneleven.member.repository.CompanyRepository;
 import com.seveneleven.member.repository.MemberRepository;
-import com.seveneleven.member.repository.PasswordHistoryRepository;
 import com.seveneleven.member.repository.ProfileHistoryRepository;
 import com.seveneleven.response.ErrorCode;
-import com.seveneleven.util.file.dto.FileMetadataDto;
+import com.seveneleven.util.file.dto.FileMetadataResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,11 +45,9 @@ public class MyPageServiceImpl implements MyPageService{
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 회원 프로필 링크 조회
-        FileMetadataDto imageMetadatadto = memberFileService.getProfileImage(member.getId());
-        String imageUrl = null;
-        if(imageMetadatadto != null) {
-            imageUrl = memberFileService.getProfileImage(member.getId()).getPath();
-        }
+        String imageUrl = Optional.ofNullable(memberFileService.getProfileImage(member.getId()))
+                .map(FileMetadataResponse::getPath)
+                .orElse(null);
 
         // 응답 DTO 생성 및 회사 정보 설정
         MyPageGetMember response = MyPageGetMember.fromEntity(member);
