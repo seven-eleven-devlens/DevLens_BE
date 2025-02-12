@@ -25,7 +25,7 @@ import java.util.Map;
 public interface BoardDocs {
     // 목록 조회
     @Operation(
-            summary = "게시글 목록 조회",
+            summary = "게시글 목록 조회 (전체 목록 조회 포함)",
             description = "게시글 목록을 조회합니다.",
             responses = {
                     @ApiResponse(
@@ -39,10 +39,21 @@ public interface BoardDocs {
             },
             parameters = {
                     @Parameter(
-                            name = "projectStepId",
-                            description = "프로젝트 단계 ID",
+                            name = "projectId",
+                            description = "조회할 프로젝트의 ID",
                             required = true,
                             example = "1"
+                    ),
+                    @Parameter(
+                            name = "projectStepId",
+                            description = "프로젝트 단계 ID",
+                            example = "1"
+                    ),
+                    @Parameter(
+                            name = "isAllStages",
+                            description = "전체 단계 조회 유무(true: 전체 조회, false: 특정 단계 조회)",
+                            required = true,
+                            example = "true"
                     ),
                     @Parameter(
                             name = "page",
@@ -53,29 +64,28 @@ public interface BoardDocs {
                     @Parameter(
                             name = "keyword",
                             description = "검색 키워드",
-                            required = false,
                             example = "기능정의서"
                     ),
                     @Parameter(
                             name = "filter",
                             description = "필터 조건 (ALL, TITLE, CONTENT, WRITER)",
-                            required = false,
                             example = "ALL"
                     ),
                     @Parameter(
                             name = "sortType",
                             description = "정렬 조건 (NEWEST, OLDEST)",
-                            required = false,
                             example = "NEWEST"
                     )
             }
     )
-    @GetMapping("/steps/{projectStepId}")
-    ResponseEntity<APIResponse<PaginatedResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
-                                                                                 @RequestParam(defaultValue = "0") Integer page,
-                                                                                 @RequestParam(required = false) String keyword,
-                                                                                 @RequestParam(defaultValue = "ALL", required = false) PostFilter filter,
-                                                                                 @RequestParam(defaultValue = "NEWEST", required = false) PostSort sortType
+    @GetMapping("/project/{projectId}")
+    ResponseEntity<APIResponse<PaginatedResponse<PostListResponse>>> selectPosts (@PathVariable Long projectId,
+                                                                                  @RequestParam(defaultValue = "0") Integer page,
+                                                                                  @RequestParam(required = false) String keyword,
+                                                                                  @RequestParam(defaultValue = "ALL", required = false) PostFilter filter,
+                                                                                  @RequestParam(defaultValue = "NEWEST", required = false) PostSort sortType,
+                                                                                  @RequestParam(required = false) Long projectStepId,
+                                                                                  @RequestParam(defaultValue = "true") Boolean isAllStages
     );
 
     // 조회
