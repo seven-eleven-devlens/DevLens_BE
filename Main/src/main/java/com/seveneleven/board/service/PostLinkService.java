@@ -128,7 +128,7 @@ public class PostLinkService {
      * @param postId 해당 게시물 id
      */
     @Transactional
-    public void deleteAllPostLinks(Long postId) {
+    public void deleteAllPostLinks(Long postId, Long deleterId) {
         //1. 게시물 유효성 검사
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
@@ -139,7 +139,7 @@ public class PostLinkService {
         for(Link linkEntity : linkHandler.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId())){
             Link deletedLink = linkHandler.deleteLinkById(linkEntity.getId());
             //삭제 이력 등록
-            postLinkHistoryService.deletePostLinkHistory(deletedLink, postId);
+            postLinkHistoryService.deletePostLinkHistory(deletedLink, deleterId);
         }
     }
 
