@@ -1,5 +1,6 @@
 package com.seveneleven.board.service;
 
+import com.seveneleven.board.dto.PostListResponse;
 import com.seveneleven.board.repository.PostRepository;
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.project.ProjectStep;
@@ -10,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 import static com.seveneleven.response.ErrorCode.*;
 
@@ -34,7 +37,12 @@ public class PostReaderImpl implements PostReader {
     }
 
     @Override
-    public Page<Post> getPosts(Long projectStepId, String keyword, String repoFilter, Pageable pageable) {
+    public Page<PostListResponse> getAllPostsNoStepId(List<Long> projectStepIds, String keyword, String repoFilter, Pageable pageable) {
+        return postRepository.findAllPosts(projectStepIds, keyword, repoFilter, pageable);
+    }
+
+    @Override
+    public Page<PostListResponse> getPostsByProjectStepId(Long projectStepId, String keyword, String repoFilter, Pageable pageable) {
         return postRepository.findAllByProjectStepId(projectStepId, keyword, repoFilter, pageable);
     }
 
@@ -58,6 +66,11 @@ public class PostReaderImpl implements PostReader {
                 .orElseThrow(() -> new BusinessException(NOT_FOUND_POST));
     }
 
+
+    @Override
+    public List<Long> getProjectStepsId(Long projectId) {
+        return projectStepRepository.findAllProjectStepIds(projectId);
+    }
 
     @Override
     public ProjectStep getProjectStep(Long projectStepId) {

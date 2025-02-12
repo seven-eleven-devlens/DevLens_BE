@@ -34,17 +34,20 @@ public class BoardController implements BoardDocs {
     private final PostLinkService postLinkService;
 
     /**
-     * 함수명 : selectList()
-     * 게시글 목록을 조회하는 메서드
+     * 함수명 : selectPosts()
+     * 게시글 목록을 조회하는 메서드 (전체 목록 조회 포함)
      */
-    @GetMapping("/steps/{projectStepId}")
-    public ResponseEntity<APIResponse<PaginatedResponse<PostListResponse>>> selectList (@PathVariable Long projectStepId,
-                                                                                        @RequestParam(defaultValue = "0") Integer page,
-                                                                                        @RequestParam(required = false) String keyword,
-                                                                                        @RequestParam(defaultValue = "ALL", required = false) PostFilter filter,
-                                                                                        @RequestParam(defaultValue = "NEWEST", required = false) PostSort sortType
+    @GetMapping("/project/{projectId}")
+    public ResponseEntity<APIResponse<PaginatedResponse<PostListResponse>>> selectPosts (
+            @PathVariable Long projectId,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "ALL", required = false) PostFilter filter,
+            @RequestParam(defaultValue = "NEWEST", required = false) PostSort sortType,
+            @RequestParam(required = false) Long projectStepId,
+            @RequestParam(defaultValue = "true") Boolean isAllStages
     ) {
-        PaginatedResponse<PostListResponse> postList = postService.selectPostList(projectStepId, page, keyword, filter, sortType);
+        PaginatedResponse<PostListResponse> postList = postService.selectPosts(isAllStages, projectId, projectStepId, page, keyword, filter, sortType);
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, postList));

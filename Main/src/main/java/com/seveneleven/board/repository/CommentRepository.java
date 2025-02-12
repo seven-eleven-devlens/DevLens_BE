@@ -21,6 +21,4 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             ORDER BY c.ref ASC, c.refOrder ASC
             """)
     List<Comment> getCommentList(@Param("postId") Long postId);
-
-    Integer countCommentByRefAndRefOrder(Long ref, Integer refOrder);
 }

@@ -62,4 +62,11 @@ public interface ProjectStepRepository extends JpaRepository<ProjectStep, Long> 
         p_c.projectStep.id = :stepId
     """)
     List<GetProjectStep.ProjectChecklist> findProjectStepChecklist(@Param("stepId") Long stepId);
+
+    @Query("""
+    SELECT p.id
+    FROM ProjectStep p
+    WHERE p.project.id = :projectId
+""")
+    List<Long> findAllProjectStepIds(@Param("projectId") Long projectId);
 }

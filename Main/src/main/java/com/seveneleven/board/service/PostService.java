@@ -13,7 +13,7 @@ import java.util.Map;
 
 public interface PostService {
 
-    PaginatedResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType);
+    PaginatedResponse<PostListResponse> selectPosts(Boolean isAllStages, Long projectId, Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType);
     PostResponse selectPost(Long postId);
     Map<String, Long> createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName);
     void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request, Long modifierId);
