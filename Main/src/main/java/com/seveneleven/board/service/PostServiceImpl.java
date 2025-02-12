@@ -197,7 +197,7 @@ public class PostServiceImpl implements PostService {
         commentService.deleteAllComments(post, deleterIp);
 
         // 해당 게시물의 링크 일괄 삭제
-        postLinkService.deleteAllPostLinks(postId);
+        postLinkService.deleteAllPostLinks(postId, deleterId);
 
         // 게시물 파일 일괄 삭제
         postFileService.deleteAllPostFiles(post.getId(), deleterId);
