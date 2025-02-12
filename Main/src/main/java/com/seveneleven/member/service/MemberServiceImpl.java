@@ -1,8 +1,10 @@
 package com.seveneleven.member.service;
 
+import com.seveneleven.company.service.CompanyReader;
 import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.file.FileMetadata;
 import com.seveneleven.entity.file.constant.FileCategory;
+import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.MemberPasswordResetHistory;
 import com.seveneleven.entity.member.constant.MemberStatus;
@@ -39,8 +41,9 @@ public class MemberServiceImpl implements MemberService{
     private final GetIpUtil getIpUtil;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
-    private final MemberRepository memberRepository;
-    private final CompanyRepository companyRepository;
+    //private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
+    private final CompanyReader companyReader;
     private final PasswordHistoryRepository passwordResetHistory;
     private final FileMetadataRepository fileMetadataRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -56,8 +59,7 @@ public class MemberServiceImpl implements MemberService{
     @Transactional
     public LoginPost.Response login(LoginPost.Request request) {
 
-        Member member = memberRepository.findByLoginIdAndStatus(request.getLoginId(),MemberStatus.ACTIVE)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberReader.getActiveMemberByLoginId(request.getLoginId());
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
@@ -66,17 +68,17 @@ public class MemberServiceImpl implements MemberService{
         // Access Token, Refresh Token 생성
         TokenResponse tokens = getToken(request.getLoginId(), request.getPassword());
 
-        Long companyId      = member.getCompany().getId();
-        String companyName  = companyRepository.findNameByIdAndIsActive(companyId, YN.Y);
+        Long companyId  = member.getCompany().getId();
+        Company company = companyReader.read(companyId);
 
-        LoginResponse company = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
-                member.getRole(), getProfileImageUrl(member.getId()), companyId, companyName, member.getDepartment(), member.getPosition());
+        LoginResponse response = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
+                member.getRole(), getProfileImageUrl(member.getId()), companyId, company.getCompanyName(), member.getDepartment(), member.getPosition());
 
         return new LoginPost.Response(tokens.accessToken(),
                 tokenProvider.getAccessTokenExpireTime(),
                 tokens.refreshToken(),
                 tokenProvider.getRefreshTokenExpireTime(),
-                company);
+                response);
     }
 
     /**
@@ -120,8 +122,9 @@ public class MemberServiceImpl implements MemberService{
         }
 
         // 1. 회원 조회
-        Member member = memberRepository.findByLoginId(userDetails.getLoginId())
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberReader.getMemberById(userDetails.getId());
+//        Member member = memberRepository.findByLoginId(userDetails.getLoginId())
+//                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 현재 비밀번호 확인
         if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
@@ -184,15 +187,16 @@ public class MemberServiceImpl implements MemberService{
         return tokens;
     }
 
-    @Override
-    public Long getCompanyIdById(Long memberId) {
-        return memberRepository.findCompanyIdByIdAndStatus(memberId, MemberStatus.ACTIVE)
-                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
-    }
+//    @Override
+//    public Long getCompanyIdById(Long memberId) {
+//        return memberRepository.findCompanyIdByIdAndStatus(memberId, MemberStatus.ACTIVE)
+//                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+//    }
 
     @Override
     public Member getMember(Long memberId) {
-        return memberRepository.findByIdAndStatus(memberId, MemberStatus.ACTIVE)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return memberReader.getActiveMemberByMemberId(memberId);
+//        return memberRepository.findByIdAndStatus(memberId, MemberStatus.ACTIVE)
+//                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }
