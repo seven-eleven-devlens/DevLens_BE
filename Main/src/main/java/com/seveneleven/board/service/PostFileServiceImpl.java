@@ -142,4 +142,27 @@ public class PostFileServiceImpl implements PostFileService {
         }
     }
 
+    /**
+     * 4. 게시물 파일 수정(교체)
+     * 함수명 : updatePostFiles
+     * @param postId 게시물 id
+     * @para files 파일 리스트
+     * @param updaterId 수정자 id
+     */
+    @Override
+    @Transactional
+    public void updatePostFiles(Long postId, List<MultipartFile> files, Long updaterId){
+        //1. 게시물 유효성 검사
+        Post postEntity = postRepository.findById(postId)
+                .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
+
+        //TODO)2. 수행자 권한 판별
+
+        //3. 해당 게시물의 파일들을 전체 삭제한다.
+        deleteAllPostFiles(postEntity.getId(), updaterId);
+
+        //4. 받은 파일들로 재등록한다.
+        uploadPostFiles(files, postEntity.getId(), updaterId);
+    }
+
 }
