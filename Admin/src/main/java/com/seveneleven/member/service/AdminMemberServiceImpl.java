@@ -47,7 +47,6 @@ import java.util.Objects;
 public class AdminMemberServiceImpl implements AdminMemberService {
 
     private final GetIpUtil getIpUtil;
-
     private final AdminMemberReader adminMemberReader;
     private final AdminMemberStore adminMemberStore;
     private final AdminCompanyReader adminCompanyReader;
@@ -288,10 +287,10 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         // 2. 임시 비밀번호 생성
         String temporaryPassword = generateTemporaryPassword();
 
-        // 3. 비밀번호 암호화 후 저장
+        // 3. 임시 비밀번호 암호화 후 저장
         member.resetPassword(passwordEncoder.encode(temporaryPassword));
 
-        // 4. 비밀번호 재설정 암호화
+        // 4. 비밀번호 재설정 이력
         String modifierIp = getIpUtil.getIpAddress(request);
         MemberPasswordResetHistory passwordHistory = MemberPasswordResetHistory.createPwdHistory(
                 member.getId(), member.getPassword(), member.getLoginId(), modifierIp
