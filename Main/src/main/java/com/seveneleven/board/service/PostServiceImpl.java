@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,9 +49,7 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional(readOnly = true)
     @Override
-    public PaginatedResponse<PostListResponse> selectPostList(Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType) {
-        Pageable pageable = PageRequest.of(page, PAGE_SIZE, getSort(sortType));
-
+    public PaginatedResponse<PostListResponse> selectPosts(Boolean isAllStages, Long projectId, Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType) {
         String repoFilter = null;
         if(filter != null) {
             repoFilter = filter.name();
@@ -60,12 +57,16 @@ public class PostServiceImpl implements PostService {
         if(keyword != null) {
             keyword = keyword.trim();
         }
+        List<Long> projectStepIds = postReader.getProjectStepsId(projectId);
 
-        Page<Post> repoPostList = postReader.getPosts(projectStepId, keyword, repoFilter, pageable);
+        Page<PostListResponse> repoPostList;
+        if(isAllStages) {
+            repoPostList = postReader.getAllPostsNoStepId(projectStepIds, keyword, repoFilter, PageRequest.of(page, PAGE_SIZE, getSort(isAllStages, sortType)));
+        } else {
+            repoPostList = postReader.getPostsByProjectStepId(projectStepId, keyword, repoFilter, PageRequest.of(page, PAGE_SIZE, getSort(isAllStages, sortType)));
+        }
 
-        Page<PostListResponse> postListResponsePage = repoPostList.map(post -> PostListResponse.toDto(post, postReader.getWriter(post.getCreatedBy())));
-
-        return PaginatedResponse.createPaginatedResponse(postListResponsePage);
+        return PaginatedResponse.createPaginatedResponse(repoPostList);
     }
 
     /**
@@ -104,7 +105,7 @@ public class PostServiceImpl implements PostService {
     public Map<String, Long> createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName) {
         String registerIp = getIpUtil.getIpAddress(request);
         Post post;
-        Long postId = null;
+        Long postId;
 
         // 원글인 경우
         if (postCreateRequest.getParentPostId() == null) {
@@ -197,7 +198,7 @@ public class PostServiceImpl implements PostService {
         commentService.deleteAllComments(post, deleterIp);
 
         // 해당 게시물의 링크 일괄 삭제
-        postLinkService.deleteAllPostLinks(postId);
+        postLinkService.deleteAllPostLinks(postId, deleterId);
 
         // 게시물 파일 일괄 삭제
         postFileService.deleteAllPostFiles(post.getId(), deleterId);
@@ -210,12 +211,17 @@ public class PostServiceImpl implements PostService {
      * 함수명 : getSort()
      * 함수 목적 : 게시물 목록 조회 시 sortType 에 따른 정렬 기준 반환 메서드
      */
-    private Sort getSort(PostSort sortType) {
-        Sort sort = Sort.by(Sort.Order.desc("ref"), Sort.Order.asc("refOrder")); // 기본 정렬 기준 (최신순)
-        if (PostSort.OLDEST.equals(sortType)) {
-            sort = Sort.by(Sort.Order.asc("ref"), Sort.Order.asc("refOrder"));  // (오래된순)
+    private Sort getSort(Boolean isAllStages, PostSort sortType) {
+        boolean isNewest = PostSort.NEWEST.equals(sortType);
+
+        if (isAllStages) {
+            return Sort.by(isNewest ? Sort.Order.desc("createdAt") : Sort.Order.asc("createdAt"));
         }
-        return sort;
+
+        return Sort.by(
+                isNewest ? Sort.Order.desc("ref") : Sort.Order.asc("ref"),
+                Sort.Order.asc("refOrder")
+        );
     }
 
     /**
