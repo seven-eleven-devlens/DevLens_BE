@@ -15,6 +15,4 @@ public interface PostFileService {
     void deletePostFile(Long postId, Long fileId, Long deleterId);
 
     void deleteAllPostFiles(Long postId, Long deleterId);
-
-    void updatePostFiles(Long postId, List<MultipartFile> files, Long updaterId);
 }
