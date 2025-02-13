@@ -194,22 +194,6 @@ public class BoardController implements BoardDocs {
     }
 
     //게시물 수정 - 파일
-    /**
-     * 함수명 : updatePostFiles()
-     * 게시물의 파일을 수정하는 메서드(수정화면)
-     * 입력받은 파일 목록으로 교체되는 방식
-     */
-    @PutMapping(value = "/{postId}/files", consumes = "multipart/form-data")
-    public ResponseEntity<APIResponse<SuccessCode>> updatePostFiles(@PathVariable Long postId,
-                                @RequestParam("files") List<MultipartFile> files,
-                                @AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long updaterId = userDetails.getId();
-
-        postFileService.updatePostFiles(postId, files, updaterId);
-
-        return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
-                .body(APIResponse.success(SuccessCode.UPDATED));
-    }
 
     /**
      * 함수명 : deletePostFile()

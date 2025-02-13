@@ -169,12 +169,6 @@ public class PostServiceImpl implements PostService {
                 modifierIp
         );
 
-        //링크 전체 삭제
-        postLinkService.deleteAllPostLinks(post.getId(), modifierId);
-        //링크 등록
-        List<LinkInput> linkInputs = postUpdateRequest.getLinkInputList();
-        postLinkService.uploadPostLinks(linkInputs, post.getId(), modifierId);
-
         savePostAndPostHistory(post, modifierIp, HistoryAction.UPDATE);
     }
 
