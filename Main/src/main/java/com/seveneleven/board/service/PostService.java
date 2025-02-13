@@ -14,7 +14,7 @@ import java.util.Map;
 public interface PostService {
 
     PaginatedResponse<PostListResponse> selectPosts(Boolean isAllStages, Long projectId, Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType);
-    PostResponse selectPost(Long postId);
+    PostResponse selectPost(Long postId, Long userId);
     Map<String, Long> createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName);
     void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request, Long modifierId);
     void deletePost(Long postId, HttpServletRequest request, Long deleterId);

@@ -59,8 +59,9 @@ public class BoardController implements BoardDocs {
      */
     @GetMapping("/{postId}")
     @Override
-    public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) {
-        PostResponse postResponse = postService.selectPost(postId);
+    public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId,
+                                                                @AuthenticationPrincipal CustomUserDetails user) {
+        PostResponse postResponse = postService.selectPost(postId, user.getId());
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                         .body(APIResponse.success(SuccessCode.OK, postResponse));
@@ -97,8 +98,8 @@ public class BoardController implements BoardDocs {
     @PostMapping()
     @Override
     public ResponseEntity<APIResponse<Map<String, Long>>> createPost(@AuthenticationPrincipal CustomUserDetails user,
-                                                               @Valid @RequestBody PostCreateRequest postCreateRequest,
-                                                               HttpServletRequest request
+                                                                     @Valid @RequestBody PostCreateRequest postCreateRequest,
+                                                                     HttpServletRequest request
     ) {
         Map<String, Long> idMap = postService.createPost(postCreateRequest, request, user.getUsername());
 

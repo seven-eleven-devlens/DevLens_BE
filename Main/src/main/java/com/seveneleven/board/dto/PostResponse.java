@@ -25,9 +25,10 @@ public class PostResponse {
     private String title;
     private String content;
     private LocalDate deadline;
-    private String writer;              // 작성자
-    private LocalDateTime createDate;   // 작성일자
-    private LocalDateTime updateDate;   // 최근수정일자
+    private String writer;
+    private Boolean isAuthor;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
     @Setter
     private List<GetCommentResponse> comments;
     @Setter
@@ -46,6 +47,7 @@ public class PostResponse {
             Post post,
             Long parentPostId,
             String writer,
+            Boolean isAuthor,
             List<GetCommentResponse> comments,
             List<LinkResponse> links,
             List<FileMetadataResponse> files
@@ -59,6 +61,7 @@ public class PostResponse {
         this.content = post.getContent();
         this.deadline = post.getDeadline();
         this.writer = writer;
+        this.isAuthor = isAuthor;
         this.createDate = post.getCreatedAt();
         this.updateDate = post.getUpdatedAt();
         this.comments = comments;
@@ -66,12 +69,18 @@ public class PostResponse {
         this.files = files;
     }
 
-    public static PostResponse getPostResponse(Post post, Long parentPostId, String writer, List<GetCommentResponse> comments,
-                                               List<LinkResponse> links, List<FileMetadataResponse> files) {
+    public static PostResponse getPostResponse(Post post,
+                                               Long parentPostId,
+                                               String writer,
+                                               Boolean isAuthor,
+                                               List<GetCommentResponse> comments,
+                                               List<LinkResponse> links,
+                                               List<FileMetadataResponse> files) {
         return new PostResponse(
                 post,
                 parentPostId,
                 writer,
+                isAuthor,
                 comments,
                 links,
                 files

@@ -13,7 +13,7 @@ import java.util.List;
 public interface CommentService {
 
     @Transactional(readOnly = true)
-    List<GetCommentResponse> selectCommentList(Long postId);
+    List<GetCommentResponse> selectCommentList(Long postId, Long userId);
 
     @Transactional
     void createComment(Long postId, PostCommentRequest postCommentRequest, HttpServletRequest request, String registerName);
