@@ -3,6 +3,7 @@ package com.seveneleven.member;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.MemberDto;
 import com.seveneleven.member.repository.AdminMemberRepository;
+import com.seveneleven.member.service.AdminMemberReader;
 import com.seveneleven.response.ErrorCode;
 
 public class MemberValidator {
@@ -13,14 +14,14 @@ public class MemberValidator {
      *
      * @param memberDto 검증할 회원 요청 데이터.
      */
-    public static void validateMember(AdminMemberRepository memberRepository, MemberDto.Request memberDto) {
+    public static void validateMember(AdminMemberReader adminMemberReader, MemberDto.Request memberDto) {
         // 로그인 ID 중복 확인
-        if (memberRepository.existsByLoginId(memberDto.getLoginId())) {
+        if (adminMemberReader.getExistsByLoginId(memberDto.getLoginId())) {
             throw new BusinessException(ErrorCode.DUPLICATE_USER_ID);
         }
 
         // 이메일 중복 확인
-        if (memberRepository.existsByEmail(memberDto.getEmail())) {
+        if (adminMemberReader.getExistsByEmail(memberDto.getEmail())) {
             throw new BusinessException(ErrorCode.DUPLICATE_EMAIL);
         }
 

@@ -44,6 +44,7 @@ public class MemberServiceImpl implements MemberService{
     private final MemberReader memberReader;
     private final MemberStore memberStore;
     private final CompanyReader companyReader;
+    private final MemberRepository memberRepository;
     private final FileMetadataRepository fileMetadataRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
@@ -184,16 +185,9 @@ public class MemberServiceImpl implements MemberService{
         return tokens;
     }
 
-//    @Override
-//    public Long getCompanyIdById(Long memberId) {
-//        return memberRepository.findCompanyIdByIdAndStatus(memberId, MemberStatus.ACTIVE)
-//                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
-//    }
-
     @Override
     public Member getMember(Long memberId) {
-        return memberReader.getActiveMemberByMemberId(memberId);
-//        return memberRepository.findByIdAndStatus(memberId, MemberStatus.ACTIVE)
-//                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        return memberRepository.findByIdAndStatus(memberId, MemberStatus.ACTIVE)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
     }
 }
