@@ -1,6 +1,7 @@
 package com.seveneleven.member.service;
 
 import com.seveneleven.company.repository.CompanyRepository;
+import com.seveneleven.company.service.AdminCompanyReader;
 import com.seveneleven.config.TokenProvider;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
@@ -29,6 +30,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,13 +47,13 @@ import java.util.Objects;
 public class AdminMemberServiceImpl implements AdminMemberService {
 
     private final GetIpUtil getIpUtil;
-    private final PasswordHistoryRepository passwordResetHistory;
-    private final ProfileHistoryRepository profileHistory;
-    private final AuthenticationManagerBuilder authenticationMngrBuilder;
+    private final AdminMemberReader adminMemberReader;
+    private final AdminMemberStore adminMemberStore;
+    private final AdminCompanyReader adminCompanyReader;
     private final AdminMemberRepository memberRepository;
-    private final CompanyRepository companyRepository;
-    private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationManagerBuilder authenticationMngrBuilder;
 
     /**
      * 함수명 : login
@@ -63,8 +65,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     @Transactional
     public LoginPost.Response login(LoginPost.Request request) {
 
-        Member member = memberRepository.findByLoginIdAndStatus(request.getLoginId(), MemberStatus.ACTIVE)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = adminMemberReader.getActiveMemberByLoginId(request.getLoginId());
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
             throw new BusinessException(ErrorCode.INCORRECT_PASSWORD);
@@ -73,14 +74,14 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         // Access Token, Refresh Token 생성
         TokenResponse tokens = getToken(request.getLoginId(), request.getPassword());
 
-        LoginResponse company = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
+        LoginResponse response = new LoginResponse(member.getLoginId(),member.getName(),member.getEmail(),
                 member.getRole(),"", 0L, "", member.getDepartment(), member.getPosition());
 
         return new LoginPost.Response(tokens.accessToken(),
                 tokenProvider.getAccessTokenExpireTime(),
                 tokens.refreshToken(),
                 tokenProvider.getRefreshTokenExpireTime(),
-                company);
+                response);
     }
 
     /**
@@ -111,7 +112,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
                 .and(MemberSpecification.hasRole(memberList.getRole()))
                 .and(MemberSpecification.hasLoginId(memberList.getLoginId()));
 
-        Page<Member> members = memberRepository.findAll(spec, pageable);
+        Page<Member> members = adminMemberReader.getMemberAll(spec, pageable);
 
         // Page 객체에서 필요한 데이터만 추출하여 GetMemberList.Response로 변환
         return new GetMemberList.Response(
@@ -133,11 +134,9 @@ public class AdminMemberServiceImpl implements AdminMemberService {
      */
     @Transactional(readOnly = true)
     public MemberDto.Response getMemberDetail(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = adminMemberReader.getMemberById(memberId);
 
-        Company company = companyRepository.findByIdAndIsActive( member.getCompany().getId(), YN.Y)
-                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+        Company company = adminCompanyReader.getActiveCompany(member.getCompany().getId());
 
         MemberDto.Response response = MemberDto.fromEntity(member);
                            response.setCompanyId(company.getId());
@@ -156,11 +155,10 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     @Transactional
     public MemberDto.Response createMember(MemberDto.Request memberDto) {
         // 1. 회사 조회
-        Company company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
-                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+        Company company = adminCompanyReader.getActiveCompany(memberDto.getCompanyId());
 
         // 2. 유효성 검증 ( 중복 아이디 검증, 이메일 중복 검증, 비밀번호 검증 )
-        MemberValidator.validateMember(memberRepository, memberDto);
+        MemberValidator.validateMember(adminMemberReader, memberDto);
 
         // 3. Member 엔티티 생성
         Member member = Member.createMember(
@@ -177,7 +175,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         );
 
         // 4. 저장
-        Member savedMember = memberRepository.save(member);
+        Member savedMember = adminMemberStore.storeMember(member);
 
         // 5. DTO로 변환 후 반환
         return MemberDto.fromEntity(savedMember);
@@ -195,11 +193,10 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         // 1. 요청에 포함된 각 DTO 처리
         List<Member> members = memberDtos.stream().map(memberDto -> {
             // 1.1. 회사 조회
-            Company company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
-                    .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+            Company company = adminCompanyReader.getActiveCompany(memberDto.getCompanyId());
 
             // 1.2. 유효성 검증
-            MemberValidator.validateMember(memberRepository, memberDto);
+            MemberValidator.validateMember(adminMemberReader, memberDto);
 
             // 1.3. Member 엔티티 생성
             return Member.createMember(
@@ -217,7 +214,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
         }).toList();
 
         // 2. 일괄 저장
-        List<Member> savedMembers = memberRepository.saveAll(members);
+        List<Member> savedMembers = adminMemberStore.storeMemberAll(members);
 
         // 3. 저장된 엔티티를 DTO로 변환 후 반환
         return savedMembers.stream()
@@ -236,16 +233,14 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     @Transactional
     public MemberDto.Response updateMember(Long memberId, MemberUpdate.PatchRequest memberDto){
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = adminMemberReader.getMemberById(memberId);
 
-        Company company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
-                .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+        Company company = adminCompanyReader.getActiveCompany(memberDto.getCompanyId());
 
         member.updateMember(memberDto.getName(), member.getEmail(), memberDto.getPhoneNumber(), memberDto.getRole(), company,
                 memberDto.getDepartment(), memberDto.getPosition());
 
-        profileHistory.save(MemberProfileHistory.createProfileHistory(member));
+        adminMemberStore.storeProfileHistory(MemberProfileHistory.createProfileHistory(member));
 
         return MemberDto.fromEntity(member);
     }
@@ -259,8 +254,7 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     @Transactional
     public void deleteMember(Long memberId) {
         // 회원 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = adminMemberReader.getMemberById(memberId);
 
         // 상태 확인 및 예외 처리
         switch (member.getStatus()) {
@@ -288,21 +282,21 @@ public class AdminMemberServiceImpl implements AdminMemberService {
     @Transactional
     public MemberUpdate.PatchResponse resetPassword(HttpServletRequest request, Long memberId) {
         // 1. 회원 조회
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = adminMemberReader.getMemberById(memberId);
 
         // 2. 임시 비밀번호 생성
         String temporaryPassword = generateTemporaryPassword();
 
-        // 3. 비밀번호 암호화 후 저장
+        // 3. 임시 비밀번호 암호화 후 저장
         member.resetPassword(passwordEncoder.encode(temporaryPassword));
 
-        // 4. 비밀번호 재설정 암호화
+        // 4. 비밀번호 재설정 이력
         String modifierIp = getIpUtil.getIpAddress(request);
-        MemberPasswordResetHistory m = MemberPasswordResetHistory.createPwdHistory(
+        MemberPasswordResetHistory passwordHistory = MemberPasswordResetHistory.createPwdHistory(
                 member.getId(), member.getPassword(), member.getLoginId(), modifierIp
         );
-        passwordResetHistory.save(m);
+
+        adminMemberStore.storePasswordHistory(passwordHistory);
 
         // 4. 생성된 비밀번호 반환
         return new MemberUpdate.PatchResponse(memberId, temporaryPassword);

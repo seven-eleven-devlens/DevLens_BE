@@ -25,13 +25,12 @@ import java.util.UUID;
 public class MailServiceImpl implements MailService{
 
     private final JavaMailSender mailSender;
-    private final MemberRepository memberRepository;
+    private final MemberReader memberReader;
 
     /**
      * 함수명 : sendEmail
      * 사용자의 이메일로 인증 키를 전송하는 메서드. 인증 키는 생성 후 암호화되어 반환됩니다.
      *
-     * @param userDetails 인증 키를 보낼 사용자 객체
      * @return 암호화된 인증 키
      */
     public String sendEmail(CustomUserDetails userDetails){
@@ -40,8 +39,7 @@ public class MailServiceImpl implements MailService{
             throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
         }
 
-        Member member = memberRepository.findByEmailAndStatus(userDetails.getEmail(), MemberStatus.ACTIVE)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberReader.getActiveMemberByEmail(userDetails.getEmail());
 
         // 랜덤한 UUID 생성
         UUID uuid = UUID.randomUUID();
@@ -73,8 +71,7 @@ public class MailServiceImpl implements MailService{
             throw new BusinessException(ErrorCode.NOT_FOUND_TOKEN);
         }
 
-        Member member = memberRepository.findByEmailAndStatus(userDetails.getEmail(), MemberStatus.ACTIVE)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberReader.getActiveMemberByEmail(userDetails.getEmail());
 
         String insertKey = SHA256Util.getEncrypt(request.getInputKey(), member.getEmail());
 
@@ -92,7 +89,7 @@ public class MailServiceImpl implements MailService{
      *
      * @param toEmail 수신자 이메일 주소
      * @param key 인증번호
-     * @return 생성된 SimpleMailMessage 객체
+     * @return 생성된 MimeMessage 객체
      */
     private MimeMessage createHtmlEmailForm(String toEmail, String key) throws MessagingException {
         String title = "[DevLens] 이메일 인증키 발급";
