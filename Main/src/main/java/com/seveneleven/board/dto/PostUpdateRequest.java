@@ -2,6 +2,7 @@ package com.seveneleven.board.dto;
 
 import com.seveneleven.entity.board.constant.PostStatus;
 import com.seveneleven.entity.board.constant.TaskPriority;
+import com.seveneleven.util.file.dto.LinkInput;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -11,6 +12,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
@@ -41,6 +44,9 @@ public class PostUpdateRequest {
 
     @Nullable
     private LocalDate deadline;     // 마감일자
+
+    @Size(max = 10, message = "링크 목록은 최대 10개까지 등록할 수 있습니다.")
+    private List<LinkInput> linkInputList = new ArrayList<>(); //링크 목록
 
     @Override
     public String toString() {

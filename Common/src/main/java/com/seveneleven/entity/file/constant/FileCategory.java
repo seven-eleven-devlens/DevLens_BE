@@ -10,51 +10,99 @@ import java.util.Set;
 @RequiredArgsConstructor
 public enum FileCategory {
     COMPANY_LOGO_IMAGE(
-            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"),
-            List.of("image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml")
+            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp"),
+            List.of("image/png", "image/apng", "image/jpeg", "image/gif", "image/webp")
     ),
     USER_PROFILE_IMAGE(
-            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"),
-            List.of("image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml")
+            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp"),
+            List.of("image/png", "image/apng", "image/jpeg", "image/gif", "image/webp")
     ),
     PROJECT_IMAGE(
-            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg"),
-            List.of("image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml")
+            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp"),
+            List.of("image/png", "image/apng", "image/jpeg", "image/gif", "image/webp")
     ),
     POST_ATTACHMENT(
-            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".zip", ".7z", ".rar", ".tar"),
+            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp",
+                    ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt",
+                    ".mp4", ".avi", ".mov", ".wmv", ".flv", ".webm", ".mkv", ".mpeg", ".3gp",
+                    ".mp3", ".wav", ".aac", ".flac", ".ogg", ".wma", ".m4a", ".opus",
+                    ".zip", ".7z", ".rar", ".tar"),
             List.of(
-                    // image
-                    "image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml",
-                    // document
-                    "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    "image/png", "image/jpeg", "image/gif", "image/webp",
+                    "application/pdf", "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+                    "application/vnd.ms-word.document.macroEnabled.12",
+                    "application/vnd.ms-excel",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "application/vnd.ms-excel.sheet.macroEnabled.12",
+                    "application/vnd.ms-powerpoint",
+                    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
                     "text/plain",
-                    // compressed files
-                    "application/zip", "application/x-7z-compressed", "application/x-rar-compressed", "application/x-tar"
+                    "video/mp4", "video/x-msvideo", "video/quicktime", "video/x-ms-wmv",
+                    "video/x-flv", "video/webm", "video/x-matroska", "video/mpeg", "video/3gpp",
+                    "audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/aac",
+                    "audio/flac", "audio/ogg", "audio/x-ms-wma", "audio/mp4", "audio/opus",
+                    "application/zip", "application/x-7z-compressed",
+                    "application/x-rar-compressed", "application/vnd.rar",
+                    "application/x-tar", "application/tar", "application/gzip"
             )
     ),
     CHECK_REQUEST_ATTACHMENT(
-            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".zip", ".7z", ".rar", ".tar"),
+            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp",
+                    ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt",
+                    ".mp4", ".avi", ".mov", ".wmv", ".flv", ".webm", ".mkv", ".mpeg", ".3gp",
+                    ".mp3", ".wav", ".aac", ".flac", ".ogg", ".wma", ".m4a", ".opus",
+                    ".zip", ".7z", ".rar", ".tar"),
             List.of(
-                    "image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml",
-                    "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    "image/png", "image/jpeg", "image/gif", "image/webp",
+                    "application/pdf", "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+                    "application/vnd.ms-word.document.macroEnabled.12",
+                    "application/vnd.ms-excel",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "application/vnd.ms-excel.sheet.macroEnabled.12",
+                    "application/vnd.ms-powerpoint",
+                    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
                     "text/plain",
-                    "application/zip", "application/x-7z-compressed", "application/x-rar-compressed", "application/x-tar"
+                    "video/mp4", "video/x-msvideo", "video/quicktime", "video/x-ms-wmv",
+                    "video/x-flv", "video/webm", "video/x-matroska", "video/mpeg", "video/3gpp",
+                    "audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/aac",
+                    "audio/flac", "audio/ogg", "audio/x-ms-wma", "audio/mp4", "audio/opus",
+                    "application/zip", "application/x-7z-compressed",
+                    "application/x-rar-compressed", "application/vnd.rar",
+                    "application/x-tar", "application/tar", "application/gzip"
             )
     ),
     CHECK_REJECTION_ATTACHMENT(
-            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt", ".zip", ".7z", ".rar", ".tar"),
+            Set.of(".png", ".jpg", ".jpeg", ".gif", ".webp",
+                    ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx", ".txt",
+                    ".mp4", ".avi", ".mov", ".wmv", ".flv", ".webm", ".mkv", ".mpeg", ".3gp",
+                    ".mp3", ".wav", ".aac", ".flac", ".ogg", ".wma", ".m4a", ".opus",
+                    ".zip", ".7z", ".rar", ".tar"),
             List.of(
-                    "image/png", "image/jpeg", "image/gif", "image/webp", "image/svg+xml",
-                    "application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                    "application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                    "application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    "image/png", "image/jpeg", "image/gif", "image/webp",
+                    "application/pdf", "application/msword",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+                    "application/vnd.ms-word.document.macroEnabled.12",
+                    "application/vnd.ms-excel",
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    "application/vnd.ms-excel.sheet.macroEnabled.12",
+                    "application/vnd.ms-powerpoint",
+                    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+                    "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
                     "text/plain",
-                    "application/zip", "application/x-7z-compressed", "application/x-rar-compressed", "application/x-tar"
+                    "video/mp4", "video/x-msvideo", "video/quicktime", "video/x-ms-wmv",
+                    "video/x-flv", "video/webm", "video/x-matroska", "video/mpeg", "video/3gpp",
+                    "audio/mpeg", "audio/mp3", "audio/wav", "audio/x-wav", "audio/aac",
+                    "audio/flac", "audio/ogg", "audio/x-ms-wma", "audio/mp4", "audio/opus",
+                    "application/zip", "application/x-7z-compressed",
+                    "application/x-rar-compressed", "application/vnd.rar",
+                    "application/x-tar", "application/tar", "application/gzip"
             )
     );
 
