@@ -1,5 +1,6 @@
 package com.seveneleven.member.service;
 
+import com.seveneleven.company.service.CompanyReader;
 import com.seveneleven.entity.member.Company;
 import com.seveneleven.entity.member.Member;
 import com.seveneleven.entity.member.MemberProfileHistory;
@@ -24,9 +25,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MyPageServiceImpl implements MyPageService{
 
-    private final MemberRepository memberRepository;
-    private final CompanyRepository companyRepository;
-    private final ProfileHistoryRepository profileHistory;
+    private final MemberReader memberReader;
+    private final MemberStore memberStore;
+    private final CompanyReader companyReader;
     private final MemberFileService memberFileService;
 
     /**
@@ -41,8 +42,7 @@ public class MyPageServiceImpl implements MyPageService{
     public MyPageGetMember getMember(String loginId) {
 
         // 회원 조회
-        Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberReader.getActiveMemberByLoginId(loginId);
 
         // 회원 프로필 링크 조회
         String imageUrl = Optional.ofNullable(memberFileService.getProfileImage(member.getId()))
@@ -73,20 +73,17 @@ public class MyPageServiceImpl implements MyPageService{
     public PatchMember.Response updateMember(String loginId, PatchMember.Request memberDto) {
 
         // 회원 조회
-        Member member = memberRepository.findByLoginIdAndStatus(loginId, MemberStatus.ACTIVE)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
-
+        Member member = memberReader.getActiveMemberByLoginId(loginId);
         Company company = member.getCompany();
 
         if(Objects.nonNull(memberDto.getCompanyId()) && memberDto.getCompanyId() != 0 ) {
-             company = companyRepository.findByIdAndIsActive(memberDto.getCompanyId(), YN.Y)
-                    .orElseThrow(() -> new BusinessException(ErrorCode.COMPANY_IS_NOT_FOUND));
+            company = companyReader.read(memberDto.getCompanyId());
         }
 
         member.updateMember(member.getName(), memberDto.getEmail(), memberDto.getPhoneNumber(), member.getRole(), company,
                 memberDto.getDepartment(), memberDto.getPosition());
 
-        Member updatedMember = memberRepository.save(member);
+        Member updatedMember = memberStore.storeMember(member);
 
         // 응답 DTO 생성 및 회사 정보 설정
         PatchMember.Response response = PatchMember.fromEntity(updatedMember);
@@ -95,7 +92,7 @@ public class MyPageServiceImpl implements MyPageService{
                              response.setPosition(memberDto.getPosition());
 
         // 회원 프로필 수정 이력 생성
-        profileHistory.save(MemberProfileHistory.createProfileHistory(updatedMember));
+        memberStore.storeProfileHistory(MemberProfileHistory.createProfileHistory(updatedMember));
 
         return response;
     }
@@ -109,8 +106,7 @@ public class MyPageServiceImpl implements MyPageService{
     @Transactional
     public void deleteMember(String loginId) {
         // 회원 조회
-        Member member = memberRepository.findByLoginId(loginId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+        Member member = memberReader.getMemberByLoginId(loginId);
 
         // 상태 확인 및 예외 처리
         switch (member.getStatus()) {

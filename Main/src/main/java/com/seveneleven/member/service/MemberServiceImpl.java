@@ -41,10 +41,9 @@ public class MemberServiceImpl implements MemberService{
     private final GetIpUtil getIpUtil;
     private final TokenProvider tokenProvider;
     private final PasswordEncoder passwordEncoder;
-    //private final MemberRepository memberRepository;
     private final MemberReader memberReader;
+    private final MemberStore memberStore;
     private final CompanyReader companyReader;
-    private final PasswordHistoryRepository passwordResetHistory;
     private final FileMetadataRepository fileMetadataRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final AuthenticationManagerBuilder authenticationMngrBuilder;
@@ -123,8 +122,6 @@ public class MemberServiceImpl implements MemberService{
 
         // 1. 회원 조회
         Member member = memberReader.getMemberById(userDetails.getId());
-//        Member member = memberRepository.findByLoginId(userDetails.getLoginId())
-//                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         // 2. 현재 비밀번호 확인
         if(!passwordEncoder.matches(requestDto.getPassword(), member.getPassword())) {
@@ -136,10 +133,10 @@ public class MemberServiceImpl implements MemberService{
 
         // 4. 비밀번호 변경 이력 추가
         String modifierIp = getIpUtil.getIpAddress(request);
-        MemberPasswordResetHistory m = MemberPasswordResetHistory.createPwdHistory(
+        MemberPasswordResetHistory passwordHistory = MemberPasswordResetHistory.createPwdHistory(
                 member.getId(), member.getPassword(), member.getLoginId(), modifierIp
         );
-        passwordResetHistory.save(m);
+        memberStore.storePasswordHistory(passwordHistory);
 
 
         // 5. 생성된 비밀번호 반환

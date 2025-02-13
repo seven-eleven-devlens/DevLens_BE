@@ -20,6 +20,12 @@ public class MemberReaderImpl implements MemberReader{
     }
 
     @Override
+    public Member getActiveMemberByEmail(String email) {
+        return memberRepository.findByEmailAndStatus(email, MemberStatus.ACTIVE)
+                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    @Override
     public Member getMemberByLoginId(String loginId) {
         return memberRepository.findByLoginId(loginId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
