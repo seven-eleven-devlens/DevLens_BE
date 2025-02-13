@@ -76,7 +76,7 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional(readOnly = true)
     @Override
-    public PostResponse selectPost(Long postId) {
+    public PostResponse selectPost(Long postId, Long userId) {
         Post post = postReader.getPost(postId);
 
         Long parentPostId = null;
@@ -85,7 +85,7 @@ public class PostServiceImpl implements PostService {
         }
 
         // 댓글 목록 조회
-        List<GetCommentResponse> comments = commentService.selectCommentList(post.getId());
+        List<GetCommentResponse> comments = commentService.selectCommentList(post.getId(), userId);
 
         // 링크 목록 조회
         List<LinkResponse> links = postLinkService.getPostLinks(post.getId());
@@ -93,7 +93,15 @@ public class PostServiceImpl implements PostService {
         // 파일 목록 조회
         List<FileMetadataResponse> files = postFileService.getPostFiles(post.getId());
 
-        return getPostResponse(post, parentPostId, postReader.getWriter(post.getCreatedBy()), comments, links, files);
+        return getPostResponse(
+                post,
+                parentPostId,
+                postReader.getWriter(post.getCreatedBy()),
+                userId.equals(post.getCreatedBy()),
+                comments,
+                links,
+                files
+        );
     }
 
     /**
