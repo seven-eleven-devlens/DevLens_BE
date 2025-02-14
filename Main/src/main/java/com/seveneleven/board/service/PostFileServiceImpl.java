@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +41,7 @@ public class PostFileServiceImpl implements PostFileService {
      */
     @Override
     @Transactional
-    public void uploadPostFiles(List<MultipartFile> files, Long postId, Long uploaderId){
+    public List<FileMetadataResponse> uploadPostFiles(List<MultipartFile> files, Long postId, Long uploaderId){
         //1. 게시물 id로 존재여부 판별
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
@@ -54,13 +55,20 @@ public class PostFileServiceImpl implements PostFileService {
             throw new BusinessException(ErrorCode.FILE_QUANTITY_EXCEED_ERROR);
         }
 
+        //반환용 리스트
+        List<FileMetadataResponse> fileResponseList = new ArrayList<>();
+
         //파일 리스트 업로드
         for(MultipartFile file : files){
             FileMetadata uploadedFileMetadata = fileHandler.uploadFile(file, FileCategory.POST_ATTACHMENT, postId);
 
             //이력 등록
             postFileHistoryService.registerPostFileHistory(uploadedFileMetadata, uploaderId);
+
+            fileResponseList.add(FileMetadataResponse.toResponse(uploadedFileMetadata));
         }
+
+        return fileResponseList;
     }
 
     /**

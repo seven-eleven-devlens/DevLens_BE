@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PostFileService {
 
-    void uploadPostFiles(List<MultipartFile> files, Long postId, Long uploaderId);
+    List<FileMetadataResponse> uploadPostFiles(List<MultipartFile> files, Long postId, Long uploaderId);
 
     List<FileMetadataResponse> getPostFiles(Long postId);
 

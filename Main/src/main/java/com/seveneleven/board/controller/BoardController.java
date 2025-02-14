@@ -145,7 +145,7 @@ public class BoardController implements BoardDocs {
      * 게시글 생성시 파일을 등록하는 메서드
      */
     @PostMapping(value = "/{postId}/files", consumes = "multipart/form-data")
-    public ResponseEntity<APIResponse<SuccessCode>> uploadPostFiles(
+    public ResponseEntity<APIResponse<List<FileMetadataResponse>>> uploadPostFiles(
             @PathVariable Long postId,
             @RequestParam("files") List<MultipartFile> files,
             @AuthenticationPrincipal CustomUserDetails userDetails
@@ -153,10 +153,10 @@ public class BoardController implements BoardDocs {
         Long uploaderId = userDetails.getId();
 
         //파일 업로드
-        postFileService.uploadPostFiles(files, postId, uploaderId);
+        List<FileMetadataResponse> uploadedFilesData = postFileService.uploadPostFiles(files, postId, uploaderId);
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED));
+                .body(APIResponse.success(SuccessCode.CREATED, uploadedFilesData));
     }
 
     //게시물 수정 - 링크
