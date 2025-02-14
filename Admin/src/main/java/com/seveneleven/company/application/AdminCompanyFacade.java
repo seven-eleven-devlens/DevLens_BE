@@ -9,6 +9,7 @@ import com.seveneleven.member.service.AdminMemberService;
 import com.seveneleven.response.PaginatedResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class AdminCompanyFacade {
     private final AdminCompanyHistoryService adminCompanyHistoryService;
     private final AdminMemberService adminMemberService;
 
+    @Transactional
     public PostCompany.Response registerCompany(PostCompany.Request request) {
         PostCompany.Response response = adminCompanyService.createCompany(request);
         adminCompanyHistoryService.saveHistory(request.toEntity());
@@ -37,18 +39,17 @@ public class AdminCompanyFacade {
         return adminCompanyService.searchCompaniesByName(term, page);
     }
 
+    @Transactional
     public PutCompany.Response updateCompany(Long id, PutCompany.Request request) {
-        PutCompany.Response response = adminCompanyService.updateCompany(id, request);
-        adminCompanyHistoryService.saveHistory(request.toEntity());
-        return response;
-    }
-  
-    public void changeCompanyIsActive(Long id) {
-        Company deletedCompany = adminCompanyService.changeCompanyIsActive(id);
-        if(deletedCompany.getIsActive().equals(YN.N)) {
-            adminMemberService.deleteCompanyMember(deletedCompany);
+        Company updatedCompany = adminCompanyService.updateCompany(id, request);
+
+        if(updatedCompany.getIsActive().equals(YN.N)) {
+            adminMemberService.deleteCompanyMember(updatedCompany);
         }
-        adminCompanyHistoryService.saveHistory(deletedCompany);
+
+        adminCompanyHistoryService.saveHistory(updatedCompany);
+
+        return PutCompany.Response.of(updatedCompany);
     }
 
     public List<GetAllCompanies> getAllCompanies() {
