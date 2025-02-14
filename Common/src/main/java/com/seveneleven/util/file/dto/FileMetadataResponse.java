@@ -41,4 +41,20 @@ public class FileMetadataResponse {
                     return dto;
                 });
     }
+
+    public static FileMetadataResponse toResponse(FileMetadata m) {
+        FileMetadataResponse dto = new FileMetadataResponse();
+        dto.id = m.getId();
+        dto.category = m.getCategory().name();
+        dto.referenceId = m.getReferenceId();
+        dto.displayTitle = m.getDisplayTitle();
+        dto.title = m.getTitle();
+        dto.contentType = m.getContentType();
+        dto.format = m.getFileFormat();
+        dto.size = m.getFileSize();
+        dto.path = m.getFilePath();
+        dto.createdBy = m.getCreatedBy();
+        dto.createdAt = m.getCreatedAt();
+        return dto;
+    }
 }
