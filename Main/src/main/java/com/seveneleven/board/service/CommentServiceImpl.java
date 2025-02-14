@@ -36,8 +36,8 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<GetCommentResponse> selectCommentList(Long postId){
-        return commentReader.getIsActiveComments(postId);
+    public List<GetCommentResponse> selectCommentList(Long postId, Long userId){
+        return commentReader.getIsActiveComments(postId, userId);
     }
 
     /**

@@ -185,27 +185,6 @@ public interface CompanyDocs {
             @RequestBody @Valid PutCompany.Request request
     );
 
-    @PatchMapping("/{id}")
-    @Operation(
-            summary = "회사 상태 변경",
-            description = "회사 상태 변경",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "수정 완료."
-                    )
-            },
-            parameters = {
-                    @Parameter(
-                            name = "id",
-                            description = "회사 id",
-                            required = true,
-                            example = "1"
-                    )
-            }
-    )
-    ResponseEntity<APIResponse<Object>> changeCompanyIsActive(@PathVariable Long id);
-
     @GetMapping("/all")
     @Operation(
             summary = "전체 회사 조회",

@@ -112,7 +112,8 @@ public interface BoardDocs {
             }
     )
     @GetMapping("/{postId}")
-    ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId);
+    ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId,
+                                                         CustomUserDetails userDetails);
 
     // 생성
     @Operation(

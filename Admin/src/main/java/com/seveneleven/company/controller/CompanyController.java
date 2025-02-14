@@ -109,21 +109,6 @@ public class CompanyController implements CompanyDocs {
     }
 
     /*
-        함수명 : deleteCompany
-        목적 : 회사 상세 정보 삭제
-     */
-    @PatchMapping("/{id}")
-    @Override
-    public ResponseEntity<APIResponse<Object>> changeCompanyIsActive(
-            @PathVariable Long id
-    ) {
-        adminCompanyFacade.changeCompanyIsActive(id);
-        return ResponseEntity
-                .status(SuccessCode.UPDATED.getStatus())
-                .body(APIResponse.success(SuccessCode.UPDATED));
-    }
-
-    /*
         함수명 : readAllCompany
         목적 : 회사 전체 정보 전달
      */

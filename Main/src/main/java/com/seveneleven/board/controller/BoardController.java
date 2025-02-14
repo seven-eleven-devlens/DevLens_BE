@@ -59,8 +59,9 @@ public class BoardController implements BoardDocs {
      */
     @GetMapping("/{postId}")
     @Override
-    public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId) {
-        PostResponse postResponse = postService.selectPost(postId);
+    public ResponseEntity<APIResponse<PostResponse>> selectPost(@PathVariable Long postId,
+                                                                @AuthenticationPrincipal CustomUserDetails user) {
+        PostResponse postResponse = postService.selectPost(postId, user.getId());
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                         .body(APIResponse.success(SuccessCode.OK, postResponse));
@@ -97,8 +98,8 @@ public class BoardController implements BoardDocs {
     @PostMapping()
     @Override
     public ResponseEntity<APIResponse<Map<String, Long>>> createPost(@AuthenticationPrincipal CustomUserDetails user,
-                                                               @Valid @RequestBody PostCreateRequest postCreateRequest,
-                                                               HttpServletRequest request
+                                                                     @Valid @RequestBody PostCreateRequest postCreateRequest,
+                                                                     HttpServletRequest request
     ) {
         Map<String, Long> idMap = postService.createPost(postCreateRequest, request, user.getUsername());
 
@@ -117,7 +118,7 @@ public class BoardController implements BoardDocs {
                                                                @Valid @RequestBody PostUpdateRequest postUpdateRequest,
                                                                HttpServletRequest request
     ) {
-        postService.updatePost(postUpdateRequest, request, user.getMember().getId());
+        postService.updatePost(postUpdateRequest, request, user);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED));
@@ -133,7 +134,7 @@ public class BoardController implements BoardDocs {
                                                                @PathVariable Long postId,
                                                                HttpServletRequest request
     ) {
-        postService.deletePost(postId, request, user.getMember().getId());
+        postService.deletePost(postId, request, user);
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }
@@ -194,6 +195,7 @@ public class BoardController implements BoardDocs {
     }
 
     //게시물 수정 - 파일
+
     /**
      * 함수명 : deletePostFile()
      * 게시물의 파일을 단일 삭제하는 메서드(수정화면)

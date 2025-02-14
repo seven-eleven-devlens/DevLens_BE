@@ -12,8 +12,7 @@ public interface AdminCompanyService {
     GetCompanyDetail.Response getCompanyDetail(Long id);
     PaginatedResponse<GetCompanies.Response> getListOfCompanies(Integer page);
     PaginatedResponse<GetCompanies.Response> searchCompaniesByName(String name, Integer page);
-    PutCompany.Response updateCompany(Long id, PutCompany.Request request);
-    Company changeCompanyIsActive(Long id);
+    Company updateCompany(Long id, PutCompany.Request request);
     List<GetAllCompanies> getAllCompanies();
     GetCompanyMember.Response getCompanyMember(Long companyId);
 }
