@@ -64,24 +64,15 @@ public class Company extends BaseEntity {
 
     // 수정 메서드
     public Company updateCompany(String companyName, String representativeName, String representativeContact, String representativeEmail,
-                                 String address, BusinessType businessType, String businessRegistrationNumber) {
+                                 YN isActive, String address, BusinessType businessType, String businessRegistrationNumber) {
         this.companyName = companyName;
         this.representativeName = representativeName;
         this.representativeContact = representativeContact;
         this.representativeEmail = representativeEmail;
+        this.isActive = isActive;
         this.address = address;
         this.businessType = businessType;
         this.businessRegistrationNumber = businessRegistrationNumber;
         return this;
     }
-
-    // 삭제 메서드
-    public Company changeCompanyIsActive() {
-        if(this.isActive.equals(YN.Y))
-            this.isActive = YN.N;
-        else
-            this.isActive = YN.Y;
-        return this;
-    }
-
 }

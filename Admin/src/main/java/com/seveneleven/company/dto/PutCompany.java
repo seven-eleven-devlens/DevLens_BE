@@ -19,6 +19,7 @@ public class PutCompany {
         private String representativeEmail;
         private String address;
         private BusinessType businessType;
+        private YN isActive;
         private String businessRegistrationNumber;
 
         @Override
@@ -28,42 +29,13 @@ public class PutCompany {
                     '}';
         }
 
-        private Request(
-                String companyName,
-                String representativeName,
-                String representativeContact,
-                String representativeEmail,
-                String address,
-                BusinessType businessType,
-                String businessRegistrationNumber
-        ) {
-            this.companyName = companyName;
-            this.representativeName = representativeName;
-            this.representativeContact = representativeContact;
-            this.representativeEmail = representativeEmail;
-            this.address = address;
-            this.businessType = businessType;
-            this.businessRegistrationNumber = businessRegistrationNumber;
-        }
-
-        public Company toEntity() {
-            return Company.createCompany(
-                    companyName,
-                    representativeName,
-                    representativeContact,
-                    representativeEmail,
-                    address,
-                    businessType,
-                    businessRegistrationNumber
-            );
-        }
-
         public Company updateCompany(Company company) {
             return company.updateCompany(
                     companyName,
                     representativeName,
                     representativeContact,
                     representativeEmail,
+                    isActive,
                     address,
                     businessType,
                     businessRegistrationNumber

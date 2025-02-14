@@ -96,11 +96,11 @@ public class AdminCompanyServiceImpl implements AdminCompanyService {
      */
     @Transactional
     @Override
-    public PutCompany.Response updateCompany(
+    public Company updateCompany(
             Long id, PutCompany.Request request
     ) {
-        //비활성화 및 존재 여부 확인
-        Company company = adminCompanyReader.getActiveCompany(id);
+        //회사 조회
+        Company company = adminCompanyReader.getCompany(id);
 
         //중복 회사 등록 번호 확인
         if(!request.getBusinessRegistrationNumber().equals(company.getBusinessRegistrationNumber())) {
@@ -109,20 +109,7 @@ public class AdminCompanyServiceImpl implements AdminCompanyService {
         //신규 데이터로 회사 생성
         Company newCompany = request.updateCompany(company);
 
-        return PutCompany.Response.of(adminCompanyStore.store(newCompany));
-    }
-
-    /*
-            함수명 : deleteCompany
-            함수 목적 : 회사 삭제
-     */
-    @Transactional
-    @Override
-    public Company changeCompanyIsActive(Long id) {
-        //회사 조회
-        Company company = adminCompanyReader.getCompany(id);
-        //회사 isActive N으로 변경
-        return adminCompanyStore.store(company.changeCompanyIsActive());
+        return adminCompanyStore.store(newCompany);
     }
 
     /*
