@@ -35,4 +35,18 @@ public class LinkResponse {
                     return dto;
                 });
     }
+
+    //생성 응답용
+    public static LinkResponse toResponse(Link link) {
+        LinkResponse dto = new LinkResponse();
+        dto.id = link.getId();
+        dto.linkCategory = link.getCategory();
+        dto.referenceId = link.getReferenceId();
+        dto.linkTitle = link.getLinkTitle();
+        dto.link = link.getLink();
+        dto.createdBy = link.getCreatedBy();
+        dto.createdAt = link.getCreatedAt();
+
+        return dto;
+    }
 }

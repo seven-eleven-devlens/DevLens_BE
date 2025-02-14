@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,7 +38,7 @@ public class PostLinkServiceImpl implements PostLinkService {
      */
     @Override
     @Transactional
-    public void uploadPostLinks(List<LinkInput> linkInputs, Long postId, Long uploaderId) {
+    public List<LinkResponse> uploadPostLinks(List<LinkInput> linkInputs, Long postId, Long uploaderId) {
         //1. 게시물 id로 존재여부 판별
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
@@ -59,12 +60,19 @@ public class PostLinkServiceImpl implements PostLinkService {
                         linkInput.getLink()
                 )).collect(Collectors.toList());
 
+        //응답용 링크 리스트 생성
+        List<LinkResponse> linkResponseList = new ArrayList<>();
+
         //4. 링크 리스트 업로드
         for(LinkPayload linkPayload : linkPayloads){
             Link uploadedLinkEntity = linkHandler.uploadLink(linkPayload);
             //링크 업로드 이력 등록
             postLinkHistoryService.registerPostLinkHistory(uploadedLinkEntity, uploaderId);
+
+            linkResponseList.add(LinkResponse.toResponse(uploadedLinkEntity));
         }
+
+        return linkResponseList;
     }
 
     /**

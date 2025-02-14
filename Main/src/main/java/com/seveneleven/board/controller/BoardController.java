@@ -165,16 +165,16 @@ public class BoardController implements BoardDocs {
      * 게시물에 링크를 등록하는 메서드(수정화면)
      */
     @PostMapping("/{postId}/links")
-    public ResponseEntity<APIResponse<SuccessCode>> uploadLinks(@PathVariable Long postId,
+    public ResponseEntity<APIResponse<List<LinkResponse>>> uploadLinks(@PathVariable Long postId,
                                                                 @RequestBody List<@Valid LinkInput> linkInputs,
                                                                 @AuthenticationPrincipal CustomUserDetails userDetails
     ){
         Long uploaderId = userDetails.getId();
 
-        postLinkService.uploadPostLinks(linkInputs, postId, uploaderId);
+        List<LinkResponse> uploadedLinks = postLinkService.uploadPostLinks(linkInputs, postId, uploaderId);
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
-                .body(APIResponse.success(SuccessCode.CREATED));
+                .body(APIResponse.success(SuccessCode.CREATED, uploadedLinks));
     }
 
     /**
