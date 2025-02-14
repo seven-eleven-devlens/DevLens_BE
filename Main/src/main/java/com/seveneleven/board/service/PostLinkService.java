@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PostLinkService {
 
-    void uploadPostLinks(List<LinkInput> linkInputs, Long postId, Long uploaderId);
+    List<LinkResponse> uploadPostLinks(List<LinkInput> linkInputs, Long postId, Long uploaderId);
 
     List<LinkResponse> getPostLinks(Long postId);
 
