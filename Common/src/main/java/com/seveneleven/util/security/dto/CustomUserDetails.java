@@ -1,6 +1,7 @@
 package com.seveneleven.util.security.dto;
 
 
+import com.seveneleven.entity.member.constant.Role;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,6 +29,8 @@ public class CustomUserDetails implements UserDetails {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
+
+    public Role getRole() { return member.getRole(); }
 
     public Long getId() {
         return member.getId();

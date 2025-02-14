@@ -142,7 +142,7 @@ public class MemberController implements MemberDocs{
         // 비밀번호 초기화
         MemberPatch.Response response = memberService.resetPassword(request, userDetails, requestDto);
 
-        // 응답으로 임시 비밀번호 반환
+        // 응답으로 비밀번호 반환
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, response));
     }
