@@ -118,7 +118,7 @@ public class BoardController implements BoardDocs {
                                                                @Valid @RequestBody PostUpdateRequest postUpdateRequest,
                                                                HttpServletRequest request
     ) {
-        postService.updatePost(postUpdateRequest, request, user.getMember().getId());
+        postService.updatePost(postUpdateRequest, request, user);
 
         return ResponseEntity.status(SuccessCode.UPDATED.getStatus())
                 .body(APIResponse.success(SuccessCode.UPDATED));
@@ -134,7 +134,7 @@ public class BoardController implements BoardDocs {
                                                                @PathVariable Long postId,
                                                                HttpServletRequest request
     ) {
-        postService.deletePost(postId, request, user.getMember().getId());
+        postService.deletePost(postId, request, user);
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
     }

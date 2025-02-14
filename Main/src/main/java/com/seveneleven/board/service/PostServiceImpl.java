@@ -5,6 +5,7 @@ import com.seveneleven.entity.board.constant.HistoryAction;
 import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.PostFilter;
 import com.seveneleven.entity.board.constant.PostSort;
+import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
 import com.seveneleven.response.PaginatedResponse;
@@ -12,6 +13,7 @@ import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.file.dto.LinkInput;
 import com.seveneleven.util.file.dto.LinkResponse;
+import com.seveneleven.util.security.dto.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -161,10 +163,10 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request, Long modifierId) {
+    public void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request, CustomUserDetails user) {
         // 게시물 존재 여부 및 작성자 일치 여부 확인
         Post post = postReader.getPost(postUpdateRequest.getPostId());
-        matchPostWriter(post.getCreatedBy(), modifierId);
+        checkPostEditPermission(post.getCreatedBy(), user);
 
         String modifierIp = getIpUtil.getIpAddress(request);
         // Post 테이블에서 기존 게시글 수정
@@ -186,9 +188,9 @@ public class PostServiceImpl implements PostService {
      * param : 게시글 ID, 등록자 ID
      */
     @Transactional
-    public void deletePost(Long postId, HttpServletRequest request, Long deleterId) {
+    public void deletePost(Long postId, HttpServletRequest request, CustomUserDetails user) {
         Post post = postReader.getPost(postId);
-        matchPostWriter(post.getCreatedBy(), deleterId);
+        checkPostEditPermission(post.getCreatedBy(), user);
 
         String deleterIp = getIpUtil.getIpAddress(request);
 
@@ -206,10 +208,10 @@ public class PostServiceImpl implements PostService {
         commentService.deleteAllComments(post, deleterIp);
 
         // 해당 게시물의 링크 일괄 삭제
-        postLinkService.deleteAllPostLinks(postId, deleterId);
+        postLinkService.deleteAllPostLinks(postId, user.getId());
 
         // 게시물 파일 일괄 삭제
-        postFileService.deleteAllPostFiles(post.getId(), deleterId);
+        postFileService.deleteAllPostFiles(post.getId(), user.getId());
 
         postStore.storePostHistory(post, HistoryAction.DELETE, deleterIp);
         postStore.deletePost(post);
@@ -256,10 +258,10 @@ public class PostServiceImpl implements PostService {
 
     /**
      * 함수명 : matchPostWriter()
-     * 함수 목적 : 게시물 작성자 일치 여부 확인 메서드
+     * 함수 목적 : 게시물 작성자 또는 관리자 일치 여부 확인 메서드
      */
-    private void matchPostWriter(Long createdBy, Long modifierId) {
-        if(!createdBy.equals(modifierId)) {
+    private void checkPostEditPermission(Long createdBy, CustomUserDetails user) {
+        if(!createdBy.equals(user.getId()) && !(Role.ADMIN.equals(user.getMember().getRole()))) {
             throw new BusinessException(NOT_HAVE_EDIT_PERMISSION);
         }
     }
