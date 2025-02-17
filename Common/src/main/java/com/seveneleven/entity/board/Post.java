@@ -148,6 +148,6 @@ public class Post extends BaseEntity {
     }
 
     public boolean isParent() {
-        return parentPost != null;
+        return parentPost == null;
     }
 }
