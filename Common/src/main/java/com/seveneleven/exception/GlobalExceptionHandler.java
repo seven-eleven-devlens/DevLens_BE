@@ -2,12 +2,14 @@ package com.seveneleven.exception;
 
 import com.seveneleven.response.APIResponse;
 import com.seveneleven.response.ErrorCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -32,7 +34,7 @@ public class GlobalExceptionHandler {
         String detailedMessage = e.getMessage() != null ? e.getMessage() : "An unexpected error occurred";
         APIResponse<?> response = APIResponse.fail(errorCode, detailedMessage);
 
-        e.printStackTrace();
+        log.error(detailedMessage, e);
         return ResponseEntity
                 .status(errorCode.getStatusCode()) // HTTP 상태 코드 설정
                 .body(response); // APIResponse를 응답 본문으로 설정
