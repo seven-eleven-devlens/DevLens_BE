@@ -95,11 +95,9 @@ public class PostServiceImpl implements PostService {
         List<RelatedPostResponse> relatedPosts = new ArrayList<>();
 
         if(post.isParent()) {
-            log.info("isParent={}", post.isParent());
             relatedPosts = postReader.getRelatedPosts(postId);
         }
         if(!post.isParent()) {
-            log.info("!isParent={}", !post.isParent());
             relatedPosts.add(RelatedPostResponse.getRelatedPostResponse(post.getParentPostId(), post.getParentPostTitle()));
         }
 
