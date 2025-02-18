@@ -1,5 +1,6 @@
 package com.seveneleven.board.service;
 
+import com.seveneleven.board.dto.GetCommentDetailResponse;
 import com.seveneleven.board.dto.GetCommentResponse;
 import com.seveneleven.board.dto.PatchCommentRequest;
 import com.seveneleven.board.dto.PostCommentRequest;
@@ -12,18 +13,13 @@ import java.util.List;
 
 public interface CommentService {
 
-    @Transactional(readOnly = true)
-    List<GetCommentResponse> selectCommentList(Long postId, Long userId);
+    List<GetCommentDetailResponse> selectCommentList(Long postId, Long userId);
 
-    @Transactional
     void createComment(Long postId, PostCommentRequest postCommentRequest, HttpServletRequest request, String registerName);
 
-    @Transactional
     void updateComment(Long postId, Long commentId, PatchCommentRequest patchCommentRequest, HttpServletRequest request, CustomUserDetails customUserDetails);
 
-    @Transactional
     void deleteComment(Long postId, Long commentId, HttpServletRequest request, CustomUserDetails customUserDetails);
 
-    @Transactional
     void deleteAllComments(Post post, String deleterIp);
 }

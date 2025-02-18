@@ -8,6 +8,7 @@ import com.seveneleven.entity.board.constant.PostSort;
 import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.exception.BusinessException;
+import com.seveneleven.member.service.MemberService;
 import com.seveneleven.response.PaginatedResponse;
 import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.file.dto.FileMetadataResponse;
@@ -36,6 +37,7 @@ import static com.seveneleven.response.ErrorCode.*;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostFileService postFileService;
+    private final MemberService memberService;
     private final CommentService commentService;
     private final PostLinkService postLinkService;
     private final PostReader postReader;
@@ -82,8 +84,11 @@ public class PostServiceImpl implements PostService {
     public PostResponse selectPost(Long postId, Long userId) {
         Post post = postReader.getPost(postId);
 
+        // 작성자 프로필 이미지 조회
+        String writerImage = memberService.getProfileImageUrl(post.getCreatedBy());
+
         // 댓글 목록 조회
-        List<GetCommentResponse> comments = commentService.selectCommentList(post.getId(), userId);
+        List<GetCommentDetailResponse> comments = commentService.selectCommentList(post.getId(), userId);
 
         // 링크 목록 조회
         List<LinkResponse> links = postLinkService.getPostLinks(post.getId());
@@ -104,6 +109,7 @@ public class PostServiceImpl implements PostService {
         return getPostResponse(
                 post,
                 postReader.getWriter(post.getCreatedBy()),
+                writerImage,
                 userId.equals(post.getCreatedBy()),
                 comments,
                 links,

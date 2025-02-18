@@ -31,7 +31,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -161,6 +164,19 @@ public class MemberServiceImpl implements MemberService{
 
         // 프로필 이미지 url 반환
         return Objects.nonNull(fileMetadataEntity)?fileMetadataEntity.getFilePath():null;
+    }
+
+    /**
+     * 함수명 getProfileImageUrls
+     * 프로필 이미지 다중 조회
+     *
+     * @param memberIds 회원 id(pk) 리스트
+     * @return String 프로필 이미지 url map 반환
+     */
+    @Transactional
+    public Map<Long, String> getProfileImageUrls(Set<Long> memberIds) {
+        return fileMetadataRepository.findByCategoryAndReferenceIds(FileCategory.USER_PROFILE_IMAGE, memberIds).stream()
+                .collect(Collectors.toMap(FileMetadata::getReferenceId, FileMetadata::getFilePath, (a, b) -> a));
     }
 
 

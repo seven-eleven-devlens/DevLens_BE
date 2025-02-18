@@ -1,5 +1,6 @@
 package com.seveneleven.board.service;
 
+import com.seveneleven.board.dto.GetCommentDetailResponse;
 import com.seveneleven.board.dto.GetCommentResponse;
 import com.seveneleven.board.dto.PatchCommentRequest;
 import com.seveneleven.board.dto.PostCommentRequest;
@@ -8,6 +9,7 @@ import com.seveneleven.entity.board.Post;
 import com.seveneleven.entity.board.constant.HistoryAction;
 import com.seveneleven.entity.member.constant.Role;
 import com.seveneleven.exception.BusinessException;
+import com.seveneleven.member.service.MemberService;
 import com.seveneleven.util.GetIpUtil;
 import com.seveneleven.util.security.dto.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +20,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.seveneleven.response.ErrorCode.*;
 
@@ -25,6 +30,7 @@ import static com.seveneleven.response.ErrorCode.*;
 @Slf4j
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
+    private final MemberService memberService;
     private final CommentReader commentReader;
     private final CommentStore commentStore;
     private final PostReader postReader;
@@ -36,8 +42,25 @@ public class CommentServiceImpl implements CommentService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<GetCommentResponse> selectCommentList(Long postId, Long userId){
-        return commentReader.getIsActiveComments(postId, userId);
+    public List<GetCommentDetailResponse> selectCommentList(Long postId, Long userId){
+        //댓글 목록 가져오기
+        List<GetCommentResponse> activeComments = commentReader.getIsActiveComments(postId, userId);
+
+        //댓글 작성자 ID 목록 추출
+        Set<Long> writerIds = activeComments.stream()
+                .map(GetCommentResponse::getCreatedBy)
+                .collect(Collectors.toSet());
+
+        //한번의 쿼리로 모든 작성자의 프로필 이미지 가져오기
+        Map<Long, String> profileImageMap = memberService.getProfileImageUrls(writerIds);
+
+        //새 DTO로 변환후 반환
+        return activeComments.stream()
+                .map(response -> new GetCommentDetailResponse(
+                        response,
+                        profileImageMap.getOrDefault(response.getCreatedBy(), null)
+                ))
+                .collect(Collectors.toList());
     }
 
     /**
