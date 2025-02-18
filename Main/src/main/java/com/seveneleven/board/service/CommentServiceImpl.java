@@ -102,8 +102,9 @@ public class CommentServiceImpl implements CommentService {
         }
         commentStore.storeCommentHistory(comment, HistoryAction.CREATE, registerIp, null);
 
+        // fixme : 프론트 구현 후 주석 해제
         // 게시글 작성자에게 댓글 알림 전송
-        notificationService.notifyComment(postId);
+//        notificationService.notifyComment(postId);
     }
 
     /**

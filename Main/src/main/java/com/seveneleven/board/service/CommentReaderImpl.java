@@ -26,7 +26,7 @@ public class CommentReaderImpl implements CommentReader {
     }
 
     @Override
-    public Comment getCurrentComment(Long postId) {
+    public Comment getLatestComment(Long postId) {
         return commentRepository.findFirstByPostIdOrderByCreatedAtDesc(postId);
     }
 

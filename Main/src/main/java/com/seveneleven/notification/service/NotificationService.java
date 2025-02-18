@@ -29,7 +29,7 @@ public class NotificationService {
         // 2. 연결
         try {
             sseEmitter.send(SseEmitter.event().name("connect"));
-            log.error("NotificationService - sseEmitter 연결 성공");
+            log.info("NotificationService - sseEmitter 연결 성공");
         } catch (IOException e) {
             log.error("NotificationService - sseEmitter 연결시 에러 발생", e);
         }
@@ -49,7 +49,7 @@ public class NotificationService {
     public void notifyComment(Long postId) {
         Post post = postReader.getPost(postId);
         Long projectStepId = post.getProjectStep().getId();
-        Comment comment = commentReader.getCurrentComment(postId);
+        Comment comment = commentReader.getLatestComment(postId);
         Long writerId = post.getCreatedBy();
 
         if (NotificationController.sseEmitters.containsKey(writerId)) {
