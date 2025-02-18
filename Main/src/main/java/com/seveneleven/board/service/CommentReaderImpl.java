@@ -22,12 +22,17 @@ public class CommentReaderImpl implements CommentReader {
 
     @Override
     public List<Comment> getComments(Long postId) {
-        return commentRepository.getCommentList(postId);
+        return commentRepository.findCommentList(postId);
+    }
+
+    @Override
+    public Comment getLatestComment(Long postId) {
+        return commentRepository.findFirstByPostIdOrderByCreatedAtDesc(postId);
     }
 
     @Override
     public List<GetCommentResponse> getIsActiveComments(Long postId, Long userId) {
-        return commentRepository.getIsActiveCommentList(postId, userId);
+        return commentRepository.findIsActiveCommentList(postId, userId);
     }
 
     @Override

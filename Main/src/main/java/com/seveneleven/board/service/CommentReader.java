@@ -9,6 +9,8 @@ import java.util.List;
 public interface CommentReader {
     List<Comment> getComments(Long postId);
 
+    Comment getLatestComment(Long postId);
+
     List<GetCommentResponse> getIsActiveComments(Long postId, Long userId);
 
     Comment getComment(Long commentId);
