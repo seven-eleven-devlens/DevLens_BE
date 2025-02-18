@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface PostFileService {
 
-    List<FileMetadataResponse> uploadPostFiles(List<MultipartFile> files, Long postId, Long uploaderId);
+    List<FileMetadataResponse> uploadPostFiles(List<MultipartFile> files, Long postId, Long uploaderId, String uploaderRole);
 
     List<FileMetadataResponse> getPostFiles(Long postId);
 
-    void deletePostFile(Long postId, Long fileId, Long deleterId);
+    void deletePostFile(Long postId, Long fileId, Long deleterId, String deleterRole);
 
-    void deleteAllPostFiles(Long postId, Long deleterId);
+    void deleteAllPostFiles(Long postId, Long deleterId, String deleterRole);
 }

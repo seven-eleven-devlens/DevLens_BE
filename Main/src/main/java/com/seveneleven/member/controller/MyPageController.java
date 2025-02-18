@@ -1,10 +1,12 @@
 package com.seveneleven.member.controller;
 
+import com.seveneleven.exception.BusinessException;
 import com.seveneleven.member.dto.MyPageGetMember;
 import com.seveneleven.member.dto.PatchMember;
 import com.seveneleven.member.service.MemberFileService;
 import com.seveneleven.member.service.MyPageService;
 import com.seveneleven.response.APIResponse;
+import com.seveneleven.response.ErrorCode;
 import com.seveneleven.response.SuccessCode;
 import com.seveneleven.util.file.dto.FileMetadataResponse;
 import com.seveneleven.util.security.dto.CustomUserDetails;
@@ -90,6 +92,11 @@ public class MyPageController implements MyPageDocs{
     ) {
         Long uploaderId = userDetails.getId();
 
+        //계정 본인이 아니거나 admin이 아닌경우 예외발생
+        if(!(memberId.equals(uploaderId) || "ADMIN".equals(userDetails.getRole().toString()))){
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
         memberFileService.uploadProfileImage(file, memberId, uploaderId);
 
         return ResponseEntity
@@ -130,6 +137,11 @@ public class MyPageController implements MyPageDocs{
                                                                        @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long uploaderId = userDetails.getId();
+
+        //계정 본인이 아니거나 admin이 아닌경우 예외발생
+        if(!(memberId.equals(uploaderId) || "ADMIN".equals(userDetails.getRole().toString()))){
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         memberFileService.deleteProfileImage(memberId, uploaderId);
 
