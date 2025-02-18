@@ -21,7 +21,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             WHERE c.post.id = :postId
             ORDER BY c.ref ASC, c.refOrder ASC
             """)
-    List<Comment> getCommentList(@Param("postId") Long postId);
+    List<Comment> findCommentList(@Param("postId") Long postId);
 
     @Query("""
             SELECT new com.seveneleven.board.dto.GetCommentResponse(
@@ -34,6 +34,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
             WHERE c.post.id = :postId
             ORDER BY c.ref ASC, c.refOrder ASC
             """)
-    List<GetCommentResponse> getIsActiveCommentList(@Param("postId") Long postId,
+    List<GetCommentResponse> findIsActiveCommentList(@Param("postId") Long postId,
                                                     @Param("userId") Long userId);
+
+    Comment findFirstByPostIdOrderByCreatedAtDesc(@Param("postId") Long postId);
 }

@@ -24,8 +24,7 @@ public class NotificationController {
 
     @GetMapping("/subscribe")
     public ResponseEntity<APIResponse<SseEmitter>> subscribe(@AuthenticationPrincipal CustomUserDetails user) {
-        Long userId = user.getId();
-        SseEmitter sseEmitter = notificationService.subscribe(userId);
+        SseEmitter sseEmitter = notificationService.subscribe(user.getId());
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
                 .body(APIResponse.success(SuccessCode.OK, sseEmitter));
