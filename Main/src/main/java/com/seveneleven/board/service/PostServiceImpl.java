@@ -119,7 +119,7 @@ public class PostServiceImpl implements PostService {
      */
     @Transactional
     @Override
-    public Map<String, Long> createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName) {
+    public Map<String, Long> createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName, String registerRole) {
         String registerIp = getIpUtil.getIpAddress(request);
         Post post;
         Long postId;
@@ -156,7 +156,7 @@ public class PostServiceImpl implements PostService {
         }
 
         // 요청 dto 에서 링크 리스트를 가져와서 게시물 링크 업로드
-        uploadLink(postCreateRequest, post);
+        uploadLink(postCreateRequest, post, registerRole);
 
         Map<String, Long> responseMap = new HashMap<>();
         responseMap.put("postId", postId);
@@ -215,7 +215,7 @@ public class PostServiceImpl implements PostService {
         commentService.deleteAllComments(post, deleterIp);
 
         // 해당 게시물의 링크 일괄 삭제
-        postLinkService.deleteAllPostLinks(postId, user.getId());
+        postLinkService.deleteAllPostLinks(postId, user.getId(), user.getRole().toString());
 
         // 게시물 파일 일괄 삭제
         postFileService.deleteAllPostFiles(post.getId(), user.getId(), user.getRole().toString());
@@ -256,11 +256,11 @@ public class PostServiceImpl implements PostService {
      * 함수명 : uploadLink()
      * 함수 목적 : 요청 dto 에서 링크 리스트를 가져와 게시물 링크를 업로드하는 메서드
      */
-    private void uploadLink(PostCreateRequest postCreateRequest, Post post) {
+    private void uploadLink(PostCreateRequest postCreateRequest, Post post, String registerRole) {
         //요청 dto 에서 링크 리스트 가져오기
         List<LinkInput> linkInputs = postCreateRequest.getLinkInputList();
         //게시물 링크 업로드
-        postLinkService.uploadPostLinks(linkInputs, post.getId(), post.getCreatedBy());
+        postLinkService.uploadPostLinks(linkInputs, post.getId(), post.getCreatedBy(), registerRole);
     }
 
     /**

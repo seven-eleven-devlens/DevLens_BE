@@ -38,12 +38,16 @@ public class PostLinkServiceImpl implements PostLinkService {
      */
     @Override
     @Transactional
-    public List<LinkResponse> uploadPostLinks(List<LinkInput> linkInputs, Long postId, Long uploaderId) {
+    public List<LinkResponse> uploadPostLinks(List<LinkInput> linkInputs, Long postId, Long uploaderId, String uploaderRole) {
         //1. 게시물 id로 존재여부 판별
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
 
-        //TODO) 2. 수행자 판별 - admin 해당 게시글 작성자
+        //2. 업로드 수행자 권한 판별
+        //게시물 작성자 본인이 아니거나 admin이 아닌경우 예외발생
+        if(!(postEntity.getCreatedBy().equals(uploaderId) || "ADMIN".equals(uploaderRole))){
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         //3. 현재 저장된 링크 갯수 확인(저장할 링크 갯수 + 현재 저장 갯수 > 10인지 판별)
         Integer currentLinkCnt = linkHandler.countLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId());
@@ -109,12 +113,16 @@ public class PostLinkServiceImpl implements PostLinkService {
      */
     @Override
     @Transactional
-    public void deletePostLink(Long postId, Long linkId, Long deleterId){
+    public void deletePostLink(Long postId, Long linkId, Long deleterId, String uploaderRole){
         //1. 게시물 존재 여부 판별
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
 
-        //TODO) 2. 수행자 권한 검증
+        //2. 삭제 수행자 권한 판별
+        //게시물 작성자 본인이 아니거나 admin이 아닌경우 예외발생
+        if(!(postEntity.getCreatedBy().equals(deleterId) || "ADMIN".equals(uploaderRole))){
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         //3. 해당 게시물의 링크인지 판별
         //파일 메타데이터 테이블에서 해당 카테고리와 첨부 id로 메타데이터 id 목록 생성
@@ -139,12 +147,16 @@ public class PostLinkServiceImpl implements PostLinkService {
      */
     @Override
     @Transactional
-    public void deleteAllPostLinks(Long postId, Long deleterId) {
+    public void deleteAllPostLinks(Long postId, Long deleterId, String uploaderRole) {
         //1. 게시물 유효성 검사
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
 
-        //TODO) 2. 수행자 권한 판별
+        //2. 삭제 수행자 권한 판별
+        //게시물 작성자 본인이 아니거나 admin이 아닌경우 예외발생
+        if(!(postEntity.getCreatedBy().equals(deleterId) || "ADMIN".equals(uploaderRole))){
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         //3. 해당 게시물의 링크를 모두 삭제한다.
         for(Link linkEntity : linkHandler.getLinks(LinkCategory.POST_ATTACHMENT_LINK, postEntity.getId())){

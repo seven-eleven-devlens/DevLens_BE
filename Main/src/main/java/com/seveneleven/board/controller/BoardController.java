@@ -101,7 +101,7 @@ public class BoardController implements BoardDocs {
                                                                      @Valid @RequestBody PostCreateRequest postCreateRequest,
                                                                      HttpServletRequest request
     ) {
-        Map<String, Long> idMap = postService.createPost(postCreateRequest, request, user.getUsername());
+        Map<String, Long> idMap = postService.createPost(postCreateRequest, request, user.getUsername(), user.getRole().toString());
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED, idMap) );
@@ -171,8 +171,9 @@ public class BoardController implements BoardDocs {
                                                                 @AuthenticationPrincipal CustomUserDetails userDetails
     ){
         Long uploaderId = userDetails.getId();
+        String uploaderRole = userDetails.getRole().toString();
 
-        List<LinkResponse> uploadedLinks = postLinkService.uploadPostLinks(linkInputs, postId, uploaderId);
+        List<LinkResponse> uploadedLinks = postLinkService.uploadPostLinks(linkInputs, postId, uploaderId, uploaderRole);
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED, uploadedLinks));
@@ -188,8 +189,9 @@ public class BoardController implements BoardDocs {
                                                                @AuthenticationPrincipal CustomUserDetails userDetails
     ){
         Long deleterId = userDetails.getId();
+        String deleterRole = userDetails.getRole().toString();
 
-        postLinkService.deletePostLink(postId, linkId, deleterId);
+        postLinkService.deletePostLink(postId, linkId, deleterId, deleterRole);
 
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));

@@ -16,7 +16,7 @@ public interface PostService {
 
     PaginatedResponse<PostListResponse> selectPosts(Boolean isAllStages, Long projectId, Long projectStepId, Integer page, String keyword, PostFilter filter, PostSort sortType);
     PostResponse selectPost(Long postId, Long userId);
-    Map<String, Long> createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName);
+    Map<String, Long> createPost(PostCreateRequest postCreateRequest, HttpServletRequest request, String registerName, String registerRole);
     void updatePost(PostUpdateRequest postUpdateRequest, HttpServletRequest request, CustomUserDetails user);
     void deletePost(Long postId, HttpServletRequest request, CustomUserDetails user);
 }
