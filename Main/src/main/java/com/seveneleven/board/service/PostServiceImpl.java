@@ -218,7 +218,7 @@ public class PostServiceImpl implements PostService {
         postLinkService.deleteAllPostLinks(postId, user.getId());
 
         // 게시물 파일 일괄 삭제
-        postFileService.deleteAllPostFiles(post.getId(), user.getId());
+        postFileService.deleteAllPostFiles(post.getId(), user.getId(), user.getRole().toString());
 
         postStore.storePostHistory(post, HistoryAction.DELETE, deleterIp);
         postStore.deletePost(post);

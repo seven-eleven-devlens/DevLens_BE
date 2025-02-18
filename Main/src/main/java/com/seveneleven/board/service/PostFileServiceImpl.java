@@ -26,10 +26,9 @@ public class PostFileServiceImpl implements PostFileService {
     private final FileHandler fileHandler;
     private final PostRepository postRepository;
     private final FileMetadataRepository fileMetadataRepository;
+    private final PostFileHistoryService postFileHistoryService;
 
     private static final int MAX_FILE_COUNT = 10; //게시물별 최대 파일 수(10개)
-    private final FileMetadataHistoryRepository fileMetadataHistoryRepository;
-    private final PostFileHistoryService postFileHistoryService;
 
     /**
      * 1. 게시물 파일 업로드
@@ -41,12 +40,16 @@ public class PostFileServiceImpl implements PostFileService {
      */
     @Override
     @Transactional
-    public List<FileMetadataResponse> uploadPostFiles(List<MultipartFile> files, Long postId, Long uploaderId){
+    public List<FileMetadataResponse> uploadPostFiles(List<MultipartFile> files, Long postId, Long uploaderId, String uploaderRole){
         //1. 게시물 id로 존재여부 판별
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
 
-        //TODO) 2. 수행자 권한 판별 - admin, 해당 게시글 작성자
+        //2. 수행자 권한 판별 - admin, 해당 게시글 작성자
+        //계정 본인이 아니거나 admin이 아닌경우 예외발생
+        if(!(postEntity.getCreatedBy().equals(uploaderId) || "ADMIN".equals(uploaderRole))){
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         //3. 저장할 파일 갯수 + 현재 저장 갯수 >= 11인지 판별
         //현재 저장된 파일 갯수 확인
@@ -104,12 +107,16 @@ public class PostFileServiceImpl implements PostFileService {
      */
     @Override
     @Transactional
-    public void deletePostFile(Long postId, Long fileId, Long deleterId){
+    public void deletePostFile(Long postId, Long fileId, Long deleterId, String deleterRole){
         //1. 게시물 유효성 검사
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
 
-        //TODO) 2. 삭제 수행자 권한 판별
+        //2. 삭제 수행자 권한 판별
+        //계정 본인이 아니거나 admin이 아닌경우 예외발생
+        if(!(postEntity.getCreatedBy().equals(deleterId) || "ADMIN".equals(deleterRole))){
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         //3. 해당 게시물 파일 목록에 해당 파일이 존재하는지 확인
         List<FileMetadata> fileEntities = fileHandler.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId());
@@ -134,12 +141,17 @@ public class PostFileServiceImpl implements PostFileService {
      */
     @Override
     @Transactional
-    public void deleteAllPostFiles(Long postId, Long deleterId){
+    public void deleteAllPostFiles(Long postId, Long deleterId, String deleterRole){
         //1. 게시물 유효성 검사
         Post postEntity = postRepository.findById(postId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOUND_POST));
 
-        //TODO) 2. 수행자 권한 판별
+        //2. 수행자 권한 판별
+        //2. 삭제 수행자 권한 판별
+        //계정 본인이 아니거나 admin이 아닌경우 예외발생
+        if(!(postEntity.getCreatedBy().equals(deleterId) || "ADMIN".equals(deleterRole))){
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
 
         //3. 해당 게시물의 파일들을 전체 삭제한다.
         for(FileMetadata fileEntity : fileHandler.getFiles(FileCategory.POST_ATTACHMENT, postEntity.getId())) {

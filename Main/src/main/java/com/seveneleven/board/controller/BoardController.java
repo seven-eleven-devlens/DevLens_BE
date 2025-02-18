@@ -151,9 +151,10 @@ public class BoardController implements BoardDocs {
             @AuthenticationPrincipal CustomUserDetails userDetails
     ) {
         Long uploaderId = userDetails.getId();
+        String uploaderRole = userDetails.getRole().toString();
 
         //파일 업로드
-        List<FileMetadataResponse> uploadedFilesData = postFileService.uploadPostFiles(files, postId, uploaderId);
+        List<FileMetadataResponse> uploadedFilesData = postFileService.uploadPostFiles(files, postId, uploaderId, uploaderRole);
 
         return ResponseEntity.status(SuccessCode.CREATED.getStatus())
                 .body(APIResponse.success(SuccessCode.CREATED, uploadedFilesData));
@@ -206,8 +207,9 @@ public class BoardController implements BoardDocs {
                                                                     @AuthenticationPrincipal CustomUserDetails userDetails
     ){
         Long deleterId = userDetails.getId();
+        String deleterRole = userDetails.getRole().toString();
 
-        postFileService.deletePostFile(postId, fileId, deleterId);
+        postFileService.deletePostFile(postId, fileId, deleterId, deleterRole);
 
         return ResponseEntity.status(SuccessCode.DELETED.getStatus())
                 .body(APIResponse.success(SuccessCode.DELETED));
