@@ -24,11 +24,12 @@ public class PostResponse {
     private String content;
     private LocalDate deadline;
     private String writer;
+    private String writerImage;
     private Boolean isAuthor;
     private LocalDateTime createDate;
     private LocalDateTime updateDate;
     @Setter
-    private List<GetCommentResponse> comments;
+    private List<GetCommentDetailResponse> comments;
     @Setter
     private List<LinkResponse> links;
     @Setter
@@ -46,8 +47,9 @@ public class PostResponse {
     private PostResponse(
             Post post,
             String writer,
+            String writerImage,
             Boolean isAuthor,
-            List<GetCommentResponse> comments,
+            List<GetCommentDetailResponse> comments,
             List<LinkResponse> links,
             List<FileMetadataResponse> files,
             Boolean isParentPost,
@@ -61,6 +63,7 @@ public class PostResponse {
         this.content = post.getContent();
         this.deadline = post.getDeadline();
         this.writer = writer;
+        this.writerImage = writerImage;
         this.isAuthor = isAuthor;
         this.createDate = post.getCreatedAt();
         this.updateDate = post.getUpdatedAt();
@@ -74,8 +77,9 @@ public class PostResponse {
 
     public static PostResponse getPostResponse(Post post,
                                                String writer,
+                                               String writerImage,
                                                Boolean isAuthor,
-                                               List<GetCommentResponse> comments,
+                                               List<GetCommentDetailResponse> comments,
                                                List<LinkResponse> links,
                                                List<FileMetadataResponse> files,
                                                Boolean isParentPost,
@@ -84,6 +88,7 @@ public class PostResponse {
         return new PostResponse(
                 post,
                 writer,
+                writerImage,
                 isAuthor,
                 comments,
                 links,

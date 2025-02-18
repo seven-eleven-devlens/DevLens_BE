@@ -15,6 +15,7 @@ public class GetCommentResponse {
     private Long registerId;
     private String writer;
     private String content;
+    private Long createdBy;
     private LocalDateTime createdAt;
     private Boolean isEdited;
     private Boolean isAuthor;
@@ -25,6 +26,7 @@ public class GetCommentResponse {
         this.registerId = comment.getCreatedBy();
         this.writer = comment.getWriter();
         this.content = comment.getContent();
+        this.createdBy = comment.getCreatedBy();
         this.createdAt = createdAt;
         this.isEdited = isEdited;
         this.isAuthor = isAuthor;
