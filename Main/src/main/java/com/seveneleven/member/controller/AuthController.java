@@ -59,6 +59,7 @@ public class AuthController implements AuthDocs{
 
 
         return ResponseEntity.status(SuccessCode.OK.getStatus())
+                .headers(httpHeaders)
                 .body(APIResponse.success(SuccessCode.OK));
     }
 
