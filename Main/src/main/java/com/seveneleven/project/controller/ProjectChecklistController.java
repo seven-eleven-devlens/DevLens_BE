@@ -74,6 +74,18 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.putProjectChecklist(checklistId, request)));
     }
 
+    @DeveloperApproverAuthorize
+    @PutMapping("/steps/{stepId}/checklists/{checklistId}/orders/{checklistOrder}")
+    public ResponseEntity<APIResponse<PutProjectChecklistPosition.Response>> putProjectChecklistPosition(
+            @PathVariable Long projectId,
+            @PathVariable Long stepId,
+            @PathVariable Long checklistId,
+            @PathVariable Integer checklistOrder
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.putProjectChecklistPosition(projectId, stepId, checklistId, checklistOrder)));
+    }
+
     /**
      * 함수명 : deleteProjectChecklist
      * 해당 체크리스트를 삭제하는 함수

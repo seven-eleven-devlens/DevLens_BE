@@ -14,7 +14,7 @@ public class PostProjectChecklist {
     public static class Request {
         private String checklistTitle;
         private String checklistDescription;
-        private Long checklistOrder;
+        private Integer checklistOrder;
 
         public Request(String checklistTitle, String checklistDescription) {
             this.checklistTitle = checklistTitle;

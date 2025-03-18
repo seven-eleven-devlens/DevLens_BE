@@ -31,7 +31,7 @@ public class Checklist extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description; // 체크리스트 설명
 
-    private Long checklistOrder; // 체크리스트 순서
+    private Integer checklistOrder; // 체크리스트 순서
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -41,7 +41,7 @@ public class Checklist extends BaseEntity {
 
     private LocalDateTime approvalDate; // 승인 일시
 
-    private Checklist(String title, String description, Long checklistOrder, ProjectStep projectStep) {
+    private Checklist(String title, String description, Integer checklistOrder, ProjectStep projectStep) {
         this.projectStep = projectStep;
         this.title = title;
         this.description = description;
@@ -51,7 +51,7 @@ public class Checklist extends BaseEntity {
         this.approvalDate = null;
     }
 
-    public static Checklist create(String title, String description, Long checklistOrder, ProjectStep projectStep) {
+    public static Checklist create(String title, String description, Integer checklistOrder, ProjectStep projectStep) {
         return new Checklist(title, description, checklistOrder, projectStep);
     }
 
@@ -64,15 +64,12 @@ public class Checklist extends BaseEntity {
         throw new BusinessException(ErrorCode.CHECKLIST_ALREADY_DELETED);
     }
 
-//    public Checklist(ProjectStep projectStep, String title, String description, YesNo isActive, YesNo isChecked, Long approverId, LocalDateTime approvalDate) {
-//        this.projectStep = projectStep;
-//        this.title = title;
-//        this.description = description;
-//        this.isActive = isActive;
-//        this.isChecked = isChecked;
-//        this.approverId = approverId;
-//        this.approvalDate = approvalDate;
-//    }
+    public Checklist updatePosition(ProjectStep projectStep, Integer checklistOrder) {
+        this.projectStep = projectStep;
+        this.checklistOrder = checklistOrder;
+
+        return this;
+    }
 
     public Checklist deleteChecklist() {
         if(checklistStatus != ChecklistStatus.DELETED) {

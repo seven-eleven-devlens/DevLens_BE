@@ -28,7 +28,7 @@ public class StepStoreImpl implements StepStore {
         ProjectStep projectStep = requestDto.toEntity(project, order);
         projectStepRepository.save(projectStep);
 
-        long index = 1L;
+        int index = 1;
 
         for(PostProjectStep.PostChecklist postChecklist : requestDto.getChecklists()) {
             if(postChecklist.getChecklistTitle() == null || postChecklist.getChecklistTitle().isEmpty()) {

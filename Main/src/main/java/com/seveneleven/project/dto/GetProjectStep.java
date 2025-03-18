@@ -73,7 +73,7 @@ public class GetProjectStep {
         private Long checklistId;
         private String checklistName;
         private String checklistStatus;
-        private Long checklistOrder;
+        private Integer checklistOrder;
         private LocalDateTime approvalTime;
 
         @Override

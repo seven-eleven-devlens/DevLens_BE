@@ -8,4 +8,5 @@ import java.util.List;
 public interface ChecklistReader {
     Checklist getChecklist(Long checklistId);
     List<Checklist> read(Long stepId);
+    List<Integer> getChecklistOrder(Long stepId);
 }

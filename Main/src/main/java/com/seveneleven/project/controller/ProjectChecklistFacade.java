@@ -1,14 +1,12 @@
 package com.seveneleven.project.controller;
 
 import com.seveneleven.entity.member.Member;
-import com.seveneleven.entity.project.CheckRequest;
-import com.seveneleven.entity.project.CheckResult;
-import com.seveneleven.entity.project.Checklist;
-import com.seveneleven.entity.project.ProjectStep;
+import com.seveneleven.entity.project.*;
 import com.seveneleven.member.service.MemberService;
 import com.seveneleven.project.dto.*;
 import com.seveneleven.project.service.ProjectCheckRequestService;
 import com.seveneleven.project.service.ProjectChecklistService;
+import com.seveneleven.project.service.ProjectService;
 import com.seveneleven.project.service.ProjectStepService;
 import com.seveneleven.project.service.checklist.CheckResultReader;
 import com.seveneleven.util.GetIpUtil;
@@ -25,12 +23,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectChecklistFacade {
 
-    private final ProjectChecklistService projectChecklistService;
+    private final ProjectService projectService;
     private final ProjectStepService projectStepService;
+    private final ProjectChecklistService projectChecklistService;
     private final ProjectCheckRequestService projectCheckRequestService;
     private final MemberService memberService;
     private final GetIpUtil getIpUtil;
-    private final CheckResultReader checkResultReader;
 
     /**
      * 함수명 : getProjectChecklistApplication
@@ -70,6 +68,24 @@ public class ProjectChecklistFacade {
     ) {
         Checklist checklist = projectChecklistService.getChecklist(checklistId);
         return projectChecklistService.putProjectChecklist(checklist, putProjectChecklist);
+    }
+
+    /**
+     * 함수명 : putProjectChecklistPosition
+     * 체크리스트의 위치 수정하는 함수
+     */
+    public PutProjectChecklistPosition.Response putProjectChecklistPosition(
+            Long projectId,
+            Long stepId,
+            Long checklistId,
+            Integer checklistOrder
+    ) {
+        Project project = projectService.getProject(projectId);
+
+        ProjectStep projectStep = projectStepService.getProjectStepById(stepId);
+
+        Checklist checklist = projectChecklistService.getChecklist(checklistId);
+        return projectChecklistService.putProjectChecklistPosition(projectStep, checklist, checklistOrder);
     }
 
     /**

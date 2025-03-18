@@ -8,6 +8,7 @@ import com.seveneleven.project.dto.PutProjectChecklist;
 import java.util.List;
 
 public interface ChecklistStore {
+    Checklist store(Checklist checklist);
     Checklist storeChecklist(ProjectStep projectStep, PostProjectChecklist.Request checklist);
     Checklist updateChecklist(Checklist checklist, PutProjectChecklist.Request request);
     void accept(Checklist checklist, Long memberId);

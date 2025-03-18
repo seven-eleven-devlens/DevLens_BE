@@ -127,6 +127,18 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
     }
 
     @Override
+    public PutProjectChecklistPosition.Response putProjectChecklistPosition(ProjectStep projectStep, Checklist checklist, Integer checklistOrder) {
+        List<Integer> checklistOrderList = checklistReader.getChecklistOrder(projectStep.getId());
+        checklistOrderList.removeIf(order -> order.equals(checklist.getChecklistOrder()));
+
+        Integer saveChecklistOrder = getChecklistOrder(checklistOrderList, checklistOrder - 1);
+
+        return PutProjectChecklistPosition.Response.toDto(checklistStore.store(
+                checklist.updatePosition(projectStep, saveChecklistOrder)
+        ));
+    }
+
+    @Override
     @Transactional
     public DeleteProjectChecklist.Response deleteProjectChecklist(Checklist checklist) {
         checklistStore.delete(checklist);
@@ -216,5 +228,22 @@ public class ProjectChecklistServiceImpl implements ProjectChecklistService {
                 id,
                 MemberStatus.ACTIVE
         ).orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+    }
+
+    private Integer getChecklistOrder(List<Integer> orderList, Integer target) {
+        if(target == null || target < 0) {
+            throw new BusinessException(ErrorCode.PROJECT_STEP_ORDER_MORE_THAN_ZERO);
+        }
+        if(orderList == null || orderList.isEmpty()) {
+            return 100;
+        }
+        if(target == 0) {
+            Integer find = orderList.get(0);
+            return find / 2;
+        }
+        if(target >= orderList.size()) {
+            return orderList.get(orderList.size() - 1) + 100;
+        }
+        return (orderList.get(target) + orderList.get(target - 1)) / 2;
     }
 }
