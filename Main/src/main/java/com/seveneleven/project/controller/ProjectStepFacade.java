@@ -51,6 +51,18 @@ public class ProjectStepFacade {
         return projectStepService.putProjectStep(projectStep, requestDto);
     }
 
+    public PutProjectStepPosition.Response putProjectStepPosition(
+            Long projectId,
+            Long stepId,
+            Integer stepOrder
+    ) {
+        Project project = projectService.getProject(projectId);
+
+        ProjectStep projectStep = projectStepService.getProjectStepById(stepId);
+
+        return projectStepService.putProjectStepPosition(project, projectStep, stepOrder);
+    }
+
     /**
      * 함수명 : deleteProjectStep
      * 프로젝트 단계를 삭제하는 함수
