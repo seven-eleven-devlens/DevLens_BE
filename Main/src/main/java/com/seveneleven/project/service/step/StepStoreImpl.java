@@ -1,5 +1,6 @@
 package com.seveneleven.project.service.step;
 
+import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.entity.project.Project;
 import com.seveneleven.entity.project.ProjectStep;
 import com.seveneleven.project.dto.PostProjectStep;
@@ -27,8 +28,15 @@ public class StepStoreImpl implements StepStore {
         ProjectStep projectStep = requestDto.toEntity(project, order);
         projectStepRepository.save(projectStep);
 
-        for(PostProjectStep.PostChecklist checklist : requestDto.getChecklists()) {
-            checklistRepository.save(checklist.toEntity(projectStep));
+        long index = 1L;
+
+        for(PostProjectStep.PostChecklist postChecklist : requestDto.getChecklists()) {
+            if(postChecklist.getChecklistTitle() == null || postChecklist.getChecklistTitle().isEmpty()) {
+                continue;
+            }
+
+            checklistRepository.save(Checklist.create(postChecklist.getChecklistTitle(), postChecklist.getChecklistDescription(), index * 100, projectStep));
+            index++;
         }
 
         return PostProjectStep.Response.toDto(projectStep, requestDto.getChecklists());

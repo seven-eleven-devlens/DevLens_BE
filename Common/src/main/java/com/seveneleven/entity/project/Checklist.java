@@ -31,6 +31,8 @@ public class Checklist extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String description; // 체크리스트 설명
 
+    private Long checklistOrder; // 체크리스트 순서
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ChecklistStatus checklistStatus; // 사용 유무
@@ -39,17 +41,18 @@ public class Checklist extends BaseEntity {
 
     private LocalDateTime approvalDate; // 승인 일시
 
-    private Checklist(String title, String description, ProjectStep projectStep) {
+    private Checklist(String title, String description, Long checklistOrder, ProjectStep projectStep) {
         this.projectStep = projectStep;
         this.title = title;
         this.description = description;
+        this.checklistOrder = checklistOrder;
         this.checklistStatus = ChecklistStatus.APPLICATION_WAITING;
         this.approverId = null;
         this.approvalDate = null;
     }
 
-    public static Checklist create(String title, String description, ProjectStep projectStep) {
-        return new Checklist(title, description, projectStep);
+    public static Checklist create(String title, String description, Long checklistOrder, ProjectStep projectStep) {
+        return new Checklist(title, description, checklistOrder, projectStep);
     }
 
     public Checklist updateChecklist(String title, String description) {

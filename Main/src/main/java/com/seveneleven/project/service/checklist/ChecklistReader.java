@@ -7,6 +7,5 @@ import java.util.List;
 
 public interface ChecklistReader {
     Checklist getChecklist(Long checklistId);
-    GetStepChecklist.Response getStepChecklist(Long stepId);
     List<Checklist> read(Long stepId);
 }

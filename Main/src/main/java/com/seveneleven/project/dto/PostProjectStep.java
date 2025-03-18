@@ -48,17 +48,8 @@ public class PostProjectStep {
                     '}';
         }
 
-        private PostChecklist(Checklist checklist) {
-            this.checklistTitle = checklist.getTitle();
-            this.checklistDescription = checklist.getDescription();
-        }
-
-        public PostChecklist toDto(Checklist checklist) {
-            return new PostChecklist(checklist);
-        }
-
-        public Checklist toEntity(ProjectStep projectStep) {
-            return Checklist.create(checklistTitle, checklistDescription, projectStep);
+        public Checklist toEntity(ProjectStep projectStep, Long order) {
+            return Checklist.create(checklistTitle, checklistDescription, order, projectStep);
         }
     }
 
