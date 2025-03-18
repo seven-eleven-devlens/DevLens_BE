@@ -67,13 +67,18 @@ public class ProjectStepServiceImpl implements ProjectStepService {
     @Override
     @Transactional
     public PutProjectStep.Response putProjectStep(ProjectStep projectStep, PutProjectStep.Request requestDto) {
-        log.info("request.order : {}", requestDto.getStepOrder());
+        return stepStore.edit(requestDto, projectStep);
+    }
+
+    @Override
+    @Transactional
+    public PutProjectStepPosition.Response putProjectStepPosition(Project project, ProjectStep projectStep, Integer stepOrder) {
         List<Integer> orderList = stepReader.getStepOrderList(projectStep.getProject().getId());
         orderList.removeIf(order -> order.equals(projectStep.getStepOrder()));
 
-        Integer order = getStepOrder(orderList, requestDto.getStepOrder() - 1);
-        log.info("order : {}", order);
-        return stepStore.edit(requestDto, projectStep, order);
+        Integer order = getStepOrder(orderList, stepOrder);
+
+        return PutProjectStepPosition.Response.toDto(stepStore.editPosition(projectStep, order), stepOrder);
     }
 
     @Override

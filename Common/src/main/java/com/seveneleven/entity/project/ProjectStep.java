@@ -51,9 +51,13 @@ public class ProjectStep extends BaseEntity {
         return new ProjectStep(project, stepName, description, stepOrder);
     }
 
-    public ProjectStep edit(String stepName, String description, Integer stepOrder) {
+    public ProjectStep edit(String stepName, String description) {
         this.stepName = stepName;
         this.stepDescription = description;
+        return this;
+    }
+
+    public ProjectStep editOrder(Integer stepOrder) {
         this.stepOrder = stepOrder;
         return this;
     }

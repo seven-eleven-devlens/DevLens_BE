@@ -10,5 +10,6 @@ public interface ProjectStepService {
     GetStepChecklist.Response getStepChecklist(Long stepId);
     PostProjectStep.Response postProjectStep(Project project, PostProjectStep.Request requestDto);
     PutProjectStep.Response putProjectStep(ProjectStep projectStep, PutProjectStep.Request requestDto);
+    PutProjectStepPosition.Response putProjectStepPosition(Project project, ProjectStep projectStep, Integer stepOrder);
     DeleteProjectStep.Response deleteProjectStep(Long projectId, Long stepId);
 }

@@ -62,6 +62,17 @@ public class ProjectStepController implements ProjectStepDocs {
                 .body(APIResponse.success(SuccessCode.OK, projectStepFacade.putProjectStep(stepId, requestDto)));
     }
 
+    @ApproverAuthorize
+    @PutMapping("/{projectId}/steps/{stepId}/orders/{stepOrder}")
+    public ResponseEntity<APIResponse<PutProjectStepPosition.Response>> putProjectStepPosition(
+            @PathVariable Long projectId,
+            @PathVariable Long stepId,
+            @PathVariable Integer stepOrder
+    ) {
+        return ResponseEntity.status(SuccessCode.OK.getStatusCode())
+                .body(APIResponse.success(SuccessCode.OK, projectStepFacade.putProjectStepPosition(projectId, stepId, stepOrder)));
+    }
+
     /**
      * 함수명 : deleteProjectStep
      * 프로젝트 단계를 삭제하는 함수

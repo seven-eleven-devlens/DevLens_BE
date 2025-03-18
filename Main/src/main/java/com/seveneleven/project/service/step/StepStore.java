@@ -15,6 +15,10 @@ public interface StepStore {
 
     PutProjectStep.Response edit(
             PutProjectStep.Request requestDto,
+            ProjectStep projectStep
+    );
+
+    ProjectStep editPosition(
             ProjectStep projectStep,
             Integer order
     );
