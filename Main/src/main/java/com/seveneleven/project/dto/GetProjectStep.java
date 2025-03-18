@@ -73,6 +73,7 @@ public class GetProjectStep {
         private Long checklistId;
         private String checklistName;
         private String checklistStatus;
+        private Long checklistOrder;
         private LocalDateTime approvalTime;
 
         @Override
@@ -86,6 +87,7 @@ public class GetProjectStep {
             this.checklistId = checklist.getId();
             this.checklistName = checklist.getTitle();
             this.checklistStatus = checklist.getChecklistStatus().name();
+            this.checklistOrder = checklist.getChecklistOrder();
             this.approvalTime = checklist.getApprovalDate();
         }
     }

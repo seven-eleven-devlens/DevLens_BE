@@ -1,5 +1,6 @@
 package com.seveneleven.project.dto;
 
+import com.seveneleven.entity.project.Checklist;
 import com.seveneleven.entity.project.constant.ChecklistStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,11 +15,9 @@ public class GetStepChecklist {
      */
     @Getter
     @NoArgsConstructor
-    @AllArgsConstructor
     public static class Response {
         private Long stepId;
-        // List -> PageResponse로 변경 필요
-        private List<projectChecklist> checklists;
+        private List<ProjectChecklist> checklists;
 
         @Override
         public String toString() {
@@ -26,14 +25,24 @@ public class GetStepChecklist {
                     "stepId=" + stepId +
                     '}';
         }
+
+        private Response(Long stepId, List<Checklist> checklists) {
+            this.stepId = stepId;
+            this.checklists = checklists.stream().map(ProjectChecklist::toDto).toList();
+        }
+
+        public static Response toDto(Long stepId, List<Checklist> checklists) {
+            return new Response(stepId, checklists);
+        }
     }
 
     @Getter
     @NoArgsConstructor
-    public static class projectChecklist {
+    public static class ProjectChecklist {
         private Long checklistId;
         private String checklistName;
-        private String checklistStatus;
+        private Long checklistOrder;
+        private ChecklistStatus checklistStatus;
         private LocalDateTime checkAcceptTime;
 
         @Override
@@ -43,11 +52,16 @@ public class GetStepChecklist {
                     '}';
         }
 
-        public projectChecklist(Long checklistId, String checklistName, ChecklistStatus checklistStatus, LocalDateTime checkAcceptTime) {
-            this.checklistId = checklistId;
-            this.checklistName = checklistName;
-            this.checklistStatus = checklistStatus.name();
-            this.checkAcceptTime = checkAcceptTime;
+        private ProjectChecklist(Checklist checklist) {
+            this.checklistId = checklist.getId();
+            this.checklistName = checklist.getTitle();
+            this.checklistOrder = checklist.getChecklistOrder();
+            this.checklistStatus = checklist.getChecklistStatus();
+            this.checkAcceptTime = checklist.getApprovalDate();
+        }
+
+        public static ProjectChecklist toDto(Checklist checklist) {
+            return new ProjectChecklist(checklist);
         }
     }
 }

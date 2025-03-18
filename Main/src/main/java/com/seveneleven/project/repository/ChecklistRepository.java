@@ -14,23 +14,6 @@ import java.util.Optional;
 @Repository
 public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
 
-    @Query("""
-        SELECT
-            new com.seveneleven.project.dto.GetStepChecklist$projectChecklist(
-                    c.id,
-                    c.title,
-                    c.checklistStatus,
-                    c.approvalDate
-                )
-        FROM Checklist c
-        WHERE c.projectStep.id = :projectStepId AND c.checklistStatus != :checklistStatus
-        ORDER BY c.id
-    """)
-    List<GetStepChecklist.projectChecklist> findStepChecklist(
-            @Param("projectStepId") Long projectStepId,
-            @Param("checklistStatus") ChecklistStatus checklistStatus
-    );
-
     Optional<Checklist> findByIdAndChecklistStatusNot(@Param("id") Long checklistId, @Param("checklistStatus") ChecklistStatus checklistStatus);
 
     List<Checklist> findByProjectStepIdAndChecklistStatusNot(@Param("projectStepId") Long projectStepId, ChecklistStatus checklistStatus);

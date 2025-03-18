@@ -14,6 +14,7 @@ public class PostProjectChecklist {
     public static class Request {
         private String checklistTitle;
         private String checklistDescription;
+        private Long checklistOrder;
 
         public Request(String checklistTitle, String checklistDescription) {
             this.checklistTitle = checklistTitle;
@@ -28,7 +29,7 @@ public class PostProjectChecklist {
         }
 
         public Checklist toEntity(ProjectStep projectStep) {
-            return Checklist.create(checklistTitle, checklistDescription, projectStep);
+            return Checklist.create(checklistTitle, checklistDescription, checklistOrder, projectStep);
         }
     }
 
