@@ -27,7 +27,7 @@ public class ChecklistReaderImpl implements ChecklistReader {
 
     @Override
     public List<Checklist> read(Long stepId) {
-        return checklistRepository.findByProjectStepIdAndChecklistStatusNot(stepId, ChecklistStatus.DELETED);
+        return checklistRepository.findByProjectStepIdAndChecklistStatusNotOrderByChecklistOrder(stepId, ChecklistStatus.DELETED);
     }
 
     @Override
