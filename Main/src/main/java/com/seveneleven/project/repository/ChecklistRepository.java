@@ -14,6 +14,17 @@ import java.util.Optional;
 @Repository
 public interface ChecklistRepository extends JpaRepository<Checklist, Long> {
 
+    @Query("""
+        SELECT
+            c.checklistOrder
+        FROM Checklist c
+        WHERE c.projectStep.id = :projectStepId
+            AND
+              c.checklistStatus <> :checklistStatus
+        order by c.checklistOrder
+    """)
+    List<Integer> findChecklistOrderByProjectStepIdAndChecklistStatusNot(Long projectStepId, ChecklistStatus checklistStatus);
+
     Optional<Checklist> findByIdAndChecklistStatusNot(@Param("id") Long checklistId, @Param("checklistStatus") ChecklistStatus checklistStatus);
 
     List<Checklist> findByProjectStepIdAndChecklistStatusNot(@Param("projectStepId") Long projectStepId, ChecklistStatus checklistStatus);

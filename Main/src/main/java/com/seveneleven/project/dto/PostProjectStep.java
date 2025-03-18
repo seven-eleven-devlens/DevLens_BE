@@ -48,7 +48,7 @@ public class PostProjectStep {
                     '}';
         }
 
-        public Checklist toEntity(ProjectStep projectStep, Long order) {
+        public Checklist toEntity(ProjectStep projectStep, Integer order) {
             return Checklist.create(checklistTitle, checklistDescription, order, projectStep);
         }
     }

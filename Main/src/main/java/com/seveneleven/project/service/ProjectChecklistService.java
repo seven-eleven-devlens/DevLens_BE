@@ -40,6 +40,8 @@ public interface ProjectChecklistService {
     PutProjectChecklist.Response putProjectChecklist(Checklist checklist,
                                                      PutProjectChecklist.Request putProjectChecklist);
 
+    PutProjectChecklistPosition.Response putProjectChecklistPosition(ProjectStep projectStep, Checklist checklist, Integer checklistOrder);
+
     PostProjectChecklistAccept.Response postProjectAccept(Long applicationId, Long memberId, HttpServletRequest request);
     PostProjectChecklistReject.Response postProjectReject(
             CheckRequest checkRequest,

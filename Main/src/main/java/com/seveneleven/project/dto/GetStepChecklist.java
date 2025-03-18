@@ -41,7 +41,7 @@ public class GetStepChecklist {
     public static class ProjectChecklist {
         private Long checklistId;
         private String checklistName;
-        private Long checklistOrder;
+        private Integer checklistOrder;
         private ChecklistStatus checklistStatus;
         private LocalDateTime checkAcceptTime;
 
