@@ -80,7 +80,7 @@ public class ProjectChecklistFacade {
             Long checklistId,
             Integer checklistOrder
     ) {
-        Project project = projectService.getProject(projectId);
+        projectService.getProject(projectId);
 
         ProjectStep projectStep = projectStepService.getProjectStepById(stepId);
 
