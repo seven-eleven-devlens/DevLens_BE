@@ -51,6 +51,10 @@ public class ProjectStepFacade {
         return projectStepService.putProjectStep(projectStep, requestDto);
     }
 
+    /**
+     * 함수명 : putProjectStepPosition
+     * 프로젝트 단계 위치를 수정하는 함수
+     */
     public PutProjectStepPosition.Response putProjectStepPosition(
             Long projectId,
             Long stepId,

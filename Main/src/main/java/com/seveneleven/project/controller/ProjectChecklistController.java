@@ -74,6 +74,10 @@ public class ProjectChecklistController implements ProjectChecklistDocs {
                 .body(APIResponse.success(SuccessCode.OK, projectChecklistFacade.putProjectChecklist(checklistId, request)));
     }
 
+    /**
+     * 함수명 : putProjectChecklistPosition
+     * 프로젝트 단계 위치를 수정하는 함수
+     */
     @DeveloperApproverAuthorize
     @PutMapping("/steps/{stepId}/checklists/{checklistId}/orders/{checklistOrder}")
     public ResponseEntity<APIResponse<PutProjectChecklistPosition.Response>> putProjectChecklistPosition(
