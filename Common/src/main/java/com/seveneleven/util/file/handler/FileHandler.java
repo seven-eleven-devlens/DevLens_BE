@@ -19,6 +19,7 @@ import java.util.*;
 public class FileHandler {
     private final FileMetadataRepository fileMetadataRepository;
     private final S3ClientHandler s3ClientHandler;
+    private final GcsClientHandler gcsClientHandler;
 
     private static final double KILOBYTE_CONVERSION_CONSTANT = 1024.0;
 
@@ -30,25 +31,66 @@ public class FileHandler {
      * @param referenceId 파일 참조 ID
      * @return FileMetadataDto 업로드한 파일 메타데이터
      */
+    //S3
+//    @Transactional
+//    public FileMetadata uploadFile(MultipartFile file, FileCategory fileCategory, Long referenceId) {
+//        //1. 파일 검증
+//        FileValidator.validateFile(file, fileCategory);
+//
+//        //2. 고유 파일 이름(UUID) 및 S3 키 생성
+//        //파일명이 없거나 비어있으면 UNKNOWN-FILE로 설정
+//        String originalFilename = StringUtils.isEmpty(file.getOriginalFilename()) ? "UNKNOWN-FILE" : file.getOriginalFilename();
+//
+//        //UUID 생성
+//        String uniqueFileName = s3ClientHandler.generateUniqueFileName(originalFilename);
+//        //S3 키 생성
+//        String s3Key = s3ClientHandler.generateS3Key(fileCategory.name(), referenceId, uniqueFileName);
+//
+//        //3. S3 업로드 및 FileMetadata 데이터 생성
+//        String filePath = null;
+//        try {
+//            //S3 업로드
+//            filePath = s3ClientHandler.uploadFile(file, s3Key);
+//
+//            //entity 생성자 호출
+//            FileMetadata fileMetadata = FileMetadata.registerFile(fileCategory, referenceId,
+//                    file.getOriginalFilename(), uniqueFileName, file.getContentType(),
+//                    file.getOriginalFilename().substring(originalFilename.lastIndexOf('.') + 1),
+//                    file.getSize() / KILOBYTE_CONVERSION_CONSTANT, filePath);
+//
+//            //FileMetaData 저장
+//            FileMetadata savedMetadata = fileMetadataRepository.save(fileMetadata);
+//
+//            //DTO로 변환 후 반환
+//            return savedMetadata;
+//
+//        } catch (Exception e) {
+//            //저장 실패시 S3에서 삭제
+//            s3ClientHandler.deleteFile(s3Key);
+//            throw new BusinessException(e.getMessage(), ErrorCode.FILE_UPLOAD_FAIL_ERROR);
+//        }
+//    }
+
+    //GCS
     @Transactional
     public FileMetadata uploadFile(MultipartFile file, FileCategory fileCategory, Long referenceId) {
         //1. 파일 검증
         FileValidator.validateFile(file, fileCategory);
 
-        //2. 고유 파일 이름(UUID) 및 S3 키 생성
+        //2. 고유 파일 이름(UUID) 및 GCS 키 생성
         //파일명이 없거나 비어있으면 UNKNOWN-FILE로 설정
         String originalFilename = StringUtils.isEmpty(file.getOriginalFilename()) ? "UNKNOWN-FILE" : file.getOriginalFilename();
 
         //UUID 생성
-        String uniqueFileName = s3ClientHandler.generateUniqueFileName(originalFilename);
-        //S3 키 생성
-        String s3Key = s3ClientHandler.generateS3Key(fileCategory.name(), referenceId, uniqueFileName);
+        String uniqueFileName = gcsClientHandler.generateUniqueFileName(originalFilename);
+        //GCS 키 생성
+        String gcsKey = gcsClientHandler.generateGcsKey(fileCategory.name(), referenceId, uniqueFileName);
 
-        //3. S3 업로드 및 FileMetadata 데이터 생성
-        String filePath = null;
+        //3. GCS 업로드 및 FileMetadata 데이터 생성
         try {
-            //S3 업로드
-            filePath = s3ClientHandler.uploadFile(file, s3Key);
+            String filePath = null;
+            //GCS 업로드
+            filePath = gcsClientHandler.uploadFile(file, gcsKey);
 
             //entity 생성자 호출
             FileMetadata fileMetadata = FileMetadata.registerFile(fileCategory, referenceId,
@@ -63,8 +105,9 @@ public class FileHandler {
             return savedMetadata;
 
         } catch (Exception e) {
-            //저장 실패시 S3에서 삭제
-            s3ClientHandler.deleteFile(s3Key);
+            //저장 실패시 GCS 버킷에서 삭제
+            gcsClientHandler.deleteFile(gcsKey);
+
             throw new BusinessException(e.getMessage(), ErrorCode.FILE_UPLOAD_FAIL_ERROR);
         }
     }
