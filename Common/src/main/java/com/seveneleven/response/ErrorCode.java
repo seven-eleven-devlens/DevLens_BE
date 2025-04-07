@@ -87,6 +87,7 @@ public enum ErrorCode {
     FILE_QUANTITY_EXCEED_ERROR(4009, HttpStatus.BAD_REQUEST, "업로드할 파일 갯수가 10개를 초과했습니다."),
     FILE_METADATA_HASHING_FAILURE(4010, HttpStatus.INTERNAL_SERVER_ERROR, "DB 파일 메타데이터 해싱에 실패했습니다."),
     CLIENT_FILE_HASHING_FAILURE(4011, HttpStatus.INTERNAL_SERVER_ERROR, "클라이언트 파일 메타데이터 해싱에 실패했습니다."),
+    GCP_UPLOAD_FAIL_ERROR(4012, HttpStatus.INTERNAL_SERVER_ERROR, "GCP 업로드에 실패했습니다."),
 
     // 5000번대 코드 : 서버 내부 오류 관련
     INTERNAL_SERVER_ERROR(5001, HttpStatus.INTERNAL_SERVER_ERROR, "서버 내부 오류가 발생했습니다."),
