@@ -1,0 +1,24 @@
+# 빌드용 이미지
+FROM gradle:8.5-jdk17 AS builder
+
+# Admin과 Common 모두 복사
+COPY --chown=gradle:gradle Admin /app/Admin
+COPY --chown=gradle:gradle Common /app/Common
+COPY --chown=gradle:gradle settings.gradle /app/settings.gradle
+COPY --chown=gradle:gradle build.gradle /app/build.gradle
+
+WORKDIR /app
+
+# bootJar 빌드
+RUN gradle :admin:bootJar --no-daemon
+
+# 실행용 이미지
+FROM eclipse-temurin:17-jdk
+
+WORKDIR /app
+
+# 빌드한 JAR 복사
+COPY --from=builder /app/Admin/build/libs/Admin-*.jar app.jar
+
+EXPOSE 8443
+ENTRYPOINT ["java", "-jar", "app.jar"]
